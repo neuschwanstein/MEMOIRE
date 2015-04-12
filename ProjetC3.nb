@@ -1,0 +1,522 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     20511,        513]
+NotebookOptionsPosition[     19860,        489]
+NotebookOutlinePosition[     20215,        505]
+CellTagsIndexPosition[     20172,        502]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}]], "Input",
+ CellChangeTimes->{{3.637354442533819*^9, 3.637354442536193*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"Daily", " ", "Risk"}], "-", 
+    RowBox[{"free", " ", "rate"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"Rf", " ", "=", " ", 
+    RowBox[{
+     RowBox[{"Log", "[", "1.05", "]"}], "/", "365"}]}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.6373526232919903`*^9, 3.637352641358612*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"Computes", " ", "return", " ", "over", " ", "a", " ", "list"}], 
+   " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"returns", "[", "price_List", "]"}], ":=", 
+     RowBox[{"With", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Vf", "=", 
+          RowBox[{"price", "[", 
+           RowBox[{"[", 
+            RowBox[{"2", ";;"}], "]"}], "]"}]}], ",", 
+         RowBox[{"Vi", "=", 
+          RowBox[{"price", "[", 
+           RowBox[{"[", 
+            RowBox[{";;", 
+             RowBox[{"-", "2"}]}], "]"}], "]"}]}]}], "}"}], ",", 
+       "\[IndentingNewLine]", 
+       FractionBox[
+        RowBox[{"Vf", "-", "Vi"}], "Vi"]}], "]"}]}], ";"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"returns", "[", "priceList_Dataset", "]"}], ":=", 
+     RowBox[{"returns", "[", 
+      RowBox[{"Normal", "@", "priceList"}], "]"}]}], ";"}]}]}]], "Input",
+ CellChangeTimes->{{3.6372622608200808`*^9, 3.637262276275625*^9}, {
+  3.637262324204425*^9, 3.637262395929446*^9}, {3.637262648479095*^9, 
+  3.637262724166328*^9}, {3.637262789717366*^9, 3.637262816355341*^9}, {
+  3.637262962147986*^9, 3.637262969794776*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"clean", "[", "dataset_Dataset", "]"}], ":=", 
+   RowBox[{"dataset", "[", 
+    RowBox[{"Select", "[", 
+     RowBox[{
+      RowBox[{"#\"PX_LAST\"", "=!=", 
+       RowBox[{"Missing", "[", "]"}]}], "&"}], "]"}], "]"}]}], ";"}]], "Input",\
+
+ CellChangeTimes->{{3.637263137382948*^9, 3.637263147997571*^9}, {
+  3.6372641300084877`*^9, 3.637264197589883*^9}, {3.6372644004310913`*^9, 
+  3.637264406326292*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"x", "[", "y_Integer", "]"}], ":=", 
+   RowBox[{"Function", "[", 
+    RowBox[{"ticker", ",", "\[IndentingNewLine]", 
+     RowBox[{"Module", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+        "dayNumbers", ",", "weekNumbers", ",", "dates", ",", "prices", ",", 
+         "vol20Days", ",", "vol50Days", ",", "volume"}], "}"}], ",", 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"dates", ",", "prices"}], "}"}], "=", 
+         RowBox[{"Transpose", "[", 
+          RowBox[{"FinancialData", "[", 
+           RowBox[{"ticker", ",", "\"\<Price\>\"", ",", 
+            RowBox[{"{", "y", "}"}]}], "]"}], "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"vol20Days", "=", 
+         RowBox[{"FinancialData", "[", 
+          RowBox[{"ticker", ",", "\"\<Volatility20Day\>\"", ",", 
+           RowBox[{"{", "y", "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"vol50Days", "=", 
+         RowBox[{"FinancialData", "[", 
+          RowBox[{"ticker", ",", "\"\<Volatility50Day\>\"", ",", 
+           RowBox[{"{", "y", "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"volume", "=", 
+         RowBox[{"Last", "@", 
+          RowBox[{"Transpose", "[", 
+           RowBox[{"FinancialData", "[", 
+            RowBox[{"ticker", ",", "\"\<Volume\>\"", ",", 
+             RowBox[{"{", "y", "}"}]}], "]"}], "]"}]}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"dayNumbers", "=", 
+         RowBox[{"dayNumber", "/@", "dates"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"weekNumbers", "=", 
+         RowBox[{"weekNumberISO", "/@", "dates"}]}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+         "Check", " ", "if", " ", "vol", " ", "data", " ", "are", " ", "of", 
+          " ", "correct", " ", "length"}], " ", "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"vol50Days", "=", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Length", "[", "prices", "]"}], "\[NotEqual]", 
+            RowBox[{"Length", "[", "vol50Days", "]"}]}], ",", 
+           RowBox[{"Most", "@", "vol50Days"}], ",", "vol50Days"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"vol20Days", "=", 
+         RowBox[{"If", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Length", "[", "prices", "]"}], "\[NotEqual]", 
+            RowBox[{"Length", "[", "vol20Days", "]"}]}], ",", 
+           RowBox[{"Most", "@", "vol20Days"}], ",", "vol20Days"}], "]"}]}], 
+        ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+         "Append", " ", "intercept", " ", "term", " ", "to", " ", "the", " ", 
+          "feature", " ", "vectors"}], " ", "*)"}], "\[IndentingNewLine]", 
+        RowBox[{"(*", " ", 
+         RowBox[{
+          RowBox[{"Also", " ", "remove", " ", "last", " ", "element"}], ",", 
+          " ", 
+          RowBox[{
+          "there", " ", "shall", " ", "be", " ", "another", " ", "function", 
+           " ", "to", " ", "return", " ", 
+           RowBox[{"today", "'"}], "s", " ", "news"}]}], " ", "*)"}], " ", 
+        "\[IndentingNewLine]", 
+        RowBox[{"Most", "@", 
+         RowBox[{"ArrayFlatten", "[", "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{"{", "  ", 
+            RowBox[{"1", ",", 
+             RowBox[{"Transpose", "[", 
+              RowBox[{"{", 
+               RowBox[{
+               "dayNumbers", ",", "weekNumbers", ",", "prices", ",", 
+                "vol20Days", ",", "vol50Days", ",", "volume"}], "}"}], 
+              "]"}]}], "  ", "}"}], "}"}], "\[IndentingNewLine]", "]"}]}]}]}],
+       "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"r", "[", "y_Integer", "]"}], ":=", 
+   RowBox[{"Function", "[", 
+    RowBox[{"ticker", ",", "\[IndentingNewLine]", 
+     RowBox[{"Last", "@", 
+      RowBox[{"Transpose", "@", 
+       RowBox[{"FinancialData", "[", 
+        RowBox[{"ticker", ",", "\"\<Return\>\"", ",", 
+         RowBox[{"{", "y", "}"}]}], "]"}]}]}]}], "\[IndentingNewLine]", 
+    "]"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.637278324407186*^9, 3.637278333143497*^9}, {
+   3.637278364447509*^9, 3.637278371687311*^9}, {3.637278426681796*^9, 
+   3.637278427504147*^9}, {3.63727852145175*^9, 3.637278847052188*^9}, {
+   3.637278996636752*^9, 3.637279041832982*^9}, {3.637279215625557*^9, 
+   3.637279265234088*^9}, 3.6372793003021393`*^9, {3.637281514397505*^9, 
+   3.637281582573395*^9}, {3.6372822565754967`*^9, 3.637282256635898*^9}, {
+   3.637353451213023*^9, 3.637353485078521*^9}, {3.637353595343758*^9, 
+   3.6373536340360107`*^9}, {3.637354202222045*^9, 3.637354241921074*^9}, {
+   3.637354514096134*^9, 3.637354529454775*^9}, {3.637354750103245*^9, 
+   3.6373548003535013`*^9}, {3.6373548373557367`*^9, 
+   3.6373548890926933`*^9}, {3.637355074361277*^9, 3.637355078377404*^9}, {
+   3.637355461632481*^9, 3.637355485902697*^9}, {3.637357224164147*^9, 
+   3.637357243581153*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"weekNumberISO", "[", "date_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"day0", ",", "year"}], "}"}], ",", 
+    RowBox[{"With", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"days", "=", 
+        RowBox[{"{", 
+         RowBox[{
+         "\"\<Mon\>\"", ",", "\"\<Tue\>\"", ",", "\"\<Wed\>\"", ",", 
+          "\"\<Thu\>\"", ",", "\"\<Fri\>\"", ",", "\"\<Sat\>\"", ",", 
+          "\"\<Sun\>\""}], "}"}]}], "}"}], ",", 
+      RowBox[{
+       RowBox[{"year", "=", 
+        RowBox[{"ToExpression", "[", 
+         RowBox[{"DateString", "[", 
+          RowBox[{"date", ",", "\"\<Year\>\""}], "]"}], "]"}]}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"day0", "=", 
+        RowBox[{"DatePlus", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"year", ",", "1", ",", "4"}], "}"}], ",", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"1", "-", 
+             RowBox[{
+              RowBox[{"Position", "[", 
+               RowBox[{"days", ",", 
+                RowBox[{"DateString", "[", 
+                 RowBox[{
+                  RowBox[{"{", 
+                   RowBox[{"year", ",", "1", ",", "4"}], "}"}], ",", 
+                  "\"\<DayNameShort\>\""}], "]"}]}], "]"}], "[", 
+              RowBox[{"[", 
+               RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ",", "\"\<Day\>\""}], 
+           "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"1", "+", 
+        RowBox[{"Floor", "[", 
+         RowBox[{
+          RowBox[{"DateDifference", "[", 
+           RowBox[{"day0", ",", "date", ",", "\"\<Week\>\""}], "]"}], "[", 
+          RowBox[{"[", "1", "]"}], "]"}], "]"}]}]}]}], "]"}]}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.637280878402464*^9, 3.637280878404545*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"dayNumber", "[", "date_", "]"}], ":=", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{"DateString", "[", 
+    RowBox[{"date", ",", "\"\<DayName\>\""}], "]"}], "/.", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"\"\<Monday\>\"", "\[Rule]", "1"}], ",", 
+     RowBox[{"\"\<Tuesday\>\"", "\[Rule]", "2"}], ",", 
+     RowBox[{"\"\<Wednesday\>\"", "\[Rule]", "3"}], ",", 
+     RowBox[{"\"\<Thursday\>\"", "\[Rule]", "4"}], ",", 
+     RowBox[{"\"\<Friday\>\"", "\[Rule]", "5"}], ",", 
+     RowBox[{"\"\<Saturday\>\"", "\[Rule]", "6"}], ",", 
+     RowBox[{"\"\<Sunday\>\"", "\[Rule]", "7"}]}], "}"}]}]}]], "Input",
+ CellChangeTimes->{{3.6372814258148108`*^9, 3.637281448351781*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Utility", " ", "function", " ", "given", " ", "a", " ", "return", " ", 
+    "rate"}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"U", "[", "r_", "]"}], ":=", 
+    RowBox[{"Min", "[", 
+     RowBox[{
+      RowBox[{"2", 
+       RowBox[{"(", 
+        RowBox[{"r", "-", "Rf"}], ")"}]}], ",", 
+      RowBox[{"(", 
+       RowBox[{"r", "-", "Rf"}], ")"}]}], "]"}]}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.6372858158390417`*^9, 3.637285833104273*^9}, {
+  3.6372859745891743`*^9, 3.6372859920629797`*^9}, {3.6372863609429293`*^9, 
+  3.637286391602461*^9}, {3.637286524399839*^9, 3.637286524580285*^9}, {
+  3.6373526481788473`*^9, 3.6373526518327713`*^9}, {3.6373527938637466`*^9, 
+  3.6373528101040688`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+    "return", " ", "on", " ", "a", " ", "stock", " ", "given", " ", "q", " ", 
+     "and", " ", "its", " ", "next"}], "-", 
+    RowBox[{"day", " ", "return"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"p", "[", 
+     RowBox[{"x_List", ",", "r_Real"}], "]"}], ":=", 
+    RowBox[{"Function", "[", 
+     RowBox[{"q", ",", 
+      RowBox[{
+       RowBox[{"r", " ", 
+        RowBox[{"q", ".", "x"}]}], "+", 
+       RowBox[{"Rf", 
+        RowBox[{"(", 
+         RowBox[{"1", "-", 
+          RowBox[{"q", ".", "x"}]}], ")"}]}]}]}], "]"}]}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.637352542861945*^9, 3.637352596770791*^9}, {
+  3.637352671350371*^9, 3.6373527318570013`*^9}, {3.637352806359825*^9, 
+  3.637352870591525*^9}, {3.637353087932302*^9, 3.637353088460475*^9}, {
+  3.63735407171563*^9, 3.6373540834023943`*^9}, {3.637358825372855*^9, 
+  3.637358826091959*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Average", " ", "utility", " ", "with", " ", "respect", " ", "to", " ", 
+    "q", " ", "from", " ", "date", " ", "y"}], " ", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"objective", "[", 
+     RowBox[{"stocks_List", ",", "y_Integer"}], "]"}], ":=", 
+    RowBox[{"Function", "[", 
+     RowBox[{"q", ",", "\[IndentingNewLine]", 
+      RowBox[{"With", "[", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"allFeatures", "=", 
+           RowBox[{"Flatten", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"x", "[", "y", "]"}], "/@", "stocks"}], ",", "1"}], 
+            "]"}]}], ",", "\[IndentingNewLine]", 
+          RowBox[{"allReturns", "=", 
+           RowBox[{"Flatten", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"r", "[", "y", "]"}], "/@", "stocks"}], ",", "1"}], 
+            "]"}]}]}], "}"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"Total", "[", 
+         RowBox[{"U", "/@", 
+          RowBox[{"Through", "[", 
+           RowBox[{
+            RowBox[{"MapThread", "[", 
+             RowBox[{"p", ",", 
+              RowBox[{"{", 
+               RowBox[{"allFeatures", ",", "allReturns"}], "}"}]}], "]"}], 
+            "[", "q", "]"}], "]"}]}], "]"}]}], "\[IndentingNewLine]", "]"}]}],
+      "\[IndentingNewLine]", "]"}]}], ";"}]}]], "Input",
+ CellChangeTimes->{{3.637353028715088*^9, 3.637353035763673*^9}, {
+  3.637353204897333*^9, 3.637353292764289*^9}, {3.6373533774113197`*^9, 
+  3.637353386395473*^9}, {3.637353881932197*^9, 3.637353883892741*^9}, {
+  3.637354006640139*^9, 3.63735405480562*^9}, {3.637354125463132*^9, 
+  3.6373541558068533`*^9}, {3.637355012135242*^9, 3.637355043954466*^9}, {
+  3.63735508677842*^9, 3.637355092794897*^9}, {3.637355647394771*^9, 
+  3.637355649875637*^9}, {3.637356671362501*^9, 3.637356690593233*^9}, {
+  3.6373570742862473`*^9, 3.637357173517803*^9}, {3.637357258917201*^9, 
+  3.6373572654419107`*^9}, {3.637357491374017*^9, 3.637357493166731*^9}, {
+  3.637357657795133*^9, 3.6373576817443113`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"solveObjective", "[", 
+   RowBox[{"stocks_List", ",", "y_Integer"}], "]"}], ":=", 
+  "\[IndentingNewLine]", 
+  RowBox[{"Module", "[", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{"Call", " ", "to", " ", "Data"}], " ", "*)"}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"xs", "=", 
+       RowBox[{"Flatten", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"x", "[", "y", "]"}], "/@", "stocks"}], ",", "1"}], "]"}]}],
+       ",", " ", 
+      RowBox[{"(*", " ", 
+       RowBox[{
+       "Matrix", " ", "of", " ", "features", " ", "of", " ", "the", " ", 
+        RowBox[{"form", " ", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"x11", "^", "T"}], ";", 
+            RowBox[{"x12", "^", "T"}], ";", 
+            RowBox[{"x13", "^", "T"}], ";"}], "..."}], ";", 
+          RowBox[{"xNN", "^", "T"}]}], "]"}]}], " ", "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"rs", "=", 
+       RowBox[{"Flatten", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"r", "[", "y", "]"}], "/@", "stocks"}], ",", "1"}], "]"}]}],
+       ",", " ", 
+      RowBox[{"(*", " ", 
+       RowBox[{"Vector", " ", "of", " ", "returns"}], " ", "*)"}], 
+      "\[IndentingNewLine]", "p", ",", " ", 
+      RowBox[{"(*", " ", 
+       RowBox[{"Number", " ", "of", " ", "features"}], " ", "*)"}], 
+      "\[IndentingNewLine]", "n", ",", " ", 
+      RowBox[{"(*", " ", 
+       RowBox[{"Number", " ", "of", " ", "datapoints", " ", 
+        RowBox[{"(", 
+         RowBox[{"days", " ", "\[Times]", " ", "stocks"}], ")"}]}], " ", 
+       "*)"}], "\[IndentingNewLine]", "\[Alpha]"}], "}"}], ",", 
+    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+    RowBox[{"(*", " ", 
+     RowBox[{"Constants", " ", "initialization"}], " ", "*)"}], 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"\[Alpha]", "=", 
+      RowBox[{"xs", 
+       RowBox[{"(", 
+        RowBox[{"1", "-", "rs"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"n", ",", "p"}], "}"}], "=", 
+      RowBox[{"Dimensions", "[", "xs", "]"}]}], ";", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"With", "[", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", " ", 
+       RowBox[{
+        RowBox[{"Matrix", " ", "and", " ", "vector", " ", "build"}], "-", 
+        "up"}], " ", "*)"}], "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"c", "=", 
+          RowBox[{"-", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"ConstantArray", "[", 
+              RowBox[{"1", ",", "n"}], "]"}], "~", "Join", "~", 
+             RowBox[{"ConstantArray", "[", 
+              RowBox[{
+               RowBox[{"-", "2"}], ",", "n"}], "]"}], "~", "Join", "~", 
+             RowBox[{"ConstantArray", "[", 
+              RowBox[{"0", ",", "p"}], "]"}]}], ")"}]}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{"M", "=", 
+          RowBox[{"SparseArray", "@", 
+           RowBox[{"ArrayFlatten", "@", "\[IndentingNewLine]", 
+            RowBox[{"{", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"IdentityMatrix", "[", "n", "]"}], ",", 
+               RowBox[{"2", 
+                RowBox[{"IdentityMatrix", "[", "n", "]"}]}], ",", 
+               "\[Alpha]"}], "}"}], "}"}]}]}]}], ",", "\[IndentingNewLine]", 
+         RowBox[{"b", "=", 
+          RowBox[{"ConstantArray", "[", 
+           RowBox[{"0", ",", "n"}], "]"}]}]}], "}"}], ",", 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", 
+       RowBox[{"(*", " ", 
+        RowBox[{
+         RowBox[{"Optimization", ":", " ", 
+          RowBox[{"find", " ", "q"}]}], ",", " ", 
+         RowBox[{"\[Mu]", " ", "and", " ", "\[Lambda]"}]}], " ", "*)"}], 
+       "\[IndentingNewLine]", 
+       RowBox[{"LinearProgramming", "[", 
+        RowBox[{"c", ",", "M", ",", "b"}], "]"}]}], "\[IndentingNewLine]", 
+      "]"}]}]}], "\[IndentingNewLine]", "]"}]}]], "Input",
+ CellChangeTimes->{{3.637433543962352*^9, 3.637433618268734*^9}, {
+   3.637433784789402*^9, 3.6374338681991796`*^9}, {3.6374340496495237`*^9, 
+   3.637434114386417*^9}, {3.637434196720015*^9, 3.63743421679729*^9}, {
+   3.637435898854578*^9, 3.63743593017124*^9}, {3.637435960717751*^9, 
+   3.637435977024015*^9}, {3.637436099141057*^9, 3.637436145106986*^9}, {
+   3.637436176577359*^9, 3.637436185497452*^9}, {3.63743627477104*^9, 
+   3.637436307252296*^9}, {3.637436345725025*^9, 3.637436735723419*^9}, {
+   3.63743690793891*^9, 3.637436908210205*^9}, 3.637448174599373*^9, {
+   3.637530871674211*^9, 3.637530878771762*^9}, {3.63753517982446*^9, 
+   3.637535208806211*^9}, {3.6375355262213287`*^9, 3.63753557286379*^9}, {
+   3.637535655403945*^9, 3.637535659643635*^9}, {3.637535785341851*^9, 
+   3.6375358089533567`*^9}, 3.6377668421248817`*^9, {3.63776698748386*^9, 
+   3.637766990754651*^9}, {3.637767463900136*^9, 3.637767488579896*^9}, 
+   3.6377738742032337`*^9, 3.637773907528207*^9, 3.6377822148288507`*^9, {
+   3.637782265280479*^9, 3.6377822901728573`*^9}, 3.6377826942405243`*^9, {
+   3.637782797177659*^9, 3.6377828043206882`*^9}, 3.6377828413689613`*^9, {
+   3.637783072516371*^9, 3.637783076371587*^9}, 3.637783122715187*^9, {
+   3.637783617272441*^9, 3.637783621126233*^9}, 3.6377836546666603`*^9, {
+   3.637785085214738*^9, 3.637785089625492*^9}}]
+},
+WindowSize->{884, 1055},
+WindowMargins->{{Automatic, 268}, {Automatic, 0}},
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
+2014)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 142, 2, 28, "Input"],
+Cell[703, 24, 373, 10, 46, "Input"],
+Cell[1079, 36, 1250, 34, 112, "Input"],
+Cell[2332, 72, 450, 12, 28, "Input"],
+Cell[2785, 86, 5220, 111, 454, "Input"],
+Cell[8008, 199, 1813, 48, 114, "Input"],
+Cell[9824, 249, 707, 15, 63, "Input"],
+Cell[10534, 266, 792, 20, 46, "Input"],
+Cell[11329, 288, 966, 25, 46, "Input"],
+Cell[12298, 315, 2139, 48, 148, "Input"],
+Cell[14440, 365, 5416, 122, 488, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)

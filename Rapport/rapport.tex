@@ -1,0 +1,97 @@
+\documentclass[11pt,fleqn]{article}
+
+\newcommand{\ts}{\textsuperscript}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage[parfill]{parskip}
+\usepackage{bm}
+
+\geometry{letterpaper}
+
+\title{COMP 652 \\ End of Term Project}
+\author{Thierry \textsc{Bazier-Matte}}
+\date{April 2015}
+
+\begin{document}
+\maketitle
+
+\section{Formal Problem}
+
+\subsection{The Utility Function}
+
+Let $U$ be the two-pieces linear utility function of an investor. If we suppose our investor
+to be `rational', then there is a critical return rate $r_c$ at which lower returns on
+investments have a higher effect on utility, and higher returns yield a lower effect on
+utility. 
+
+Mathematically, such a function would be of the form 
+\begin{align*}
+  U(r) &= \min[\beta(r-r_c), r-r_c]\\
+       &= (r-r_c)^+ - \beta(r_c - r)^+
+\end{align*}
+$\beta>1$ represents the higher rate at which the utility decrease when exposed to a rate
+lower than $r_c$. We can, for simplification purposes let
+\begin{equation*}
+  r_c = R_f = \log(1.05)/365
+\end{equation*}
+the market risk free rate, taken here to be of 5\% per annum, but expressed as a daily
+continuous return.
+
+The optimization problem will therefore take the form
+\begin{equation*}
+  \max U(p)
+\end{equation*}
+where $p$ is the return on a portfolio.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{Utility}
+  \caption{Utility function, with $\beta=2$ and $r_c=5\%$}
+  \label{fig:utility}
+\end{figure}
+
+\subsection{Portfolio Composition}
+
+We now consider a fictitous portfolio consisting of only two assets, the risk-free asset
+(money market) and risky asset, such as a stock. At day $t$ we run a machine learning
+algorithm to determine the optimal quantity $q^Tx_t$ to be invested in the risky asset. 
+
+The portfolio return at time $t+1$  will then be of the form:
+\begin{equation*}
+  p_{t+1}(x_t,r_{t+1}) = r_{t+1}q^Tx_t + R_f(1-q^Tx_t).
+\end{equation*}
+Where $x_t$ is the feature vector at time $t$ for a given stock $s$ and $r_{t+1}$ is the
+return of the stock at end of day $t$.
+
+\subsection{Linear Program}
+
+
+To setup the learning program of the portfolio compostion vector $\bm q$, we try to
+optimize over $\bm q$ the average utility of the individual returns over all days and all
+stocks considered by the problem:
+\begin{align*}
+  &\max_{\bm q} \frac{1}{N} \sum_{\text{stocks}}\sum_{\text{days}} U(p(\bm q))\\
+  &\qquad=\max_{\bm q} \sum_{s,t} U(p(\bm q)-R_f)^+ - \beta (R_f - p(\bm q))^+\\
+  &\qquad = \max_{\bm q} \sum_{s,t} (r_{s,t+1} \bm q^T \bm x_{s,t} - \bm q^T \bm
+    x_{s,t})^+ -\beta(-r_{s,t+1}\bm q^T \bm x_{s,t}+\bm q^T\bm x_{s,t})^+\\
+  &\qquad = \max_{\bm q} \sum_{s,t} ((r_{s,t+1}-1)\bm q^T\bm x_{s,t})^+
+    -\beta((1-r_{s,t+1})\bm q^T\bm x_{s,t})^+
+\end{align*}
+
+This is a linear program optimization problem which can be reformulated as follows:
+\begin{align*}
+  \max_{\bm q,\bm\lambda,\bm\mu} &\hspace{0.5em} \sum_{s,t} \lambda_{s,t} - \beta\mu_{s,t}\\
+  \mathrm{s.t.} &\hspace{0.5em} \lambda_{s,t} \geq (r_{s,t+1}-1)\bm q^T\bm x_{s,t}\\
+  &\hspace{0.5em} \mu_{s,t} \geq (1-r_{s,t+1})\bm q^T\bm x_{s,t}\\
+  &\hspace{0.5em} \lambda_{s,t}, \mu_{s,t} \geq 0
+\end{align*}
+Or, alternatively,
+\begin{align*}
+  \max_{\bm q,\bm \lambda,\bm \mu}  &\hspace{0.5em} \sum_{s,t} \lambda_{s,t} - \beta \mu_{s,t}\\
+  \mathrm{s.t.} &\hspace{0.5em} \lambda_{s,t} - \mu_{s,t} + 2(1-r_{s,t+1})\bm q^T\bm x_{s,t} \geq 0\\
+  &\hspace{0.5em} \lambda_{s,t}, \mu_{s,t} \geq 0
+\end{align*}
+
+
+\end{document}
