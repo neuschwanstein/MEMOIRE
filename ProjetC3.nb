@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     20511,        513]
-NotebookOptionsPosition[     19860,        489]
-NotebookOutlinePosition[     20215,        505]
-CellTagsIndexPosition[     20172,        502]
+NotebookDataLength[     19762,        488]
+NotebookOptionsPosition[     19151,        465]
+NotebookOutlinePosition[     19505,        481]
+CellTagsIndexPosition[     19462,        478]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -33,56 +33,6 @@ Cell[BoxData[
     RowBox[{
      RowBox[{"Log", "[", "1.05", "]"}], "/", "365"}]}], ";"}]}]], "Input",
  CellChangeTimes->{{3.6373526232919903`*^9, 3.637352641358612*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{"(*", " ", 
-   RowBox[{"Computes", " ", "return", " ", "over", " ", "a", " ", "list"}], 
-   " ", "*)"}], "\[IndentingNewLine]", 
-  RowBox[{
-   RowBox[{
-    RowBox[{
-     RowBox[{"returns", "[", "price_List", "]"}], ":=", 
-     RowBox[{"With", "[", 
-      RowBox[{
-       RowBox[{"{", 
-        RowBox[{
-         RowBox[{"Vf", "=", 
-          RowBox[{"price", "[", 
-           RowBox[{"[", 
-            RowBox[{"2", ";;"}], "]"}], "]"}]}], ",", 
-         RowBox[{"Vi", "=", 
-          RowBox[{"price", "[", 
-           RowBox[{"[", 
-            RowBox[{";;", 
-             RowBox[{"-", "2"}]}], "]"}], "]"}]}]}], "}"}], ",", 
-       "\[IndentingNewLine]", 
-       FractionBox[
-        RowBox[{"Vf", "-", "Vi"}], "Vi"]}], "]"}]}], ";"}], 
-   "\[IndentingNewLine]", 
-   RowBox[{
-    RowBox[{
-     RowBox[{"returns", "[", "priceList_Dataset", "]"}], ":=", 
-     RowBox[{"returns", "[", 
-      RowBox[{"Normal", "@", "priceList"}], "]"}]}], ";"}]}]}]], "Input",
- CellChangeTimes->{{3.6372622608200808`*^9, 3.637262276275625*^9}, {
-  3.637262324204425*^9, 3.637262395929446*^9}, {3.637262648479095*^9, 
-  3.637262724166328*^9}, {3.637262789717366*^9, 3.637262816355341*^9}, {
-  3.637262962147986*^9, 3.637262969794776*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  RowBox[{
-   RowBox[{"clean", "[", "dataset_Dataset", "]"}], ":=", 
-   RowBox[{"dataset", "[", 
-    RowBox[{"Select", "[", 
-     RowBox[{
-      RowBox[{"#\"PX_LAST\"", "=!=", 
-       RowBox[{"Missing", "[", "]"}]}], "&"}], "]"}], "]"}]}], ";"}]], "Input",\
-
- CellChangeTimes->{{3.637263137382948*^9, 3.637263147997571*^9}, {
-  3.6372641300084877`*^9, 3.637264197589883*^9}, {3.6372644004310913`*^9, 
-  3.637264406326292*^9}}],
 
 Cell[BoxData[{
  RowBox[{
@@ -148,30 +98,21 @@ Cell[BoxData[{
         ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
         RowBox[{"(*", " ", 
          RowBox[{
-         "Append", " ", "intercept", " ", "term", " ", "to", " ", "the", " ", 
-          "feature", " ", "vectors"}], " ", "*)"}], "\[IndentingNewLine]", 
-        RowBox[{"(*", " ", 
-         RowBox[{
-          RowBox[{"Also", " ", "remove", " ", "last", " ", "element"}], ",", 
-          " ", 
+          RowBox[{"Remove", " ", "last", " ", "element"}], ",", " ", 
           RowBox[{
           "there", " ", "shall", " ", "be", " ", "another", " ", "function", 
            " ", "to", " ", "return", " ", 
            RowBox[{"today", "'"}], "s", " ", "news"}]}], " ", "*)"}], " ", 
         "\[IndentingNewLine]", 
-        RowBox[{"Most", "@", 
-         RowBox[{"ArrayFlatten", "[", "\[IndentingNewLine]", 
-          RowBox[{"{", 
-           RowBox[{"{", "  ", 
-            RowBox[{"1", ",", 
-             RowBox[{"Transpose", "[", 
-              RowBox[{"{", 
-               RowBox[{
-               "dayNumbers", ",", "weekNumbers", ",", "prices", ",", 
-                "vol20Days", ",", "vol50Days", ",", "volume"}], "}"}], 
-              "]"}]}], "  ", "}"}], "}"}], "\[IndentingNewLine]", "]"}]}]}]}],
-       "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", "]"}]}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Most", "@", 
+          RowBox[{"Transpose", "[", 
+           RowBox[{"{", 
+            RowBox[{
+            "dayNumbers", ",", "weekNumbers", ",", "prices", ",", "vol20Days",
+              ",", "vol50Days", ",", "volume"}], "}"}], "]"}]}], "//", 
+         "N"}]}]}], "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+    "]"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"r", "[", "y_Integer", "]"}], ":=", 
@@ -195,7 +136,8 @@ Cell[BoxData[{
    3.6373548003535013`*^9}, {3.6373548373557367`*^9, 
    3.6373548890926933`*^9}, {3.637355074361277*^9, 3.637355078377404*^9}, {
    3.637355461632481*^9, 3.637355485902697*^9}, {3.637357224164147*^9, 
-   3.637357243581153*^9}}],
+   3.637357243581153*^9}, {3.637799454339313*^9, 3.6377995070242367`*^9}, {
+   3.637800386648649*^9, 3.637800387348172*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -376,11 +318,12 @@ Cell[BoxData[
     RowBox[{"{", 
      RowBox[{
       RowBox[{"xs", "=", 
-       RowBox[{"Flatten", "[", 
-        RowBox[{
+       RowBox[{"adjustFeaturesMatrix", "@", 
+        RowBox[{"Flatten", "[", 
          RowBox[{
-          RowBox[{"x", "[", "y", "]"}], "/@", "stocks"}], ",", "1"}], "]"}]}],
-       ",", " ", 
+          RowBox[{
+           RowBox[{"x", "[", "y", "]"}], "/@", "stocks"}], ",", "1"}], 
+         "]"}]}]}], ",", " ", 
       RowBox[{"(*", " ", 
        RowBox[{
        "Matrix", " ", "of", " ", "features", " ", "of", " ", "the", " ", 
@@ -485,10 +428,43 @@ Cell[BoxData[
    3.637782797177659*^9, 3.6377828043206882`*^9}, 3.6377828413689613`*^9, {
    3.637783072516371*^9, 3.637783076371587*^9}, 3.637783122715187*^9, {
    3.637783617272441*^9, 3.637783621126233*^9}, 3.6377836546666603`*^9, {
-   3.637785085214738*^9, 3.637785089625492*^9}}]
+   3.637785085214738*^9, 3.637785089625492*^9}, {3.637800425421752*^9, 
+   3.637800432501172*^9}, {3.638217642802312*^9, 3.6382176463539457`*^9}, {
+   3.638278546174609*^9, 3.6382785465281677`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"adjustFeaturesMatrix", "[", 
+    RowBox[{"xs_", "?", "MatrixQ"}], "]"}], ":=", "\[IndentingNewLine]", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "newXs", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"newXs", "=", 
+       RowBox[{"Transpose", "@", 
+        RowBox[{"MapThread", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Standardize", "[", 
+            RowBox[{
+             RowBox[{"{", "##", "}"}], ",", "Mean", ",", 
+             RowBox[{"Function", "[", 
+              RowBox[{"3", 
+               RowBox[{"StandardDeviation", "[", "##", "]"}]}], "]"}]}], 
+            "]"}], "&"}], ",", "xs"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+      
+      RowBox[{"ArrayFlatten", "[", 
+       RowBox[{"{", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", "newXs"}], "}"}], "}"}], "]"}]}]}], 
+    "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.637800438920693*^9, 3.637800491287294*^9}, {
+  3.637804352630316*^9, 3.637804356896595*^9}, {3.6378049110389147`*^9, 
+  3.6378049758175983`*^9}}]
 },
 WindowSize->{884, 1055},
-WindowMargins->{{Automatic, 268}, {Automatic, 0}},
+WindowMargins->{{Automatic, 34}, {Automatic, 0}},
 FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
 2014)",
 StyleDefinitions->"Default.nb"
@@ -506,15 +482,14 @@ CellTagsIndex->{}
 Notebook[{
 Cell[558, 20, 142, 2, 28, "Input"],
 Cell[703, 24, 373, 10, 46, "Input"],
-Cell[1079, 36, 1250, 34, 112, "Input"],
-Cell[2332, 72, 450, 12, 28, "Input"],
-Cell[2785, 86, 5220, 111, 454, "Input"],
-Cell[8008, 199, 1813, 48, 114, "Input"],
-Cell[9824, 249, 707, 15, 63, "Input"],
-Cell[10534, 266, 792, 20, 46, "Input"],
-Cell[11329, 288, 966, 25, 46, "Input"],
-Cell[12298, 315, 2139, 48, 148, "Input"],
-Cell[14440, 365, 5416, 122, 488, "Input"]
+Cell[1079, 36, 4899, 103, 403, "Input"],
+Cell[5981, 141, 1813, 48, 114, "Input"],
+Cell[7797, 191, 707, 15, 63, "Input"],
+Cell[8507, 208, 792, 20, 46, "Input"],
+Cell[9302, 230, 966, 25, 46, "Input"],
+Cell[10271, 257, 2139, 48, 148, "Input"],
+Cell[12413, 307, 5620, 125, 488, "Input"],
+Cell[18036, 434, 1111, 29, 97, "Input"]
 }
 ]
 *)
