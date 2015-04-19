@@ -1,0 +1,16 @@
+#+TITLE: Notes
+#+AUTHOR: Thierry BM
+#+STARTUP: entitiespretty
+
+Plutôt que d'avoir une fonction d'utilité qui n'est de toute facon pas convexe, on peut
+plutot tracer une fonction d'utilité qui vise un certain rendement. Ainsi, si on appelle
+ce rendement r_c, l'utilité croît très rapidement lorsqu'elle se dirige à partir de la
+gauche, alors qu'au contraire, lorsqu'elle s'en éloigne, ie. lorsqu'on observe des
+rendements /supérieurs/ au rendement critique r_c, l'utilité décroit, mais beaucoup moins
+rapidement.
+
+On a ainsi un objectif qui est /convexe/, et on a un problème qui somme toute est plus ciblé
+autour d'un objectif précis. Si besoin est, on peut même raffiner l'utilité pour bien
+définir comment on souhaite que la performance soit pénalisée ou non. 
+
+On ajoute ensuite de la sélection de modèle à notre guise.
