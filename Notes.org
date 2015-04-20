@@ -104,3 +104,44 @@ vérifier_) des points tels que |x_{s}|\leq1. Supposons qu'on préfère permettr
 de portefeuille risquée comprise dans un intervalle [-\alpha, 1+\alpha], autrement dit on permet
 dans une certaine mesure la vente à découvert et l'emprunt à R_f pour obtenir davantage
 d'exposition au marché. 
+
+Si dans notre programme d'optimisation on emploie
+
+				      q' = (1 + q)/2
+
+					  * * *
+
+La forme de la fonction d'utilité devient alors
+
+		      U(p) = -\beta_1 Max(r_c - p, 0) - \beta_2 Max(p - r_c, 0)
+
+\beta_1 contrôle la pente de l'utilité pour des rendements inférieurs à r_c, \beta_2 contrôle la
+pente pour des rendements supérieurs à r_c. On aura donc typiquement 
+
+					 \beta_1 < \beta_2,
+
+puisque des rendements supérieurs sont moins susceptibles d'affecter l'utilité.
+
+Si p est fonction de q, par la fameuse relation
+
+			      p(q) = r_s q^{T}x_s + R_f (1 - q^{T}x_s)
+
+alors on aura, au sens général, 
+
+	    U(q) = -\beta_1 (r_c - R_f + q^{T}x_s(R_f - r_s))^{+} - \beta_2 (R_f - r_c + q^{T}x_s(r_s - R_f))^{ +}
+
+Si on lance un programme d'optimisation convexe de la forme
+
+					max_q U(q)
+				    sc. |q| \leq 1
+
+Et qu'on suppose les vecteurs d'information x_s normalisés, ie. |x_{s}| \leq 1, alors la
+proportion comprise entre -1 et 1 (dans la plupart des cas). On voudrait que cette
+proportion soit comprise entre [-\alpha, 1+\alpha].
+
+Par exemple, si on pose \alpha=0, alors la transformation nécessaire pour obtenir un nouveau q
+serait la suivante:
+
+				      q' = (1 + q)/2
+
+et ainsi on aurait la juste proportion d'investissement du portefeuille. 
