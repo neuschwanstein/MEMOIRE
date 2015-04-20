@@ -14,3 +14,93 @@ autour d'un objectif précis. Si besoin est, on peut même raffiner l'utilité p
 définir comment on souhaite que la performance soit pénalisée ou non. 
 
 On ajoute ensuite de la sélection de modèle à notre guise.
+
+Maintenant qu'on obtient un /q/, comment construire alors notre portefeuille? Pour chaque
+stock, on obtient une proportion à investir, disons p_s. Disons qu'on désire investir dans
+/n/ actifs différents, question de diversification, parmi /m/ actifs.
+
+On peut ordonner les actifs par la valeur de q.x_s, car une valeur plus élevée indique
+qu'on a davantage confiance dans ce stock pour fournir un rendement proche de notre
+rendement idéal r_c.
+
+On aura alors n proportions différentes (comprises pas tout à fait encore malheureusement)
+entre 0 et 1. Supposons qu'on ait une suite {p_1,p_2,...,p_n} de proportions. On veut
+construire un portefeuille avec tous ces actifs. Le portefeuille sera alors constitué
+d'une proportion p_1 d'actifs risqués, et de l'actif sans risque. 
+
+L'actif 2 sera alors constiué dans une proportion p_2 p_1^2, l'actif 3 dans une proportion
+p_{3}p_{2}p_{1}^2. La règle de récurrence sera alors
+
+				      p'_{i+1} = p_{i+1 }p_i
+
+et 
+
+				  p'_1 = 1 - \sum_{i\ge 2}_{} p'_i
+
+La valeur de m peut à nouveau être déterminée par sélection de modèle. 
+
+
+					  * * *
+
+*Le 19 avril 2015*
+
+On travaille une utilité de la forme 
+
+			    U(p) = \alpha_1(r_c - p)^{ +} + \alpha_2(p - r_c)^{ +}
+
+où r_c est le rendement souhaité. p est le rendement obtenu. On souhaite maximiser cette
+utilité. 
+
+Chaque stock s possède un vecteur d'informations x_s déterminé à tous les jours. Notre
+portefeuille est constitué de m actifs risqués et d'un actif sans risque. Donné q, le
+rendement du portefeuille sur une période d'une journée est donné par
+
+		       p^m(q) = p_{1}r_1 + p_{2}r_2 + \cdots + p_{m}r_m + (1 - \sum{}p_i) R_f
+
+On détermine q avec le programme d'optimisation suivant:
+
+				max_q \sum_{s}\sum_{t} U(p_{st}(q))
+
+Où ici 
+
+			    p_{st}(q) = r_{st} q^{T}x_{st} + R_f(1 - q^{T}x_{st})
+
+On cherche donc à déterminer le vecteur q qui permettra de maximiser l'utilité /sur tous/
+/les actifs, sur toutes les périodes/, autrement dit, un tel q permettrait de déterminer, en
+moyenne l'allocation qui permettrait de se rapprocher d'un portefeuille de rendement r_c.
+
+A x_s on entend donc faire correspondre un /rendement/ r_s à l'aide d'une fonction q(x_s) =
+r_s. En somme, on considère que le rendement d'un certain actif ne serait pas uniquement
+déterminé de facon intrinsèque mais serait alors déterminé à partir du vecteur
+d'information x_s.
+
+					  * * *
+
+Le 20 avril 2015
+
+Revenons sur la nouvelle interprétation de q. Si par exemple on constitue de une base de
+données constituée d'un seul actif, alors q fournira q.x_s fournira la proportion à
+investir si on vise un rendement r_c, donc
+
+				r q^{T}x_s + R_f(1 - q^{T}x_s) = r_c
+
+d'où on tire
+
+			       q^{T}x_s = (r_c - R_f) / (r - R_f)
+
+dont on peut se servir pour mesurer à quel point notre algorithme est efficace, ie. en
+comparant les résultats empiriques avec ceux prédits par la théorie. 
+
+Reste encore l'épineuse question de la normalisation, car pour certains attributs, chacun
+peut possiblement se situer à des niveaux très différents. Aussi c'est pourquoi une
+normalisation individuelle (par exemple recentré à la moyenne et réduit de \rho écart types).
+
+Par contre, on fait implicitementl'hypothèse que /l'amplitude relative/ des valeurs n'est
+pas importante. Peut être y aurait il moyen de rajouter cette information dans x_s, sur une
+colonne représentant pour chaque actif s'\neq{}s, la fraction d'amplitude. A voir. 
+
+Une fois que nos données sont recentrées, on aura alors dans une proportion déterminée (_à
+vérifier_) des points tels que |x_{s}|\leq1. Supposons qu'on préfère permettre une allocation
+de portefeuille risquée comprise dans un intervalle [-\alpha, 1+\alpha], autrement dit on permet
+dans une certaine mesure la vente à découvert et l'emprunt à R_f pour obtenir davantage
+d'exposition au marché. 
