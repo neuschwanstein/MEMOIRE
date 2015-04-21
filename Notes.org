@@ -132,7 +132,7 @@ alors on aura, au sens général,
 
 Si on lance un programme d'optimisation convexe de la forme
 
-					max_q U(q)
+				   max_q \sum_{s}\sum_{t} U(q)
 				    sc. |q| \leq 1
 
 Et qu'on suppose les vecteurs d'information x_s normalisés, ie. |x_{s}| \leq 1, alors la

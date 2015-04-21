@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      2555,         85]
-NotebookOptionsPosition[      2302,         71]
-NotebookOutlinePosition[      2657,         87]
-CellTagsIndexPosition[      2614,         84]
+NotebookDataLength[      3193,        103]
+NotebookOptionsPosition[      2902,         88]
+NotebookOutlinePosition[      3257,        104]
+CellTagsIndexPosition[      3214,        101]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -67,9 +67,26 @@ Cell[BoxData[{
         RowBox[{"\"\<}\>\"", "\[Rule]", "\"\<\>\""}]}], "}"}]}], "]"}], "<>", 
     "\"\<]\>\""}]}], ";"}]}], "Input",
  CellChangeTimes->{{3.638288889656969*^9, 3.638288890425462*^9}, {
-  3.6383774159701853`*^9, 3.638377443886537*^9}}]
+  3.6383774159701853`*^9, 3.638377443886537*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"magic", "[", "n_Integer", "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "}"}], ",", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"MEvaluate", "[", 
+       RowBox[{"\"\<magic(\>\"", "<>", 
+        RowBox[{"ToString", "@", "n"}], "<>", "\"\<)\>\""}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"MGet", "[", "\"\<ans\>\"", "]"}]}]}], "\[IndentingNewLine]", 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.638576771817955*^9, 3.6385767801610327`*^9}, {
+  3.638576865831333*^9, 3.6385769037255287`*^9}}]
 },
-WindowSize->{808, 200},
+WindowSize->{808, 250},
 WindowMargins->{{70, Automatic}, {-26, Automatic}},
 FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
 2014)",
@@ -86,7 +103,8 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 1740, 49, 182, "Input"]
+Cell[558, 20, 1740, 49, 182, "Input"],
+Cell[2301, 71, 597, 15, 80, "Input"]
 }
 ]
 *)
