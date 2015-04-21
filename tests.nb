@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     38986,        925]
-NotebookOptionsPosition[     36777,        850]
-NotebookOutlinePosition[     37129,        866]
-CellTagsIndexPosition[     37086,        863]
+NotebookDataLength[     38608,        918]
+NotebookOptionsPosition[     36536,        841]
+NotebookOutlinePosition[     36888,        857]
+CellTagsIndexPosition[     36845,        854]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -572,280 +572,271 @@ Y8c=
    3.6385731525115747`*^9, 3.638573191126768*^9}]
 }, Open  ]],
 
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"stocks", "=", 
+   RowBox[{"{", 
+    RowBox[{
+    "\"\<AAPL\>\"", ",", "\"\<GOOGL\>\"", ",", "\"\<MSFT\>\"", ",", 
+     "\"\<F\>\""}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"y", "=", "2014"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.6385739765069113`*^9, 3.638573987667821*^9}, {
+  3.638574184267514*^9, 3.6385742038842297`*^9}}],
+
 Cell[CellGroupData[{
 
 Cell[BoxData[
  RowBox[{"solveObjective", "[", 
-  RowBox[{
-   RowBox[{"{", 
-    RowBox[{
-    "\"\<AAPL\>\"", ",", "\"\<GOOG\>\"", ",", "\"\<MSFT\>\"", ",", 
-     "\"\<F\>\""}], "}"}], ",", "2014"}], "]"}]], "Input",
+  RowBox[{"stocks", ",", "y"}], "]"}]], "Input",
  CellChangeTimes->{{3.638545274890156*^9, 3.638545283229693*^9}, {
-  3.638545401287118*^9, 3.63854540694868*^9}, {3.638572958727371*^9, 
-  3.638572959073286*^9}, {3.6385730446364193`*^9, 3.638573057029052*^9}}],
+   3.638545401287118*^9, 3.63854540694868*^9}, {3.638572958727371*^9, 
+   3.638572959073286*^9}, {3.6385730446364193`*^9, 3.638573057029052*^9}, 
+   3.638573955126544*^9, {3.638574207339778*^9, 3.6385742171454353`*^9}, {
+   3.638579224802785*^9, 3.638579229908588*^9}, {3.638580220448606*^9, 
+   3.6385802232803707`*^9}}],
+
+Cell[BoxData["\<\">>  \\nCalling SDPT3 4.0: 2607 variables, 1300 equality \
+constraints\\n------------------------------------------------------------\\n\
+\\n num. of constraints = 1300\\n dim. of linear var  = 2600\\n dim. of free  \
+ var  =  7 *** convert ublk to lblk\\n number of dense column in A = \
+14\\n*******************************************************************\\n   \
+SDPT3: Infeasible path-following \
+algorithms\\n*****************************************************************\
+**\\n version  predcorr  gam  expon  scale_data\\n    NT      1      0.000   \
+1        0    \\nit pstep dstep pinfeas dinfeas  gap      prim-obj      \
+dual-obj    \
+cputime\\n-------------------------------------------------------------------\
+\\n 0|0.000|0.000|9.4e-03|6.9e+01|6.8e+06| 6.628725e+04  0.000000e+00| \
+0:0:00| spchol  1  1 \\n 1|1.000|0.950|1.3e-05|3.7e+00|4.2e+05| 6.445150e+04  \
+1.614177e-01| 0:0:00| spchol  1  1 \\n 2|1.000|0.128|3.7e-05|3.3e+00|5.1e+05| \
+8.673619e+04  1.615428e-01| 0:0:00| spchol  1  1 \\n \
+3|1.000|0.772|2.7e-06|7.7e-01|1.6e+05| 7.407803e+04  1.675399e-01| 0:0:00| \
+spchol  1  1 \\n 4|1.000|0.519|1.4e-06|3.7e-01|6.5e+04| 4.145518e+04  \
+1.681265e-01| 0:0:00| spchol  1  1 \\n 5|1.000|0.511|1.8e-08|1.8e-01|2.1e+04| \
+1.608650e+04  1.684221e-01| 0:0:00| spchol  1  1 \\n \
+6|1.000|0.535|1.3e-09|8.6e-02|4.4e+03| 3.874323e+03  1.685797e-01| 0:0:00| \
+spchol  1  1 \\n 7|1.000|0.651|4.8e-11|3.0e-02|4.9e+02| 4.661837e+02  \
+1.686905e-01| 0:0:00| spchol  1  1 \\n 8|0.990|0.812|3.0e-12|5.7e-03|3.1e+01| \
+3.056391e+01  1.688456e-01| 0:0:00| spchol  1  1 \\n \
+9|0.978|0.981|5.8e-12|1.1e-04|6.7e-01| 8.404123e-01  1.706344e-01| 0:0:00| \
+spchol  1  1 \\n10|0.870|0.844|2.4e-09|1.7e-05|1.2e-01| 3.606867e-01  \
+2.366410e-01| 0:0:00| spchol  2  2 \\n11|0.882|0.140|3.1e-10|1.5e-05|1.1e-01| \
+3.579841e-01  2.487068e-01| 0:0:00| spchol  2  2 \
+\\n12|1.000|0.806|2.3e-11|3.5e-06|4.3e-02| 3.514207e-01  3.084373e-01| \
+0:0:00| spchol  1  2 \\n13|1.000|0.678|2.8e-12|1.2e-06|1.9e-02| 3.374631e-01  \
+3.188637e-01| 0:0:00| spchol  2  2 \\n14|0.940|0.952|6.3e-13|3.6e-07|7.8e-03| \
+3.337214e-01  3.258864e-01| 0:0:00| spchol  2  2 \
+\\n15|1.000|0.952|3.1e-12|1.5e-07|2.0e-03| 3.305599e-01  3.285875e-01| \
+0:0:00| spchol  1  1 \\n16|1.000|0.957|3.8e-11|3.8e-08|5.3e-04| 3.298614e-01  \
+3.293277e-01| 0:0:00| spchol  1  1 \\n17|0.794|0.953|6.6e-11|1.0e-08|1.8e-04| \
+3.297116e-01  3.295323e-01| 0:0:00| spchol  1  2 \
+\\n18|1.000|0.958|5.7e-12|3.5e-09|4.6e-05| 3.296294e-01  3.295832e-01| \
+0:0:00| spchol  2  2 \\n19|1.000|0.985|3.6e-12|8.9e-10|2.7e-06| 3.296085e-01  \
+3.296058e-01| 0:0:00| spchol  2  2 \\n20|1.000|0.989|1.6e-11|5.2e-11|5.7e-08| \
+3.296073e-01  3.296073e-01| 0:0:00| spchol 10 14 \
+\\n21|1.000|0.989|2.1e-09|1.9e-12|1.0e-09| 3.296073e-01  3.296073e-01| \
+0:0:00|\\n  stop: max(relative gap, infeasibilities) < \
+1.49e-08\\n-------------------------------------------------------------------\
+\\n number of iterations   = 21\\n primal objective value =  \
+3.29607292e-01\\n dual   objective value =  3.29607291e-01\\n gap := \
+trace(XZ)       = 1.03e-09\\n relative gap           = 6.22e-10\\n actual \
+relative gap    = 2.98e-10\\n rel. primal infeas (scaled problem)   = \
+2.12e-09\\n rel. dual     \\\"        \\\"       \\\"      = 1.93e-12\\n rel. \
+primal infeas (unscaled problem) = 0.00e+00\\n rel. dual     \\\"        \\\" \
+      \\\"      = 0.00e+00\\n norm(X), norm(y), norm(Z) = 1.3e-02, 3.5e+01, \
+3.6e+01\\n norm(A), norm(b), norm(C) = 5.2e+01, 1.0e+00, 3.7e+01\\n Total CPU \
+time (secs)  = 0.30  \\n CPU time per iteration = 0.01  \\n termination code  \
+     =  0\\n DIMACS: 2.1e-09  0.0e+00  3.6e-11  0.0e+00  3.0e-10  \
+6.2e-10\\n-------------------------------------------------------------------\
+\\n \\n------------------------------------------------------------\\nStatus: \
+Solved\\nOptimal value (cvx_optval): -0.415058\\n \\n\"\>"], "Print",
+ CellChangeTimes->{
+  3.638579232071546*^9, 3.638580104881411*^9, 3.6385801646392193`*^9, {
+   3.638580208067911*^9, 3.6385802303453083`*^9}}],
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Take", "::", "take"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Cannot take positions \[NoBreak]\\!\\(-287\\)\[NoBreak] \
-through \[NoBreak]\\!\\(-1\\)\[NoBreak] in \
-\[NoBreak]\\!\\({\\(\\({\\(\\({2014, 3, 27}\\)\\), 558.46002`}\\)\\), \\(\\({\
-\\(\\({2014, 3, 28}\\)\\), 559.98999`}\\)\\), \\(\\({\\(\\({2014, 3, \
-31}\\)\\), 556.96997`}\\)\\), \\(\\({\\(\\({2014, 4, 1}\\)\\), 567.15997`}\\)\
-\\), \\(\\({\\(\\({2014, 4, 2}\\)\\), 567.`}\\)\\), \\(\\({\\(\\({2014, 4, 3}\
-\\)\\), 569.73999`}\\)\\), \\(\\({\\(\\({2014, 4, 4}\\)\\), \
-543.14001`}\\)\\), \\(\\(\[LeftSkeleton] 37 \[RightSkeleton]\\)\\), \
-\\(\\({\\(\\({2014, 5, 30}\\)\\), 559.89001`}\\)\\), \\(\\({\\(\\({2014, 6, \
-2}\\)\\), 553.92999`}\\)\\), \\(\\({\\(\\({2014, 6, 3}\\)\\), 544.94`}\\)\\), \
-\\(\\({\\(\\({2014, 6, 4}\\)\\), 544.65997`}\\)\\), \\(\\({\\(\\({2014, 6, 5}\
-\\)\\), 553.90002`}\\)\\), \\(\\({\\(\\({2014, 6, 6}\\)\\), \
-556.33002`}\\)\\), \\(\\(\[LeftSkeleton] 218 \[RightSkeleton]\\)\\)}\\)\
-\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/Take/take\\\", ButtonNote -> \
-\\\"Take::take\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060042336*^9}],
+ RowBox[{"{", 
+  RowBox[{"0.007005279976446821`", ",", "0.00010670460643735303`", ",", 
+   RowBox[{"-", "0.000034427486163873984`"}], ",", 
+   RowBox[{"-", "0.0021255997826454343`"}], ",", "0.002104073791939992`", ",",
+    "0.00003989386260404336`", ",", "0.00003336799968565833`"}], 
+  "}"}]], "Output",
+ CellChangeTimes->{
+  3.638577947435665*^9, 3.638579218737319*^9, 3.638579262507906*^9, 
+   3.6385801052022953`*^9, 3.638580164955635*^9, {3.638580208141116*^9, 
+   3.6385802304046593`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Last", "::", "normal"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Nonatomic expression expected at position \
-\[NoBreak]\\!\\(1\\)\[NoBreak] in \[NoBreak]\\!\\(Last[\\(\\(-287\\)\\)]\\)\
-\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/normal\\\", ButtonNote -> \
-\\\"Last::normal\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060082412*^9}],
+ RowBox[{"Times", "[", 
+  RowBox[{"a", ",", "b", ",", "c"}], "]"}]], "Input",
+ CellChangeTimes->{{3.6386266641377068`*^9, 3.638626668026589*^9}}],
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Take", "::", "seqs"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Sequence specification (+n, -n, {+n}, {-n}, {m, n}, or {m, \
-n, s}) expected at position \[NoBreak]\\!\\(2\\)\[NoBreak] in \
-\[NoBreak]\\!\\(Take[\\(\\(\\(\\({\\(\\({2015, 4, 20}\\)\\), 535.38`}\\)\\), \
-\\(\\(Last[\\(\\(-287\\)\\)]\\)\\)\\)\\)]\\)\[NoBreak]. \\!\\(\\*ButtonBox[\\\
-\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/seqs\\\", ButtonNote -> \
-\\\"Take::seqs\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060121682*^9}],
+ RowBox[{"a", " ", "b", " ", "c"}]], "Output",
+ CellChangeTimes->{3.6386266683560543`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Take", "::", "argm"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"\[NoBreak]\\!\\(Take\\)\[NoBreak] called with \
-\[NoBreak]\\!\\(0\\)\[NoBreak] arguments; \[NoBreak]\\!\\(1\\)\[NoBreak] or \
-more arguments are expected. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/argm\\\", ButtonNote -> \
-\\\"Take::argm\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060163671*^9}],
+ RowBox[{"ListLinePlot", "[", 
+  RowBox[{"Last", "@", 
+   RowBox[{"rawReturns", "[", 
+    RowBox[{
+     RowBox[{"{", "\"\<AAPL\>\"", "}"}], ",", "2015"}], "]"}]}], 
+  "]"}]], "Input",
+ CellChangeTimes->{{3.63862669325154*^9, 3.6386267113344717`*^9}, {
+  3.638626984323038*^9, 3.6386269851726933`*^9}, {3.638627024800848*^9, 
+  3.638627027385192*^9}}],
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Transpose", "::", "nmtx"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"The first two levels of \
-\[NoBreak]\\!\\({\\(\\({\\(\\({2014, 3, 27}\\)\\), \\(\\({2014, 3, 28}\\)\\), \
-\\(\\({2014, 3, 31}\\)\\), \\(\\({2014, 4, 1}\\)\\), \\(\\({2014, 4, \
-2}\\)\\), \\(\\({2014, 4, 3}\\)\\), \\(\\({2014, 4, 4}\\)\\), \\(\\({2014, 4, \
-7}\\)\\), \\(\\({2014, 4, 8}\\)\\), \\(\\({2014, 4, 9}\\)\\), \\(\\({2014, 4, \
-10}\\)\\), \\(\\({2014, 4, 11}\\)\\), \\(\\({2014, 4, 14}\\)\\), \\(\\(\
-\[LeftSkeleton] 25 \[RightSkeleton]\\)\\), \\(\\({2014, 5, 21}\\)\\), \
-\\(\\({2014, 5, 22}\\)\\), \\(\\({2014, 5, 23}\\)\\), \\(\\({2014, 5, \
-27}\\)\\), \\(\\({2014, 5, 28}\\)\\), \\(\\({2014, 5, 29}\\)\\), \\(\\({2014, \
-5, 30}\\)\\), \\(\\({2014, 6, 2}\\)\\), \\(\\({2014, 6, 3}\\)\\), \
-\\(\\({2014, 6, 4}\\)\\), \\(\\({2014, 6, 5}\\)\\), \\(\\({2014, 6, 6}\\)\\), \
-\\(\\(\[LeftSkeleton] 218 \[RightSkeleton]\\)\\)}\\)\\), \
-\\(\\(Take[]\\)\\)}\\)\[NoBreak] cannot be transposed. \
-\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
-ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/Transpose/nmtx\\\", \
-ButtonNote -> \\\"Transpose::nmtx\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060185995*^9}],
+ GraphicsBox[{{}, {{}, {}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], PointSize[0.016666666666666666`],
+      AbsoluteThickness[1.6], LineBox[CompressedData["
+1:eJxVzg1MzHEcx/HL3EpJl9LTDp2RFlolQpf7XLkeTuruLHm6Za0kh9Zu4azh
+VpmLNrTaKE6JElPjSqaHUyxruiUVIlO0lIe6S7NLOsz/2+a//fffa+/f57c/
+LzFNljyLxWKJ/7x/v/+eMcH/XxYuJnOagtxHGdvA9aO68ceMOdAvrMgo1pCd
+Md6mqvmUQHs3DET+Kk1JInORe+Ss3GqSznvC8qO8I55HfQlU6+JqixzJS1Hj
+dnT/1zA67wVfXd2BejbZG6+D6kbEnWQf+BuCv4fY0H4lJuybPGcryb4Yjcvp
+azxN9oNdVuLdkDyyP85sr5S0GOm+AGTk22rnvKe+Gj0y3nzNXiPjQAwdM7zZ
+voy8Bjq7D2rFbvJa7Fl/Z98KOTkIcxN4nmEnyOvAtlRwh6vJ61GksBt7kkve
+gJev3x67VEEOxoqRo0qlhcyHur2nMl1hYhwC802V3qOcvBHRwo6prEayALKX
++e+6e8mA64A1J32K8Umg7NCIh8BEXYjw3oKxj+7jTBdijvB5nf0VxqxQFEwa
+s2uPUw/FNkeedoGF9mEIjOjyLOVTD8OL0S992pn7N8HJ1Hor1Zb6JpxKHrxa
+5Ez3i2DR5E6XTdD/iaDb5X0w6Drtw/FgkQ8n6Tb1cGjZyZOteuoRyGlwcVDJ
+qUdgh4NoQbM19UgEmNWOa3ZRj0Sh5NW7hxuoR6Hfukrmcoh6FFxSm7daNVAX
+49HO9DTWOHUx8rT9nxMM1DfD3HNfPXGe+mZMC0JKD7RQj0agSDO3rYp6NDJK
+YofaA6hvgaPY7B6xlfoWNJcOCAdXUY9BZpbHY9016jFwsf9Zr9xJPRaL9fzH
+5TP7WLx1Tfs2L5O6BE26r8aap4whwbnhy53cQjovgdyqI6/kFGO9BFnh3JT+
+StpLkbIqXipqor0UDjf01V01tJeCGxXK5ZTQXooqxScbv3u0lyFV3H14eTHt
+ZXhmSGVr9tJeBid+9gWvTpPgN089alE=
+      "]]}}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{0, 0.9566183441799776},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{},
+  PlotRange->{{0., 74.}, {0.9694501994578155, 1.2260873050145753`}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{3.638626715163885*^9, 3.638626767368217*^9, 
+  3.638626800780899*^9, 3.6386269858305883`*^9, 3.638627027995432*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Take", "::", "take"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Cannot take positions \[NoBreak]\\!\\(-317\\)\[NoBreak] \
-through \[NoBreak]\\!\\(-1\\)\[NoBreak] in \
-\[NoBreak]\\!\\({\\(\\({\\(\\({2014, 3, 27}\\)\\), 558.46002`}\\)\\), \\(\\({\
-\\(\\({2014, 3, 28}\\)\\), 559.98999`}\\)\\), \\(\\({\\(\\({2014, 3, \
-31}\\)\\), 556.96997`}\\)\\), \\(\\({\\(\\({2014, 4, 1}\\)\\), 567.15997`}\\)\
-\\), \\(\\({\\(\\({2014, 4, 2}\\)\\), 567.`}\\)\\), \\(\\({\\(\\({2014, 4, 3}\
-\\)\\), 569.73999`}\\)\\), \\(\\({\\(\\({2014, 4, 4}\\)\\), \
-543.14001`}\\)\\), \\(\\(\[LeftSkeleton] 37 \[RightSkeleton]\\)\\), \
-\\(\\({\\(\\({2014, 5, 30}\\)\\), 559.89001`}\\)\\), \\(\\({\\(\\({2014, 6, \
-2}\\)\\), 553.92999`}\\)\\), \\(\\({\\(\\({2014, 6, 3}\\)\\), 544.94`}\\)\\), \
-\\(\\({\\(\\({2014, 6, 4}\\)\\), 544.65997`}\\)\\), \\(\\({\\(\\({2014, 6, 5}\
-\\)\\), 553.90002`}\\)\\), \\(\\({\\(\\({2014, 6, 6}\\)\\), \
-556.33002`}\\)\\), \\(\\(\[LeftSkeleton] 218 \[RightSkeleton]\\)\\)}\\)\
-\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/Take/take\\\", ButtonNote -> \
-\\\"Take::take\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060478999*^9}],
+ RowBox[{"ans", "=", "%"}]], "Input",
+ CellChangeTimes->{{3.638626992872923*^9, 3.6386269936506433`*^9}}],
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Last", "::", "normal"}], "MessageName"], 
+ RowBox[{"{", 
   RowBox[{
-  ":", " "}], "\<\"Nonatomic expression expected at position \
-\[NoBreak]\\!\\(1\\)\[NoBreak] in \[NoBreak]\\!\\(Last[\\(\\(-317\\)\\)]\\)\
-\[NoBreak]. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/normal\\\", ButtonNote -> \
-\\\"Last::normal\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.6385730605161963`*^9}],
+  "0.9718283397407276`", ",", "0.9719198914382358`", ",", 
+   "0.9855482385618686`", ",", "1.0234152878662683`", ",", 
+   "1.0245128981373957`", ",", "0.9992682292101887`", ",", 
+   "1.0081403875951762`", ",", "1.0042988893870002`", ",", 
+   "0.9770419196581971`", ",", "0.9694501994578155`", ",", 
+   "0.9944204887740354`", ",", "1.0020122089744172`", ",", 
+   "1.0280801085617643`", ",", "1.0333851483495626`", ",", 
+   "1.0344826667935105`", ",", "0.9982620788093909`", ",", 
+   "1.0546966755439062`", ",", "1.087533064671495`", ",", 
+   "1.0716179453080998`", ",", "1.085063464518254`", ",", 
+   "1.0852464760860911`", ",", "1.0935698752491048`", ",", 
+   "1.105691062883069`", ",", "1.0963801743261914`", ",", 
+   "1.103662948543947`", ",", "1.1248659620893118`", ",", 
+   "1.151231448497896`", ",", "1.1657969969334074`", ",", 
+   "1.1715125918891145`", ",", "1.1784266180452119`", ",", 
+   "1.1866312624171138`", ",", "1.1841422130009187`", ",", 
+   "1.193821849619455`", ",", "1.2260873050145753`", ",", 
+   "1.2184357827351608`", ",", "1.1872764793380006`", ",", 
+   "1.2023030550376008`", ",", "1.184234492203349`", ",", 
+   "1.1900421819874551`", ",", "1.1925312314036502`", ",", 
+   "1.184971803952635`", ",", "1.1653360618563342`", ",", 
+   "1.1670876151492122`", ",", "1.1720657139816024`", ",", 
+   "1.1478205289275547`", ",", "1.1268940764284336`", ",", 
+   "1.1472674068350668`", ",", "1.1393393235094087`", ",", 
+   "1.1518767576057984`", ",", "1.1711438438274562`", ",", 
+   "1.1843265870317483`", ",", "1.175384446536529`", ",", 
+   "1.1606345240701883`", ",", "1.1727110230895046`", ",", 
+   "1.1679172982879438`", ",", "1.1374033961857013`", ",", 
+   "1.1453314795113594`", ",", "1.136204964985311`", ",", 
+   "1.1649673137946754`", ",", "1.1470830328042374`", ",", 
+   "1.145423666526774`", ",", "1.1552876771761396`", ",", 
+   "1.1740016413053096`", ",", "1.1616485812397492`", ",", 
+   "1.1578689136077494`", ",", "1.166718867087554`", ",", 
+   "1.1716969659199437`", ",", "1.1693922905345777`", ",", 
+   "1.164322004686773`", ",", "1.1687469814266753`", ",", 
+   "1.1631235734863827`", ",", "1.1500330172975053`", ",", 
+   "1.1763063166906746`"}], "}"}]], "Output",
+ CellChangeTimes->{3.6386269939741898`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Take", "::", "seqs"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Sequence specification (+n, -n, {+n}, {-n}, {m, n}, or {m, \
-n, s}) expected at position \[NoBreak]\\!\\(2\\)\[NoBreak] in \
-\[NoBreak]\\!\\(Take[\\(\\(\\(\\({\\(\\({2015, 4, 20}\\)\\), 535.38`}\\)\\), \
-\\(\\(Last[\\(\\(-317\\)\\)]\\)\\)\\)\\)]\\)\[NoBreak]. \\!\\(\\*ButtonBox[\\\
-\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/seqs\\\", ButtonNote -> \
-\\\"Take::seqs\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060575233*^9}],
+ RowBox[{"ListLinePlot", "[", "ans", "]"}]], "Input",
+ CellChangeTimes->{{3.638626994935832*^9, 3.638626998098925*^9}}],
 
 Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Take", "::", "argm"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"\[NoBreak]\\!\\(Take\\)\[NoBreak] called with \
-\[NoBreak]\\!\\(0\\)\[NoBreak] arguments; \[NoBreak]\\!\\(1\\)\[NoBreak] or \
-more arguments are expected. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/argm\\\", ButtonNote -> \
-\\\"Take::argm\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.6385730606175327`*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Transpose", "::", "nmtx"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"The first two levels of \
-\[NoBreak]\\!\\({\\(\\({\\(\\({2014, 3, 27}\\)\\), \\(\\({2014, 3, 28}\\)\\), \
-\\(\\({2014, 3, 31}\\)\\), \\(\\({2014, 4, 1}\\)\\), \\(\\({2014, 4, \
-2}\\)\\), \\(\\({2014, 4, 3}\\)\\), \\(\\({2014, 4, 4}\\)\\), \\(\\({2014, 4, \
-7}\\)\\), \\(\\({2014, 4, 8}\\)\\), \\(\\({2014, 4, 9}\\)\\), \\(\\({2014, 4, \
-10}\\)\\), \\(\\({2014, 4, 11}\\)\\), \\(\\({2014, 4, 14}\\)\\), \\(\\(\
-\[LeftSkeleton] 25 \[RightSkeleton]\\)\\), \\(\\({2014, 5, 21}\\)\\), \
-\\(\\({2014, 5, 22}\\)\\), \\(\\({2014, 5, 23}\\)\\), \\(\\({2014, 5, \
-27}\\)\\), \\(\\({2014, 5, 28}\\)\\), \\(\\({2014, 5, 29}\\)\\), \\(\\({2014, \
-5, 30}\\)\\), \\(\\({2014, 6, 2}\\)\\), \\(\\({2014, 6, 3}\\)\\), \
-\\(\\({2014, 6, 4}\\)\\), \\(\\({2014, 6, 5}\\)\\), \\(\\({2014, 6, 6}\\)\\), \
-\\(\\(\[LeftSkeleton] 218 \[RightSkeleton]\\)\\)}\\)\\), \
-\\(\\(Take[]\\)\\)}\\)\[NoBreak] cannot be transposed. \
-\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
-ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/Transpose/nmtx\\\", \
-ButtonNote -> \\\"Transpose::nmtx\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573060622842*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Transpose", "::", "argt"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"\[NoBreak]\\!\\(Transpose\\)\[NoBreak] called with \
-\[NoBreak]\\!\\(0\\)\[NoBreak] arguments; \[NoBreak]\\!\\(1\\)\[NoBreak] or \
-\[NoBreak]\\!\\(2\\)\[NoBreak] arguments are expected. \
-\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
-ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/General/argt\\\", \
-ButtonNote -> \\\"Transpose::argt\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.6385730611524057`*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Transpose", "::", "argt"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"\[NoBreak]\\!\\(Transpose\\)\[NoBreak] called with \
-\[NoBreak]\\!\\(0\\)\[NoBreak] arguments; \[NoBreak]\\!\\(1\\)\[NoBreak] or \
-\[NoBreak]\\!\\(2\\)\[NoBreak] arguments are expected. \
-\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
-ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/General/argt\\\", \
-ButtonNote -> \\\"Transpose::argt\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573061188787*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Transpose", "::", "nmtx"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"The first two levels of \[NoBreak]\\!\\({\\(\\({4, 5, 1, \
-2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 1, 2, 3, \
-4, 5, 1, 2, 3, 4, 5, 1, 2, 3, 4, 5, 2, 3, 4, 5, 1, 2, 3, 4, 5, \\(\\(\
-\[LeftSkeleton] 218 \[RightSkeleton]\\)\\)}\\)\\), \\(\\(\[LeftSkeleton] 4 \
-\[RightSkeleton]\\)\\), \\(\\({13100, 41100, 10800, 7900, 146700, 5085200, \
-6351900, 4389600, 3142600, 3321700, 4025800, 3914100, 2568000, \\(\\(\
-\[LeftSkeleton] 25 \[RightSkeleton]\\)\\), 1193000, 1611400, 1926900, \
-2098400, 1647500, 1350400, 1766300, 1431100, 1861500, 1811500, 1684500, \
-1732000, \\(\\(\[LeftSkeleton] 218 \
-\[RightSkeleton]\\)\\)}\\)\\)}\\)\[NoBreak] cannot be transposed. \
-\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
-ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/Transpose/nmtx\\\", \
-ButtonNote -> \\\"Transpose::nmtx\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.63857306121222*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"General", "::", "stop"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Further output of \[NoBreak]\\!\\(\\*StyleBox[\\(Transpose \
-:: nmtx\\), \\\"MessageName\\\"]\\)\[NoBreak] will be suppressed during this \
-calculation. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/stop\\\", ButtonNote -> \
-\\\"General::stop\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573061235182*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"Transpose", "::", "argt"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"\[NoBreak]\\!\\(Transpose\\)\[NoBreak] called with \
-\[NoBreak]\\!\\(0\\)\[NoBreak] arguments; \[NoBreak]\\!\\(1\\)\[NoBreak] or \
-\[NoBreak]\\!\\(2\\)\[NoBreak] arguments are expected. \
-\\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", \
-ButtonFrame->None, ButtonData:>\\\"paclet:ref/message/General/argt\\\", \
-ButtonNote -> \\\"Transpose::argt\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.638573061273416*^9}],
-
-Cell[BoxData[
- RowBox[{
-  StyleBox[
-   RowBox[{"General", "::", "stop"}], "MessageName"], 
-  RowBox[{
-  ":", " "}], "\<\"Further output of \[NoBreak]\\!\\(\\*StyleBox[\\(Transpose \
-:: argt\\), \\\"MessageName\\\"]\\)\[NoBreak] will be suppressed during this \
-calculation. \\!\\(\\*ButtonBox[\\\"\[RightSkeleton]\\\", \
-ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
-ButtonData:>\\\"paclet:ref/message/General/stop\\\", ButtonNote -> \
-\\\"General::stop\\\"]\\)\"\>"}]], "Message", "MSG",
- CellChangeTimes->{3.6385730612934847`*^9}],
-
-Cell[BoxData["$Aborted"], "Output",
- CellChangeTimes->{{3.638573053761601*^9, 3.6385730624633627`*^9}}]
+ GraphicsBox[{{}, {{}, {}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], PointSize[0.016666666666666666`],
+      AbsoluteThickness[1.6], LineBox[CompressedData["
+1:eJw9zg0s1HEcx3FaN0/JybNd5VrJSEPKc/c5nIfzdHcmlUwzD12KmSnMyk1Z
+p2yVaSvVRYrUYnWkJS40zWKSh1Qs0kQJJ2snddX6f93233+v//v3+e24iRmS
+5FU6Ojqhf59/7/+/Od7lZHarh80sj/kAqwlZy48V60O1vib7qpzMxkJXbsPn
+hDnG5hgP+VWZmkS2RvHxc/G6S3SeA+2P6t5YLnU75HrGNJabkjehwTrn8EwA
+nd+M7cqmI80ssj2GPZqmhX1kB7j2+Hz306e9IxaNW+1WZ5G3YTbm9EjLGfJ2
+GBUmPvArIbvg7N5aUfs83eeK7FJDhcEH6m4YlHDXyVPmGe/AZF7Pu71byO5Q
+Gn2UpR0g78RBr/uHnOLJu7AmgWsXcJLsAZa2hjNVT/ZEeZrR3PNisheGht/n
+Xakhe8NpOicrS0v2gax7sDYzTc3YF5o7uSrbarIfwvm9y4Ut5N2QDJWODrwl
+82A1rsfOXCYDVenTtjw14wIg6G3Z3ITNAtP5MOC/ajK+zriAj7Kl+VONJ6j7
+Y48pV2Ghpb0/3IP77Sp9qQfg9ezXEcXK/QEwU3felRpSD0RR8qcb5eZ0fyC0
+8uLfVYv0/wRQxjkc9bhFewEeb3BkJ92jHgQFK3mpU0U9CKefWprkxlMPxj4T
+gUWbHvVguGlkpjvjqIfgkujN6BNv6iEY06uTWKZTD4WltC1a9yn1UDzbn5mh
+s0BdiBLF2JeEHupCaAYfyRYvUA/Db55f5ZF26mFwF8jXdNVRD0d2RdRktxv1
+cJgKNTbB0dQj0FY5zv/kTD0C+YW2Hcqb1CNhafyzOWs/9UhsVPl2VK/so/De
+KuPb2nzqUWhVzsw3vKAuwvmpa32cS4whQrxub0lFEZ0XoTCIkzpWy1glQqpz
+rFjQSnsxTG6r6vsbaC8GJ9Sfw66gvRh1aZ/1XR7SXgypcODY1qu0l+Blj5Ql
+T6G9BGa+py7a96l5fwC9q2gP
+      "]]}}, {}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{0, 0.9566183441799776},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  Method->{},
+  PlotRange->{{0., 73.}, {0.9694501994578155, 1.2260873050145753`}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{3.638626998445866*^9}]
 }, Open  ]]
 },
 WindowSize->{789, 911},
@@ -907,25 +898,27 @@ Cell[CellGroupData[{
 Cell[19705, 480, 695, 22, 46, "Input"],
 Cell[20403, 504, 3393, 67, 234, "Output"]
 }, Open  ]],
+Cell[23811, 574, 386, 10, 46, "Input"],
 Cell[CellGroupData[{
-Cell[23833, 576, 425, 9, 28, "Input"],
-Cell[24261, 587, 1297, 22, 75, "Message"],
-Cell[25561, 611, 512, 11, 24, "Message"],
-Cell[26076, 624, 633, 12, 42, "Message"],
-Cell[26712, 638, 528, 11, 24, "Message"],
-Cell[27243, 651, 1281, 21, 92, "Message"],
-Cell[28527, 674, 1297, 22, 75, "Message"],
-Cell[29827, 698, 514, 11, 24, "Message"],
-Cell[30344, 711, 633, 12, 42, "Message"],
-Cell[30980, 725, 530, 11, 24, "Message"],
-Cell[31513, 738, 1281, 21, 92, "Message"],
-Cell[32797, 761, 571, 11, 24, "Message"],
-Cell[33371, 774, 569, 11, 24, "Message"],
-Cell[33943, 787, 1068, 18, 92, "Message"],
-Cell[35014, 807, 532, 11, 24, "Message"],
-Cell[35549, 820, 569, 11, 24, "Message"],
-Cell[36121, 833, 534, 11, 24, "Message"],
-Cell[36658, 846, 103, 1, 28, "Output"]
+Cell[24222, 588, 484, 8, 28, "Input"],
+Cell[24709, 598, 4064, 57, 984, "Print"],
+Cell[28776, 657, 509, 10, 46, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29322, 672, 159, 3, 28, "Input"],
+Cell[29484, 677, 104, 2, 28, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[29625, 684, 364, 9, 28, "Input"],
+Cell[29992, 695, 2011, 43, 244, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[32040, 743, 119, 2, 28, "Input"],
+Cell[32162, 747, 2275, 40, 148, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[34474, 792, 133, 2, 28, "Input"],
+Cell[34610, 796, 1910, 42, 244, "Output"]
 }, Open  ]]
 }
 ]
