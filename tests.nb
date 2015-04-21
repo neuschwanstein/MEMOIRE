@@ -1046,7 +1046,7 @@ SsOnv1r8XwxKiRc=
    3.63863124992225*^9, 3.638631303049389*^9}}]
 }, Open  ]]
 },
-WindowSize->{789, 911},
+WindowSize->{822, 880},
 WindowMargins->{{9, Automatic}, {Automatic, 0}},
 FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
 2014)",

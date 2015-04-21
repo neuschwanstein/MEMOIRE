@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     28429,        667]
-NotebookOptionsPosition[     27654,        640]
-NotebookOutlinePosition[     28009,        656]
-CellTagsIndexPosition[     27966,        653]
+NotebookDataLength[     28807,        676]
+NotebookOptionsPosition[     27993,        648]
+NotebookOutlinePosition[     28348,        664]
+CellTagsIndexPosition[     28305,        661]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -636,7 +636,15 @@ Cell[BoxData[{
    3.6386292887266808`*^9}, {3.6386293442875557`*^9, 
    3.6386293597384853`*^9}, {3.638629393743626*^9, 3.638629442848847*^9}, {
    3.6386295615500517`*^9, 3.638629563396893*^9}, {3.638629656423044*^9, 
-   3.6386296572860937`*^9}, {3.638629965715613*^9, 3.6386299675799627`*^9}}]
+   3.6386296572860937`*^9}, {3.638629965715613*^9, 3.6386299675799627`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"testModel", "[", 
+   RowBox[{"stock_String", ",", "y_Integer"}], "]"}], ":="}]], "Input",
+ CellChangeTimes->{{3.638641027934492*^9, 3.638641067654222*^9}, {
+  3.6386411126463823`*^9, 3.638641114629136*^9}, {3.638641190983305*^9, 
+  3.638641192760343*^9}, {3.638641240007598*^9, 3.638641267589819*^9}}]
 },
 WindowSize->{1135, 1055},
 WindowMargins->{{Automatic, 16}, {Automatic, 0}},
@@ -668,7 +676,8 @@ Cell[14007, 347, 4729, 85, 165, "Input"],
 Cell[18739, 434, 1898, 43, 148, "Input"],
 Cell[20640, 479, 798, 18, 46, "Input"],
 Cell[21441, 499, 2632, 55, 420, "Input"],
-Cell[24076, 556, 3574, 82, 369, "Input"]
+Cell[24076, 556, 3574, 82, 369, "Input"],
+Cell[27653, 640, 336, 6, 28, "Input"]
 }
 ]
 *)
