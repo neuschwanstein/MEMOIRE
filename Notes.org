@@ -76,7 +76,7 @@ d'information x_s.
 
 					  * * *
 
-Le 20 avril 2015
+*Le 20 avril 2015*
 
 Revenons sur la nouvelle interprétation de q. Si par exemple on constitue de une base de
 données constituée d'un seul actif, alors q fournira q.x_s fournira la proportion à
@@ -145,3 +145,13 @@ serait la suivante:
 				      q' = (1 + q)/2
 
 et ainsi on aurait la juste proportion d'investissement du portefeuille. 
+
+
+					  * * *
+
+*Le 21 avril*
+
+Choses restant à faire:
+
+  - Donner une période de dates lors de l'appel à x.
+  - 
