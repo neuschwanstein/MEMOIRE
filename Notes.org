@@ -156,3 +156,45 @@ Choses restant à faire:
   - Donner une période de dates lors de l'appel à x.
   - Rajouter un attribut pour représenter l'éloignement d'une certaine date.
   - Rajouter le prix moyen des n derniers jours
+
+
+					  * * *
+
+*Le 23 avril*
+
+La question de la normalisation, toujours aussi épineuse. Voyons voir nos contraintes.
+
+On veut que d'une part les attributs soient environ à la même échelle, pour que la
+régularisation ait un sens. En effet, si par exemple on compare le volume quotidien de
+vente, typiquement de l'ordre de 10^{6}, avec celui d'une volatilité sur 30 jours, de l'ordre
+de 10^-1, naturellement l'ordre de grandeur des composantes de q ne sera pas semblable et
+la normalisation sera alors biaisée.
+
+Pour s'assurer qu'on travaille sur un ordre de grandeur commun, on pourrait alors préférer
+recentrer tous les vecteurs d'information autour de la moyenne, puis ensuite réchelonner
+selon la distance entre les valeurs extrêmes, de facon à avoir toutes les composantes du
+nouveau vecteur réchelonné x' compris dans une boite de volume 1, ie.
+
+				       ~|x|_{1} \leq 1
+
+En pratique, on permet donc au vecteur d'information d'avoir une norme euclidienne L_2
+supérieure à 1, mais toutefois assez proche.
+
+Ceci permet également de construire une matrice sur laquelle on peut appliquer nos
+nouveaux vecteurs d'information, afin d'en créer un vecteur de décision q.
+
+Mais au fait de combien doit on les recentrer ces vecteurs d'informations? Car prenons par
+exemple la colonne d'information pour un certain jour de la semaine. Ses valeurs
+oscilleront entre 0 et 1, toutefois elles ne seront pas distribués uniformément puisque la
+fonction donnant la valeur est une exponentielle. Donc sa moyenne ne tombera pas à 0.5
+comme on aurait pu l'espérer. Faudrait il donc dans ce cas particulier les recentrer à
+0.5?
+
+A réfléchir...
+
+Bref, de toute facon nos mesures sont influencées par la présence du terme de biais,
+présentement évalué à 1, mais qu'on aurait peut être avantage à changer pour une valeur
+qui serait réchelonnée selon p, le nombre d'attributs.
+
+
+
