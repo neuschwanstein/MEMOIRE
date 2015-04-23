@@ -154,4 +154,5 @@ et ainsi on aurait la juste proportion d'investissement du portefeuille.
 Choses restant à faire:
 
   - Donner une période de dates lors de l'appel à x.
-  - 
+  - Rajouter un attribut pour représenter l'éloignement d'une certaine date.
+  - Rajouter le prix moyen des n derniers jours

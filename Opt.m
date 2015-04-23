@@ -12,6 +12,6 @@ rc = log(1.15)/252;
 U = @(p) b1*(p-rc) + min(0, (b2-b1)*(p-rc));
 
 cvx_begin
-    variable q(p)    
+    variable q(p)
     maximize(sum(U(rs'.*(xs*q) + Rf*(1-xs*q))))
 cvx_end

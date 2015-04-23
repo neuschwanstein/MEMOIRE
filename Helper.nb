@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      3193,        103]
-NotebookOptionsPosition[      2902,         88]
-NotebookOutlinePosition[      3257,        104]
-CellTagsIndexPosition[      3214,        101]
+NotebookDataLength[      3282,        105]
+NotebookOptionsPosition[      2991,         90]
+NotebookOutlinePosition[      3346,        106]
+CellTagsIndexPosition[      3303,        103]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -81,10 +81,12 @@ Cell[BoxData[
        RowBox[{"\"\<magic(\>\"", "<>", 
         RowBox[{"ToString", "@", "n"}], "<>", "\"\<)\>\""}], "]"}], ";", 
       "\[IndentingNewLine]", 
-      RowBox[{"MGet", "[", "\"\<ans\>\"", "]"}]}]}], "\[IndentingNewLine]", 
-    "]"}]}], ";"}]], "Input",
+      RowBox[{"IntegerPart", "@", 
+       RowBox[{"MGet", "[", "\"\<ans\>\"", "]"}]}]}]}], "\[IndentingNewLine]",
+     "]"}]}], ";"}]], "Input",
  CellChangeTimes->{{3.638576771817955*^9, 3.6385767801610327`*^9}, {
-  3.638576865831333*^9, 3.6385769037255287`*^9}}]
+  3.638576865831333*^9, 3.6385769037255287`*^9}, {3.6387425799562607`*^9, 
+  3.638742583906775*^9}}]
 },
 WindowSize->{808, 250},
 WindowMargins->{{70, Automatic}, {-26, Automatic}},
@@ -104,7 +106,7 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[558, 20, 1740, 49, 182, "Input"],
-Cell[2301, 71, 597, 15, 80, "Input"]
+Cell[2301, 71, 686, 17, 80, "Input"]
 }
 ]
 *)
