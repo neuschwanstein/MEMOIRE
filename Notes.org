@@ -155,7 +155,10 @@ Choses restant à faire:
 
   - Donner une période de dates lors de l'appel à x.
   - Rajouter un attribut pour représenter l'éloignement d'une certaine date.
-  - Rajouter le prix moyen des n derniers jours
+  - +Rajouter le prix moyen des n derniers jours+
+  - Aller chercher de l'information sur le CA et sur le PDG. Par exemple, le genre et
+    l'âge du CEO (qu'on peut assumer être le premier dans la liste), et l'âge moyen et le
+    genre moyen des autres membres /clés/ (au sens de Yahoo).
 
 
 					  * * *

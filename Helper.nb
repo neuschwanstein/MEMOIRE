@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      4033,        128]
-NotebookOptionsPosition[      3704,        112]
-NotebookOutlinePosition[      4059,        128]
-CellTagsIndexPosition[      4016,        125]
+NotebookDataLength[      4554,        144]
+NotebookOptionsPosition[      4186,        127]
+NotebookOutlinePosition[      4541,        143]
+CellTagsIndexPosition[      4498,        140]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -108,7 +108,22 @@ Cell[BoxData[{
       RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<returns.csv\>\""}], 
      ",", "r"}], "]"}]}], ";"}]}], "Input",
  CellChangeTimes->{{3.638752732775339*^9, 3.6387527696071777`*^9}, {
-  3.638752810959944*^9, 3.638752840856844*^9}}]
+  3.638752810959944*^9, 3.638752840856844*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"generalizedMovingAverage", "[", 
+    RowBox[{"l_List", ",", "n_Integer"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"(", 
+     RowBox[{
+      RowBox[{"First", "@", "sample"}], "*", 
+      RowBox[{"ones", "[", 
+       RowBox[{"n", "-", "1"}], "]"}]}], ")"}], "~", "Join", "~", 
+    RowBox[{"MovingAverage", "[", 
+     RowBox[{"l", ",", "n"}], "]"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.638760115943941*^9, 3.638760151939898*^9}}]
 },
 WindowSize->{808, 250},
 WindowMargins->{{70, Automatic}, {-26, Automatic}},
@@ -129,7 +144,8 @@ CellTagsIndex->{}
 Notebook[{
 Cell[558, 20, 1740, 49, 182, "Input"],
 Cell[2301, 71, 686, 17, 80, "Input"],
-Cell[2990, 90, 710, 20, 46, "Input"]
+Cell[2990, 90, 710, 20, 46, "Input"],
+Cell[3703, 112, 479, 13, 46, "Input"]
 }
 ]
 *)
