@@ -200,4 +200,27 @@ présentement évalué à 1, mais qu'on aurait peut être avantage à changer po
 qui serait réchelonnée selon p, le nombre d'attributs.
 
 
+					  * * *
 
+*Le 25 avril*
+
+  - Problème avec les jours. Ils n'atteignent pas 1!
+  - Pourtant les semaines semblent bien fonctionner!
+
+Ne pas oublier, si 
+
+				     M \in R^{m\times{}n}
+
+alors M est une matrice de m rangées et de n colonnes.
+
+J'ai changé l'objectif pour y inclure un terme favorisant une norme /élevée/ pour
+q. Soudainement on a un portefeuille qui se met à bouger davantage, ce qui est assez
+encourageant. 
+
+Supposons un taux annuel r_a. Alors le taux quotidien r_q sera tel que
+
+				    r_q = log(1+r_q)/252
+
+De la même facon, donné un taux quotidien r_q, le taux annuel correspondant sera 
+
+				   r_a = exp(252 r_q) - 1

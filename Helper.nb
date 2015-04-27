@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      4554,        144]
-NotebookOptionsPosition[      4186,        127]
-NotebookOutlinePosition[      4541,        143]
-CellTagsIndexPosition[      4498,        140]
+NotebookDataLength[      4882,        152]
+NotebookOptionsPosition[      4514,        135]
+NotebookOutlinePosition[      4869,        151]
+CellTagsIndexPosition[      4826,        148]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -114,16 +114,24 @@ Cell[BoxData[
  RowBox[{
   RowBox[{
    RowBox[{"generalizedMovingAverage", "[", 
-    RowBox[{"l_List", ",", "n_Integer"}], "]"}], ":=", 
-   RowBox[{
-    RowBox[{"(", 
+    RowBox[{"l_List", ",", "n_Integer"}], "]"}], ":=", "\[IndentingNewLine]", 
+   
+   RowBox[{"Flatten", "[", 
+    RowBox[{"{", 
      RowBox[{
-      RowBox[{"First", "@", "sample"}], "*", 
-      RowBox[{"ones", "[", 
-       RowBox[{"n", "-", "1"}], "]"}]}], ")"}], "~", "Join", "~", 
-    RowBox[{"MovingAverage", "[", 
-     RowBox[{"l", ",", "n"}], "]"}]}]}], ";"}]], "Input",
- CellChangeTimes->{{3.638760115943941*^9, 3.638760151939898*^9}}]
+      RowBox[{
+       RowBox[{
+        RowBox[{"Mean", "[", 
+         RowBox[{"l", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ";;", "#"}], "]"}], "]"}], "]"}], "&"}], "/@", 
+       RowBox[{"Range", "[", 
+        RowBox[{"n", "-", "1"}], "]"}]}], ",", 
+      RowBox[{"MovingAverage", "[", 
+       RowBox[{"l", ",", "n"}], "]"}]}], "}"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.63900468445012*^9, 3.639004692712838*^9}, {
+  3.6390048549826517`*^9, 3.639004922758184*^9}, {3.639004953189282*^9, 
+  3.639004964973219*^9}, {3.639004995694162*^9, 3.639005000205893*^9}}]
 },
 WindowSize->{808, 250},
 WindowMargins->{{70, Automatic}, {-26, Automatic}},
@@ -145,7 +153,7 @@ Notebook[{
 Cell[558, 20, 1740, 49, 182, "Input"],
 Cell[2301, 71, 686, 17, 80, "Input"],
 Cell[2990, 90, 710, 20, 46, "Input"],
-Cell[3703, 112, 479, 13, 46, "Input"]
+Cell[3703, 112, 807, 21, 46, "Input"]
 }
 ]
 *)

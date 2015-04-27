@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     42305,       1005]
-NotebookOptionsPosition[     40533,        952]
-NotebookOutlinePosition[     40888,        968]
-CellTagsIndexPosition[     40845,        965]
+NotebookDataLength[     42260,       1002]
+NotebookOptionsPosition[     40488,        949]
+NotebookOutlinePosition[     40843,        965]
+CellTagsIndexPosition[     40800,        962]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -875,13 +875,10 @@ Cell[BoxData[
   RowBox[{
    RowBox[{"testModel", "[", "\[IndentingNewLine]", 
     RowBox[{
-     RowBox[{"trainingStocks_", "?", 
-      RowBox[{"(", 
-       RowBox[{"ListOf", "[", "String", "]"}], ")"}]}], ",", 
-     "\[IndentingNewLine]", "trainingYears_Integer", ",", 
-     "\[IndentingNewLine]", "testStock_String", ",", "\[IndentingNewLine]", 
-     "testYear_Integer"}], "]"}], ":=", "\[IndentingNewLine]", 
-   "\[IndentingNewLine]", 
+    "trainingStocks_List", ",", "\[IndentingNewLine]", 
+     "trainingYears_Integer", ",", "\[IndentingNewLine]", "testStock_String", 
+     ",", "\[IndentingNewLine]", "testYear_Integer"}], "]"}], ":=", 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
    RowBox[{"Module", "[", 
     RowBox[{
      RowBox[{"{", 
@@ -948,7 +945,7 @@ Cell[BoxData[
    3.638663969935672*^9, 3.63866397993591*^9}, {3.638664248887868*^9, 
    3.6386642496355753`*^9}, {3.638664308637094*^9, 3.6386643130281363`*^9}, {
    3.6386655595050592`*^9, 3.638665628032716*^9}, {3.638665988458785*^9, 
-   3.638665989652204*^9}}]
+   3.638665989652204*^9}, {3.639004216147078*^9, 3.6390042207444143`*^9}}]
 },
 WindowSize->{1135, 1055},
 WindowMargins->{{Automatic, 16}, {Automatic, 0}},
@@ -1006,7 +1003,7 @@ Cell[32973, 779, 213, 4, 22, "Input",
 Cell[33189, 785, 3677, 84, 369, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10001.}]
 }, Open  ]],
-Cell[36881, 872, 3648, 78, 335, "Input"]
+Cell[36881, 872, 3603, 75, 335, "Input"]
 }
 ]
 *)
