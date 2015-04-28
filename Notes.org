@@ -224,3 +224,19 @@ Supposons un taux annuel r_a. Alors le taux quotidien r_q sera tel que
 De la même facon, donné un taux quotidien r_q, le taux annuel correspondant sera 
 
 				   r_a = exp(252 r_q) - 1
+
+*Le 27 avril*
+
+Notre dataset sera donc les trente éléments constituants le Dow Jones, et on remontera à
+2009, car Visa ne commence qu'à partir de 2008. On fera une validation croisée à 5
+plis. Donc, pour un test donné, le programme d'optimisation sera effectué sur 24 indices à
+partir de 2009.
+
+A présent comment faire les tests correctement? Puisqu'on peut interpéter q^{T}x comme une
+certaine confiance statistique qu'on a dans un résultat, on pourrait alors décider de
+choisir d'investir /à chaque jour/ dans le titre qui procure la valeur q^{T}x_s la plus élevée,
+et ainsi cumuler nos résultats, pas terriblement compliqué. On travaillerait alors sur un
+portefeuille consitué de cinq actifs, dont un sans risque. 
+
+Notons que cette décision pourrait également faire l'objet d'un changement, si on
+considère qu'un autre algorithme plus efficace devrait être considéré.

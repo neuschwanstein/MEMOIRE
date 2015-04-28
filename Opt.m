@@ -3,21 +3,20 @@ if (~exist('features','var'))
     rs = importdata('returns.csv');
 end
 
-bs = linspace(0,1,5);
-%bs = [0 1];
+totalRawReturns = getCumulativeReturns(rs);
+
+% bs = linspace(0,1,5);
+bs = [1];
 returns = [];
+Rf = log(1.02)/252;
 
 for b=bs
-    q = getOpt(0,b,xs,rs);
+    q = getOpt(Rf,b,xs,rs);
 
     pfReturns = rs.*(xs*q) + Rf*(1-xs*q);
     totalReturns = getCumulativeReturns(pfReturns);
     returns = [returns totalReturns'];
 end
-% 
-% pfReturns = rs.*(xs*q) + Rf*(1-xs*q);
-% totalReturn = getCumulativeReturns(pfReturns);
-% totalRawReturns = getCumulativeReturns(rs);
 
 semilogy([totalRawReturns' returns])
 xlim([0 length(totalRawReturns)]);

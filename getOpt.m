@@ -1,5 +1,9 @@
 function q = getOpt(rc,b2,xs,rs)
 
+if (~iscolumn(rs))
+    rs = rs';
+end
+
 Rf = log(1.02)/252;
 [n p] = size(xs);
 b1=1;
