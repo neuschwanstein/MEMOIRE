@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     51794,       1221]
-NotebookOptionsPosition[     49814,       1163]
-NotebookOutlinePosition[     50171,       1179]
-CellTagsIndexPosition[     50128,       1176]
+NotebookDataLength[     56219,       1321]
+NotebookOptionsPosition[     54196,       1262]
+NotebookOutlinePosition[     54553,       1278]
+CellTagsIndexPosition[     54510,       1275]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -81,6 +81,105 @@ Cell[BoxData[
   3.638665780576034*^9}, {3.638710955006173*^9, 3.638710977443837*^9}, {
   3.63871991042255*^9, 3.638719910716501*^9}, {3.638741563053665*^9, 
   3.638741581658968*^9}, {3.6387605927012043`*^9, 3.638760606634076*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"rawFeatures", "[", 
+     RowBox[{"yStart_Integer", ",", "yEnd_Integer"}], "]"}], ":=", 
+    RowBox[{"Function", "[", 
+     RowBox[{"ticker", ",", "\[IndentingNewLine]", 
+      RowBox[{"Module", "[", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+         "dayNumbers", ",", "weekNumbers", ",", "dates", ",", "prices", ",", 
+          "vol20Days", ",", "vol50Days", ",", "volume", ",", "averageNDays"}],
+          "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"Print", "[", 
+          RowBox[{
+          "\"\<Calling financial features feeds for \>\"", "<>", "ticker"}], 
+          "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"dates", ",", "prices"}], "}"}], "=", 
+          RowBox[{"Transpose", "[", 
+           RowBox[{"FinancialData", "[", 
+            RowBox[{"ticker", ",", "\"\<Price\>\"", ",", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{"yStart", ",", "1", ",", "1"}], "}"}], ",", 
+               RowBox[{"{", 
+                RowBox[{"yEnd", ",", "1", ",", "1"}], "}"}]}], "}"}]}], "]"}],
+            "]"}]}], ";", "\[IndentingNewLine]", 
+         RowBox[{"vol20Days", "=", 
+          RowBox[{"Take", "[", 
+           RowBox[{
+            RowBox[{"FinancialData", "[", 
+             RowBox[{"ticker", ",", "\"\<Volatility20Day\>\"", ",", 
+              RowBox[{"{", "yStart", "}"}]}], "]"}], ",", 
+            RowBox[{"Length", "[", "prices", "]"}]}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"vol50Days", "=", 
+          RowBox[{"Take", "[", 
+           RowBox[{
+            RowBox[{"FinancialData", "[", 
+             RowBox[{"ticker", ",", "\"\<Volatility50Day\>\"", ",", 
+              RowBox[{"{", "yStart", "}"}]}], "]"}], ",", 
+            RowBox[{"Length", "[", "prices", "]"}]}], "]"}]}], ";", 
+         "\[IndentingNewLine]", 
+         RowBox[{"volume", "=", 
+          RowBox[{"Last", "@", 
+           RowBox[{"Transpose", "[", 
+            RowBox[{"FinancialData", "[", 
+             RowBox[{"ticker", ",", "\"\<Volume\>\"", ",", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{"yStart", ",", "1", ",", "1"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{"yEnd", ",", "1", ",", "1"}], "}"}]}], "}"}]}], 
+             "]"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+         "\[IndentingNewLine]", 
+         RowBox[{"dates", "=", 
+          RowBox[{"DateObject", "/@", "dates"}]}], ";", "\[IndentingNewLine]",
+          "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{"(*", " ", 
+          RowBox[{
+          "Check", " ", "if", " ", "vol", " ", "data", " ", "are", " ", "of", 
+           " ", "correct", " ", "length"}], " ", "*)"}], 
+         "\[IndentingNewLine]", 
+         RowBox[{"vol50Days", "=", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Length", "[", "prices", "]"}], "\[NotEqual]", 
+             RowBox[{"Length", "[", "vol50Days", "]"}]}], ",", 
+            RowBox[{"Most", "@", "vol50Days"}], ",", "vol50Days"}], "]"}]}], 
+         ";", "\[IndentingNewLine]", 
+         RowBox[{"vol20Days", "=", 
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"Length", "[", "prices", "]"}], "\[NotEqual]", 
+             RowBox[{"Length", "[", "vol20Days", "]"}]}], ",", 
+            RowBox[{"Most", "@", "vol20Days"}], ",", "vol20Days"}], "]"}]}], 
+         ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+         RowBox[{"Most", "@", 
+          RowBox[{"Transpose", "[", "\[IndentingNewLine]", 
+           RowBox[{"{", 
+            RowBox[{
+            "dates", ",", "prices", ",", "vol20Days", ",", "vol50Days", ",", 
+             "volume"}], "}"}], "]"}]}]}]}], "\[IndentingNewLine]", "]"}]}], 
+     "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", "\[IndentingNewLine]"}]], "Input",
+ CellChangeTimes->{{3.6392741223909883`*^9, 3.639274171494356*^9}, {
+  3.639274236766141*^9, 3.639274272026657*^9}, {3.639274370725214*^9, 
+  3.639274411796733*^9}}],
 
 Cell[BoxData[{
  RowBox[{
@@ -1181,48 +1280,49 @@ Notebook[{
 Cell[558, 20, 94, 2, 28, "Input"],
 Cell[655, 24, 389, 8, 46, "Input"],
 Cell[1047, 34, 1890, 48, 233, "Input"],
-Cell[2940, 84, 14160, 308, 1151, "Input"],
+Cell[2940, 84, 4379, 97, 488, "Input"],
+Cell[7322, 183, 14160, 308, 1151, "Input"],
 Cell[CellGroupData[{
-Cell[17125, 396, 212, 4, 28, "Input",
+Cell[21507, 495, 212, 4, 28, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[17340, 402, 1892, 50, 80, "Input",
+Cell[21722, 501, 1892, 50, 80, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[19235, 454, 786, 17, 46, "Input",
+Cell[23617, 553, 786, 17, 46, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[20024, 473, 712, 18, 63, "Input",
+Cell[24406, 572, 712, 18, 63, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[20739, 493, 763, 19, 63, "Input",
+Cell[25121, 592, 763, 19, 63, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}]
 }, Open  ]],
-Cell[21517, 515, 1159, 27, 46, "Input"],
-Cell[22679, 544, 966, 25, 46, "Input"],
-Cell[23648, 571, 2139, 48, 148, "Input"],
-Cell[25790, 621, 4764, 86, 148, "Input"],
+Cell[25899, 614, 1159, 27, 46, "Input"],
+Cell[27061, 643, 966, 25, 46, "Input"],
+Cell[28030, 670, 2139, 48, 148, "Input"],
+Cell[30172, 720, 4764, 86, 148, "Input"],
 Cell[CellGroupData[{
-Cell[30579, 711, 338, 9, 28, "Input",
+Cell[34961, 810, 338, 9, 28, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[30920, 722, 3396, 75, 233, "Input",
+Cell[35302, 821, 3396, 75, 233, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}]
 }, Open  ]],
-Cell[34331, 800, 2660, 63, 97, "Input"],
+Cell[38713, 899, 2660, 63, 97, "Input"],
 Cell[CellGroupData[{
-Cell[37016, 867, 210, 4, 28, "Input",
+Cell[41398, 966, 210, 4, 28, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}],
-Cell[37229, 873, 2761, 57, 420, "Input",
+Cell[41611, 972, 2761, 57, 420, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10000.}]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[40027, 935, 213, 4, 28, "Input",
+Cell[44409, 1034, 213, 4, 28, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10001.}],
-Cell[40243, 941, 3677, 84, 369, "Input",
+Cell[44625, 1040, 3677, 84, 369, "Input",
  CellGroupingRules->{GroupTogetherGrouping, 10001.}]
 }, Open  ]],
-Cell[43935, 1028, 3603, 75, 335, "Input"],
-Cell[47541, 1105, 238, 5, 28, "Input"],
-Cell[47782, 1112, 173, 5, 46, "Input"],
-Cell[47958, 1119, 188, 4, 28, "Input"],
-Cell[48149, 1125, 184, 3, 28, "Input"],
-Cell[48336, 1130, 1474, 31, 454, "Input"]
+Cell[48317, 1127, 3603, 75, 335, "Input"],
+Cell[51923, 1204, 238, 5, 28, "Input"],
+Cell[52164, 1211, 173, 5, 46, "Input"],
+Cell[52340, 1218, 188, 4, 28, "Input"],
+Cell[52531, 1224, 184, 3, 28, "Input"],
+Cell[52718, 1229, 1474, 31, 454, "Input"]
 }
 ]
 *)
