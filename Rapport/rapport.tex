@@ -7,6 +7,7 @@
 \usepackage{geometry}
 \usepackage[parfill]{parskip}
 \usepackage{bm}
+\usepackage{url}
 
 \geometry{letterpaper}
 
@@ -87,6 +88,8 @@ that a finite solution exists.
 
 \section{Implementation details}
 
+\subsection{Features and Scaling}
+
 We will now give implementation details on the method used, most notably concerning
 features used and a discussion on normalization of features.
 
@@ -117,17 +120,105 @@ enough, we fall back in the binary situation (see \figref{fig:weekfeature}).
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{WeekFeature}
-  \caption{Impact of each week for feature indicating week \#30}
+  \caption{Exponential impact of each week for feature indicating week \#30 using
+    exponential rate $\mu=0.1$}
   \label{fig:weekfeature}
 \end{figure}
 
 Of course, a bias term of $1$ must also be added to the dataset matrix. 
 
 
+\subsection{Portfolio Construction Algorithm}
+
+Because $x_{st}^Tq$ can also be interpreted as the `confidence' we have in stock $s$ on
+date $t$, during the training period, we chose among the different available stocks which
+one has the higher confidence value and decide to invest in it. Therefore, the chosen
+stock from which the portfolio is made is different on each day. That said, many more
+strategies could be tested out to chose the `right' portfolio on each day. Again, this is
+a huge direction for future work. 
+
+
+\subsection{Training, Validation and Testing Samples}
+
+The fact that we deal with historical data is very important in the testing design of the
+program. First and foremost, the decision vector $q$ must imperatively be trained on data
+point prior to the test points, or obvious bias would occur. Our model also relies on a
+validation (or calibration) sample set that must be temprally located between the training
+and the testing set.
+
+Another point must also be considered. It is likely than if $q$ is trained on
+`well-behaved' periods of growth, it might tend to be overly optimistic in the future,
+therefore it is desirable to include in the training and the calibration samples periods
+with different economic situations, and so it might be hard to really evaluate how the
+model performs in times of high volatility (although `mini'-crash of a few days happen
+relatively often, but their effect can be hard to detect in the long run).
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{DowJonesReturns}
+  \caption{Dow Jones returns 2000-2015}
+  \label{fig:dowjonesreturns}
+\end{figure}
+
+As shown in \figref{fig:dowjonesreturns}, the Dow Jones has experienced two significant
+periods of instability in the 21st century, first around 2000 until almost 2003 (the
+so-called dot-com bubble) and the 2008-2009 crisis. Therefore, by chosing a training
+sample from 2000 to 2008 and a calibration period ranging from 2009 to 2012, both sets get
+to have a sample of rougher and smoother returns. Ideally this process would also be
+learned, although at this moment it is quite heuristic. In any case this leaves the
+2013-2015 period for testing. This is in some way unfortunate since this period has been
+remarkably stable, especially on american markets.
+
+
+\subsection{Calibration}
+
+Calibration takes a big part in this model. The exponential rates $\mu$ discussed above
+for each temporal features (52 week features and 5 day features) could have been chosen
+independantly one of each other, but we made the choice of taking the weekly $\mu_w$ equal
+to each other, likewise for the day $\mu_d$. This restriction could easily be lifted by
+doing optimization on the whole set of variables, however considering that each iteration
+of the optimization involve a fairly big underlying convex optimization process, it is
+easier to optimize on a single variable.
+
+The optimization on the three features of mean past returns of past $n_1$, $n_2$ and $n_3$
+days, we first optimize on $n_1$ and set $n_2=n_3=n_1$. We optimize for $n_2$ with the
+constraint that $n_2>n_3$. Again we set $n_3=n_2$ and we repeat. This process could of
+course be extended to as many different $n$ as wanted/needed. 
+
+Finally, the $\lambda$ regularization coefficient is optimized in a regular fashion by
+increasing it until the objective starts decreasing. 
+
+In all cases, the objective of the obtimzation parts is simply the mean utility on the
+calibration set.
+
+
+
+\subsection{Technical Notes}
+
+Finally, a word about the software used. Most of the code is running on Mathematica v10,
+but the optimization part is carried out by CVX\footnote{\url{http://cvxr.com/cvx/}} on
+Matlab R2014a. Data is provided with Mathematica financial API, which itself is a proxy to
+Yahoo Finance API. 
+
+
 \section{Experimental Results}
 
+The test sample used was the historical data for years running from 2005 to 2011 on each
+stock currently member of the Dow Jones Industrial Average\footnote{Tickers of the Dow
+  Jones members are the following: MMM, AXP, AAPL, BA, CAT, CVX, CSCO, KO, DD, XOM, GE,
+  GS, HD, INTC, IBM, JNJ, JPM, MCD, MRK, MSFT, NKE, PFE, PG, TRV, UNH, UTX, VZ, V, WMT and
+  DIS.  However V (Visa) was removed from the training set since it went public only in
+  2008.} We can split the dataset matrix in $5$ (almost) equal parts in order to
+cross-validate the various parameters given above. 
 
+The test set is constituted from the Dow Jones historical data from 2012 to Jan. 1st
+2015. 
 
+\section{Conclusion and Future work}
 
+Future work
+ - More features!
+ - Portfolio construction
+ - Theoretical motivations
 
 \end{document}

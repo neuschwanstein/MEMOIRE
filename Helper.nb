@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      4882,        152]
-NotebookOptionsPosition[      4514,        135]
-NotebookOutlinePosition[      4869,        151]
-CellTagsIndexPosition[      4826,        148]
+NotebookDataLength[      6932,        214]
+NotebookOptionsPosition[      6523,        196]
+NotebookOutlinePosition[      6877,        212]
+CellTagsIndexPosition[      6834,        209]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -86,29 +86,51 @@ Cell[BoxData[
      "]"}]}], ";"}]], "Input",
  CellChangeTimes->{{3.638576771817955*^9, 3.6385767801610327`*^9}, {
   3.638576865831333*^9, 3.6385769037255287`*^9}, {3.6387425799562607`*^9, 
-  3.638742583906775*^9}}],
+  3.638742583906775*^9}, {3.63923909150846*^9, 3.6392390920758142`*^9}}],
 
 Cell[BoxData[{
  RowBox[{
   RowBox[{
+   RowBox[{
+    RowBox[{"exportFeatures", "[", 
+     RowBox[{
+      RowBox[{"m_", "?", "MatrixQ"}], ",", "filename_String"}], "]"}], ":=", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Export", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<Data/\>\"", "<>", 
+       "filename"}], ",", "m"}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"exportReturns", "[", 
+     RowBox[{
+      RowBox[{"r_", "?", "VectorQ"}], ",", "filename_String"}], "]"}], ":=", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Export", "[", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<Data/\>\"", "<>", 
+       "filename"}], ",", "r"}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
    RowBox[{"exportFeatures", "[", 
     RowBox[{"m_", "?", "MatrixQ"}], "]"}], ":=", 
-   RowBox[{"Export", "[", 
-    RowBox[{
-     RowBox[{
-      RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<features.csv\>\""}],
-      ",", "m"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"exportFeatures", "[", 
+    RowBox[{"m", ",", "\"\<features.csv\>\""}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"exportReturns", "[", 
     RowBox[{"r_", "?", "VectorQ"}], "]"}], ":=", 
-   RowBox[{"Export", "[", 
-    RowBox[{
-     RowBox[{
-      RowBox[{"NotebookDirectory", "[", "]"}], "<>", "\"\<returns.csv\>\""}], 
-     ",", "r"}], "]"}]}], ";"}]}], "Input",
+   RowBox[{"exportReturns", "[", 
+    RowBox[{"r", ",", "\"\<returns.csv\>\""}], "]"}]}], ";"}]}], "Input",
  CellChangeTimes->{{3.638752732775339*^9, 3.6387527696071777`*^9}, {
-  3.638752810959944*^9, 3.638752840856844*^9}}],
+  3.638752810959944*^9, 3.638752840856844*^9}, {3.639106725622957*^9, 
+  3.639106773974702*^9}, {3.639106810406172*^9, 3.639106909937358*^9}}],
 
 Cell[BoxData[
  RowBox[{
@@ -131,10 +153,49 @@ Cell[BoxData[
        RowBox[{"l", ",", "n"}], "]"}]}], "}"}], "]"}]}], ";"}]], "Input",
  CellChangeTimes->{{3.63900468445012*^9, 3.639004692712838*^9}, {
   3.6390048549826517`*^9, 3.639004922758184*^9}, {3.639004953189282*^9, 
-  3.639004964973219*^9}, {3.639004995694162*^9, 3.639005000205893*^9}}]
+  3.639004964973219*^9}, {3.639004995694162*^9, 3.639005000205893*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"splitup", "[", 
+   RowBox[{"L_", ",", "k_"}], "]"}], ":=", 
+  RowBox[{"Join", "[", 
+   RowBox[{
+    RowBox[{"Take", "[", 
+     RowBox[{
+      RowBox[{"Partition", "[", 
+       RowBox[{"L", ",", 
+        RowBox[{"Quotient", "[", 
+         RowBox[{
+          RowBox[{"Length", "[", "L", "]"}], ",", "k"}], "]"}]}], "]"}], ",", 
+      
+      RowBox[{"k", "-", 
+       RowBox[{"Mod", "[", 
+        RowBox[{
+         RowBox[{"Length", "[", "L", "]"}], ",", "k"}], "]"}]}]}], "]"}], ",", 
+    RowBox[{"Partition", "[", 
+     RowBox[{
+      RowBox[{"Drop", "[", 
+       RowBox[{"L", ",", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"k", "-", 
+           RowBox[{"Mod", "[", 
+            RowBox[{
+             RowBox[{"Length", "[", "L", "]"}], ",", "k"}], "]"}]}], ")"}], 
+         " ", 
+         RowBox[{"Quotient", "[", 
+          RowBox[{
+           RowBox[{"Length", "[", "L", "]"}], ",", "k"}], "]"}]}]}], "]"}], 
+      ",", 
+      RowBox[{
+       RowBox[{"Quotient", "[", 
+        RowBox[{
+         RowBox[{"Length", "[", "L", "]"}], ",", "k"}], "]"}], "+", "1"}]}], 
+     "]"}]}], "]"}]}]], "Input"]
 },
 WindowSize->{808, 250},
-WindowMargins->{{70, Automatic}, {-26, Automatic}},
+WindowMargins->{{14, Automatic}, {24, Automatic}},
 FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (June 27, \
 2014)",
 StyleDefinitions->"Default.nb"
@@ -151,9 +212,10 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[558, 20, 1740, 49, 182, "Input"],
-Cell[2301, 71, 686, 17, 80, "Input"],
-Cell[2990, 90, 710, 20, 46, "Input"],
-Cell[3703, 112, 807, 21, 46, "Input"]
+Cell[2301, 71, 733, 17, 80, "Input"],
+Cell[3037, 90, 1520, 42, 148, "Input"],
+Cell[4560, 134, 807, 21, 46, "Input"],
+Cell[5370, 157, 1149, 37, 63, "Input"]
 }
 ]
 *)
