@@ -85,10 +85,49 @@ This is an unbounded convex optimization problem, and so we must ensure to add a
 constraint on the norm of $q$ or to add a $L_2$ regularization term to the objective, so
 that a finite solution exists.
 
+\section{Implementation details}
+
+We will now give implementation details on the method used, most notably concerning
+features used and a discussion on normalization of features.
+
+We must be careful to have a normalized dataset on which we make our optimization step,
+mostly because of the regularization term, but also because the components of $q$ provide
+valuable information on the most important features when making a decision. 
+
+Given a dataset matrix $X$ where each row is a data point and each column is a feature, we
+can first compute $b$ such that $b$ is the mean of all columns and then subtract each row
+by $b$, so that data is centered around its mean. For a given feature, we can then scale
+it by its amplitude, so that it lies in a range $[-1,1]$. The resulting dataset will then
+be comprised in a $L_1$ hypercube. 
+
+The number features used in this experiment is somewhat restrained, mostly because of
+unexpected connectivity issues with a data provider. Nonetheless, dates, closing stock
+prices, average volatility on 20 and 50 days, trading volume and different measures of
+price average are used. Concerning the price average, we take average over three different
+number of days, and these numbers are to be learned via model selection. 
+
+Dates have however been given a special treatment. We consider independently the day of
+the week (Monday, Tuesday, etc.) as well as the week number. However, instead of simply
+taking a binary classifier (1 on Monday, 0 otherwise), it is supposed that an exponential
+term reaching 1 on the current day, then falling back to 0 on the next day would be more
+appropriate. The same was also done for the week numbers. The exponnential rate is again a
+parameter than can be estimated via model selection. If the exponential rate term is big
+enough, we fall back in the binary situation (see \figref{fig:weekfeature}).
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{WeekFeature}
+  \caption{Impact of each week for feature indicating week \#30}
+  \label{fig:weekfeature}
+\end{figure}
+
+Of course, a bias term of $1$ must also be added to the dataset matrix. 
 
 
 \section{Experimental Results}
 
-Partial results were first conducted using a test set with historical data of seven firms:
-MSFT, AAPL, GOOGL, BA, KO, MCD and CAT, all of them part of the Dow Jones.
+
+
+
+
 \end{document}
