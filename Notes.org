@@ -2,6 +2,8 @@
 #+AUTHOR: Thierry BM
 #+STARTUP: entitiespretty
 
+* Balbutiements 
+
 Plutôt que d'avoir une fonction d'utilité qui n'est de toute facon pas convexe, on peut
 plutot tracer une fonction d'utilité qui vise un certain rendement. Ainsi, si on appelle
 ce rendement r_c, l'utilité croît très rapidement lorsqu'elle se dirige à partir de la
@@ -76,7 +78,8 @@ d'information x_s.
 
 					  * * *
 
-*Le 20 avril 2015*
+
+* *Le 20 avril 2015*
 
 Revenons sur la nouvelle interprétation de q. Si par exemple on constitue de une base de
 données constituée d'un seul actif, alors q fournira q.x_s fournira la proportion à
@@ -149,7 +152,8 @@ et ainsi on aurait la juste proportion d'investissement du portefeuille.
 
 					  * * *
 
-*Le 21 avril*
+
+* *Le 21 avril*
 
 Choses restant à faire:
 
@@ -163,7 +167,8 @@ Choses restant à faire:
 
 					  * * *
 
-*Le 23 avril*
+
+* *Le 23 avril*
 
 La question de la normalisation, toujours aussi épineuse. Voyons voir nos contraintes.
 
@@ -202,7 +207,8 @@ qui serait réchelonnée selon p, le nombre d'attributs.
 
 					  * * *
 
-*Le 25 avril*
+
+* *Le 25 avril*
 
   - Problème avec les jours. Ils n'atteignent pas 1!
   - Pourtant les semaines semblent bien fonctionner!
@@ -225,7 +231,8 @@ De la même facon, donné un taux quotidien r_q, le taux annuel correspondant se
 
 				   r_a = exp(252 r_q) - 1
 
-*Le 27 avril*
+
+* *Le 27 avril*
 
 Notre dataset sera donc les trente éléments constituants le Dow Jones, et on remontera à
 2009, car Visa ne commence qu'à partir de 2008. On fera une validation croisée à 5
@@ -240,3 +247,150 @@ portefeuille consitué de cinq actifs, dont un sans risque.
 
 Notons que cette décision pourrait également faire l'objet d'un changement, si on
 considère qu'un autre algorithme plus efficace devrait être considéré.
+
+
+* *Le 11 mai*
+
+Bon, on est toujours à la recherche d'une borne théorique sur l'erreur qu'on peut faire
+sur l'ensemble de test par rapport à l'ensemble d'entraînement. Dans le papier, R_{true}
+représente alors l'espérance des coûts sur l'ensemble d'entraînement, alors que R^ est la
+moyenne arithmétique sur l'ensemble de test. 
+
+Et on cherche effectivement à minimiser la différence entre ces deux coûts: car si dans
+notre cas on parvient à obtenir des rendements positifs avec notre politique q sur
+l'ensemble d'entrainement, alors on voudrait avoir une garantie théorique que dans la
+plupart des cas, notre politique appliquée à un ensemble de test performerait tout aussi
+bien ou, du moins, aurait une performance dont l'ordre de comparaison avec ce qu'on aurait
+obtenu avant serait mathématiquement connu.
+
+					  * * *
+
+*Rencontre avec Delage*
+
+En somme, comment appliquer la notion de regret, soit à la construction de portefeuille,
+soit à la construction du vecteur de décision. 
+
+					  * * *
+
+On a plusieurs problèmes à résoudre. D'abord la notion d'intervalle de confiance qui doit
+être donnée et pour laquelle on souhaite réduire l'erreur sur notre utilité espérée sur
+l'ensemble de test. 
+
+
+* *Le 8 juin*
+
+_Quelques définitions (dans le cas /newsvendor and portfolio/)_
+
+Le vrai risque:
+
+			R_{true}(q) = E_{D(x)}[C(q; D(x))]
+				= E_{x}[E_{D(x)}[C(q; D(x))|x]]
+
+Le risque empirique:
+
+			  ^R(q;S_{n}) = 1/n \sum_{i}C(q, S_n^i)
+				   = 1/n \sum_{i}C(q, d_i(x_i))
+
+"Since we desire the true risk to be low, a combination of low empirical risk and
+sufficient stability ensures this."
+
+
+Let X:R^p be the information distribution, providing objects of the R^p form, and let R(x):R
+be the (real) distribution returns, and let D = R\times{}X the /information space/. 
+
+_Learning Algorith._
+A /learning alogrithm/ is a function whose argument is a dataset drawn from D^n, ie. with n
+rows, mapping into the space of functions mapping from X to a portfolio space (to be
+defined later) P. We shall denote this space of functions as X^P.
+
+_Loss of a decision vector q._
+The /loss/ l of a decision rule q \in Q \subset{} X^P with respect to a sample d=(x,r) \in{} D is defined as
+
+				  l(q,d) = c(q(x),r(x))
+
+for some cost function. 
+
+
+Now how should this loss function be defined? On one hand we have the actual return of the
+chosen stock. The real question here is when would the loss be zero. We always gain more
+utility from higher return, and so if the chosen q gives us huge gains, then we cannot
+claim that there's a single return at which the loss is completely absent. Our loss
+function would therefore take the form of a decreasing exponential function exp(-\mu{}x).
+
+But if we had such a loss function, we would then be out of line with a two-pieces linear
+utility function. A log utility is of no use too, since its domain is only on R_{++}_{}. 
+
+ 	       [[./Mai2015/FigExpUtility2.png]]
+
+But -exp(-\mu{}x) could be a good utility function, that can besides be scaled and moved
+around using a parameter \mu as an increasing rate. However we lose the insight developed
+previously with the Newspaper article. 
+
+The loss exp(-\mu{}x) is then perfectly in line with the utility and provide a reasonable
+insight since the loss occured for higher return rates is much smaller than the loss
+incured when dealing with higher return rates. 
+
+We're also inline with the loss function of the newsvendor, since the loss we're trying to
+minimize is now the same as the utility we're trying to maximize (modulo a minus sign).
+
+In the newsvendor case, the loss the hypothesis q incurs on a random variate d=(x,r) drawn
+from D, was defined as
+
+				    l(q,d) = c(q(x),d)
+
+where c was the newsvendors cost incurred from a demand d and an ordered quantity q(x). 
+
+In our case, we again have not a situation where the loss is null, essentially because
+we're in fact /not/ trying to predict the actual return rate, we instead try to form a good
+portfolio from which we want to derive utility. The other problem, as mentioned
+previously, is also that our utility has no supremum, ie. is not bounded above. In
+pratical terms, this means that there's no single best decision that could have been made
+had we known the return rate previously: if the rate was to be positive, then would have
+massively borrowed to leverage the positive rate. On the other side, if the rate was
+negative, then the reverse situation where we could have chosen between a mass short sale
+or risk-free lending would have appropriate.
+
+And in this sense, would there be no way to add a regularization term, ie. with which we
+would discourage massive investments?
+
+Here's a possible method to define l, but we first have to assume that ||q(x)||_2^2 \leq 1,
+ie. the investment in the risky asset (under the two-assets portfolio hypothesis) is
+bounded by 100%, in financial terms, we cannot borrow money at R_f to invest in the risky
+asset. 
+
+If r, ie. the return of the risky asset is above R_f, then we'll have wished we had
+invested all our wealth in it, and thus the loss will be 
+
+				  U(1,0) - U(q^{T}x, 1-q^{T}x)
+
+if on the other hand the stock yields a return below R_f, then the reference will be the
+utility derived from a perfectly safe portfolio, so that the loss becomes
+
+				  U(0,1) - U(q^{T}x, 1-q^{T}x)
+
+In either case, the loss is always positive (or at most zero).
+
+*Note.* In the above expressions, U(x,y) represents the utility of a portfolio for which a
+ proportion x is invested in the risky asset and y in the risk free asset.
+
+According to Bousquet, an algorithm has \beta uniform stability with respect to the loss
+function l if for all dataset of m rows, we have the bound
+
+		      `||l(q(S_m,d) - l(q(S'_m,d))||_{\infty} \leq \beta_m
+
+where q' is the hypothesis formed when removing a single row from S_m, the dataset (see
+Bousquet p. 504 for total formalism). 
+
+*Def.* An algorithm is uniformly stable if \beta_{m }\leq O(1/n).
+
+*Def.* The /generalization error/ or the /risk/ depends on the training set S and the algorithm
+ A_S in the following way:
+
+				  R(A_S,S) = E_{d}[l(A_s,d)]
+
+*Def.* The /empirical error/ is the average of the loss over the training set S of m
+elements:
+
+			       $R_{emp}(A_S,S) = 1/m \sum_i l(A_s, d)$
+
+

@@ -54,7 +54,7 @@ The investment decision is linear with respect to $q$, ie. $x_{st}^Tq$ is the al
 of the portfolio to stock $s$. Because we also consider the risk-free asset, ie. a bank
 loan, then the return on this decision at time $t+1$ will be
 \begin{equation*}
-  p_{st} = r_{s,t+1}\,x_{st}^Tq + R_f(1-x_{st}^Tq)
+  p_{st}(q) = r_{s,t+1}\,x_{st}^Tq + R_f(1-x_{st}^Tq)
 \end{equation*}
 where $R_f$ is, for simplification purposes, a constant daily return rate. 
 
@@ -62,7 +62,7 @@ The decision vector $q$ to use will be based on the utility function of an inves
 suppose this utility function to be of a concave two-pieces linear shape, mathematically
 described as 
 \begin{equation*}
-  U(r) = p-r_c + \min(0,(\beta-1)(p-r_c))
+  U(p) = p-r_c + \min(0,(\beta-1)(p-r_c))
 \end{equation*}
 where $0<\beta<1$ represents the lower rate at which the utility increase when exposed to
 a return higher than $r_c$ (see \figref{fig:utility}), the critical return. Typically,
@@ -79,15 +79,24 @@ $\beta$ and $r_c$ are parameters specified by the `end user' of the model.
 
 We can then define $q$ to be the optimal vector in the sense that
 \begin{equation*}
-  q^\star = \frac{1}{N} \max_q \sum_{s,t} U(p_{st}),
+  q^\star = \frac{1}{N} \max_q \sum_{s,t} U(p_{st}(q)),
 \end{equation*}
 ie. $q^\star$ is the decision vector maximizing the average utility over all $M$ training
 instances $x_{st}$. $M$ would therefore be the number of data points (days in this case)
 times the number of features.
 
-This is an unbounded convex optimization problem, and so we must ensure to add a
-constraint on the norm of $q$ or to add a $L_2$ regularization term to the objective, so
-that a finite solution exists.
+We can also add a regularization term to the expression. Such a term becomes useful when
+dealing with a large number of features, as it automatically performs feature selection:
+\begin{equation*}
+  q^\star = \frac{1}{N} \max_q \sum_{s,t} U(p_{st}(q)) + \lambda \|q\|_2^2
+\end{equation*}
+
+This is an unbounded convex optimization problem, but the presence of the regularization
+term ensures that a finite solution exists. If $\lambda=0$, a constraint 
+\begin{equation*}
+  \|q\|_2^2\leq1
+\end{equation*}
+can be added.
 
 \section{Implementation details}
 
@@ -206,22 +215,96 @@ Yahoo Finance API.
 
 \section{Experimental Results}
 
-The test sample used was the historical data for years running from 2005 to 2011 on each
+The test sample used was the historical data for years running from 2000 to 2015 on each
 stock currently member of the Dow Jones Industrial Average\footnote{Tickers of the Dow
   Jones members are the following: MMM, AXP, AAPL, BA, CAT, CVX, CSCO, KO, DD, XOM, GE,
   GS, HD, INTC, IBM, JNJ, JPM, MCD, MRK, MSFT, NKE, PFE, PG, TRV, UNH, UTX, VZ, V, WMT and
   DIS.  However V (Visa) was removed from the training set since it went public only in
-  2008.} We can split the dataset matrix in $5$ (almost) equal parts in order to
-cross-validate the various parameters given above. 
+  2008.} The learning, validation and testing sets were setup as described in the previous
+section. 
 
-The test set is constituted from the Dow Jones historical data from 2012 to Jan. 1st
-2015. 
+Unfortunately, problems at the calibration steps were encountered, where the algorithms
+used to maximize the utility on the calibration sample would not converge fast
+enough. Besides, empirical observation tend to suggest that even large change in those
+parameters did not seriously affect the mean utility.
+
+That being said, interesting results were nonetheless obtained. \figref{fig:results}
+present the cumulative results on the test set using different valus of $\beta$, with
+$r_c=0$. It is only when $\beta=1$, ie. when the utility is risk-neutral (described by a
+straight line) that we get truly interesting results, and the model even returns slightly
+better results than those obtained by a simple buy-and-hold on each component of the
+index. For other values of $\beta$ the result quickly fall back to the risk-free
+portfolio.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{Results}
+  \caption{Returns for various values of $\beta$. The blue line is for $\beta=1$ and the
+    orange line corresponds to a buy-and-hold policy over the index.}
+  \label{fig:results}
+\end{figure}
+
+However, as soon as $\beta$ decreases, the $q$ decision vector becomes much more
+conservative, with a big portion of the portfolio allocated to the risk-free asset, even
+though at each day the stock providing the highest allocation proportion is picked. 
+
+\figref{fig:pickedstocks} shows the stocks that were picked on each day by the
+model. Interestingly enough, only a handful among the 29 available were ever picked. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{PickedStocks}
+  \caption{Picked stocks for $\beta=1$}
+  \label{fig:pickedstocks}
+\end{figure}
+
 
 \section{Conclusion and Future work}
 
-Future work
- - More features!
- - Portfolio construction
- - Theoretical motivations
+Obviously, if the model described in this document exhibits interesting properties, such
+as beating the market in a risk-neutral environment, it nonetheless suffers from the lack
+of features. Only financial features of technical nature have been considered, and adding
+fundamental features would most certainly help drastically the model. 
+
+The point of the `big-data' hypothesis is also to consider features whose impact on the
+stock returns might not be obvious, but they can also be integrated to the model without
+problem. Again this is could probably be a big improvement to the current state of the
+model. Besides, the point of regularizing the $q$ decision vector is precisely to tell
+which features are truly important to the model. 
+
+There's also the question of the portfolio construction algorithm. This model only
+considered a very simple and naive implementation, but much more sophisticated method
+could certainly be implemented. 
+
+Finally, the article [1] on which this project was based provide interesting bounds on
+result that might be exploited to reduce the uncertainty of the results.
+
+One last problem with this model is of a pratical nature. A portfolio manager switching
+his assets on every day would most likely incur very high transaction costs and it would
+be very important to include this reality in the constraints of the optimization, or
+during the reallocation, where we could for example refrain from switching asset if the
+one already held had a value $x_{st}^Tq$ high enough. At this level, much sophistication
+could also be added.
+
+However, despite all its flaws, this model still demonstrated that with few features, it
+seems possible, as far as our tests goes, to derive abnormal results on a portfolio, and
+in an automatic fashion, which is pretty exciting! 
+
+\paragraph{Note}
+
+Implementation of the project can be found online: \url{https://github.com/neuschwanstein/ProjetC}
+
+
+\begin{thebibliography}{9}
+  
+\bibitem{Rudin2015}
+  Cynthia Rudin and Gah-Yi Vahn. \emph{The Big Data Newsvendor: Pratical
+    Insights from Machine Learning}, Working
+  Paper. \url{http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2559116}{\textsf{Link to
+      online version}}.
+
+\bibitem{Wiley2007}
+ Fabozzi et al. \emph{Robust Portfolio Optimization and Management}, Wiley 2007.
+\end{thebibliography}
 
 \end{document}
