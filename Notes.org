@@ -45,7 +45,7 @@ function would therefore take the form of a decreasing exponential function exp(
 But if we had such a loss function, we would then be out of line with a two-pieces linear
 utility function. A log utility is of no use too, since its domain is only on R_{++}_{}. 
 
- 	       [[./Mai2015/FigExpUtility2.png]]
+[[./Mai2015/FigExpUtility2.png]]
 
 But -exp(-\mu{}x) could be a good utility function, that can besides be scaled and moved
 around using a parameter \mu as an increasing rate. However we lose the insight developed
@@ -61,7 +61,7 @@ minimize is now the same as the utility we're trying to maximize (modulo a minus
 In the newsvendor case, the loss the hypothesis q incurs on a random variate d=(x,r) drawn
 from D, was defined as
 
-				    l(q,d) = c(q(x),d)
+				    \ell(q,d) = c(q(x),d)
 
 where c was the newsvendors cost incurred from a demand d and an ordered quantity q(x). 
 
@@ -78,7 +78,7 @@ or risk-free lending would have appropriate.
 And in this sense, would there be no way to add a regularization term, ie. with which we
 would discourage massive investments?
 
-Here's a possible method to define l, but we first have to assume that ||q(x)||_2^2 \leq 1,
+Here's a possible method to define \ell, but we first have to assume that ||q(x)||_2^2 \leq 1,
 ie. the investment in the risky asset (under the two-assets portfolio hypothesis) is
 bounded by 100%, in financial terms, we cannot borrow money at R_f to invest in the risky
 asset. 
@@ -101,7 +101,7 @@ In either case, the loss is always positive (or at most zero).
 According to Bousquet, an algorithm has \beta uniform stability with respect to the loss
 function l if for all dataset of m rows, we have the bound
 
-		      `||l(q(S_m,d) - l(q(S'_m,d))||_{\infty} \leq \beta_m
+		      `||\ell(q(S_m,d) - \ell(q(S'_m,d))||_{\infty} \leq \beta_m
 
 where q' is the hypothesis formed when removing a single row from S_m, the dataset (see
 Bousquet p. 504 for total formalism). 
@@ -111,11 +111,95 @@ Bousquet p. 504 for total formalism).
 *Def.* The /generalization error/ or the /risk/ depends on the training set S and the algorithm
  A_S in the following way:
 
-				  R(A_S,S) = E_{d}[l(A_s,d)]
+				  R(A_S,S) = E_{d}[\ell(A_s,d)]
 
 *Def.* The /empirical error/ is the average of the loss over the training set S of m
 elements:
 
-			       $R_{emp}(A_S,S) = 1/m \sum_i l(A_s, d)$
+			       R_{emp}(A_S,S) = 1/m \sum_i \ell(A_s, d)
 
+
+
+* *Le 9 juin*
+
+We still wish to apply theoretical bounds upon the `loss' we can incur using our
+algorithm. We use the notion of uniform stability, as developed by Bousquet and Elisseef
+in their seminal work. 
+
+*Def (Uniform stability).* An algorithm A has uniform stability \beta with loss \ell if, for any
+ dataset S of m rows, ie. \forall S \in D^m, and any removed row i, then for d=(x,r) \sim{} D,
+
+		    `   ||\ell(A_S(x), r) - \ell(A_{S\i}(x), r)||_{\infty} \leq \beta
+
+ie.,
+
+	            B_m = sup_{d \in D} |\ell(A_S(x), r) - \ell(A_{S\i}(x), r)| \leq \beta
+
+For notation purposes, the left value, depending solely on the size m of S, will be
+henceforth noted B_m or simply B.
+
+Now for the hard part of giving a value to \beta. The problem with the current value of \ell is
+how it has not a constant mapping, and will change its underlying application wether r is
+above or below r_c (which could be R_f). 
+
+Below are the two forms the loss function, depending on the portfolio composition: p=0 is
+a perfectly safe portfolio, p=1 is a perfectly risky portfolio. They were plotted using
+the exponential utility. 
+
+[[./Mai2015/expULossAboveZero.png]]
+
+[[./Mai2015/expULossBelowZero.png]]
+
+We'll most probably need to bound the return drawn from the returns distribution R in the
+interval [-\rho, \rho]. We can then add probalistic bounds upon it as described [[https://en.wikipedia.org/wiki/Stability_(learning_theory)#Uniform_Stability][in this
+article]]. We also note that the loss function \ell thus defined is continuous with respect to
+r. 
+
+Let's make our ideas clearer. We have the following identities:
+
+			l(p,r) = U(r) - U(pr + (1-p)r_c) if r > r_c
+			l(p,r) = U(0) - U(pr + (1-p)r_c) if r \leq r_c
+				    p = q_S^{T}x = q(S)^{T}x
+
+Actually, this `multi-defined' function is in fact not that remote from the stability
+criterion exhibited in the newsvendor case, where we have operators min and max operators
+(\vee and \wedge{}) on the slopes of the cost function.
+
+Let us first consider a fixed dataset S from which a decision vector q_S is algorthmically
+defined, and let us apply the definition of the uniform stability. Then, no matter the
+value of r, we're left with the following expression for B:
+
+		  B = sup_{d \in D} |U(pr + (1-p)r_c) - U(p'r + (1-p')r_c)|
+
+where 
+
+				   p' = q(S^{\i})^{T}x
+
+is the `less-informed' decision.
+
+Now we can again apply the Lipschitz property of continuous functions stating that,
+provided that dom f = S convex, then
+
+`			     |f(x) - f(y)| \leq \alpha |x-y|
+
+where
+
+			       \alpha = sup_{x \in S} |f'(x)|
+
+If the utility is linear, then \alpha = \beta, the slope of the utility left of r_c. If however we
+consider an exponential utility, then the maximum value of the derivative will only be
+reached at the edge of the considered interval, and so \alpha = \mu{} exp(\rho), which can be quite
+high (more on that later...)
+
+Either way, B is now bounded:
+
+			   B \leq sup_{d \in D} \alpha |(p-p')(r-r_c)|
+			     = \alpha sup |r-r_{c}| sup_{d \in D} |p - p'|
+
+In the above expression, sup |r-r_{c}| will be \rho + r_c, since we asume that r_c > 0. We shall
+call this quantity \gamma so that
+
+				   B = \alpha{} \gamma sup |p - p'|
+
+C'est là qu'on est rendu...
 
