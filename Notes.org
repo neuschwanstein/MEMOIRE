@@ -157,8 +157,8 @@ r.
 
 Let's make our ideas clearer. We have the following identities:
 
-			l(p,r) = U(r) - U(pr + (1-p)r_c) if r > r_c
-			l(p,r) = U(0) - U(pr + (1-p)r_c) if r \leq r_c
+			c(p,r) = U(r) - U(pr + (1-p)r_c) if r > r_c
+			c(p,r) = U(0) - U(pr + (1-p)r_c) if r \leq r_c
 				    p = q_S^{T}x = q(S)^{T}x
 
 Actually, this `multi-defined' function is in fact not that remote from the stability
@@ -199,7 +199,46 @@ Either way, B is now bounded:
 In the above expression, sup |r-r_{c}| will be \rho + r_c, since we asume that r_c > 0. We shall
 call this quantity \gamma so that
 
-				   B = \alpha{} \gamma sup |p - p'|
+				   B \leq \alpha{} \gamma sup |p - p'|
 
 C'est là qu'on est rendu...
+
+
+* Le 10 juin
+
+We've been trying for a few days to establish a bound on the uniform stability of the
+linear algorithm when dealing with a concave utility, and to do so we must dive into how
+the algorithm operates.
+
+We have the following equalities:
+
+			      q_S = argmax_{q} Û(q,S) - \lambda||q||_2^2
+			  q' = q_{S\i} = argmax_{q} Û(q,S^{\i}) - \lambda||q||_2^2
+
+By the triangle equality we also have
+
+'		      |p - p'| = |(q - q')^{T}x| \leq \sum_i |x_{i}| |q_i - q_{i}'|
+
+					  * * *
+
+Let's instead follow Theorem 22 from Bousquet. We first want to show that \ell as defined
+previously is \sigma-admissible.
+
+				  \ell(q,(x,r)) = c(q^{T}x,r)
+
+(Bousquet, Definition 19, p. 512)
+*Def. (\sigma-admissibility).* A loss function \ell is \sigma-admissible if the associated cost function
+ c is convex with respect to its first argument and the following condition holds for any
+ p_1, p_2 and r:
+
+`			   |c(p_1,r) - c(p_2,r)| \leq \sigma |p_1 - p_{2}|
+
+We've shown yesterday that the left term reduces to
+
+`				  |(p_1 - p_2)(r - r_c)|
+
+The largest value |r - r_{c}| can reach is \rho+r_c, and so \sigma = \rho+r_c (previously declared as \gamma).
+
+
+* Le 15 juin
 
