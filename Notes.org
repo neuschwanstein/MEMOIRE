@@ -159,8 +159,8 @@ r.
 Let's make our ideas clearer. We have the following identities:
 <<definitionCost>>
 
-			c(p,r) = U(r) - U(pr + (1-p)R_f) if r > r_c
-			c(p,r) = U(0) - U(pr + (1-p)R_f) if r \leq r_c
+			c(p,r) = U(r) - U(pr + (1-p)R_f) if r > R_f
+			c(p,r) = U(R_f) - U(pr + (1-p)R_f) if r \leq R_f
 				    p = q_S^{T}x = q(S)^{T}x
 
 Actually, this `multi-defined' function is in fact not that remote from the stability
@@ -321,5 +321,44 @@ in the case of a linear utility and by
 
 			      \alpha_n \leq exp(2\mu \rho) X^2_max / 2\lambda{}n.
 
-These results follow from the [[sigmaAdmissibilityTheorem][\sigma-admissibility theorem]] of our [[lossFunctionDefinition][loss function]] and
-[[BousquetTheorem7][Bousquet's Theorem]]. \diamond
+These results follow from the [[sigmaAdmissibilityTheorem][\sigma-admissibility theorem]] of our [[lossDefinition][loss function]] and
+[[BousquetTheorem7][Bousquet's Theorem]].
+
+<<trueRiskDefinition>>
+The true risk with respect to algorithm A and learning set S_n is defined as
+
+			      R_{true}(A,S_n) = E_{d}[\ell(A_S, d)]
+
+that is, in plain words, the expected loss we'll have when applying our algorithm in the
+wild, ie. out of sample.
+
+<<empiricalRiskDefinition>>
+The empirical risk with respect to algorithm A and learning set S_n is defined to be 
+
+			     ^R(A,S_n) = 1/n \sum_i^n \ell(A_S, z_i)
+
+that is, in plain words, the average risk our model has produced over all training
+points. 
+
+<<maxCostProposition>>
+Using the aforementioned algorithm, the maximum loss we can incur is when p=1 with
+r=-\rho. In such a case, 
+
+				 c(1,-\rho) = U(R_f) - U(\rho).
+
+We shall call this quantity \gamma.
+
+<<RudinLemma2>>
+Let A be an algorithm with uniform stability \alpha_n wrt a loss function \ell such that 0 \leq
+\ell(A_S,d) \leq M, for all d = (x,r) \sim D and all sets S_n of size n. Then for any n\geq1 and any \delta \in
+(0,1), the following bound holds with probability at least 1-\delta over the random draw of the
+sample S_n:
+
+	       `|R_{true}(A,S_n) - ^R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + M) \radic(log(2/\delta)/2n)
+
+<<generalizationBoundTheorem>>
+Our [[algorithm]] has a generalization bound of 
+
+	       `|R_{true}(A,S_n) - ^R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + \gamma) \radic(log(2/\delta)/2n)
+
+with probability 1-\delta. It follows from [[RudinLemma2][Rudin et al.'s Lemma 2]] and our [[stabilityTheorem][stability Theorem]]. \diamond
