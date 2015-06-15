@@ -23,7 +23,7 @@ sufficient stability ensures this."
 Let X:R^p be the information distribution, providing objects of the R^p form, and let R(x):R
 be the (real) distribution returns, and let D = R\times{}X the /information space/. 
 
-_Learning Algorith._
+_Learning Algorithm._
 A /learning alogrithm/ is a function whose argument is a dataset drawn from D^n, ie. with n
 rows, mapping into the space of functions mapping from X to a portfolio space (to be
 defined later) P. We shall denote this space of functions as X^P.
@@ -126,6 +126,7 @@ We still wish to apply theoretical bounds upon the `loss' we can incur using our
 algorithm. We use the notion of uniform stability, as developed by Bousquet and Elisseef
 in their seminal work. 
 
+<<uniformStabilityDefinition>>
 *Def (Uniform stability).* An algorithm A has uniform stability \beta with loss \ell if, for any
  dataset S of m rows, ie. \forall S \in D^m, and any removed row i, then for d=(x,r) \sim{} D,
 
@@ -156,16 +157,17 @@ article]]. We also note that the loss function \ell thus defined is continuous w
 r. 
 
 Let's make our ideas clearer. We have the following identities:
+<<definitionCost>>
 
-			c(p,r) = U(r) - U(pr + (1-p)r_c) if r > r_c
-			c(p,r) = U(0) - U(pr + (1-p)r_c) if r \leq r_c
+			c(p,r) = U(r) - U(pr + (1-p)R_f) if r > r_c
+			c(p,r) = U(0) - U(pr + (1-p)R_f) if r \leq r_c
 				    p = q_S^{T}x = q(S)^{T}x
 
 Actually, this `multi-defined' function is in fact not that remote from the stability
 criterion exhibited in the newsvendor case, where we have operators min and max operators
 (\vee and \wedge{}) on the slopes of the cost function.
 
-Let us first consider a fixed dataset S from which a decision vector q_S is algorthmically
+Let us first consider a fixed dataset S from which a decision vector q_S is algorithmically
 defined, and let us apply the definition of the uniform stability. Then, no matter the
 value of r, we're left with the following expression for B:
 
@@ -223,10 +225,11 @@ By the triangle equality we also have
 
 Let's instead follow Theorem 22 from Bousquet. We first want to show that \ell as defined
 previously is \sigma-admissible.
-
+<<lossDefinition>>
 				  \ell(q,(x,r)) = c(q^{T}x,r)
 
 (Bousquet, Definition 19, p. 512)
+<<sigmaAdmissibilityDefinition>>
 *Def. (\sigma-admissibility).* A loss function \ell is \sigma-admissible if the associated cost function
  c is convex with respect to its first argument and the following condition holds for any
  p_1, p_2 and r:
@@ -242,3 +245,81 @@ The largest value |r - r_{c}| can reach is \rho+r_c, and so \sigma = \rho+r_c (p
 
 * Le 15 juin
 
+First, previously undefined formally:
+
+<<linearUtilityDefinition>>
+_Def. (Linear Utility)_ The linear utility is defined as
+
+				  U(r) = r + min(0, \beta{}x)
+
+where 0 < \beta < 1. We simplify r_c = 0.
+
+<<expUtilityDefinition>>
+_Def. (Exponential Utility)_ The exponential utility with parameter \mu is defined as
+
+				    U(r) = -exp(-\mu r)
+
+where \mu > 0. There's no critical return here. 
+
+We also note in the above expression that [[definitionCost][c]] is indeed convex under its first argument, as
+long as 0 \leq p \leq 1.
+
+<<sigmaAdmissibilityTheorem>>
+_Thm._ The [[lossDefinition][loss function]] is [[sigmaAdmissibilityDefinition][\sigma-admissible]] with \sigma = \rho+R_f in the linear case and
+\sigma = (\rho+R_{f}) exp(\mu \rho) in the exponential case.
+
+_Proof._ The expression
+
+				   `|c(p_1,r) - c(p_2,r)|
+
+reduces to
+
+			 `|U(p_{1}r + (1-p_{1})R_f) - U(p_{2}r + (1-p_2)R_f_{}|.
+
+Now because U is Lipschitz continuous, then the above expression is bounded by
+
+		 \sigma |p_{1}r + (1-p_{1})R_f - (p_{2}r + (1-p_2)R_{f}| = \alpha |p_1 - p_{2}||r-R_{f}|
+
+where
+
+			      \alpha = max_{x \in [-\rho,\rho]} |U'(x)|.
+
+Now we've considered two utility forms. In the [[linearUtilityDefinition][linear case]] the derivative is constant (set
+to 1) because the derived utility at the left of r_c has always slope 1, and so \alpha=1. If
+[[exoUtilityDefinition][utility is exponential]], then \alpha = exp(\mu \rho). 
+
+Now the \sigma bound must hold for all r. The expression |r-R_{f}| will reach its largest value at
+r=-\rho since R_{f} is asumed to be non-negative. \Diamond
+
+Just like in the newsvendor case, we'll assume that feature vectors must lie in a ball of
+radius X^2_{max}.
+
+<<BousquetTheorem7>>
+Let F be a reproducing kernel Hilbert space with kernel k such that \forall x \in X, k(x,x) \leq \kappa^2
+< \infty. Let \ell be [[sigmaAdmissibilityDefinition][\sigma-admissible]] with respect to F. The learning algorithm A defined by
+
+		A_{S} = argmin_{g \in F} 1/n \sum_i^n \ell(g,d_i) + \lambda ||g||^2_k
+
+has [[uniformStabilityDefinition][uniform stability]] \alpha_n wrt \ell with
+
+			  \alpha_n \leq \sigma^{2 }\kappa^2 / 2\lambda{}n.
+
+<<algorithm>>
+The decision algorithm of our model produced by a dataset S_n = {(x,r)_i} is defined to be 
+
+	     q^\star = argmin_{q \in R^p} 1/n \sum_i^n c(q^{T}x_i,r_i) + \lambda||q||^2_2
+
+The investment decision following information vector x will therefore be p = q^\star^{T}x,
+where p is the proportion to be invested in the risky asset.
+
+<<stabilityTheorem>>
+Using The [[uniformStabilityDefinition][stability]] \alpha_n of our proposed [[algorithm]] is bounded by the following:
+
+			       \alpha_n \leq (\rho + R_f)^2 X^2_max / 2\lambda{}n
+
+in the case of a linear utility and by 
+
+			      \alpha_n \leq exp(2\mu \rho) X^2_max / 2\lambda{}n.
+
+These results follow from the [[sigmaAdmissibilityTheorem][\sigma-admissibility theorem]] of our [[lossFunctionDefinition][loss function]] and
+[[BousquetTheorem7][Bousquet's Theorem]]. \diamond
