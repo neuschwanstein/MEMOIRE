@@ -1,29 +1,59 @@
-beta = 1;
-rc=0;
-Rf = 0.05;
+function Test
+    global Rf p n;
+    Rf = 2; p = 10; n = 1000;
+    
+    n = 100;
+    p = 10;
+    
+    fprintf('This is a test. Now go away.\n');
+    X = information();
+    R = returns();
+    
+    solveAlgo(X,R,0)
+end
 
-lambda = 10;
+function X = information()
+    global p n;
+    mu = zeros(1,p);
+    Sigma = eye(p);
+    X = mvnrnd(mu,Sigma,n);
+end
 
-p=10;
-n=1000;
-mu=zeros(p,1);
-sigma=diag(ones(p,1));
-S = mvnrnd(mu,sigma,n);
-w = [8/10 1/45*ones(1,9)]';
+function R = returns()
+    global n;
+    R = normrnd(5,10,[n,1]);
+end
 
-r = S*w;
-r = r.*lognrnd(0,1,n,1); % Noise data 
-%r = r.*normrnd(1,5,n,1); %Noise up data
+function result = pos(x)
+%     result = x.*(x>=0);
+    result = max(x,0);
+end
+
+function U = linearUtility(r,beta)
+    U = r + min(0,beta*r);
+end
+
+function U = expUtility(r,mu)
+    U = -exp(-mu*r);
+end
+
+function c = cost(U,p,r)
+    global Rf;
+    c = pos(U(r.*(r>Rf) + Rf*(r<=Rf)) - U(p.*r + (1-p).*Rf));
+end
+
+function q = solveAlgo(X,R,lambda)
+    global p;
+    U = @(r) linearUtility(0.5,r);
+    
+    cvx_begin
+        variable q(p)
+        minimize(sum(cost(U,X*q,R)) + lambda*norm(q,2))
+    cvx_end
+end
 
 
-U = @(p) p-rc + min((beta-1)*(p-rc),0);
-Uhat = @(q) sum(U(r.*(S*q) + Rf*(1-S*q)));
 
-cvx_begin
-    variable q(p)
-    maximize(Uhat(q) - 1000*norm(q,2))
-%     subject to
-%         norm(q,2) <= 1        
-cvx_end
 
-q
+
+
