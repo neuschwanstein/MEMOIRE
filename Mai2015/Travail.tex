@@ -1,4 +1,4 @@
-\documentclass[11pt,fleqn]{article}
+\documentclass[11pt]{article}
 
 \newcommand{\ts}{\textsuperscript}
 \newcommand{\figref}[1]{Fig.~\ref{#1}}
@@ -6,10 +6,11 @@
 \usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{geometry}
-\usepackage[parfill]{parskip}
+\usepackage{subcaption}
 \usepackage{bm}
 \usepackage{hyperref}
 \usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{mathtools}
 \usepackage{color}
 \usepackage{marginnote}
 \usepackage[utf8]{inputenc}
@@ -19,6 +20,7 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator{\st}{s.t.}
 \DeclareMathOperator{\epi}{epi}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 \newcommand{\iso}{\simeq}
 \newcommand{\dd}{\partial}
@@ -31,9 +33,11 @@
 
 \theoremstyle{plain}
 \newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
 
 \theoremstyle{definition}
 \newtheorem*{deff}{Definition}
+\newtheorem*{rem}{Remark}
 
 
 \geometry{letterpaper}
@@ -51,13 +55,14 @@
   learning methods.
 \end{abstract}
 
+
 \section{Introduction}
 \label{sec:intro}
 
 \marginnote{Maybe considerations about the length of the period should be added? For
   example, it's not specified what's the period length of $R_f$.}  This document considers
 a two-asset portfolio, of which one is the risk-free asset, yielding a constant return
-rate $R_f$, and the other being a risky asset $s$ , typically a stock, yielding a random
+rate $R_f$, and the other being a risky asset $s$, typically a stock, yielding a random
 return rate $r_{st}$ for each period $t$. We suppose that each risky asset $s$ can be
 decribed daily by an \emph{information vector} $x_{st}$ containing potentially useful
 information, such as technical, fundamental or news-related information. Furthermore, we
@@ -70,117 +75,241 @@ return rate of:
   p_{st}(q) = r_{st}q^Tx_{st} + (1-q^Tx_{st})R_f.
 \end{equation}
 
-We further suppose that the \emph{utility} derived from a return rate $p$ can be described
-using a concave two-pieces linear function of the following form:
-\begin{equation}
-  U(p) = p-r_c + \min((\beta-1)(p-r_c),0),
-\end{equation}
-where $r_c$ is an arbitrary \emph{critical rate}. We impose the condition $0<\beta<1$, so
-that the utility derived from rates inferior to the critical rate $r_c$ increases more
-sharply than from rates above $r_c$. Typically, the critical rate could be 0, but it could
-also be $R_f$. This is up to the investor.\marginnote{More on it?}
+% We further suppose that the \emph{utility} derived from a return rate $p$ can be described
+% using a concave two-pieces linear function of the following form:
+% \begin{equation}
+%   U(p) = p-r_c + \min((\beta-1)(p-r_c),0),
+% \end{equation}
+% where $r_c$ is an arbitrary \emph{critical rate}. We impose the condition $0<\beta<1$, so
+% that the utility derived from rates inferior to the critical rate $r_c$ increases more
+% sharply than from rates above $r_c$. Typically, the critical rate could be 0, but it could
+% also be $R_f$. This is up to the investor.
+
 
 The question we now wish to ask is how the decision vector $q$ should be chosen. We assume
 we have access to a training dataset $S_n$, comprising of $s$ different assets over
 $t$\marginnote{What's the difference between having $n$ points with having $s\times t$
-  points? For example, what if $n\gg t$ or the reverse?} periods, such that
-$n = s\times t$. Given such a training set, we then define the \emph{optimal decision
-  vector} $q^\star$ as the decision maximizing the average utility over the training set:
-% TODO: Find a better way to input optimization equations
-\begin{align}
-  q^\star &= \argmax_q \hat U\\
-          &= \argmax_q \frac{1}{n}\sum_{s,t} U(p_{st}(q)).
-\end{align}
-The above optimization problem is linear and can therefore be readily solved with any
-modern computer.
+  points? For example, what if $s\gg t$ or the reverse?} periods, such that
+$n = s\times t$. % Given such a training set, we then define the \emph{optimal decision
+%   vector} $q^\star$ as the decision maximizing the average utility over the training set:
+% % TODO: Find a better way to input optimization equations
+% \begin{align}
+%   q^\star &= \argmax_q \hat U\\
+%           &= \argmax_q \frac{1}{n}\sum_{s,t} U(p_{st}(q)).
+% \end{align}
+% The above optimization problem is linear and can therefore be readily solved with any
+% modern computer.
 
-However, we also wish to add a $L_2$ regularization term to the objective in order to
-avoid overfitting. The new learning algorithm is then
-\begin{align}
-  q^\star &= \argmax_q \frac{1}{n} \sum_{s,t} U(p_{st}(q)) - \lambda \|q\|^2.
-\end{align}
-Now even though this new problem is no longer linear, it is still convex and can therefore be
-efficiently solved.
+% However, we also wish to add a $L_2$ regularization term to the objective in order to
+% avoid overfitting. The new learning algorithm is then
+% \begin{align}
+%   q^\star &= \argmax_q \frac{1}{n} \sum_{s,t} U(p_{st}(q)) - \lambda \|q\|^2.
+% \end{align}
+% Now even though this new problem is no longer linear, it is still convex and can therefore be
+% efficiently solved.
 
-We will refer to these two algorithms as respectively the non-regularized or linear
-algorithm and the regularized algorithm.
+% We will refer to these two algorithms as respectively the non-regularized or linear
+% algorithm and the regularized algorithm.
 
-\section{Bounds}
-\label{sec:bounds}
+\section{Definitions and Bounds}
 
-\marginnote{Careful: distribution and space are not the same, but are treated equal.}
-Let $\bm R$ be the distribution of the returns of all considered assets. We suppose in this
-section that the distribution of absolute returns is bounded by $\bar r$. 
+\subsection{Definitions and Notation}
 
-Let also $\bm X\iso\bm{R}^p$ be the \emph{restricted information space} and $\bm
-D= \bm R\times\bm X$ be the \emph{information space}. $\bm D^n$ is therefore the
-\emph{observation space}, containing $n$ observations.
+Most of the following notation and defintions follow directly from \cite{bousquet2002}.
 
-The utility function being concave, we therefore have
+Let $S_n$ be a set of $n$ vectors of $\real^p\times\real$ of the form:
 \begin{equation}
-  \inf_{r\in\bm R} U(r) = - (\bar{r}+r_c) + \min((\beta-1)(\bar{r}-r_c),0)
+  S_n = \{(x_1,r_1),\ldots,(x_n,r_n)\}.
+\end{equation}
+Each component of $S_n$ is a tuple $(x,r)$, where $x$ is the information vector and $r$ is
+the observed return rate.
+
+Using $S_n$, we wish to create a decision vector $q_{S_n}\in\real^p$ from which we can
+make an investment decision when confronted with a random draw $d=(x,r)$.
+
+\paragraph{Loss and Cost.}
+We introduce the loss $\ell$ and the cost $c$ of using $q$ with a random draw $d=(x,r)$:
+\begin{equation}
+\ell(q,d) = c(q(x),r) = c(q^Tx,r)
 \end{equation}
 
-We now try to determine the \emph{algorithimically stable} bounds on the two algorithms
-derived in the previous section. We first start with the linear algorithm, namely, given a
-dataset $S_n$ where, as before, $n=s\times t$, we want to find the largest (in the $\sup$
-sense) theoretical difference between the utility observed when investing on a new
-datapoint $(x,r)\sim\bm D$ using a decision vector $q_n$ formed from $S_n$ and $q_{n'}$
-formed from $S_n\setminus \{(x,r)\}$ where $x$ is chosen at random. In other words, we
-simply try to observe how much the utility could be affected by a single
-observation. Obviously, the smaller the bound, the better it is since we avoid overfitting
-(the algorithm is less dependant on single points).
+The cost must always be a non-negative quantity. Supposing an utility $U$, we model it as
+follows:
+\begin{equation}
+  c(p,r) =
+  \begin{cases}
+    \lfloor U(r) - U(pr + (1-p)R_f)\rfloor & \text{if } r>R_f\\
+    \lfloor U(R_f) - U(pr + (1-p)R_f)\rfloor &\text{if } r\leq R_f
+  \end{cases}
+\end{equation}
+By $\lfloor . \rfloor$ we mean a function returning its argument if non-negative and zero
+otherwise. This means that we don't want to discourage taking risk (borrowing or
+short-selling), but it's not encouraged either.
 
-Mathematically, we want to bound the following expression, where $(x,r)\sim\bm D$. Here,
-we use the fact that the absolute first derivative of $U$ is bounded by $1$, and therefore
-is a 1-Lipschitz function\cite{lipschitz}:
-\begin{align*}
-  |U(q_n,x,r) - U(q_{n'},x,r)| = |U(q_n^Tx,r) - U(q_{n'}^Tx,r)| \leq |(q_n - q_{n'})^Tx|
-\end{align*}
+\paragraph{Utility.}
+There are two ways we can model our utility, and both are concave shaped, to represent a
+risk-averse approach. The first utility is the linear utility of the form
+\begin{equation}
+  U(r) = r + \min(0, \beta r),
+\end{equation}
+with $0<\beta<1$. The other utility is exponential:
+\begin{equation}
+  U(r) = -\exp(-\mu r),
+\end{equation}
+with $\mu > 0$.
 
-\begin{deff}[Subgradient and subdifferential]
-  Form \cite{rockafellar}, a vector $s$ is said to be a \emph{subgradient} of a convex
-  function $f$ at a point $x$ if, for all $y$,
-\begin{equation*}
-  f(y) \geq f(x) + s^T(y-x).
-\end{equation*}
-Geometrically, if $s$ is a subgradient of $f$ at $x$, then $h(z) = f(x) + s^T(z-x)$ is an
-hyperplane supporting the convex set $\epi f$ at $(x,f(x))$.
+\begin{figure}
+  \centering
+  \begin{subfigure}{.4\textwidth}
+  \includegraphics[width=1.1\textwidth]{ExpULossAboveZero.pdf}
+\end{subfigure}%
+\begin{minipage}{.4\textwidth}
+  \includegraphics[width=1.1\textwidth]{ExpULossBelowZero.pdf}
+\end{minipage}
+\end{figure}
 
-The set of all subgradients of $f$ at $x$ is the subdifferential and is denoted
-$\dd f(x)$.
+\paragraph{Algorithm.}
+We will be concerned with probabilistic confidence bounds on results produced using the
+following algorithm, using dataset $S_n$.
+\begin{equation}
+  q^\star = \argmin_{q\in\real^p}\frac{1}{n} \sum_{i=1}^{n} c(q^Tx_i,r_i) + \lambda\|q\|^2_2.
+\end{equation}
 
-\marginnote{TODO!}Reciprocally, we also define \emph{supergradients} the same way as
-subgradients, but for concave functions\cite{supergradients}, that is $s$ is a
-supergradient to $f$ at $x_0$ if and only if 
-\begin{equation*}
-  f(x) \leq f(x_0) + s^T(x-x_0).
-\end{equation*}
+\paragraph{Assumptions.}
+We will assume that information vectors have been pre-processed and lie in a $X^2_{\max}$
+radius ball. We also assume that the return rates observed are comprised within $[-\bar r,
+\bar r]$. This last assumption will be relaxed. 
+
+\marginnote{Include reference for definitions and theorems}
+\begin{deff}
+  A loss function $\ell$ is $\sigma$-admissible if the associated cost function $c$ is
+  convex with respect to its first argument and the following condition holds for any
+  $p_1,p_2$ and $r$:
+  \begin{equation}
+    |c(p_1,r) - c(p_2,r)| \leq \sigma |p_1 - p_2|
+  \end{equation}
 \end{deff}
 
-Because $\hat U$ is the average utility over all data points of $S_n$, $\hat U$ is a
-convex function of the decision vector $q$ in $\real^p$, because $U$ is itself convex in
-$\real^p$. Let $\dd\hat U$ be the set of supergradients of $\hat U$ at $q^\star$. Then,
-for any $s\in\dd\hat U$, the following hold by definition of the supergradient:
-\begin{equation}
-s^T(q_{n'}-q_n) \geq \hat U(q_{n'},S_n) - \hat U(q_n,S_n).
-\end{equation}
-In particular, it easy to see that $0\in\dd\hat U$ because $q_n$ is the optimal decision
-vector for the information dataset $S_n$. It follows that the following holds:
-\begin{equation}
-  0 \geq {s^\star}^T(q_{n'} - q_n) \geq  \hat U(q_{n'},S_n) - \hat U(q_n,S_n).
-\end{equation}
-where
-\begin{equation}
-  s^\star = \argmin_{s\in\dd\hat U} s^T(q_{n'} - q_n)
-\end{equation}
+\begin{rem}
+  Our loss function $\ell$ is $\sigma$-admissible with $\sigma=\bar r+R_f$ in the linear
+  case and $\sigma=(\bar r+R_f)\exp(\mu\bar r)$ in the exponential case.
+\end{rem}
 
+\begin{proof}
+  First, we remark that both forms of $U$ yield a convex function of $p$ with $r$ fixed. 
+
+  Now we'll suppose that $c(p_1,r), c(p_2,r) > 0$. Then the expression
+  $|c(p_1,r)-c(p_2,r)|$ reduces to
+  \begin{equation}
+    \label{eq:above1}
+    |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
+  \end{equation}
+  Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its domain, and so
+  \eqref{eq:above1} is bounded by
+  \begin{equation}
+    \label{eq:above2}
+    \alpha |p_1r + (1-p_1)R_f - (p_2r + (1-p_2)R_f)| = \alpha|p_1-p_2||r-R_f|
+  \end{equation}
+  where
+  \begin{equation}
+    \alpha = \sup_{r\in[-\bar r,\bar r]} |U'(r)|.
+  \end{equation}
+
+  In the linear case, the derivative is piecewise constant, and is set to 1 on for returns
+  below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \exp\mu r$, and
+  $\alpha = \exp \mu \bar r$.
+
+  The bound \eqref{eq:above2} must hold for any $r$. The expression $|r-R_f|$ will reach
+  its largest value at $r=-\bar r$, since $R_f$ is assumed to be non-negative.
+
+  Finally we consider the case where, without loss of generality, $c(p_2,r)=0$. Then, if
+  $c$ had not been defined using $\lfloor .\rfloor$, then we would have
+  \begin{align}
+    |\floor*{c(p_1,r)} - \floor*{c(p_2,r)}| &\leq |c(p_1,r) - c(p_2,r)|\\
+    &\leq \sigma|p_1-p_2|.\qedhere
+  \end{align}
+\end{proof}
+
+\begin{thm}
+  Let $F$ be a reproducing kernel Hilbert space with kernel $\kappa$ that
+  $\forall x\in X$, $\kappa(x,x) \leq \kappa^2 <\infty$. If $\ell$ is $\sigma$-adimissible
+  with respect to $F$, then the learning algorithm defined by
+  \begin{equation}
+    \label{eq:above3}
+    A_S = \argmin_{g\in F}\frac{1}{n}\sum_{i=1}^n \ell(g,d_i) + \lambda\|g\|^2_k
+  \end{equation}
+  has uniform stability $\alpha_n$ with respect to $\ell$ with
+  \begin{equation}
+    \alpha_n \leq \frac{\sigma^2 \kappa^2}{2\lambda n}.
+  \end{equation}
+\end{thm}
+
+\begin{rem}
+  Our proposed algorithm has the form \eqref{eq:above3}, and so has algorithmic stability
+  bounded by
+  \begin{equation}
+    \alpha_n \leq \frac{(\bar r+R_f)^2X^2_{\max}}{2\lambda n}
+  \end{equation}
+  with linear utility and
+  \begin{equation}
+    \alpha_n \leq \frac{\exp(2\mu\bar r)X^2_{\max}}{2\lambda n}
+  \end{equation}
+  in the case of exponential utility.
+\end{rem}
+
+\begin{deff}
+  The \emph{true risk} with respect to algorithm $A$ and set $S_n$ is defined as
+  \begin{equation}
+    R_{\text{true}}(A,S_n) = E_d[\ell(A_{S_n},d)],
+  \end{equation}
+  which is, in plain words, the expected loss incured when applying the algorithm created
+  from training set $S_n$ in the wild, ie. out of sample.
+\end{deff}
+
+\begin{deff}
+  The \emph{empirical risk} with respect to algorithm $A$ and set $S_n$ is defined as
+  \begin{equation}
+    \hat R(A,S_n) = \frac{1}{n} \sum_{i=1}^n \ell(A_{S_n},d_i),
+  \end{equation}
+  which is, in plain words, the average cost incured by our model over all the training
+  set.
+\end{deff}
+
+\begin{rem}
+  The maximum loss we can suffer over a single data point happens when $r_i=-\bar r$ and
+  $p=1$, ie.
+  \begin{equation}
+    c(1,-\bar r) = U(R_f) - U(\bar r).
+  \end{equation}
+  We shall call this quantity $\gamma$.
+\end{rem}
+
+\begin{thm}
+  Let $A$ be an algorithm with uniform stability $\alpha_n$ with respect to a loss
+  function $\ell$ such that $0\leq\ell(A_{S_n},d)\leq M$ for all $d=(x,r)\sim D$ and all sets
+  $S_n$ of size $n$. Then for any $n\geq1$ and any $\delta\in(0,1)$, the following bound
+  holds with probability at least $1-\delta$ over the random draw of the sample $S_n$:
+  \begin{equation}
+    |R_{\text{true}}(A,S_n) - \hat R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + M) \sqrt{\frac{\log(2/\delta)}{2n}}.
+  \end{equation}
+\end{thm}
+
+\begin{rem}
+  Our alogirthm has a generalization bound of
+  \begin{equation}
+    |R_{\text{true}}|(A,S_n) - \hat R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + \gamma) \sqrt{\frac{\log(2/\delta)}{2n}}.
+  \end{equation}
+\end{rem}
 
 \begin{thebibliography}{99}
 
 \bibitem{rudin2015}
   Cynthia Rudin and Gah-Yi Vahn. \textit{The Big Data Newsvendor: Pratical Insights from
     Machine Learning}, Operations Research, 2015.
+
+\bibitem{bousquet2002}
+  Olivier Bousquet and André Elisseeff. \textit{Stability and Generalization}, Journal of
+  Machine Learning Research, 2002.
 
 \bibitem{lipschitz}
   ``Si la valeur absolue de la dérivée est majorée par $k$, $f$ est $k$-lipschitzienne''.

@@ -250,7 +250,7 @@ First, previously undefined formally:
 <<linearUtilityDefinition>>
 _Def. (Linear Utility)_ The linear utility is defined as
 
-				  U(r) = r + min(0, \beta{}x)
+				  U(r) = r + min(0, \beta{}r)
 
 where 0 < \beta < 1. We simplify r_c = 0.
 
