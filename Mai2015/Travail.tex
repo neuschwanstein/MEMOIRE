@@ -181,6 +181,18 @@ radius ball. We also assume that the return rates observed are comprised within 
 \bar r]$. This last assumption will be relaxed. 
 
 \marginnote{Include reference for definitions and theorems}
+
+\begin{deff}
+  An algorithm $A$ has uniform stability $\beta$ with respect to the loss function $\ell$
+  if, for all $S\in\bm D^n$ and $i\in\{1,\ldots,n\}$, the following holds:
+  \begin{equation}
+    \|\ell(A_s,.) - \ell(A_{S^{\backslash i}},.)||_{\infty} \leq \beta_n.
+  \end{equation}
+  Here, $S^{\backslash i}$ means the set $S$ with the $i$th data point removed.
+
+  Furthermore, $A$ is stable when $\beta_n = O(1/n)$.
+\end{deff}
+
 \begin{deff}
   A loss function $\ell$ is $\sigma$-admissible if the associated cost function $c$ is
   convex with respect to its first argument and the following condition holds for any

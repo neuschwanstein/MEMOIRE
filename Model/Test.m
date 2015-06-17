@@ -25,7 +25,6 @@ function R = returns()
 end
 
 function result = pos(x)
-%     result = x.*(x>=0);
     result = max(x,0);
 end
 
@@ -44,7 +43,7 @@ end
 
 function q = solveAlgo(X,R,lambda)
     global p;
-    U = @(r) linearUtility(0.5,r);
+    U = @(r) expUtility(1,r);
     
     cvx_begin
         variable q(p)
