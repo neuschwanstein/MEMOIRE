@@ -1,27 +1,13 @@
-function Test
+function q = Test()
     global Rf p n;
     Rf = 2; p = 10; n = 1000;
     
     n = 100;
     p = 10;
     
-    fprintf('This is a test. Now go away.\n');
-    X = information();
-    R = returns();
+    [X r] = getDataset(n,p);
     
-    solveAlgo(X,R,0)
-end
-
-function X = information()
-    global p n;
-    mu = zeros(1,p);
-    Sigma = eye(p);
-    X = mvnrnd(mu,Sigma,n);
-end
-
-function R = returns()
-    global n;
-    R = normrnd(5,10,[n,1]);
+    q=solveAlgo(X,r,0);
 end
 
 function result = pos(x)
@@ -43,9 +29,9 @@ end
 
 function q = solveAlgo(X,R,lambda)
     global p;
-    U = @(r) expUtility(1,r);
+    U = @(r) linearUtility(0.5,r);
     
-    cvx_begin
+    cvx_begin quiet
         variable q(p)
         minimize(sum(cost(U,X*q,R)) + lambda*norm(q,2))
     cvx_end
