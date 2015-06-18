@@ -362,3 +362,27 @@ Our [[algorithm]] has a generalization bound of
 	       `|R_{true}(A,S_n) - ^R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + \gamma) \radic(log(2/\delta)/2n)
 
 with probability 1-\delta. It follows from [[RudinLemma2][Rudin et al.'s Lemma 2]] and our [[stabilityTheorem][stability Theorem]]. \diamond
+
+
+* Le 17 juin
+
+On a commencé à faire des tests numériques. Voici ce qu'il faudrait faire:
+
+ - Etablir une routine de cross-validation afin d'obtenir un \lambda de régularisation
+ - Tracer des points de corrélation (R^2 ?) selon la valeur de \lambda
+ - Tracer des courbes de stabilité sur plusieurs tests.
+ - Tracer des courbes de vrai risque par rapport au risque empirique afin de déterminer
+   comment se comporte le modèle.
+ - Tracer vis-à-vis ces courbes les bornes théoriques.
+
+Ensuite il faudra commencer à réfléchir sérieusement à la facon dont on peut créer un
+portefeuille à plusieurs titres. Il s'agit probablement d'optimiser sur un espace de
+matrice, et non pas simplement sur un vecteur q. Par contre la théorie devra être revue en
+profondeur afin d'obtenir de nouvelles bornes.
+
+Now how should X^2_max and \rho should be defined in our numerical tests? First off, an
+information vector, at least how it as been defined now, is an uncorrelated multivariate
+random variable with mean 0. Now we know for a real random variable that with 95%
+confidence level, that x will lie within [-1.96, 19.96]. We're interested with X^2_max,
+which is ||x||^2_2. First let's suppose p=2, with both coordinates at 1.96. Then we would
+have X^2_max = (1.96)^p = (1.96)^2. However does the confidence shrink?

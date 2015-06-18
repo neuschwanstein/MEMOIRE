@@ -1,12 +1,12 @@
-function [X r] = getDataset(n,p)
+function [X,r,t] = getDataset(n,p)
     
     %Uncorrelated information with mean 0 (variance 1).
     mu = zeros(1,p);
     Sigma = eye(p);
     X = mvnrnd(mu,Sigma,n);
     
-    % We suppose r is a linear transformation of X.
-    t = [9 -1 -5 -6 10 4 4 3 6 2]'; %randi([-10,10],10,1);
+    % p uniformly distributed numbers between -5 and 5.
+    t = 5*(rand(p,1)-0.5);
     r = X*t;
     
     % To which we add normal random noise
