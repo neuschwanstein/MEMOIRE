@@ -386,3 +386,115 @@ random variable with mean 0. Now we know for a real random variable that with 95
 confidence level, that x will lie within [-1.96, 19.96]. We're interested with X^2_max,
 which is ||x||^2_2. First let's suppose p=2, with both coordinates at 1.96. Then we would
 have X^2_max = (1.96)^p = (1.96)^2. However does the confidence shrink?
+
+Let's think out loud. I have a first random variable whose value I know with a 95%
+confidence interval lies in [-1.96, 1.96]. But each component is unrelated, by
+hypothesis. And the probability of two unrelated events is the product of the two
+probabilities. 
+
+We can therefore derive a general identity. If \Sigma is diagonal, then with confidence (.95)^p,
+the norm of the vector is less than (1.96)^p... TBC
+
+
+* Le 18 juin
+
+Donc, comment mesurer numériquement la [[uniformStabilityDefinition][stabilité algorithmique]]? Le probleme le plus
+évident est qu'il s'agit de maximiser sur D au grand complet. 
+
+* Le 19 juin
+
+Aujourd'hui on travaillera sur les intervalles de confiance, notamment essayer de mieux
+quantifier X^2_max.
+
+Rappelons d'abord que X^2_max représente la région dans laquelle, avec probabilité 1-\delta, se
+trouvent tous vecteur d'information x. 
+
+Une chose à la fois. Il était question aussi d'établir une routine de cross-validation
+afin d'obtenir un \lambda^\star optimal de régularisation. Voici les étapes qu'elle devrait
+réaliser:
+
+  1. On fixe un vecteur de transformation t \in R^p. On fixe aussi un ensemble d'entraînement
+     S_n et un ensemble de test S_m à partir de t.
+  2. On fixe \lambda = 0.
+  3. On résout q^\star à partir de S_n. On conserve le coût total de l'ensemble dans un
+     vecteur de résultat c_in.
+  4. Avec q^\star, on détermine le cout de l'ensemble S_m qu'on stock dans un vecteur de
+     résultat c_out.
+  5. On recommence (3) avec \lambda = \lambda + \delta\lambda.
+  6. END
+
+					  \diamond \diamond \diamond
+
+_Exploration d'un portefeuille constitué de plusieurs titres._
+
+On considère m-1 titres risqués, et un titre sans risque de rendement R_f. Chacun de ces
+titres et composé d'un vecteur d'information x_st, ie. de m ensembles d'informations S_n sur
+n jours. 
+
+On souhaite encore former une décision linéaire par rapport à l'information disponible. On
+avait donc une application q (ou un algorithme) qui à partir d'un vecreur d'information x
+permettait de rendre un portefeuille de la forme [p, 1-p]. Autrement dit, on obtenait un
+scalaire à partir duquel l'ensemble du portefeuille était bien défini. Maintenant ce dont
+on a besoin, c'est d'un portefeuille vecteur. 
+
+Réfléchissons. A tous les jours on n'a non plus un seul vecteur d'information x, mais bien
+une matrice d'information X dont chaque rangée représente un titre et chaque colonne
+représente une information quelconque, ie. pour chaque titre s dont on a un vecteur
+colonne d'information x_s, on a maintenant une matrice définie par
+
+			       X = [x_1 \cdot\cdot\cdot x_{s}]
+
+On doit donc définir un vecteur de décision q \in R^s tel que Xs rend un vecteur de
+portefeuille a s éléments. Le rendement de ce portefeuille sera alors donné par r^{T}Xs, où r
+est le vecteur de rendement à cette journée donnée. 
+
+A present, comment déterminer la quantité à investir dans le titre sans risque?
+Puisqu'auparavant on allouait la quantité restante (ie. 1 - q^{T}x) au titre sans risque, il
+s'agit finalement de faire la même chose ici, ie. 1^{T}Xs donne la composition totale dans
+les titres risqués, alors 1 - 1^{T}Xq donnera l'allocation sans risque, de sorte que le
+rendement total deviendra:
+
+				   r^{T}Xq + (1 - 1^{T}Xq)R_f
+
+A partir de ce nouveau portefeuille, on peut sans doute utiliser les mêmes outils
+développés auparavant, ie. pour le portefeuille à un seul titre. Voyons voir...
+
+_Coût et _Perte._
+
+On a auparavant défini notre fonction de perte (loss) \ell comme étant une fonction prenant
+comme argument un algorithme déterminé à partir d'un dataset S_n et un vecteur
+d'information complète d=(x,r) \in R^{p+1} pour en retourner le coût total. Le coût était quant
+à lui déterminé à partir de l'utilité concave U. 
+
+Le coût a été défini de facon très naïve, puisque qu'on a déterminé que si le rendement du
+titre risqué était supérieur au rendement sans risque, alors on s'attendait (ou du moins
+on voulait privilégier) un portefeuille constitué uniquement du titre risqué, ie. q^{T}x
+\geq 1. Si au contraire le rendement était inférieur au titre sans risque, alors on
+s'attendait à ce que le portefeuille soit complètement sans risque, ie. q^{T}x \leq 0. 
+
+Est-ce qu'on pourrait dès lors avoir un coût total qui serait une somme des coûts
+individuels pour chaque titre? En fait ce n'est pas nécessaire car on obtient déjà un
+rendement du portefeuille scalaire auquel on peut simplement appliquer la même logique que
+précédemment. 
+
+Ce sera donc c(p,r), où p et r sont les valeurs vectorielles d'allocation et de rendement,
+ie. p = Xq. Mais ce n'est pas si clair... Car supposons que tous les titres donnent un
+rendement inférieur à R_f, sauf un. Alors on veut clairement que le portefeuille soit
+constitué uniquement de ce titre, et de rien dans le reste. le coût serait donc 
+
+			    \lfloor{}U(max r) - U(r^{T}p + (1 - 1^{T}p)R_f)\rfloor
+
+si max r > R_f.
+
+Au contraire, si max r < R_f, alors le coût deviendra 
+
+			   \lfloor{}U(R_f) - U(r^{T}p + (1 - 1^{T}p)R_f)\rfloor.
+
+Il faut donc à présent revérifier les preuves afin de s'assurer que tout fonctionne. 
+
+On peut toutefois énoncer un nouvel algorithme. On chercherait vraisemblablement à une
+fois de plus minimiser le cout total sur un dataset S_{n\times{}s}.
+
+	          q^\star = argmin_{q \in R^p} 1/n \sum_i^n c(Xq, r) + \lambda||q||_2.
+
+
