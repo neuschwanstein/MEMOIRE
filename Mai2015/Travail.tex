@@ -157,6 +157,7 @@ with $\mu > 0$.
 We will be concerned with probabilistic confidence bounds on results produced using the
 following algorithm, using dataset $S_n$.
 \begin{equation}
+  \label{algo}
   q^\star = \argmin_{q\in\real^p}\frac{1}{n} \sum_{i=1}^{n} c(q^Tx_i,r_i) + \lambda\|q\|^2_2.
 \end{equation}
 
@@ -305,7 +306,56 @@ radius ball. We also assume that the return rates observed are comprised within 
 
 \section{Multi-asset Portfolio}
 
+We now consider a multi-asset portfolio, made of $m$ risky assets and a risk-free
+asset. Each of theses risky assets have information vector $x_{st}$, where
+$s\in\{1,\ldots,m\}$ and $t\in\{1,\ldots,n\}$. Therefore, we suppose having access to a
+sample dataset $S_n = \{X_1,\ldots,X_n\}$ where $X_i\in\real^{m\times p}$.
 
+There are two ways to approach the multi-asset scenario. 
+
+
+\subsection{First approach}
+
+On one hand, we can define a single decision vector $q$ such that the return on a single
+holdinq period would be defined by
+\begin{equation}
+  r^{T}Xq + (1 - 1^{T}Xq)R_f,
+\end{equation}
+where $r\in\real^{m}$ is the return vector of the $m$ stocks and $1^T$ is a contant vector
+of ones in $\real^m$ whose role is simply to sum over the components of $Xq$, ie. sum over
+the risky allocations of the portfolio. However, this method has the disadvantage that the
+decision vector is applied for each stock in the same way, and so all their information
+vectors are ultimately `averaged' over. Therefore, if some asset is more sensitive to an
+information component than other assets, this knowledge might be lost if using this
+method.
+
+Nevertheless, we can again define two different cost functions, which our optimal decision
+vector would minimize when applied to our sample dataset $S_n$. Again, the cost can be
+simply defined as
+\begin{equation}
+  c(p,r) = -U(r^{T}p + (1 - 1^{T}p)R_f).
+\end{equation}
+As disucssed previously, this definition might have the disadvantage of providing an
+unconstrained optimization problem when determining the optimal decision vector.
+
+We are not limited to a single cost definition, and in fact, the multi-asset scenario
+provides many legitimate cost definitions. Here the most `aggressive' one:
+\begin{equation}
+  c(p,r) =
+  \begin{cases}
+    \floor{U(\max r) - U(r^{T}p + (1-1^{T}p)R_f)} & \text{if } \max r>R_f\\
+    \floor{U(R_f) - U(r^{T}p + (1-1^{T}p)R_f)} &\text{if } \max r\leq R_f.
+  \end{cases}  
+\end{equation}
+This means that we expect (or conversely, that we suffer a lesser loss) when the total
+return of our portfolio is near the best return achieved by our considered stocks. Instead
+of $\max r$, we also could have chosen the average returns $\bar r$ during the period as
+the target that we wish to achieve (provided that the average is superior to the risk-free
+return). We could in fact chose any function mapping from a vector of returns $r$ to a
+scalar as our global return objective.
+
+In any case, the algorithm determining the decision vector $q$ would once be defined as
+previously, ie. as \eqref{algo}.
 
 \begin{thebibliography}{99}
 
@@ -317,18 +367,8 @@ radius ball. We also assume that the return rates observed are comprised within 
   Olivier Bousquet and André Elisseeff. \textit{Stability and Generalization}, Journal of
   Machine Learning Research, 2002.
 
-\bibitem{lipschitz}
-  ``Si la valeur absolue de la dérivée est majorée par $k$, $f$ est $k$-lipschitzienne''.
-  \href{https://fr.wikipedia.org/wiki/Application_lipschitzienne}{Application
-    lipschitzienne}.
-
 \bibitem{rockafellar}
   Rockafellar, R.~T. \emph{Convex Analysis}, Princeton University Press, 1970.
-
-\bibitem{supergradients}
-  \href{http://people.hss.caltech.edu/~kcb/Notes/Supergrad.pdf}{Supergradients}.
-
-\bibitem{refneeded} Reference needed!
 
 \end{thebibliography}
 \end{document}
