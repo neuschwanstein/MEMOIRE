@@ -75,45 +75,17 @@ return rate of:
   p_{st}(q) = r_{st}q^Tx_{st} + (1-q^Tx_{st})R_f.
 \end{equation}
 
-% We further suppose that the \emph{utility} derived from a return rate $p$ can be described
-% using a concave two-pieces linear function of the following form:
-% \begin{equation}
-%   U(p) = p-r_c + \min((\beta-1)(p-r_c),0),
-% \end{equation}
-% where $r_c$ is an arbitrary \emph{critical rate}. We impose the condition $0<\beta<1$, so
-% that the utility derived from rates inferior to the critical rate $r_c$ increases more
-% sharply than from rates above $r_c$. Typically, the critical rate could be 0, but it could
-% also be $R_f$. This is up to the investor.
-
-
 The question we now wish to ask is how the decision vector $q$ should be chosen. We assume
 we have access to a training dataset $S_n$, comprising of $s$ different assets over
 $t$\marginnote{What's the difference between having $n$ points with having $s\times t$
   points? For example, what if $s\gg t$ or the reverse?} periods, such that
-$n = s\times t$. % Given such a training set, we then define the \emph{optimal decision
-%   vector} $q^\star$ as the decision maximizing the average utility over the training set:
-% % TODO: Find a better way to input optimization equations
-% \begin{align}
-%   q^\star &= \argmax_q \hat U\\
-%           &= \argmax_q \frac{1}{n}\sum_{s,t} U(p_{st}(q)).
-% \end{align}
-% The above optimization problem is linear and can therefore be readily solved with any
-% modern computer.
+$n = s\times t$. 
 
-% However, we also wish to add a $L_2$ regularization term to the objective in order to
-% avoid overfitting. The new learning algorithm is then
-% \begin{align}
-%   q^\star &= \argmax_q \frac{1}{n} \sum_{s,t} U(p_{st}(q)) - \lambda \|q\|^2.
-% \end{align}
-% Now even though this new problem is no longer linear, it is still convex and can therefore be
-% efficiently solved.
 
-% We will refer to these two algorithms as respectively the non-regularized or linear
-% algorithm and the regularized algorithm.
 
 \section{Definitions and Bounds}
 
-\subsection{Definitions and Notation}
+\subsection{Definitions Notation}
 
 Most of the following notation and defintions follow directly from \cite{bousquet2002}.
 
@@ -133,18 +105,31 @@ We introduce the loss $\ell$ and the cost $c$ of using $q$ with a random draw $d
 \ell(q,d) = c(q(x),r) = c(q^Tx,r)
 \end{equation}
 
-The cost must always be a non-negative quantity. Supposing an utility $U$, we model it as
-follows:
+Supposing an utility $U$, there are two different cost functions we can use. The first
+one, and perhaps the most obvious one is defined by
+\begin{equation}
+  c(p,r) = -U(pr + (1-p)R_f).
+\end{equation}
+If the utility is piecewise linear, then the cost is not bounded, and so an infinite
+return would yield a negatively infinite cost. This means that risk-taking will be
+encouraged since risky position, ie. $|p|>1$ can in fact yield a negative cost. On the
+other hand, with an unbounded utility, the algorithm minimizing the cost over the sample
+must have $\lambda > 0$, otherwise the problem might be unconstrained. 
+
+We can also define a new cost function that is always non-negative:
 \begin{equation}
   c(p,r) =
   \begin{cases}
     \lfloor U(r) - U(pr + (1-p)R_f)\rfloor & \text{if } r>R_f\\
-    \lfloor U(R_f) - U(pr + (1-p)R_f)\rfloor &\text{if } r\leq R_f
+    \lfloor U(R_f) - U(pr + (1-p)R_f)\rfloor &\text{if } r\leq R_f,
   \end{cases}
 \end{equation}
-By $\lfloor . \rfloor$ we mean a function returning its argument if non-negative and zero
-otherwise. This means that we don't want to discourage taking risk (borrowing or
-short-selling), but it's not encouraged either.
+where by $\lfloor \cdot \rfloor$ we mean $\max(.,0)$. In the case of exponential
+utilty, this cost function is actually equivalent to the one previously defined, but is
+quite different in the case of an unbounded utility function, for example the piece-wise
+linear one. Such a cost does not encourage risky position, since the cost is at least
+0. This means that if $r>0$, then there's no point having $p>1$ instead of $p=1$ since
+both will yield a zero cost position. 
 
 \paragraph{Utility.}
 There are two ways we can model our utility, and both are concave shaped, to represent a
@@ -239,7 +224,7 @@ radius ball. We also assume that the return rates observed are comprised within 
   its largest value at $r=-\bar r$, since $R_f$ is assumed to be non-negative.
 
   Finally we consider the case where, without loss of generality, $c(p_2,r)=0$. Then, if
-  $c$ had not been defined using $\lfloor .\rfloor$, then we would have
+  $c$ had not been defined using $\lfloor\cdot\rfloor$, then we would have
   \begin{align}
     |\floor*{c(p_1,r)} - \floor*{c(p_2,r)}| &\leq |c(p_1,r) - c(p_2,r)|\\
     &\leq \sigma|p_1-p_2|.\qedhere
@@ -316,6 +301,11 @@ radius ball. We also assume that the return rates observed are comprised within 
     |R_{\text{true}}(A,S_n) - \hat R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + \gamma) \sqrt{\frac{\log(2/\delta)}{2n}}.
   \end{equation}
 \end{rem}
+
+
+\section{Multi-asset Portfolio}
+
+
 
 \begin{thebibliography}{99}
 

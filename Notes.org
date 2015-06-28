@@ -1,7 +1,3 @@
-#+TITLE: Notes
-#+AUTHOR: Thierry BM
-#+STARTUP: entitiespretty
-
 * *Le 8 juin*
 
 _Quelques définitions (dans le cas /newsvendor and portfolio/)_
@@ -498,3 +494,36 @@ fois de plus minimiser le cout total sur un dataset S_{n\times{}s}.
 	          q^\star = argmin_{q \in R^p} 1/n \sum_i^n c(Xq, r) + \lambda||q||_2.
 
 
+* Le 25 juin
+
+Pondering, once again. Our loss function \ell defined above was designed in a complicated
+fashion, but this was to allow a single reference point where the loss was perfectly zero,
+ie. when investment decision were perfect.
+
+
+* Le 27 juin
+
+Two loss functions were previously defined:
+
+				c(p,r) = -U(rp + (1-p)R_f)
+
+and
+
+			c(p,r) = U(r) - U(pr + (1-p)R_f) if r > R_f
+			c(p,r) = U(R_f) - U(pr + (1-p)R_f) if r \leq R_f.
+
+There are a few differences between these two, for example, given a dataset where
+information points x_i are positively correlated with returns, then the minimization of the
+expression /without a regularization term/ will yield an unconstrained optimization
+problem. In contrast, the second expression is bounded below by zero, and so must be
+constrained. Bousquet also defines a cost function as having the signature
+
+				      c: Y \times Y \to R_{+}
+
+ie, mapping onto the non-negative real numbers. However, the proofs don't seem to use this
+property, at least not for theorems that interest us. 
+
+Another key difference is in the learning itself. With the first cost function, we simply
+try to maximize the utility derived from a decision p, whereas with the second cost, we're
+in fact minimizing the utility we didn't achieve, but that we could have achieved. And if
+we achieve a higher utility, then there's no additional benefits to it. 
