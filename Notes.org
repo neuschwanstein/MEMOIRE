@@ -397,6 +397,7 @@ the norm of the vector is less than (1.96)^p... TBC
 Donc, comment mesurer numériquement la [[uniformStabilityDefinition][stabilité algorithmique]]? Le probleme le plus
 évident est qu'il s'agit de maximiser sur D au grand complet. 
 
+
 * Le 19 juin
 
 Aujourd'hui on travaillera sur les intervalles de confiance, notamment essayer de mieux
@@ -527,3 +528,29 @@ Another key difference is in the learning itself. With the first cost function, 
 try to maximize the utility derived from a decision p, whereas with the second cost, we're
 in fact minimizing the utility we didn't achieve, but that we could have achieved. And if
 we achieve a higher utility, then there's no additional benefits to it. 
+
+
+* Le 28 juin
+
+Xq: returns the allocation for a m-portfolio.
+diag(XQ): returns the allocation for a m-portfolio
+
+Returns for a m-portfolio
+
+			     r^{T}diag(XQ) + (1 - 1^{T}diag(XQ))R_f
+
+which can also be expressed 
+
+			      r^{T}diag(P) + (1 - 1^{T}diag(P))R_f.
+
+But now the cost c(P,r) /must/ be a jointly convex function over P and r. This is how c(P,r)
+could be expressed (easiest form):
+
+			c(P,r) = -U(r^{T}diag(P) + (1 - 1^{T}diag(P))R_f)
+
+First of all, are not we losing some cross-information about how an asset i will react to
+information about stock j? This reminds me of a covariance matrix of some sort.
+
+At any rate, the question is now to know if, for any P \in R^{m\times{}m} and any r \in R^m, the
+expression r^{T}diag(P) is a convex one. However something tells me it might not be the
+case... Matlab at the rescue!

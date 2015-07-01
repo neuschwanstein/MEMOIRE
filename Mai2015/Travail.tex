@@ -20,6 +20,7 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator{\st}{s.t.}
 \DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\diag}{diag}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 \newcommand{\iso}{\simeq}
@@ -327,7 +328,7 @@ the risky allocations of the portfolio. However, this method has the disadvantag
 decision vector is applied for each stock in the same way, and so all their information
 vectors are ultimately `averaged' over. Therefore, if some asset is more sensitive to an
 information component than other assets, this knowledge might be lost if using this
-method.
+method. 
 
 Nevertheless, we can again define two different cost functions, which our optimal decision
 vector would minimize when applied to our sample dataset $S_n$. Again, the cost can be
@@ -335,7 +336,7 @@ simply defined as
 \begin{equation}
   c(p,r) = -U(r^{T}p + (1 - 1^{T}p)R_f).
 \end{equation}
-As disucssed previously, this definition might have the disadvantage of providing an
+As discussed previously, this definition might have the disadvantage of providing an
 unconstrained optimization problem when determining the optimal decision vector.
 
 We are not limited to a single cost definition, and in fact, the multi-asset scenario
@@ -357,6 +358,39 @@ scalar as our global return objective.
 In any case, the algorithm determining the decision vector $q$ would once be defined as
 previously, ie. as \eqref{algo}.
 
+
+\subsection{Second approach}
+
+Under this second approach, instead of averaging over all information vector at the risk
+of losing asset-specific information, we now use a decision matrix $Q$ of size $p\times
+m$, whose $m$ columns are actually trained independently one to each other so that each
+asset reacts differently from the rest. 
+
+The allocation of each vector would then be $\diag(XQ)$, ie. the diagonal elements of the
+$m\times{}m$ matrix $XQ$. The one-period return is therefore
+\begin{equation}
+  r^{T}\diag(XQ) + (1 - 1^{T}\diag(XQ))R_f.
+\end{equation}
+
+This method still has a disadvantage though, in that it won't consider the eventual
+influence of information $x_j$ of asset $j$ to asset $j$, ie. each stock is trained
+independantly one to each other.
+
+\subsection{Third Approach}
+
+Finally, we introduce a third approach with the objective of using all available data of
+the market, available through $X\in\real^{m\times p}$. However, we must be clear about
+what information $X$ carries with it; its information is only bounded to different
+assets, and therefore does not include `global' information with it.
+
+Following a simple idea introduced by \cite{wsj}, we can add an unknown linear
+transformation $W$ to $X$ so that $q$ can benefit from the whole information matrix, and
+not only from the average of its columns. The total return using a transformation $W$ and
+decision vector $q$ would therefore be expressed as
+\begin{equation}
+  r^{T}XWq + (1 - 1^{T}XWq)R_f.
+\end{equation}
+
 \begin{thebibliography}{99}
 
 \bibitem{rudin2015}
@@ -369,6 +403,9 @@ previously, ie. as \eqref{algo}.
 
 \bibitem{rockafellar}
   Rockafellar, R.~T. \emph{Convex Analysis}, Princeton University Press, 1970.
+
+\bibitem{wsj} Ming Fai Wong et al. \emph{Stock Market Prediction from WSJ: Text Mining via
+    Sparse Matrix Factorization.} ICDM 2014. 
 
 \end{thebibliography}
 \end{document}

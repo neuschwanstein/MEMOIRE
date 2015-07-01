@@ -1,0 +1,105 @@
+				    REVIEW OF ARTICLES
+
+* _Stock Market Prediction from WSJ: Text Mining via Sparse Matrix Factorization. Ming
+Fai Wong et al. 2014. ICDM 2014._
+
+*Main Goal.* Daily predictions on S&P500 stock prices.
+
+*Main Idea.* "Unified and natural model to leverage the model correlation between stock
+price movements and news articles. This model allows us to predict the prices of all the
+stocks of interest even when most of them are not mentioned in the new."
+
+*Raw Data.* Opening and closing stock prices, WSJ text corpus.
+
+*Features.*
+ - y_{jt} : intensity of word j on day t. Defined as the z-score of the number of newspaper
+   articles that contain word j relative to the article counts in previous days, with
+   threshold at z=-3. 
+ - r_{it} : log return of stock i on day t
+
+*Theoretical setting.* Unknown d-dimensional feature space. Each stock i is described by
+ non-negative feature vector u_i \in R^{d}_{+}, and each trading day t is described by feature
+ vector v_t \in R^d. 
+
+/Is d a parameter of the model??/
+
+The return on day t of stock i is predicted using 
+
+				     r_{it} = u_{i}^{T}v_t + \epsilon,
+
+\epsilon being a noise term. We only have access to y_t the word intensity vector of day t (m
+components) and we suppose that there is some linear transformation W such that v_t = Wy_t,
+so that we can reexpress previous equation as 
+
+				      r_{it} = u_{i}^{T }W y_t.
+
+The algorithm is an optimization program that minimizes the difference between achievd
+returns and predicted returns, over U = [u_1 \cdots u_{n}]^{T} the feature vectors of all n
+stocks and W, the linear transformation going from the m-words space to the d-average
+sentiment for the considered day. Altogether, we have
+
+			        min._{U\geq{}0, W} ||R - U W Y||^2_F.
+
+ - d: number of features of the model
+ - s: number of days (or holding periods) considered.
+
+** *References.*
+
+[1] E.F.Fama,“Marketefficienty,long-termreturns,andbehavioral finance,” Journal of
+Financial Economics, vol. 49, no. 3, 1998.
+[2] W. S. Chan, “Stock price reaction to news and no-news: drift and reversal after
+headlines,” Journal of Financial Economics, vol. 70, 2003.
+[3] P. C. Tetlock, “Giving content to investor sentiment: The role of media in the stock
+market,” The Journal of Finance, vol. 62, no. 3, 2007.
+[4] M. Minev, C. Schommer, and T. Grammatikos, “News and stock markets: A survey on
+abnormal returns and prediction models,” University of Luxembourg, Tech. Rep., 2012.
+[5] K. P. Murphy, Machine Learning: A Probabilistic Perspective. The MIT Press, 2012.
+[6] S. Boyd, N. Parikh, E. Chu, B. Peleato, and J. Eckstein, “Distributed optimization and
+statistical learning via the alternating direction method of multipliers,” Foundations and
+Trends in Machine Learning, vol. 3, no. 1, 2010.
+[7] Y. Koren, R. Bell, and C. Volinsky, “Matrix factorization techniques for recommender
+systems,” IEEE Computer, vol. 42, no. 8, 2009.
+[8] J. Friedman, T. Hastie, and R. Tibshirani, “A note on the group lasso and a sparse
+group lasso,” Stanford University, Tech. Rep., 2010.
+[9] Y. Zhang, “An alternating direction algorithm for nonnegative matrix factorization,”
+Rice University, Tech. Rep., 2010.
+[10] G. H. Golub, S. Nash, and C. van Loan, “A Hessenberg-Schur method for the problem
+AX + XB = C,” IEEE Transactions on Automatic Control, vol. 24, no. 6, 1979.
+[11] P. Sprechmann, I. Ram ́ırez, G. Sapiro, and Y. C. Eldar, “C.HiLasso: A collaborative
+hierarchical sparse modeling frame- work,” IEEE Transactions on Signal Processing,
+vol. 59, no. 9, 2011.
+[12] H. Markowitz, “Portfolio selection,” The Journal of Finance, vol. 7, no. 1, 1952.
+[13] G. Ganeshapillai, J. Guttag, and A. W. Lo, “Learning connec- tions in financial time
+series,” in ICML, 2013.
+[14] L. van der Maaten and G. Hinton, “Visualizing data using t-SNE,” Journal of Machine
+Learning Research, vol. 9, 2008.
+[15] G. Doyle and C. Elkan, “Financial topic models,” in NIPS Workshop on Applications for
+Topic Models: Text and Beyond, 2009.
+[16] T. M. Cover, “Universal portfolios,” Mathematical Finance, vol. 1, no. 1, 1991.
+[17] A. Borodin, R. El-Yaniv, and V. Gogan, “Can we learn to beat the best stock,” Journal
+of Artificial Intelligence Research, vol. 21, no. 1, 2004.
+[18] A. Agarwal, E. Hazan, S. Kale, and R. E. Schapire, “Algorithms for portfolio
+management based on the Newton method,” in ICML, 2006.
+[19] C. Dougal, J. Engelberg, Garc ́ıa, and C. A. Parsons, “Journalists and the stock
+market,” The Review of Financial Studies, vol. 25, no. 3, 2012.
+[20] B. Wüthrich, D. Permunetilleke, S. Leung, V. Cho, L. Zhang, and W. Lam, “Daily
+prediction of major stock indices from textual WWW data,” in KDD, 1998.
+[21] V. Lavrenko, M. Schmill, D. Lawrie, P. Ogilvie, D. Jensen, and J. Allan, “Mining of
+concurrent text and time series,” in KDD- 2000 Workshop on Text Mining, 2000.
+[22] G. P. C. Fung, J. X. Yu, and W. Lam, “News sensitive stock trend prediction,” in
+PAKDD, 2002.
+[23] R. P. Schumaker and H. Chen, “Textual analysis of stock mar- ket prediction using
+breaking financial news: The AZFinText system,” ACM Transactions on Information Systems,
+vol. 27, no. 2, 2009.
+[24] W. Zhang and S. Skiena, “Trading strategies to exploit blog and news sentiment,” in
+ICWSM, 2010.
+[25] M. Hagenau, M. Liebmann, M. Hedwig, and D. Neumann, “Automated news reading: Stock
+price prediction based on financial netws using context-specific features,” in
+HICSS, 2012.
+[26] M.-A. Mittermayer and G. F. Knolmayer, “NewsCATS: A news categorization and trading
+system,” in ICDM, 2006.
+[27] J. D. Thomas and K. Sycara, “Integrating genetic algorithms and text learning for
+financial prediction,” in GECCO-2000 Workshop on Data Mining with Evolutionary
+Algorithms, 2000.
+[28] H. Mao, S. Counts, and J. Bollen, “Predicting financial markets: Comparing survey,
+news, Twitter and search engine data,” preprint, 2011.
