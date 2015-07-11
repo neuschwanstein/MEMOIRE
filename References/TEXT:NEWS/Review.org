@@ -43,9 +43,15 @@ sentiment for the considered day. Altogether, we have
  - d: number of features of the model
  - s: number of days (or holding periods) considered.
 
+
+*Overfitting.*
+
+The authors are concerned by overfitting, especially considering the low size of the
+training set and the high number of considered stocks in their model.
+
 ** *References.*
 
-[1] E.F.Fama,“Marketefficienty,long-termreturns,andbehavioral finance,” Journal of
+[1] E.F.Fama, “Market efficienty,long-term returns,and behavioral finance,” Journal of
 Financial Economics, vol. 49, no. 3, 1998.
 [2] W. S. Chan, “Stock price reaction to news and no-news: drift and reversal after
 headlines,” Journal of Financial Economics, vol. 70, 2003.
@@ -69,7 +75,7 @@ AX + XB = C,” IEEE Transactions on Automatic Control, vol. 24, no. 6, 1979.
 hierarchical sparse modeling frame- work,” IEEE Transactions on Signal Processing,
 vol. 59, no. 9, 2011.
 [12] H. Markowitz, “Portfolio selection,” The Journal of Finance, vol. 7, no. 1, 1952.
-[13] G. Ganeshapillai, J. Guttag, and A. W. Lo, “Learning connec- tions in financial time
+[13] G. Ganeshapillai, J. Guttag, and A. W. Lo, “Learning connections in financial time
 series,” in ICML, 2013.
 [14] L. van der Maaten and G. Hinton, “Visualizing data using t-SNE,” Journal of Machine
 Learning Research, vol. 9, 2008.
