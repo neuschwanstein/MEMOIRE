@@ -28,6 +28,7 @@
 \newcommand{\iso}{\simeq}
 \newcommand{\dd}{\partial}
 \newcommand{\real}{\bm R}
+\newcommand{\trueRisk}{R_{\mathrm{true}}}
 
 
 \newcommand{\hilight}[1]{\colorbox{yellow}{#1}}
@@ -174,6 +175,29 @@ We will assume that information vectors have been pre-processed and lie in a $X^
 radius ball. We also assume that the return rates observed are comprised within $[-\bar r,
 \bar r]$. This last assumption will be relaxed. 
 
+
+\subsection{Theoretical Optimal Value}
+
+Before we go on to derive an algorithm for the in-sample optimal allocation, we first
+derive some theoretical results for an optimal allocation scalar $p^\star$, provided the
+distribution of the returns is priorly known. 
+
+Formally, we suppose that this distribution is characterized by its CDF $F$. We then wish
+to minimize the expected cost $c(p,r)$, where $p$ is a variable and $r$ a random return
+rate. Since,
+\begin{equation}
+  E[c(p,r)] = \int_{-\infty}^{\infty} c(p,r)\,dF(r),
+\end{equation}
+the optimal allocation $p^\star$ is therefore the solution to
+\begin{equation}
+  \frac{d}{dp} \int_{-\infty}^{\infty} c(p,r)\,dF(r) = 0.
+\end{equation}
+
+However, our theoretical assumptions are fundamentally different from this one, since we
+consider a joint distribution $\bm D= \bm X \times \bm R$, so that returns are dependant
+of a draw from $\bm X$, whereas it's assumed here that decision can only be made on the
+basis of the returns. 
+
 \subsection{Definitions, Theorems and Tools}
 We now state a certain number of definitions and theorems that will be of great importance
 in the analysis on the results produced by the algorithm mentioned above. These
@@ -246,7 +270,7 @@ definitions and theorems are taken verbatim from \cite{bousquet2002}.
   $S_n$ of size $n$. Then for any $n\geq1$ and any $\delta\in(0,1)$, the following bound
   holds with probability at least $1-\delta$ over the random draw of the sample $S_n$:
   \begin{equation}
-    |R_{\mathrm{true}}(A,S_n) - \hat R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + M) \sqrt{\frac{\log(2/\delta)}{2n}}.
+    |\trueRisk(A,S_n) - \hat R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + M) \sqrt{\frac{\log(2/\delta)}{2n}}.
   \end{equation}
 \end{thm}
 
@@ -334,13 +358,13 @@ below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \exp\mu r$, a
 
   In the linear utility case, 
   \begin{align}
-    &|R_{\mathrm{true}}(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
+    &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
       M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
     &\qquad \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{\lambda n} + \left(\frac{2k^2(\bar r+R_f)^2X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}},
   \end{align}
   and in the exponential utility case, 
   \begin{align}
-    &|R_{\mathrm{true}}(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
+    &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
       M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
     &\qquad \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda n} + \left(\frac{2k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}}.
   \end{align}
@@ -420,17 +444,40 @@ the algorithm $A$ might very well yield a position $0<p<1$.
   We are left with the same expression for the generalization bounds, in the linear
   utility case,
   \begin{align}
-    &|R_{\mathrm{true}}(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
+    &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
       M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
     &\qquad \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{\lambda n} + \left(\frac{2k^2(\bar r+R_f)^2X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}},
   \end{align}
   and in the exponential utility case, 
   \begin{align}
-    &|R_{\mathrm{true}}(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
+    &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
       M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
     &\qquad \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda n} + \left(\frac{2k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}}.
   \end{align}
 \end{rem}
+
+\subsection{True Optimal Bound}
+
+One bound that is still of interest is the absolute difference between the in-sample cost
+using in-sample decision $\hat R(A,S_n)$ and the expected cost over the unknown
+distribution $D$ (ie. the true risk) using the unknown optimal decision $q^\star$ defined
+by
+\begin{equation}
+  q^\star = \argmin_{\{q:X\subset\real^p\to\real\}}\trueRisk(q).
+\end{equation}
+
+The true optimal bound is therefore expressed by
+\begin{equation}
+|\trueRisk(q^\star) - \hat R(A,S_n)|.  
+\end{equation}
+We can then apply the triangle inequality to bound this expression by the generalization
+bound plus $|\trueRisk(q^\star) - \trueRisk(\hat q)|$. 
+
+\textit{However, whereas \cite{rudin2015} could bound this expression using a theorem from
+  quantile regression theory, I'm here at loss (no pun intended...)}
+
+
+
 
 
 \paragraph{Things to consider.}
@@ -445,80 +492,12 @@ Here are some points that should be considered.
   $1-\delta - n\gamma$, if we assume $\bar D$ (the highest considered demand) holds with
   probability $1-\gamma$. It is only mentioned in the non-regularized case. A reference
   would be needed, as the $n\gamma$ terms grows up too quickly to be of any use (unless
-  we're being very restrictive on $X_{\max}$).
+  we're being very restrictive on $X_{\max}$). [Reference needed !]
 \item We are also considering discrete quantities, updated daily. Our model should
   encompass quantities that might change during the day.
 \end{itemize}
 
 
-
-
-% \newpage
-% \begin{rem}
-%   Our loss function $\ell$ is $\sigma$-admissible with $\sigma=\bar r+R_f$ in the linear
-%   case and $\sigma=(\bar r+R_f)\exp(\mu\bar r)$ in the exponential case.
-% \end{rem}
-
-% \begin{proof}
-%   First, we remark that both forms of $U$ yield a convex function of $p$ with $r$ fixed. 
-%   Now we'll suppose that $c(p_1,r), c(p_2,r) > 0$. Then the expression
-%   $|c(p_1,r)-c(p_2,r)|$ reduces to
-%   \begin{equation}
-%     |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
-%   \end{equation}
-%   Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its domain, and so
-%   \eqref{eq:above1} is bounded by
-%   \begin{equation}
-%     \alpha |p_1r + (1-p_1)R_f - (p_2r + (1-p_2)R_f)| = \alpha|p_1-p_2||r-R_f|
-%   \end{equation}
-%   where
-%   \begin{equation}
-%     \alpha = \sup_{r\in[-\bar r,\bar r]} |U'(r)|.
-%   \end{equation}
-
-%   In the linear case, the derivative is piecewise constant, and is set to 1 on for returns
-%   below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \exp\mu r$, and
-%   $\alpha = \exp \mu \bar r$.
-
-%   The bound \eqref{eq:above2} must hold for any $r$. The expression $|r-R_f|$ will reach
-%   its largest value at $r=-\bar r$, since $R_f$ is assumed to be non-negative.
-
-%   Finally we consider the case where, without loss of generality, $c(p_2,r)=0$. Then, if
-%   $c$ had not been defined using $\lfloor\cdot\rfloor$, then we would have
-%   \begin{align}
-%     |\floor*{c(p_1,r)} - \floor*{c(p_2,r)}| &\leq |c(p_1,r) - c(p_2,r)|\\
-%     &\leq \sigma|p_1-p_2|.\qedhere
-%   \end{align}
-% \end{proof}
-
-% \begin{rem}
-%   Our proposed algorithm has the form \eqref{eq:above3}, and so has algorithmic stability
-%   bounded by
-%   \begin{equation}
-%     \alpha_n \leq \frac{(\bar r+R_f)^2X^2_{\max}}{2\lambda n}
-%   \end{equation}
-%   with linear utility and
-%   \begin{equation}
-%     \alpha_n \leq \frac{\exp(2\mu\bar r)X^2_{\max}}{2\lambda n}
-%   \end{equation}
-%   in the case of exponential utility.
-% \end{rem}
-
-% \begin{rem}
-%   The maximum loss we can suffer over a single data point happens when $r_i=-\bar r$ and
-%   $p=1$, ie.
-%   \begin{equation}
-%     c(1,-\bar r) = U(R_f) - U(\bar r).
-%   \end{equation}
-%   We shall call this quantity $\gamma$.
-% \end{rem}
-
-% \begin{rem}
-%   Our algorithm has a generalization bound of
-%   \begin{equation}
-%     |R_{\text{true}}(A,S_n) - \hat R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + \gamma) \sqrt{\frac{\log(2/\delta)}{2n}}.
-%   \end{equation}
-% \end{rem}
 
 
 \section{Multi-asset Portfolio}
