@@ -793,3 +793,36 @@ characterized by a CDF F(r). Then we wish to minimize the expected loss with res
 				   minimize E_{r}[c(p,r)].
 
 
+
+* Le 15 juillet
+
+Back to quantile regression. For some reason, this theory seems interesting and I'd like
+to understand more deeply Choquet's utility which seems of the highest interest, since, I
+dearly hope, I could relate theorems provided by Chaundhuri (or whatever his name is) to a
+big-data scenario, ie. characterize the true bound on in-smaple estimatios to the optimal
+decision function used in the true risk function. 
+
+Besides, I think a lot of statistics intuition, of which I deeply lack, might be pallied
+up from this book. 
+
+					  \star \star \star
+
+Instead of using the CDF or a random variable X, X is characterized by it CDF (which they
+here call the /distribution function/ F such that 
+
+				     F(x) = P(X \leq x).
+
+Importantly, F is related to the probability density function C by
+
+				       dF(x) = C(x)
+
+for continuous F (but anyway F must càdlàg). If X is discrete then the CDF will results in
+spikes, but their relative length should result in the probability, or something like
+that). Under this perspective, the CDF is therefore more suited in characterizing
+graphically the behavior of any random variable. 
+
+The \tau^{th} quantile of X (with 0 < \tau < 1) can be described with
+
+			      F^{-1}(\tau) = inf {x : F(x) \geq \tau},
+
+and the median is defined by F^{-1}(\tau). 
