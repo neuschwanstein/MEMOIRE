@@ -1,3 +1,10 @@
+			    NOTES DE RECHERCHE SUR UN MEMOIRE
+					   par
+					THIERRY BM
+				    ------------------
+					   2015
+
+
 * *Le 8 juin*
 
 _Quelques définitions (dans le cas /newsvendor and portfolio/)_
@@ -826,3 +833,111 @@ The \tau^{th} quantile of X (with 0 < \tau < 1) can be described with
 			      F^{-1}(\tau) = inf {x : F(x) \geq \tau},
 
 and the median is defined by F^{-1}(\tau). 
+
+
+* Le 16 juillet
+
+_Koenker, section 8.9_ Choquet Utility, Risk, and Pessimistic Portfolios
+
+On souhaite appliquer la théorie de la régression quantile à la théorie de l'optimisation
+de portfeuille. Pour ce faire, on introduit /l'utilité espérée de Choquet/.
+
+_Utilité espérée de Choquet._
+
+We have the identity 
+
+		           \int_{-\infty}^{\infty} u(x) dF(x) = \int_{0}^{1} u(F^{-1}(t)) dt.
+
+Instead of integrating over the range of x (spanning all of the reals) we instead
+integrate over the t quantiles of x, relating the value of t and x by
+
+					F^{-1}(t) = x,
+
+and
+
+					F(x) = t,
+
+which yields the result. 
+
+_Def. Comonotonicity._ Random variables X and Y are said to be /comonotone/ if there exists a
+random variable Z and monotone increasing f and g such that X = f(Z) and y = g(Z). 
+
+* Le 17 juillet
+
+We shall continue our dissertation of the quantile regression theory applied to the
+optimization of portfolios, in the idea of applying theorems to derive true optimal bounds
+on the returns of sampled portfolios with /true optimal/ portfolios. 
+
+_Koenker, p. 288_
+
+Under this formulation, we are no longer assessing if a random variable is superior to
+another one by virtue of its expected utility, but also using a new function \nu, such that
+"u transforms probability into utility terms, whereas \nu transforms probability
+assessments." \nu is called a /distortion term/. 
+
+We are still integrating with respect to the quantile of the random variable, ie. from 0
+to 1. F^{-1}(t) gives the value of the random variable at the t^{th} quantile, and so u(F^{-1}(t))
+gives the utility at the t^{th} quantile. 
+
+"The distortion \nu acts to inflate or deflate the probabilities /according to the rank
+ordering of the outcomes/ [provided by t]. In the terminology of Choquet (1954), the
+distortion measure \nu is a capacity. 
+
+"If \nu is concave, so that d\nu is decreasing, then the least favorable events [if we assume
+they correspond to a lower quantile] receive increased weight, and the most favorable
+events [those corresponding to a higher quantile].
+
+_Choquet Risk Assessment._
+
+*Monotonicity.* X, Y \in /X/, with X \leq Y => \rho(X) \leq \rho(Y)
+
+					  \star \star \star
+
+Y existe-t-il une transformation par laquelle on peut passer de la fonction de cout du
+newsvendor a notre propre fonction de cout ?
+
+La différence majeure est la suivante:
+
+ - Dans le cas du newsvendor, la forme du coût ne change pas, c'est seulement selon la
+   quantité demandé D, l'origine se déplace, mais la forme demeure toujours la même.
+ - Alors que dans notre cout à nous, selon le taux de rendement, et l'allocation qu'on
+   fait à l'actif risqué, les pentes relatives vont changer pour un p fixe et pour un r
+   variable. En effet, si p est fixe et qu'on alloue (par exemple) 75% dans un actif
+   risqué, le cout peut augmenter ou au contraire dimininuer beaucoup plus rapidement
+   lorsque r est grand que lorsque r est faible. 
+
+La morale est donc que si une telle transformation existait, il faudrait tenir compte de
+ces différences. 
+
+Car que recherche-t-on finalement? On recherche une certaine fonction de transformation f
+telle que f(c_n(p,r)) = c_p(p,r) où c_n serait le cout newsvendor et c_p serait le cout du
+portefeuille. On remarque d'ailleurs l'analogie p \gets{}\to q les quantités que l'on peut choisir
+(ie. déterministe) et r \gets{}\to d, les quantités aléatoires, imposées par le système. 
+
+Plus simple peut être: comment peut-on à partir d'une fonction abs(x) obtenir une fonction
+2-pièces linéaire? Supposons par ailleurs que cette fonction soit de la forme 
+
+			      g(x) = h min(0,x) + b max(0,x)
+
+La branche négative a donc une pente h, et la branche positive une pente b. Alors la
+fonction f qui transformera abs(x) vers sera donnée par 
+
+Bon, ca ne fonctionne pas car abs(x) n'est pas surjective. Screwed... Quoique l'idée était
+d'abord d'appliquer une application linéaire. Toutefois, elle doit s'appliquer sur des
+points (x,f(x)). De plus il faudrait en fait deux matrices de rotation, la première
+s'appliquant pour les points (x,f(x)) tels que x>0 et une autre s'appliquant aux points
+x<0.
+
+Non décidément ca ne fonctionne pas... 
+
+Que tente donc de faire cette fameuse théorie de la régression quantile. On tente de
+trouver un estimateur qui minimise la perte sur un semble d'observation, en supposant que
+le bruit est linéaire, et possiblement asymétrique. J'y reviens, car il me semble que la
+théorie qui y est développée peut peut être se traduire dans un cadre où le cout n'est pas
+centré. 
+
+
+					  \star \star \star
+
+Peut être vaudrait il mieux tâcher de se concentrer sur autre chose, plutôt que sur cette
+maudite borne. Faire des tests numériques pourrait être un bon point de départ. 
