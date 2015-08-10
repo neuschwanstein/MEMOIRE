@@ -35,7 +35,7 @@ while continuation is not None:
     cur = con.cursor()
 
     for item in items['items']:
-        item = RobustDictionary(item)
+        item = RobustDictionary(item)!
 
         if (item['origin']['title'] == "Yahoo! Finance: RSS feed not found"):
             continue

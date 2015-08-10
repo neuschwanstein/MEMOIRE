@@ -1,0 +1,193 @@
+`\section{Multi-asset Portfolio}
+
+We now consider a multi-asset portfolio, made of $m$ risky assets and a risk-free
+asset. Each of theses risky assets have information vector $x_{st}$, where
+$s\in\{1,\ldots,m\}$ and $t\in\{1,\ldots,n\}$. Therefore, we suppose having access to a
+sample dataset $S_n = \{X_1,\ldots,X_n\}$ where $X_i\in\real^{m\times p}$.
+
+There are two ways to approach the multi-asset scenario. 
+
+
+\subsection{First approach}
+
+On one hand, we can define a single decision vector $q$ such that the return on a single
+holdinq period would be defined by
+\begin{equation}
+  r^{T}Xq + (1 - 1^{T}Xq)R_f,
+\end{equation}
+where $r\in\real^{m}$ is the return vector of the $m$ stocks and $1^T$ is a contant vector
+of ones in $\real^m$ whose role is simply to sum over the components of $Xq$, ie. sum over
+the risky allocations of the portfolio. However, this method has the disadvantage that the
+decision vector is applied for each stock in the same way, and so all their information
+vectors are ultimately `averaged' over. Therefore, if some asset is more sensitive to an
+information component than other assets, this knowledge might be lost if using this
+method. 
+
+Nevertheless, we can again define two different cost functions, which our optimal decision
+vector would minimize when applied to our sample dataset $S_n$. Again, the cost can be
+simply defined as
+\begin{equation}
+  \label{multiCost}
+  c(p,r) = -U(r^{T}p + (1 - 1^{T}p)R_f).
+\end{equation}
+As discussed previously, this definition might have the disadvantage of providing an
+unconstrained optimization problem when determining the optimal decision vector.
+
+We are not limited to a single cost definition, and in fact, the multi-asset scenario
+provides many legitimate cost definitions. Here the most `aggressive' one:
+\begin{equation}
+  c(p,r) =
+  \begin{cases}
+    \floor{U(\max r) - U(r^{T}p + (1-1^{T}p)R_f)} & \text{if } \max r>R_f\\
+    \floor{U(R_f) - U(r^{T}p + (1-1^{T}p)R_f)} &\text{if } \max r\leq R_f.
+  \end{cases}  
+\end{equation}
+This means that we expect (or conversely, that we suffer a lesser loss) when the total
+return of our portfolio is near the best return achieved by our considered stocks. Instead
+of $\max r$, we also could have chosen the average returns $\bar r$ during the period as
+the target that we wish to achieve (provided that the average is superior to the risk-free
+return). We could in fact chose any function mapping from a vector of returns $r$ to a
+scalar as our global return objective.
+
+In any case, the algorithm determining the decision vector $q$ would once be defined as
+previously, ie. as \eqref{algo}.
+
+
+\subsection{Second approach}
+
+Under this second approach, instead of averaging over all information vector at the risk
+of losing asset-specific information, we now use a decision matrix $Q$ of size $p\times
+m$, whose $m$ columns are actually trained independently one to each other so that each
+asset reacts differently from the rest. 
+
+The allocation of each vector would then be $\diag(XQ)$, ie. the diagonal elements of the
+$m\times{}m$ matrix $XQ$. The one-period return is therefore
+\begin{equation}
+  r^{T}\diag(XQ) + (1 - 1^{T}\diag(XQ))R_f.
+\end{equation}
+
+This method still has a disadvantage though, in that it won't consider the eventual
+influence of information $x_j$ of asset $j$ to asset $j$, ie. each stock is trained
+independantly one to each other.
+
+\subsection{Third Approach}
+
+Finally, we introduce a third approach with the objective of using all available data of
+the market, available through $X\in\real^{m\times sp}$. However, we must be clear about
+what information $X$ carries with it; its information is only bounded to different
+assets, and therefore does not include `global' information with it.
+
+Following a simple idea introduced by \cite{wsj}, we can add an unknown linear
+transformation $W$ to $X$ so that $q$ can benefit from the whole information matrix, and
+not only from the average of its columns. The total return using a transformation $W$ and
+decision vector $q$ would therefore be expressed as
+\begin{equation}
+  r^{T}XWq + (1 - 1^{T}XWq)R_f.
+\end{equation}
+
+\subsection{Fourth Approach}
+
+We now introduce a more general framework that actually encompasses all other methods
+we've seen so far. In addition, we also add regularization terms so that the following
+rules are respected :
+\begin{itemize}
+\item Given an asset $i$, we insist that the allocation scalar for $i$ relies more
+  strongly on feature vector $x_i$ than on feature vectors from other assets in the
+  market.
+\item The market should be segmented in different industries, and our algorithm should
+  partition the $m$ stocks in $k$ groups of similar nature. This would also impact how
+  cross-influence of feature affect very weakly assets of other groups. 
+\item Each asset $i$ has its own decision vectors $q_{ij}$, where $q_{ij}$ is the
+  influence of asset $j$ on asset $i$. 
+\end{itemize}
+
+With this in mind we can now define a general allocation rule given feature vectors
+$\{x_i\}$ for each asset in the market. As before, we consider a general inner product
+$x_i^Tq_j$ as a mapping from the feature space of $i$ to the allocation scalar
+space. Therefore, the total influence of the $m$ assets on $i$ can be expressed as 
+\begin{equation}
+  x_i^{T}q_{ii} + \sum_{j\neq i}x_j^{T}q_{ij}.
+\end{equation}
+We can reduce this expression by introducing a decision matrix $Q_i \in \real^{p\times{}m}$ defined by
+\begin{equation}
+  Q_i = \begin{pmatrix}[Q_i]_1 & \cdots & [Q_i]_m\end{pmatrix}.
+\end{equation}
+By using the same feature matrix $X$, the above expression is therefore equivalent to
+\begin{equation}
+  \tr(XQ_i),
+\end{equation}
+so that the total return will be given by
+\begin{equation}
+  \sum_{i=1}^m r_i \tr(XQ_i) + \left(1 - \sum_{i=1}^m\tr(X Q_i)\right)R_f.
+\end{equation}
+
+Now, as before the $Q_i$ matrices are unknown at first, but can be learned using an
+optimization problem, where the objective is the average cost $\bar{c}$, defined by
+\eqref{multiCost}. Let us, just for a moment, neglect the regularization term. Then, the
+optimal matrices are $Q_i^\star$ are the solution to the following optimization problem:
+\begin{align}
+  \label{optProblemMulti}
+  \minimize_{Q_1^\star,\dots,Q_m^\star} \quad & \frac{1}{n} \sum_{i=1}^{n}c(p_i,r_i)\\
+  \st \quad & [p_i]_j = \tr(X_iQ_j).\nonumber
+\end{align}
+
+Now, there are some fundamental questions concerning this optimization problem which we'll
+report for later. Indeed, before we start analyzing the theoretical guanrantees we can get
+out of this problem, we would first like to add regularization terms to the objective,
+with the hope of being compliants with the rules we've proposed above.
+
+The first rule we proposed is certainly the most easy to implement. What it says is
+basically that in the allocation scalar for asset $i$, the contribution from feature $i$
+should be larger than contribution coming from feature of other assets. 
+
+Mathematically, this would translate in this `soft' constraint:
+\begin{equation}
+  x_i^{T}[Q_i]_i \gg \sum_{j\neq i}x_j^{T}[Q_i]_j.
+\end{equation}
+
+In an optimization context, we can add the following expression to the objective:
+\begin{equation}
+%  +\lambda (\tr(XQ_i) - x_i^{T}[Q_i]_i)^2
+  +\tr(XQ_i)^2 - \lambda(x_i^T[Q_i]_i)^2,
+\end{equation}
+with $\lambda \geq0$. In plain words, this means that we expect the whole allocation
+scalar close to the contribution from $x_i^T[Q_i]_i$, with a regularization parameter
+$\lambda$ to avoid all other terms $x_j^{T}[Q_i]_j$ falling to zero. 
+
+Now, let's tackle the second constraint, where we expect the cross-contribution of a
+feature vector to only affect a close number of assets. For example, we'd expect
+technology assets to affect each other, but with little impact on energy assets. This
+evidently reminds of $L1$ regularization, where the activation is non-smooth, and either
+you're part of a group, or you're not. 
+
+We can first start by defining the number of groups, or segments, we exepct the market to
+have. We shall note this number of groups by $k$. 
+
+Let us then state the problem formally. Let $\Xi \in \real^{m\times{}m}$ be the allocation
+matrix, such that
+\begin{equation}
+  [\Xi]_{ij} = x_{j}^{T}[Q_i]_j.
+\end{equation}
+Then, the allocation vector $p$ for each of the $m$ assets corresponds to the sum of each
+of the rows of $\Xi$. Therefore, $\Xi$ is invariant to reordering of individual rows. In
+the process of optimization, we want to have to turn $\Xi$ in a $k$-block matrix, with
+each block representing a certain sector. However, this \textit{block} requirement should
+not be too hard, as in certain event, we could have assets with overlapping
+sectors. Anyway, $L1$ sounds like a good idea, since this kind of regularization often
+allows for features to be either `in' or `out'. In regularization, there's always two
+opposing forces, and its role is to find balance between those two forces. 
+
+So what are the two forces at play here? Let us consider for one moment a certain asset
+$i$. Then, its allocation $p_i$, given a feature matrix $X$ whose rows can be expressed by
+$x_j^{T}$, will be of the form
+\begin{equation}
+  p_i = \tr(XQ_i) = \sum_{j=1}^m x_j^{T}[Q_i]_j.
+\end{equation}
+The optimization algorithm, in order to find the optimal $Q_i$, no matter what the shape
+of the utility is, will try to increase $p_i$ as much as possible if $r_i>0$, and
+conversely, will try to decrease it if $r_i<0$. Let's pretend for a moment that $r_i>0$,
+so that we're trying to drive $p_i$ as positive as possible. 
+
+To analyze the situation, we can take as a starting the point the first constraint of our
+design, ie. the contribution from $x_i^T[Q_i]_i$ should be larger than the contribution
+from other assets. 

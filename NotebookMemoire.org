@@ -862,6 +862,7 @@ which yields the result.
 _Def. Comonotonicity._ Random variables X and Y are said to be /comonotone/ if there exists a
 random variable Z and monotone increasing f and g such that X = f(Z) and y = g(Z). 
 
+
 * Le 17 juillet
 
 We shall continue our dissertation of the quantile regression theory applied to the
@@ -941,3 +942,125 @@ centré.
 
 Peut être vaudrait il mieux tâcher de se concentrer sur autre chose, plutôt que sur cette
 maudite borne. Faire des tests numériques pourrait être un bon point de départ. 
+
+
+* Le 4 août 2015
+
+We wish to develop a robust method that allows us to mix /covariance/ between each feature
+of each asset in an investment policy.
+
+To do so, we first propose an investment policy based on a vector q such that q = [q_1;
+q_{2}], in Matlab notation., ie. two columns vectors stacked on each other. 
+
+Let X be the feature matrix for a stock i. Then, following investment policy q, we would
+have the following return on investment:
+
+			      r_i q_{2}^{T }X_{i }q_1 = r_i Tr(X q_1 q_{2}^{T})
+
+On the right hand expression q_1 q_2^T is a rank-1 matrix. We could in fact propose a more
+general formulation where we would have instead a full p-rank matrix Q, and so the
+investment policy would therefore become
+
+					r_i Tr(XQ).
+
+However, let us first dissect the first proposition. 
+
+
+* Le 7 août 2015
+
+*Révision.*
+
+_First approach._ Only one decision vector q such that total return on a single period is
+given by 
+
+				   r^{T}Xq + (1 - 1^{T}Xq)R_f
+
+Therefore, the role of q is to go from the feature space over the allocation space, ie. Xq
+is the allocation vector for the m assets. Using summing notation, we have instead, *only
+for the risky assets* the following:
+
+					 \sum_i^m x^{T}_{i}q.
+
+_Second approach._ We instead introduce a decision matrix Q_{p\times{}m} with m columns for
+each asset, and p rows for each feature. The expression XQ therefore means that elements
+on the diagonal of the resultant matrix have the form x_i^{T}q_i where q_i is an allocation
+vector assigned only to the values of the i^{th} asset. Again, with summation notation, the
+total return on risky assets is of the form:
+
+				       \sum_i r_i x_i^{T}q_i.
+
+As noted in /Travail/, this method still has a disavantage though, in that it won't consider
+the eventual influence of information x_j of asset j on asset k, ie. each stock is trained
+independantly on to each other. 
+
+_Alternative second approach._
+
+			        \sum_i r_i (x_i^{T}q_1 + \sum_{j\neq{}i} x_j^{T}q_2)
+
+The role of q_1 is therefore to therefore to map from the feature space of asset i to the
+its scalar allocation x_i^{T}q_1, while adding another correction term in the form of the
+influence from the other feature vector from all other assets. 
+
+According to Delage, this would be equivalent to having Q = [q_1 q_2 \cdots q_{2}] and going
+with total return expressed with 
+
+				      \sum_i r_i tr(X_i Q)
+
+This leads to the following sum for allocation of the asset i:
+
+				x_i^{T}q_1 + x_1^{T}q_2 + \cdots + x_m^{T}q_m.
+
+So what does this expression mean? The first term is obviously how to go from the feature
+space of the considered asset to its allocation scalar space. We must note however that
+the decision vector to go from a space to another is the same for all assets, and so in
+the minimization process we might actually average over all the reaction of the asset to
+the market. 
+
+What about the rest of the terms in the sum. We hope to have conditioned q_2,\dots,q_m so
+that they can tell us what should be the contribution from each of the other features from
+other assets 1,\dots,m.
+
+So what are the problems with such an approach? Well, the cross-influence of the j^{th} asset
+on other assets will always be x_j^{T}q_j. This is a problem, since some asset i might be more
+sensitive to asset j than asset k would be to the same asset. For example GOOG asset price
+might react more strongly to YHOO than GE would react to YHOO. Besides, GOOG might react
+more strongly to a certain feature than YHOO would react to the same feature. 
+
+					  \diamond \diamond \diamond
+
+We should also consider what happens when we have multiple feature of the same kind during
+the day. Aka news, of which we might have many datapoints for a single holding period. 
+
+					  \diamond \diamond \diamond
+
+So what do we want? First, we want independance of the results. We also want symmetry,
+ie. the order 1,\dots,m matters not. Ideally, we'd also have a regularization term so that
+liked stocks (eg. technology) be aggregated one to each other. Actually, I'd rather have
+an aggregation over the influence from other stocks, ie. GOOG should react perhaps more
+strongly from technology stocks, than from other. Of course, this should be set using a
+regularization parameter. I'm thinking of something like L1 regularization, where either
+you're in the group, or you're not. 
+
+So do we sort all of this. Here's what we need:
+
+ - Given an asset, we insist that the decision relies more strongly on its own feature
+   vector than from feature vectors from other stocks.
+ - Second, for each stock, the decision vector mapping from its own feature space to the
+   allocation space should be trained independantly, ie. we suppose that some assets are
+   likely to react more to some features than other would. Hence, we need a q decision
+   vector mapping to each feature vector for each of the stocks. That is, we need m
+   different qs for each of the stock.
+ - The influence the m-1 features from other assets have on a single asset should also be
+   independant. So for asset i, we need q_{1i},\dots,q_{1m} for all different
+   vectors. Considering that features be normalized, we also demand that \Norm{}q_{ii}\Norm > \sum
+   \Norm{}q_{ij}\Norm. This indicates that the influence is stronger for features from a certain
+   asset.
+ - Finally, we demand that ther eis some kind of aggregation between stocks, so that news
+   from a sector only affects a handful of assets. How can we have this demand in a
+   mathematical form? Is a good question.
+ - At any rate this means that we need a matrix for erach of the asset. And the
+   regularization term will link these matrices one to each other. 
+
+
+* Le 9 août 2015
+

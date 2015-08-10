@@ -38,16 +38,54 @@ returns and predicted returns, over U = [u_1 \cdots u_{n}]^{T} the feature vecto
 stocks and W, the linear transformation going from the m-words space to the d-average
 sentiment for the considered day. Altogether, we have
 
-			        min._{U\geq{}0, W} ||R - U W Y||^2_F.
+			        min._{U\geq{}0, W} \Norm{}R - U W Y\Norm{}^2_F.
 
  - d: number of features of the model
  - s: number of days (or holding periods) considered.
+
+*Meaning of variables.*
+
+  - U: stack of feature vectors for each feature, for each stock. U \in R^{n\times{}d}, so has
+    n rows for each stock, and d columns for each feature of the model. So U independant
+    of time, and only relates the relationship between a certain stock over a feature, to
+    the feature of the day given by Y.
+  - Y: stack of word intensities, for each day. Y \in R^{m\times{}s}, so has m columns for each
+    selected word, and s rows for each trading days seen in the training set.
+  - W \in R^{d\times{}m} transforms the words intensity over to the feature space, so that WY
+    \in R^{d\times{}s} is a `feature intensity' matrix where we have d columns for each
+    feature, and s rows for each training day. Specifically, W has rows for each feature,
+    and columns for word. So a column relates a word to all features, ie. how it
+    correlates?
 
 
 *Overfitting.*
 
 The authors are concerned by overfitting, especially considering the low size of the
 training set and the high number of considered stocks in their model.
+
+*Two requirements for the model.*
+1. log matrix return R' close to R and of low rank (meaning!?!)
+2. Sparse model, so that only a fee words are actually relevant to the prediction. 
+
+The first requirement is met with d \ll s, meaning that the number of feature is much
+smaller than the number of training days. [Easily done]
+
+The second requirement introduces a /sparse group lasso/ regularization term. Meaning that
+we want only a small number of columns of W to be non-zero. This translates over with the
+reg term
+
+				 \lambda \sum{}_j^m \Norm{} W_{j }\Norm_2,
+
+ie. the sum of L2 norms of each columns of W (why not L1?)
+
+Plus another reg. term to ensure sparsity of factors for each word (??) denoted with 
+
+					 \mu \Norm{} W \Norm{}_1
+
+*Optimization algorithm.*
+
+Problem is biconvex, ie. convex in U or W, but not jointly convex. Such problems can be
+solved using ADMM (Alternating Direction Method of Multipliers): see Boyd et al. 
 
 ** *References.*
 
