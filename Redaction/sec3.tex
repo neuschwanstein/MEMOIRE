@@ -1,4 +1,4 @@
-`\section{Multi-asset Portfolio}
+\section{Multi-asset Portfolio}
 
 We now consider a multi-asset portfolio, made of $m$ risky assets and a risk-free
 asset. Each of theses risky assets have information vector $x_{st}$, where
@@ -188,6 +188,73 @@ of the utility is, will try to increase $p_i$ as much as possible if $r_i>0$, an
 conversely, will try to decrease it if $r_i<0$. Let's pretend for a moment that $r_i>0$,
 so that we're trying to drive $p_i$ as positive as possible. 
 
-To analyze the situation, we can take as a starting the point the first constraint of our
-design, ie. the contribution from $x_i^T[Q_i]_i$ should be larger than the contribution
-from other assets. 
+\starsection
+
+With $\Xi$ defined as above, than we can state the optimal $\Xi$ as an optimization
+problem of the following form:
+\begin{align}
+  \minimize\quad & -U(1^{T}\Xi r),
+\end{align}
+where $\Xi$ is a function of $m^2$ independant vectors
+$q^1_1,\dots,q^1_m,\dots,q^m_1,\dots,q^m_m$, such that $\Xi$ can be expressed by
+\begin{equation}
+  \Xi = \begin{pmatrix}
+    x_1^{T}q^1_1 & x_2^{T}q^1_2 & \cdots & x_m^{T}q^1_m \\\\
+    x_1^{T}q^2_1 & x_2^{T}q^2_2 & \cdots & x_m^{T}q^2_m \\
+    \vdots & \vdots & \ddots & \vdots\\
+    x_1^{T}q^m_1 & x_2^{T}q^m_2 & \cdots & x_m^{T}q^m_m
+    \end{pmatrix}.
+\end{equation}
+
+We can further decompose this expression. First we need to introduce a decision matrix
+$Q\in\real^{m\times{}mp}$:
+\begin{equation}
+  Q =
+  \begin{pmatrix}
+    {q^1_1}^T & {q^1_2}^T & \cdots & {q^1_m}^T\\\\
+    {q^2_1}^T & {q^2_2}^T & \cdots & {q^2_m}^T\\
+    \vdots & \vdots &\ddots & \vdots\\
+    {q^m_1}^{T} & {q^m_2}^{T} & \cdots & {q^m_m}^{T}
+  \end{pmatrix},
+\end{equation}
+as well as a feature matrix $X$:
+\begin{equation}
+  X=\begin{pmatrix}
+    x_1 & 0 & 0 & 0\\
+    0 & x_2 & 0 & 0\\
+    0 & 0   &\ddots & 0\\
+    0 & 0 & 0 &x_m
+  \end{pmatrix}
+\end{equation}
+where each $x_i\in\real^p$ should be understood as column vectors, so that
+$X\in\real^{mp\times m}$. 
+
+With these definitions, we have
+\begin{equation}
+  \Xi = QX.
+\end{equation}
+The allocation vector $p$ can also be expressed as 
+\begin{equation}
+  p^T = 1^T\Xi = 1^TQX,
+\end{equation}
+so that the total return with asset returns vector $r$ is 
+\begin{equation}
+  1^{T}QXr.
+\end{equation}
+
+This is the quantity we seek to maximize, or rather with which we seek to cost-maximize
+(More on that later).
+
+\starsection
+
+Now what we want to do is to solve $Q$. For now, we can try to simply optimize $1^TQXr$,
+with $Q$ the free variable. 
+
+This problem is not bounded, for we can simply target positive $r_i$, and assign them
+positive (infinite) $p_i$ weight, and conversely for negative $r_i$ to obtain an infinite
+return. Therefore, we want to regularize the weight from $Q$, and we can do so by adding a
+regularization of the form
+\begin{equation}
+  +\lambda \|QX\|
+\end{equation}
+for some appropriate matrix norm $\|\cdot\|$.

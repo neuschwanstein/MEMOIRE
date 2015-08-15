@@ -1064,3 +1064,14 @@ So do we sort all of this. Here's what we need:
 
 * Le 9 août 2015
 
+* Le 13 août 2015
+
+Comment caractériser la norme de matrice qu'on tente de définir? Reposons le problème. On
+a une matrice n\times{}n qu'son souhaite caracteriser en tant que matrice de k blocs. On suppose
+que M est equivalente a M' si de M on peut passer a M' en appliquant une suite
+d'operations lineaires qui interchangeant les colonnes de M. Supposons que l'operation qui
+fait passer de la colonne c a c' est A_c^{c'}. Alors on peut appliquer une suite d'operations de
+la forme 
+
+			                   M' = A_c^{c' }\cdots{} A_{\sigma}^{\sigma'} M.
+
