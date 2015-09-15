@@ -1,14 +1,13 @@
 CREATE DATABASE feed;
 
-CREATE TABLE feed
+CREATE TABLE reuters_globalMarketNews
 (
 id SERIAL,
-ticker VARCHAR(12),
-href VARCHAR(1000),
+feedly_id text UNIQUE,
+href text,
 published DATE,
-title VARCHAR(1000),
+title TEXT,
 engagement INT,
 engagement_rate float8,
-provider VARCHAR(1000),
 content TEXT
 );
