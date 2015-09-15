@@ -1,15 +1,15 @@
 \section{Introduction}
 \label{sec:intro}
 
-\marginnote{Maybe considerations about the length of the period should be added? For
-  example, it's not specified what's the period length of $R_f$.}  This document considers
-a two-asset portfolio, of which one is the risk-free asset, yielding a constant return
-rate $R_f$, and the other being a risky asset $s$, typically a stock, yielding a random
-return rate $r_{st}$ for each period $t$. We suppose that each risky asset $s$ can be
-decribed daily by an \emph{information vector} $x_{st}$ containing potentially useful
+This document considers a two-asset portfolio, of which one is the risk-free asset,
+yielding a constant return rate $R_f$, and the other being a risky asset $s$, typically a
+stock, yielding a random return rate $r_{st}$ for each period $t$. The distribution
+underlying this return is assumed to be unknown. We suppose that each risky asset $s$ can
+be decribed daily by an \emph{information vector} $x_{st}$ containing potentially useful
 information, such as technical, fundamental or news-related information. Furthermore, we
 assume that the allocation of each asset of the portfolio $p_{st}$ can be fully determined
-using a \emph{decision vector} $q$. The allocation rule is the folowing: $q^Tx_{st}$ is
+using a \emph{decision vector} $q$ based on past information of the previous returns and
+of the previous information vectors. The allocation rule is the folowing: $q^Tx_{st}$ is
 allocated to the risky asset and $1-q^Tx_{st}$ is allocated to the risk-free asset. Over
 the period $t$, the portfolio $p_{st}$ consisting of asset $s$ will therefore yield a
 return rate of:
@@ -22,3 +22,7 @@ we have access to a training dataset $S_n$, comprising of $s$ different assets o
 $t$\marginnote{What's the difference between having $n$ points with having $s\times t$
   points? For example, what if $s\gg t$ or the reverse?} periods, such that
 $n = s\times t$. 
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End:

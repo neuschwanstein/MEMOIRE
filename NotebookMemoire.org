@@ -1064,6 +1064,7 @@ So do we sort all of this. Here's what we need:
 
 * Le 9 août 2015
 
+
 * Le 13 août 2015
 
 Comment caractériser la norme de matrice qu'on tente de définir? Reposons le problème. On
@@ -1075,3 +1076,8 @@ la forme
 
 			                   M' = A_c^{c' }\cdots{} A_{\sigma}^{\sigma'} M.
 
+
+* Le 13 septembre 2015
+
+A partir des vecteurs mots, determiner une distribution muultinormale qui represente le
+document: vecteur \mu et matrice de covariance. 

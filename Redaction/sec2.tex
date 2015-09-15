@@ -12,7 +12,7 @@ Each component of $S_n$ is a tuple $(x,r)$, where $x$ is the information vector 
 the observed return rate.
 
 Using $S_n$, we wish to create a decision vector $q_{S_n}\in\real^p$ from which we can
-make an investment decision when confronted with a random draw $d=(x,r)$.
+make an investment decision $p$  when confronted with a random draw $d=(x,r)$.
 
 \paragraph{Loss, cost and regret.}
 We introduce the loss $\ell$ as being a function mapping from the space of the decision
@@ -24,18 +24,18 @@ random draw $d=(x,r)$, the loss will be
 \end{equation}
 
 Supposing an utility $U$, there are two different cost functions we can use. The first
-one, and perhaps the most obvious one is defined by
+one, and perhaps the most obvious is defined by
 \begin{equation}
   c(p,r) = -U(pr + (1-p)R_f).
 \end{equation}
 If the utility is piecewise linear, then the cost is not bounded, and so an infinite
-return would yield a negatively infinite cost. This means that risk-taking will be
-encouraged since risky position, ie. $|p|>1$ can in fact yield a negative cost. On the
-other hand, with an unbounded utility, the algorithm minimizing the cost over the sample
-must have $\lambda > 0$, otherwise the problem might be unconstrained. \textbf{Unless we
-  add a constant piece if $r<\bar r$.}
+return would yield a negatively infinite cost. This means that risk-taking, ie. positions
+with $|p|>1$, will be encouraged since they can in fact yield a negative cost. This also
+means that with an unbounded utility, the algorithm minimizing the cost over the sample
+must have a non-zero regularization term, otherwise the problem might be
+unconstrained. \textbf{Unless we add a constant piece if $r<\bar r$.}
 
-We can also define a new cost function that is always non-negative, that we shall call the
+We can also define another cost function that is always non-negative, that we shall call the
 regret $\rho$ of the decision:
 \begin{equation}
   \rho(p,r) =
@@ -52,7 +52,7 @@ linear one. Such a cost does not encourage risky position, since the cost is at 
 both will yield a zero cost position. 
 
 \paragraph{Utility.}
-There are two ways we can model our utility, and both are concave shaped, to represent a
+There are two ways we can model our utility, and both are concave function, to represent a
 risk-averse approach. The first utility is the linear utility of the form
 \begin{equation}
   U(r) = r + \min(0, \beta r),
@@ -87,7 +87,7 @@ radius ball. We also assume that the return rates observed are comprised within 
 \bar r]$. This last assumption will be relaxed. 
 
 
-\subsection{Theoretical Optimal Value}
+\subsection{Theoretical Optimal Value [Relevant?]}
 
 Before we go on to derive an algorithm for the in-sample optimal allocation, we first
 derive some theoretical results for an optimal allocation scalar $p^\star$, provided the
@@ -211,7 +211,7 @@ We first consider the case where
   \begin{equation}
     \label{eq:above1} |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
   \end{equation} Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its
-domain, and so \eqref{eq:above1} is bounded by
+  domain, and so \eqref{eq:above1} is bounded by
   \begin{equation}
     \label{eq:above2} \alpha |p_1r + (1-p_1)R_f - (p_2r + (1-p_2)R_f)| =
 \alpha|p_1-p_2||r-R_f|
@@ -241,7 +241,7 @@ below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \exp\mu r$, a
 \begin{rem}[Algorithmic Stability]
   Because the loss function is $\sigma$-admissible, the conditions for Theorem \ref{thm1}
   are respected: if we take the kernel on the space $\real^p$ as the regular inner
-  product, than $\kappa(x,x)\leq X^2_{\max}$. Therefore, our algorithm has algorithmic
+  product, then $\kappa(x,x)\leq X^2_{\max}$. Therefore, our algorithm has algorithmic
   stability with:
 
   \begin{equation}
@@ -398,14 +398,27 @@ Here are some points that should be considered.
 \begin{itemize}
 \item We have assumed so far we were dealing with datasets taken iid. But in a financial
   setting, this is not necessarily the case, as influence of features might be changing
-  with time. (HMM?)
+  with time. We would then have independant, but not necessarily identical draws. We could
+  (and should) however asume that underlying probability distribution is changing
+  \textsl{smoothly} (moment-generating functions, Kalman filters, change detection, etc.)
 \item In the newsvendor article, the generalization bounds actually hold with probability
   $1-\delta - n\gamma$, if we assume $\bar D$ (the highest considered demand) holds with
-  probability $1-\gamma$. It is only mentioned in the non-regularized case. A reference
-  would be needed, as the $n\gamma$ terms grows up too quickly to be of any use (unless
-  we're being very restrictive on $X_{\max}$). [Reference needed !]
+  probability $1-\gamma$. It is only mentioned in the non-regularized case
+  (\cite{rudin2015}, p.~14). A reference would be needed, as the $n\gamma$ terms grows up
+  to be of no use [Reference needed !]
 \item We are also considering discrete quantities, updated daily. Our model should
   encompass quantities that might change during the day.
 \item A section on how data should be normalized must also be added. This is essential to
   go from theory to pratical applications. 
+\item Not to forget: the $p$ features should also include higher order terms of the raw
+  features, ie. $x_i^2$ and $x_ix_j$ so we can capture a second order Taylor approximation
+  (see \cite{rudin2015}, p.~6). Instead of $p$ features, we would then have $p^2+p$
+  features. 
+\item The fact we are constraining features to live within a $X_{\max}{}$ radius, ie.
+  $\|x\|_2\leq X_{\max}$, is something that we would like to relax. (Like changing the norm,
+  or perhaps the metric?)
 \end{itemize}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End:

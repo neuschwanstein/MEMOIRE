@@ -1,6 +1,5 @@
-\newcommand{\ts}{\textsuperscript}
-\newcommand{\figref}[1]{Fig.~\ref{#1}}
 \usepackage{amsmath}
+%\usepackage{pdfcomment}
 \usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{geometry}
@@ -13,7 +12,6 @@
 \usepackage{marginnote}
 \usepackage[utf8]{inputenc}
 
-
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator{\st}{s.t.}
@@ -24,17 +22,15 @@
 \DeclareMathOperator*{\minimize}{minimize}
 \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
+\newcommand{\ts}{\textsuperscript}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+
 \newcommand{\iso}{\simeq}
 \newcommand{\dd}{\partial}
 \newcommand{\real}{\bm R}
 \newcommand{\trueRisk}{R_{\mathrm{true}}}
 
 \newcommand{\starsection}{\vspace{1em}\begin{center}$\star\quad\star\quad\star$\end{center}\vspace{1em}}
-
-
-\newcommand{\hilight}[1]{\colorbox{yellow}{#1}}
-\let\oldmarginnote\marginnote
-\renewcommand{\marginnote}[1]{\oldmarginnote{\footnotesize\emph{#1}}[0cm]}
 
 \theoremstyle{plain}
 \newtheorem{prop}{Proposition}
@@ -47,3 +43,7 @@
 
 \geometry{letterpaper}
 \IEEEeqnarraydefcolsep{0}{\leftmargini}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End:

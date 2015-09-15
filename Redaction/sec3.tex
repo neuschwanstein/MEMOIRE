@@ -248,13 +248,46 @@ This is the quantity we seek to maximize, or rather with which we seek to cost-m
 \starsection
 
 Now what we want to do is to solve $Q$. For now, we can try to simply optimize $1^TQXr$,
-with $Q$ the free variable. 
+with $Q$ being the free variable. 
 
 This problem is not bounded, for we can simply target positive $r_i$, and assign them
 positive (infinite) $p_i$ weight, and conversely for negative $r_i$ to obtain an infinite
 return. Therefore, we want to regularize the weight from $Q$, and we can do so by adding a
 regularization of the form
 \begin{equation}
-  +\lambda \|QX\|
+  +\lambda \|\Xi\|
 \end{equation}
 for some appropriate matrix norm $\|\cdot\|$.
+
+Now, concerning the block structure of $\Xi=QX$. We shall try to solve this problem
+iteratively. We first suppose that $\Xi$ is already of the correct form, ie. the columns
+have the right order, but we don't know yet how they should be divided in blocks. 
+
+The idea is to define a recursive function $\rho_\Xi$ of $\Xi$ defined like so:
+\begin{align}
+  \rho_\Xi(1) &= \Xi_{11}\\
+  \rho_\Xi(2) &= \begin{pmatrix}\rho_\Xi(1) & \Xi_{12}\\ \Xi_{21} &
+    \Xi_{22}\end{pmatrix}\\
+  \cdots &= \cdots
+\end{align}
+This means that $\rho_\Xi(k)$ represents the first $k$-block of $\Xi$, but defined in term
+of previous $\rho_\Xi$ definitions. 
+
+With such a recursive function, we can introduce a progressive regularization parameter
+that grows with each new block, to represent that adding a new row/column to the block
+should be `harder' at each iteration. We would therefore have a total regularization term
+of the form
+\begin{equation}
+  +\sum_{i=1}^m f(i) \|\rho_\Xi(i)\|_1,
+\end{equation}
+where $f$ is a wisely chosen monotonic and positive function that depends on $k$, the
+number of blocks ($k$ is a parameter of the problem, ie. we tell how many blocks we
+expect). One constraint this add is that $f(i)=\infty$ for values $i>m-k$. For values
+under $m-k$, $f(i)$ could be of the form
+\begin{equation}
+  f(i) = \lambda^i.
+\end{equation}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End:
