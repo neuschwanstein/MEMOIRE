@@ -5,3 +5,9 @@ Erick&Thierry alias
 *.aux
 *.log
 *.out
+*.upa
+*.upb
+*.dvi
+*.#
+*.pyc
+*.npy

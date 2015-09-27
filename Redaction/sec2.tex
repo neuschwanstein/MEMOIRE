@@ -5,9 +5,9 @@
 Most of the following notation and defintions follow directly from \cite{bousquet2002}.
 
 Let $S_n$ be a set of $n$ vectors of $\real^p\times\real$ of the form:
-\begin{equation}
+\begin{equation*}
   S_n = \{(x_1,r_1),\ldots,(x_n,r_n)\}.
-\end{equation}
+\end{equation*}
 Each component of $S_n$ is a tuple $(x,r)$, where $x$ is the information vector and $r$ is
 the observed return rate.
 
@@ -19,31 +19,31 @@ We introduce the loss $\ell$ as being a function mapping from the space of the d
 vectors and full observations (including market observations and the return of the asset)
 to a numerical quantity called the cost. Formally, given $q$ a decision vector and a
 random draw $d=(x,r)$, the loss will be
-\begin{equation}
+\begin{equation*}
 \ell(q,d) = c(q(x),r) = c(q^Tx,r).
-\end{equation}
+\end{equation*}
 
 Supposing an utility $U$, there are two different cost functions we can use. The first
 one, and perhaps the most obvious is defined by
-\begin{equation}
+\begin{equation*}
   c(p,r) = -U(pr + (1-p)R_f).
-\end{equation}
+\end{equation*}
 If the utility is piecewise linear, then the cost is not bounded, and so an infinite
 return would yield a negatively infinite cost. This means that risk-taking, ie. positions
 with $|p|>1$, will be encouraged since they can in fact yield a negative cost. This also
 means that with an unbounded utility, the algorithm minimizing the cost over the sample
 must have a non-zero regularization term, otherwise the problem might be
-unconstrained. \textbf{Unless we add a constant piece if $r<\bar r$.}
+unbounded. \textbf{Unless we add a constant piece if $r>\bar r$.}
 
 We can also define another cost function that is always non-negative, that we shall call the
 regret $\rho$ of the decision:
-\begin{equation}
+\begin{equation*}
   \rho(p,r) =
   \begin{cases}
     \lfloor U(r) - U(pr + (1-p)R_f)\rfloor & \text{if } r>R_f\\
     \lfloor U(R_f) - U(pr + (1-p)R_f)\rfloor &\text{if } r\leq R_f,
   \end{cases}
-\end{equation}
+\end{equation*}
 where by $\lfloor \cdot \rfloor$ we mean $\max(.,0)$. In the case of exponential
 utilty, this cost function is actually equivalent to the one previously defined, but is
 quite different in the case of an unbounded utility function, for example the piece-wise
@@ -55,10 +55,12 @@ both will yield a zero cost position.
 There are two ways we can model our utility, and both are concave function, to represent a
 risk-averse approach. The first utility is the linear utility of the form
 \begin{equation}
+  \label{linearUtility}
   U(r) = r + \min(0, \beta r),
 \end{equation}
 with $\beta > 0$. The other utility is exponential:
 \begin{equation}
+  \label{expUtility}
   U(r) = -\exp(-\mu r),
 \end{equation}
 with $\mu > 0$.
@@ -96,13 +98,13 @@ distribution of the returns is priorly known.
 Formally, we suppose that this distribution is characterized by its CDF $F$. We then wish
 to minimize the expected cost $c(p,r)$, where $p$ is a variable and $r$ a random return
 rate. Since,
-\begin{equation}
+\begin{equation*}
   E[c(p,r)] = \int_{-\infty}^{\infty} c(p,r)\,dF(r),
-\end{equation}
+\end{equation*}
 the optimal allocation $p^\star$ is therefore the solution to
-\begin{equation}
+\begin{equation*}
   \frac{d}{dp} \int_{-\infty}^{\infty} c(p,r)\,dF(r) = 0.
-\end{equation}
+\end{equation*}
 
 However, our theoretical assumptions are fundamentally different from this one, since we
 consider a joint distribution $\bm D= \bm X \times \bm R$, so that returns are dependant
@@ -118,13 +120,13 @@ definitions and theorems are taken verbatim from \cite{bousquet2002}.
   An algorithm $A$ has \textit{uniform stability} $\beta$ with respect to the loss
   function $\ell$ if, for all $S_n\in\bm D^n$ and $i\in\{1,\ldots,n\}$, the following
   holds:
-  \begin{equation}
+  \begin{equation*}
     \|\ell(A_{S_n},.) - \ell(A_{S^{\backslash i}_n},.)\|_{\infty} \leq \beta_n,
-  \end{equation}
+  \end{equation*}
   or, equivalently,
-  \begin{equation}
+  \begin{equation*}
     \sup_{d\in\bm D}|\ell(A_{S_n},d) - \ell(A_{S^{\backslash i}_n},d)| \leq \beta_n.
-  \end{equation}
+  \end{equation*}
   Here, $S^{\backslash i}_n$ means the set $S_n$ with the $i$th data point removed.
 
   Furthermore, $A$ is \textit{stable} when $\beta_n = O(1/n)$.
@@ -134,9 +136,9 @@ definitions and theorems are taken verbatim from \cite{bousquet2002}.
   A loss function $\ell$ is \textit{$\sigma$-admissible} if the associated cost function
   $c$ is convex with respect to its first argument and the following condition holds for
   any $p_1,p_2$ and $r$:
-  \begin{equation}
+  \begin{equation*}
     |c(p_1,r) - c(p_2,r)| \leq \sigma |p_1 - p_2|.
-  \end{equation}
+  \end{equation*}
   It is easy to see that if $\dom c(\cdot,r)$ is bounded and $c(\cdot,r)$ does not reach
   infinity, then its loss function is $\sigma$-admissible.
 \end{deff}
@@ -151,25 +153,25 @@ definitions and theorems are taken verbatim from \cite{bousquet2002}.
     A_S = \argmin_{g\in F}\frac{1}{n}\sum_{i=1}^n \ell(g,d_i) + \lambda\|g\|^2_k
   \end{equation}
   has uniform stability $\alpha_n$ with respect to $\ell$ with
-  \begin{equation}
+  \begin{equation*}
     \alpha_n \leq \frac{\sigma^2 \kappa^2}{2\lambda n}.
-  \end{equation}
+  \end{equation*}
 \end{thm}
 
 \begin{deff}
   The \emph{true risk} with respect to algorithm $A$ and set $S_n$ is defined as
-  \begin{equation}
+  \begin{equation*}
     R_{\text{true}}(A,S_n) = E_d[\ell(A_{S_n},d)],
-  \end{equation}
+  \end{equation*}
   which is, in plain words, the expected loss incured when applying the algorithm created
   from training set $S_n$ in the wild, ie. out of sample.
 \end{deff}
 
 \begin{deff}
   The \emph{empirical risk} with respect to algorithm $A$ and set $S_n$ is defined as
-  \begin{equation}
+  \begin{equation*}
     \hat R(A,S_n) = \frac{1}{n} \sum_{i=1}^n \ell(A_{S_n},d_i),
-  \end{equation}
+  \end{equation*}
   which is, in plain words, the average cost incured by our model over all the training
   set.
 \end{deff}
@@ -180,9 +182,9 @@ definitions and theorems are taken verbatim from \cite{bousquet2002}.
   function $\ell$ such that $0\leq\ell(A_{S_n},d)\leq M$ for all $d=(x,r)\sim D$ and all sets
   $S_n$ of size $n$. Then for any $n\geq1$ and any $\delta\in(0,1)$, the following bound
   holds with probability at least $1-\delta$ over the random draw of the sample $S_n$:
-  \begin{equation}
+  \begin{equation*}
     |\trueRisk(A,S_n) - \hat R(A,S_n)| \leq 2\alpha_n + (4n\alpha_n + M) \sqrt{\frac{\log(2/\delta)}{2n}}.
-  \end{equation}
+  \end{equation*}
 \end{thm}
 
 \subsection{Remarks and applications to our algorithm}
@@ -199,100 +201,172 @@ decision. Both are quite similar in their results.
 \subsubsection{Canonical cost.}
 
 We first consider the case where 
-\begin{equation}
+\begin{equation*}
   c(p,r) = -U(pr + (1-p)R_f).
-\end{equation}
+\end{equation*}
 
-\begin{rem}[$\sigma$-admissibility]
-  We first remark that both forms of $U$ yield a convex function of $p$ with $r$ fixed,
-  since $U$ is concave. 
+\paragraph{$\sigma$-admissibility.}  We first remark that both forms of $U$ yield a convex
+function of $p$ with $r$ fixed, since $U$ is concave.
 
-  Next, the expression $|c(p_1,r)-c(p_2,r)|$ reduces to
-  \begin{equation}
-    \label{eq:above1} |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
-  \end{equation} Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its
-  domain, and so \eqref{eq:above1} is bounded by
-  \begin{equation}
-    \label{eq:above2} \alpha |p_1r + (1-p_1)R_f - (p_2r + (1-p_2)R_f)| =
-\alpha|p_1-p_2||r-R_f|
-  \end{equation} where
-  \begin{equation} \alpha = \sup_{r\in[-\bar r,\bar r]} |U'(r)|.
-  \end{equation}
+Next, the expression $|c(p_1,r)-c(p_2,r)|$ reduces to
+\begin{equation}
+  \label{eq:above1} |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
+\end{equation} Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its
+domain, and so \eqref{eq:above1} is bounded by
+\begin{equation}
+  \label{eq:above2} 
+  \alpha |p_1r + (1-p_1)R_f - (p_2r + (1-p_2)R_f)| = \alpha|p_1-p_2||r-R_f|
+\end{equation} 
+where
+\begin{equation*} 
+  \alpha = \sup_{r\in[-\bar r,\bar r]} |U'(r)|.
+\end{equation*}
 
-  In the linear case, the derivative is piecewise constant, and is set to 1 on for returns
+In the linear case, the derivative is piecewise constant, and is set to 1 on for returns
 below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \exp\mu r$, and $\alpha
 = \exp \mu \bar r$.
 
-  The bound \eqref{eq:above2} must hold for any $r$. The expression $|r-R_f|$ will reach
-  its largest value at $r=-\bar r$, since $R_f$ is assumed to be non-negative, and
-  therefore 
-  \begin{equation}
-    |c(p_1,r) - c(p_2,r)| \leq \alpha (\bar r + R_f)|p_1-p_2|,
-  \end{equation}
-  which shows that $\ell$ is $\sigma$-admissible with the canonical cost, with
-  $\sigma=\alpha(\bar r+ R_f)$.
+The bound \eqref{eq:above2} must hold for any $r$. The expression $|r-R_f|$ will reach
+its largest value at $r=-\bar r$, since $R_f$ is assumed to be non-negative, and therefore
+\begin{equation*} 
+  |c(p_1,r) - c(p_2,r)| \leq \alpha (\bar r + R_f)|p_1-p_2|,
+\end{equation*} 
+which shows that $\ell$ is $\sigma$-admissible with the canonical cost,
+with $\sigma=\alpha(\bar r+ R_f)$.
 
-  We also remark that the utility is actually invariant to scaling, ie. $\tilde{U} = kU$
-  where $k$ is positive yields the same relative utility. The $\sigma$ bound can therefore
-  be as tight as desired, since it can be scaled by an arbitrary positive constant, and
-  the algorithm will yield the same result.
-\end{rem}
+We also remark that the utility is actually invariant to scaling, ie. $\tilde{U} = kU$
+where $k$ is positive yields the same relative utility. The $\sigma$ bound can therefore
+be as tight as desired, since it can be scaled by an arbitrary positive constant, and the
+algorithm will yield the same result.
 
-\begin{rem}[Algorithmic Stability]
-  Because the loss function is $\sigma$-admissible, the conditions for Theorem \ref{thm1}
-  are respected: if we take the kernel on the space $\real^p$ as the regular inner
-  product, then $\kappa(x,x)\leq X^2_{\max}$. Therefore, our algorithm has algorithmic
-  stability with:
+\paragraph{Algorithmic stability.}
+Because the loss function is $\sigma$-admissible, the conditions for Theorem \ref{thm1}
+are respected: if we take the kernel on the space $\real^p$ as the regular inner product,
+then $\kappa(x,x)\leq X^2_{\max}$. Therefore, our algorithm has algorithmic stability
+with:
+\begin{equation}
+  \label{algoStabilityLinear}
+  \alpha_n \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{2\lambda n}
+\end{equation}
+ with linear utility and
+\begin{equation*}
+   \alpha_n \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{2\lambda n}
+\end{equation*}
+in the case of exponential utility.
 
-  \begin{equation}
-    \alpha_n \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{2\lambda n}
-  \end{equation}
-  with linear utility and
-  \begin{equation}
-    \alpha_n \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{2\lambda n}
-  \end{equation}
-  in the case of exponential utility.
+% \marginnote{How can we leverage $k$?}
+% As discussed above, $k>0$ is a scaling term we can add to the utility function, with
+% which we can actually have algorithmic stability as tight as needed.
 
-  \marginnote{How can we leverage $k$?}
-  As discussed above, $k>0$ is a scaling term we can add to the utility function, with
-  which we can actually have algorithmic stability as tight as needed. 
-\end{rem}
+\paragraph{Bounds on the allocation scalar.}
+We now wish to derive a bound on the value the allocation scalar $p$ can take when
+applying algorithm \eqref{algo}.
 
-\begin{rem}[Generalization Bound]
-  Using Theorem \ref{thm2}, we can derive an out-of-sample bound on the result produced by
-  our algorithm for each utility forms that holds with probability $1-\delta$, for
-  $0<\delta<1$. The $M$ value stated by Theorem \ref{thm2} corresponds to the highest loss
-  we can incur on the domain, which happens when $p=1$ and $r=-\bar r$, ie.
-  \begin{equation}
-    M = c(1,-\bar r) = -U(\bar r).
-  \end{equation}
+To do so, let us first rewrite algorithm \eqref{algo} where instead of optimising over the
+decision vector $q$, we optimise on its direction $q$ and its scale $s\geq0$. Algorithm
+\eqref{algo} therefore becomes \minimizeEquation%
+{\frac{1}{n}\sum_{i=1}^n c(s\,q^T x_i, r_i) + \lambda s^2}%
+[s\geq0\\,\|q\|_2=1]
 
-  In the linear utility case, 
-  \begin{align}
-    &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
-      M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
-    &\qquad \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{\lambda n} + \left(\frac{2k^2(\bar r+R_f)^2X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}},
-  \end{align}
-  and in the exponential utility case, 
-  \begin{align}
-    &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
-      M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
-    &\qquad \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda n} + \left(\frac{2k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}}.
-  \end{align}
-\end{rem}
+The optimization variables are $q$ and $s$, and we can solve each variable independantly
+of the other one. Therefore, for any $q$ we can define a convex function $g(s)$ which
+becomes the objective: \minimizeEquation{g(s)}[s\geq0] where
+\begin{equation*}
+  g(s) = \frac{1}{n} \sum_{i=1}^n c(s\,q^T x_i, r_i) + \lambda s^2.
+\end{equation*}
 
-\begin{rem}[Absolute Bound]
-  Finally, we derive a measure of performance when we compare $\hat q=A_{S_n}$ with the true
-  optimal $q^\star$ over the distribution, and how each perfom when applied on the true
-  risk of the distribution\ldots
-\end{rem}
+Because $g$ is convex, we can consider two cases: either the minimum is realized at the
+boundary $s^\star=0$, or there exists an optimal value $s^\star > 0$ such that
+$g'(s^\star) > 0$. To derive a bound on $s^\star$, we can seek a value $s_{\max}$ such
+that for any $q$, $s_{\max} > s^\star$, and therefore $g'(s_{\max}) > 0$.
+
+To do so, we first note that
+\begin{align*}
+    g'(s) &= \frac{\dd}{\dd s}\left[\frac{1}{n} \sum_{i=1}^n c(s\, q^{T}x_i, r_i) + \lambda s^2\right]\\
+          &= 2\lambda s + \frac{1}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd c(p_i,r_i)}{\dd p_i} \right|_{p_i =
+            s\,q^{T}x_i} \\
+          &= 2\lambda s - \frac{1}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd}{\dd p_i} U(p_i r_i +
+            (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}\\
+          &= 2\lambda s - \frac{1}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
+            (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}.
+\end{align*}
+
+In particular, in the case of the linear utility \eqref{linearUtility}, because
+$q^Tx_i\leq X_{\max}$, $r_i-R_f\leq \bar r - R_f$ and $U'\leq 1+\beta$, we have
+\begin{equation*}
+  \frac{1}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
+    (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i} \leq X_{\max}(\bar{r}-R_f)(1+\beta).
+\end{equation*}
+
+Therefore, for
+\begin{equation}
+  \label{scalarBound}
+  \bar s = \frac{X_{\max}(\bar r-R_f)(1+\beta)}{2\lambda},
+\end{equation}
+we have for any $s>\bar s$
+\begin{equation*}
+  g(s) > 0.
+\end{equation*}
+Inequality \eqref{scalarBound} therefore gives a bound on the scale of the optimal
+decision vector, ie. $\|q^\star\|_2 \leq \bar s$. From this bound, we can finally derive a
+bound on the optimal allocation scalar
+\begin{equation}
+  \label{allocationBound}
+  |p_i| = |q^{T}x_i|\leq \frac{1}{2\lambda} X^2_{\max}(\bar r -R_f)(1+\beta).
+\end{equation}
+
+\paragraph{Generalization bound.}
+Using Theorem \ref{thm2}, we can derive an out-of-sample bound on the result produced by
+our algorithm for each utility forms that holds with probability $1-\delta$, for
+$0<\delta<1$. The $M$ value stated by Theorem \ref{thm2} corresponds to the highest loss
+we can incur on the domain, which happens when $p$ is at its largest and $r_i$ at its
+lowest.
+
+With linear utility, using result \eqref{allocationBound}, we have
+\begin{align*}
+  M &\leq c(X^2_{\max}(\bar r - R_f)(1+\beta), -\bar r)\\
+    &=-U\left(\frac{X^2_{\max}(1+\beta)(R_f+\bar r)(R_f-\bar r)}{2\lambda} + R_f\right)\\
+    &=\frac{X^2_{\max}(1+\beta)^2(\bar r + R_f)(\bar r - R_f)}{2\lambda} - (1+\beta)R_f,
+\end{align*}
+which leads, using result \eqref{algoStabilityLinear}, to
+\begin{equation*}
+  M \leq \frac{\bar r - R_f}{\bar r + R_f}\frac{(1+\beta)^2}{k^2}n\alpha_n - (1+\beta)R_f.
+\end{equation*}
+
+Therefore, using result \eqref{algoStabilityLinear} we have the following out of sample
+generalization bound for linear utility:
+  % Using Theorem \ref{thm2}, we can derive an out-of-sample bound on the result produced by
+  % our algorithm for each utility forms that holds with probability $1-\delta$, for
+  % $0<\delta<1$. The $M$ value stated by Theorem \ref{thm2} corresponds to the highest loss
+  % we can incur on the domain, which happens when $p=1$ and $r=-\bar r$, ie.
+  % \begin{equation}
+  %   M = c(1,-\bar r) = -U(\bar r).
+  % \end{equation}
+
+  % In the linear utility case, 
+  % \begin{align}
+  %   &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
+  %     M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
+  %   &\qquad \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{\lambda n} + \left(\frac{2k^2(\bar r+R_f)^2X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}},
+  % \end{align}
+  % and in the exponential utility case, 
+  % \begin{align}
+  %   &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
+  %     M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
+  %   &\qquad \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda n} + \left(\frac{2k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}}.
+  % \end{align}
+
+\paragraph{Absolute bound.}
+Finally, we derive a measure of performance when we compare $\hat q=A_{S_n}$ with the true
+optimal $q^\star$ over the distribution, and how each perfom when applied on the true risk
+of the distribution\ldots
 
 \subsubsection{Regret cost.}
 
 We now turn our attention toward the regret cost, ie.
-\begin{equation}
+\begin{equation*}
   c(p,r) = \floor{U(\max(r,R_f)) - U(pr + (1-p)R_f)}.
-\end{equation}
+\end{equation*}
 This type cost is different from the canonical cost in that to does not encourage `risky'
 position for which $0<p<1$, since there's no gain in over-investing our portfolio in a
 winning asset. Conversely, there's no gain in shorting a losing asset. Such a cost could
@@ -304,67 +378,67 @@ the algorithm $A$ might very well yield a position $0<p<1$.
   $\sigma$-admissibility of the canonical cost derived above. Indeed, we remark that,
   provided that $c(p_1,r), c(p_2,r) > 0$, then the expression $|c(p_1,r) - c(p_2,r)|$
   reduces to 
-  \begin{equation}
+  \begin{equation*}
     |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f)|,
-  \end{equation}
+  \end{equation*}
   wich has exactly the same form as \eqref{eq:above1}, and therefore yields the same
   $\sigma$ bound. Now for the case where, without loss of generality $c(p_2,r) = 0$. Let
   $\tilde c$ be defined as $c$, but without $\floor{\cdot}$, so that
   $\floor{\tilde{c}(p,r)} = c(p,r)$. In particular $\tilde c(p_2,r)<0$ and so
-  \begin{align}
+  \begin{align*}
     |c(p_1,r) - c(p_2,r)| &= |\floor{\tilde c(p_1,r)} - \floor{\tilde c(p_2,r)}|\\
     &\leq |\tilde c(p_1,r) - \tilde c(p_2,r)|\\
     &= |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f)|,
-  \end{align}
+  \end{align*}
   which has again the the same form as \eqref{eq:above1}.
 
   This means that the loss defined with the regret cost has the same
   $\sigma$-admissibility as the loss defined with the canonical cost, namely 
-  \begin{equation}
+  \begin{equation*}
     \sigma = k(\bar r + R_f)
-  \end{equation}
+  \end{equation*}
   in the case of linear utility and 
-  \begin{equation}
+  \begin{equation*}
     \sigma = k(\bar r+R_f) \exp(\mu\bar r)
-  \end{equation}
+  \end{equation*}
   in the case of exponential utility. 
 \end{rem}
 
-\begin{rem}[Algorithmic Stability]
+\paragraph{Algorithmic Stability}
   Because this regret cost has the same $\sigma$-admissibility as the canonical cost, then
   the algorithmic stability also remains the same for both algorithm, ie.
-  \begin{equation}
+  \begin{equation*}
     \alpha_n \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{2\lambda n}
-  \end{equation}
+  \end{equation*}
   with linear utility and
-  \begin{equation}
+  \begin{equation*}
     \alpha_n \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{2\lambda n}
-  \end{equation}
+  \end{equation*}
   in the case of exponential utility.
-\end{rem}
+
 
 \begin{rem}[Generalization Bound]
   Likewise, the only difference here with the canonical cost is the value of the $M$
   variable of Theorem \ref{thm2}, defined as the highest cost on the domain. In the case
   here, this value is again reached for an investment $p=1$ on a losing asset at $r=-\bar
   r$, so that,
-  \begin{equation}
+  \begin{equation*}
     M = \floor{U(R_f) - U(\bar r)}.
-  \end{equation}
+  \end{equation*}
 
   We are left with the same expression for the generalization bounds, in the linear
   utility case,
-  \begin{align}
+  \begin{align*}
     &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
       M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
     &\qquad \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{\lambda n} + \left(\frac{2k^2(\bar r+R_f)^2X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}},
-  \end{align}
+  \end{align*}
   and in the exponential utility case, 
-  \begin{align}
+  \begin{align*}
     &|\trueRisk(A,S_n) - \hat{R}(A,S_n)| \leq 2\alpha_n + (4n\alpha_n +
       M)\sqrt{\frac{\log(2/\delta)}{2n}}\\
     &\qquad \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda n} + \left(\frac{2k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}}.
-  \end{align}
+  \end{align*}
 \end{rem}
 
 \subsection{True Optimal Bound}
@@ -373,14 +447,14 @@ One bound that is still of interest is the absolute difference between the in-sa
 using in-sample decision $\hat R(A,S_n)$ and the expected cost over the unknown
 distribution $D$ (ie. the true risk) using the unknown optimal decision $q^\star$ defined
 by
-\begin{equation}
+\begin{equation*}
   q^\star = \argmin_{\{q:X\subset\real^p\to\real\}}\trueRisk(q).
-\end{equation}
+\end{equation*}
 
 The true optimal bound is therefore expressed by
-\begin{equation}
+\begin{equation*}
 |\trueRisk(q^\star) - \hat R(A,S_n)|.  
-\end{equation}
+\end{equation*}
 We can then apply the triangle inequality to bound this expression by the generalization
 bound plus $|\trueRisk(q^\star) - \trueRisk(\hat q)|$. 
 
@@ -409,7 +483,7 @@ Here are some points that should be considered.
 \item We are also considering discrete quantities, updated daily. Our model should
   encompass quantities that might change during the day.
 \item A section on how data should be normalized must also be added. This is essential to
-  go from theory to pratical applications. 
+  go from theory to pratical applications. Hint: SVD.
 \item Not to forget: the $p$ features should also include higher order terms of the raw
   features, ie. $x_i^2$ and $x_ix_j$ so we can capture a second order Taylor approximation
   (see \cite{rudin2015}, p.~6). Instead of $p$ features, we would then have $p^2+p$
