@@ -53,12 +53,14 @@ both will yield a zero cost position.
 
 \paragraph{Utility.}
 There are two ways we can model our utility, and both are concave function, to represent a
-risk-averse approach. The first utility is the linear utility of the form
+risk-averse approach. The first utility is the \emph{linear utility} of the form
 \begin{equation}
   \label{linearUtility}
-  U(r) = r + \min(0, \beta r),
+  U(r) = \min(r, \beta r)
 \end{equation}
-with $\beta > 0$. The other utility is exponential:
+where $0\leq\beta\leq1$ is the slope of the utility for $r>0$. 
+
+The other utility is the \emph{exponential utility}:
 \begin{equation}
   \label{expUtility}
   U(r) = -\exp(-\mu r),
@@ -199,14 +201,13 @@ $c=-U$ (the canonical cost) and second with the cost function as the regret at e
 decision. Both are quite similar in their results. 
 
 \subsubsection{Canonical cost.}
-
 We first consider the case where 
 \begin{equation*}
   c(p,r) = -U(pr + (1-p)R_f).
 \end{equation*}
 
-\paragraph{$\sigma$-admissibility.}  We first remark that both forms of $U$ yield a convex
-function of $p$ with $r$ fixed, since $U$ is concave.
+\paragraph{$\sigma$-admissibility.}  We first remark that for both forms of $U$, $c$ is a
+convex function of $p$ with $r$ fixed, since $U$ is concave.
 
 Next, the expression $|c(p_1,r)-c(p_2,r)|$ reduces to
 \begin{equation}
@@ -292,27 +293,27 @@ To do so, we first note that
 \end{align*}
 
 In particular, in the case of the linear utility \eqref{linearUtility}, because
-$q^Tx_i\leq X_{\max}$, $r_i-R_f\leq \bar r - R_f$ and $U'\leq 1+\beta$, we have
+$q^Tx_i\leq X_{\max}$, $r_i-R_f\leq \bar r - R_f$ and $U'\leq 1$, we have
 \begin{equation*}
   \frac{1}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
-    (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i} \leq X_{\max}(\bar{r}-R_f)(1+\beta).
+    (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i} \leq X_{\max}(\bar{r}-R_f).
 \end{equation*}
 
 Therefore, for
 \begin{equation}
   \label{scalarBound}
-  \bar s = \frac{X_{\max}(\bar r-R_f)(1+\beta)}{2\lambda},
+  \bar s = \frac{X_{\max}(\bar r-R_f)}{2\lambda},
 \end{equation}
 we have for any $s>\bar s$
 \begin{equation*}
   g(s) > 0.
 \end{equation*}
-Inequality \eqref{scalarBound} therefore gives a bound on the scale of the optimal
+Equation \eqref{scalarBound} therefore gives a bound on the scale of the optimal
 decision vector, ie. $\|q^\star\|_2 \leq \bar s$. From this bound, we can finally derive a
 bound on the optimal allocation scalar
 \begin{equation}
   \label{allocationBound}
-  |p_i| = |q^{T}x_i|\leq \frac{1}{2\lambda} X^2_{\max}(\bar r -R_f)(1+\beta).
+  |p_i| = |q^{T}x_i|\leq \frac{1}{2\lambda} X^2_{\max}(\bar r -R_f).
 \end{equation}
 
 \paragraph{Generalization bound.}
@@ -324,17 +325,21 @@ lowest.
 
 With linear utility, using result \eqref{allocationBound}, we have
 \begin{align*}
-  M &\leq c(X^2_{\max}(\bar r - R_f)(1+\beta), -\bar r)\\
+  M &\leq c(X^2_{\max}(\bar r - R_f), -\bar r)\\
     &=-U\left(\frac{X^2_{\max}(1+\beta)(R_f+\bar r)(R_f-\bar r)}{2\lambda} + R_f\right)\\
-    &=\frac{X^2_{\max}(1+\beta)^2(\bar r + R_f)(\bar r - R_f)}{2\lambda} - (1+\beta)R_f,
+    &=\frac{X^2_{\max}(\bar r + R_f)(\bar r - R_f)}{2\lambda} - R_f,
 \end{align*}
 which leads, using result \eqref{algoStabilityLinear}, to
 \begin{equation*}
-  M \leq \frac{\bar r - R_f}{\bar r + R_f}\frac{(1+\beta)^2}{k^2}n\alpha_n - (1+\beta)R_f.
+  M \leq \frac{\bar r - R_f}{\bar r + R_f}\frac{n\,\alpha_n}{k^2} - R_f.
 \end{equation*}
-
-Therefore, using result \eqref{algoStabilityLinear} we have the following out of sample
-generalization bound for linear utility:
+Therefore, we have the following out of sample generalization bound for linear utility:
+\begin{equation*}
+  |\trueRisk(\hat{q}) - \hat{R}(\hat{q})| \leq 
+     2\alpha_n + \left(4n\alpha_n + \frac{\bar r - R_f}{\bar r +
+         R_f}\frac{n\,\alpha_n}{k^2} - R_f\right)
+     \sqrt{\frac{\log(2/\delta)}{2n}}.
+\end{equation*}
   % Using Theorem \ref{thm2}, we can derive an out-of-sample bound on the result produced by
   % our algorithm for each utility forms that holds with probability $1-\delta$, for
   % $0<\delta<1$. The $M$ value stated by Theorem \ref{thm2} corresponds to the highest loss
