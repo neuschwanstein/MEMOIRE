@@ -1,22 +1,22 @@
 import numpy as np
-import config as cfg
+from config import *
 import objective as obj
-
-n,p = cfg.n,cfg.p
+import matplotlib.pyplot as plt
 
 k = 1                           # ? See paper...
-Xmax = 1                        # ? see paper...
-M = 1                           # ? See paper...
+Xmax = 1.96                     # ? see paper...
+delta = 0.05
 
 def get_bound(n):
-    alpha = k**2 * (cfg.rbar + cfg.Rf)*Xmax**2 / (2 * cfg.regul_q_norm * n)
-    bound = 2*alpha(n) + (4*n + M)*np.sqrt(np.log(2.0/delta) / (2.0*n))
+    alpha = (r_max + Rf)**2 * Xmax**2/(2*Lambda*n)
+    bound = 2*alpha + (4*n*alpha + (r_max-Rf)/(rBar+Rf)*n*alpha - Rf)*np.sqrt(np.log(2/delta)/(2*n))
     return bound
 
-bound = []
 if (__name__ == "__main__"):
+    bounds = []
     for n in xrange(100,10000,100):
-        bound_n = get_bound(n)
-        bound.append(bound_n)
-        # ...
-        # Profit !
+        bound = get_bound(n)
+        bounds.append(bound)
+
+    plt.plot(range(100,10000,100),bounds)
+    plt.show()

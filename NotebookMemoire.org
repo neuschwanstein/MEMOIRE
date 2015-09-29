@@ -1081,3 +1081,25 @@ la forme
 
 A partir des vecteurs mots, determiner une distribution muultinormale qui represente le
 document: vecteur \mu et matrice de covariance. 
+
+* Le 28 septembre 2015
+
+Some thoughts are needed here. First we assumed that all exogenous random variables X_i are
+set on a standard score, ie. they have 0 mean and 1 variance. Now what I'm trying to
+understand is how we can derive meaningful information out of this distribution. Our model
+is strictly based on 1st moment of distribution. 
+
+Let us for a moment work under a risk neutral utility, to make things easier. Then, the
+optimal decision vector q^* is such that 
+
+				      E_{X}[q^{T}X] = E[R]
+
+however if all variables are such that E[X_{i}] = 0, then bias is the only explanatory
+variable needed, ie. we can set b = E[R] and be done with it.
+
+But, what is said above is not true! q^{T}X is merely the allocation we're looking
+for. However, it remains true that, without bias, then 
+
+				      E[P] = E_{X}[q^{T}X]
+
+the expectation of P, the `random' allocation scalar will have 0 mean. 
