@@ -26,7 +26,7 @@ random draw $d=(x,r)$, the loss will be
 Supposing an utility $U$, there are two different cost functions we can use. The first
 one, and perhaps the most obvious is defined by
 \begin{equation*}
-  c(p,r) = -U(pr + (1-p)R_f).
+  c(p,r) = -u(pr + (1-p)R_f).
 \end{equation*}
 If the utility is piecewise linear, then the cost is not bounded, and so an infinite
 return would yield a negatively infinite cost. This means that risk-taking, ie. positions
@@ -40,8 +40,8 @@ regret $\rho$ of the decision:
 \begin{equation*}
   \rho(p,r) =
   \begin{cases}
-    \lfloor U(r) - U(pr + (1-p)R_f)\rfloor & \text{if } r>R_f\\
-    \lfloor U(R_f) - U(pr + (1-p)R_f)\rfloor &\text{if } r\leq R_f,
+    \lfloor u(r) - u(pr + (1-p)R_f)\rfloor & \text{if } r>R_f\\
+    \lfloor u(R_f) - u(pr + (1-p)R_f)\rfloor &\text{if } r\leq R_f,
   \end{cases}
 \end{equation*}
 where by $\lfloor \cdot \rfloor$ we mean $\max(.,0)$. In the case of exponential
@@ -53,19 +53,21 @@ both will yield a zero cost position.
 
 \paragraph{Utility.}
 There are two ways we can model our utility, and both are concave function, to represent a
-risk-averse approach. The first utility is the \emph{linear utility} of the form
+risk-averse approach. Let $0<k<1$. The first utility is the \emph{linear utility} of the form
 \begin{equation}
   \label{linearUtility}
-  U(r) = \min(r, \beta r)
+  u(r) = k\min(r, \beta r)
 \end{equation}
 where $0\leq\beta\leq1$ is the slope of the utility for $r>0$. 
 
 The other utility is the \emph{exponential utility}:
 \begin{equation}
   \label{expUtility}
-  U(r) = -\exp(-\mu r),
+  u(r) = -k\exp(-\mu r),
 \end{equation}
-with $\mu > 0$.
+with $\mu > 0$. Scaling factor $k$ here is a reminder that utility is a fundamentally
+unitless value, and that the utility can therefore be scaled to our convenience. We shall
+however see later how we can remove $k$ from our framework to obtain `real' values.
 
 \begin{figure}
   \centering
@@ -203,7 +205,7 @@ decision. Both are quite similar in their results.
 \subsubsection{Canonical cost.}
 We first consider the case where 
 \begin{equation*}
-  c(p,r) = -k U(pr + (1-p)R_f).
+  c(p,r) = -k u(pr + (1-p)R_f).
 \end{equation*}
 
 \paragraph{$\sigma$-admissibility.}  The canonical cost is $\sigma$-adimissible, with 
@@ -224,7 +226,7 @@ for the exponential utility.
 Next, the expression $|c(p_1,r)-c(p_2,r)|$ reduces to
 \begin{equation}
   \label{eq:above1} 
-  k|U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
+  k|u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f|.
 \end{equation} Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its
 domain, and so \eqref{eq:above1} is bounded by
 \begin{equation}
@@ -301,7 +303,7 @@ To do so, we first note that
     g'(s) &= \frac{\dd}{\dd s}\left[\frac{1}{n} \sum_{i=1}^n c(s\, q^{T}x_i, r_i) + \lambda s^2\right]\\
           &= 2\lambda s + \frac{1}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd c(p_i,r_i)}{\dd p_i} \right|_{p_i =
             s\,q^{T}x_i} \\
-          &= 2\lambda s - \frac{k}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd}{\dd p_i} U(p_i r_i +
+          &= 2\lambda s - \frac{k}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd}{\dd p_i} u(p_i r_i +
             (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}\\
           &= 2\lambda s - \frac{k}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
             (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}.
@@ -341,7 +343,7 @@ lowest.
 With linear utility, using result \eqref{allocationBound}, we have
 \begin{align*}
   M &\leq c(k X^2_{\max}(\bar r - R_f)/2\lambda, -\bar r)\\
-    &=-k U\left(\frac{k}{2\lambda} X^2_{\max}(R_f+\bar r)(R_f-\bar r) + R_f\right)\\
+    &=-k u\left(\frac{k}{2\lambda} X^2_{\max}(R_f+\bar r)(R_f-\bar r) + R_f\right)\\
     &=\frac{k^2}{2\lambda} X^2_{\max}(\bar r + R_f)(\bar r - R_f) - k R_f,
 \end{align*}
 which leads, using result \eqref{algoStabilityLinear}, to
@@ -349,18 +351,19 @@ which leads, using result \eqref{algoStabilityLinear}, to
   M \leq n\alpha_n \frac{\bar r - R_f}{\bar r + R_f} - kR_f.
 \end{equation*}
 Therefore, we have the following out of sample generalization bound for linear utility:
-\begin{equation*}
+\begin{equation}
+  \label{boundWithK}
   |\trueRisk(\hat{q}) - \hat{R}(\hat{q})| \leq 
   2\alpha_n + \left(4n\alpha_n + n\alpha_n\frac{\bar r - R_f}{\bar r +
       R_f} - kR_f\right)
   \sqrt{\frac{\log(2/\delta)}{2n}}.
-\end{equation*}
+\end{equation}
   % Using Theorem \ref{thm2}, we can derive an out-of-sample bound on the result produced by
   % our algorithm for each utility forms that holds with probability $1-\delta$, for
   % $0<\delta<1$. The $M$ value stated by Theorem \ref{thm2} corresponds to the highest loss
   % we can incur on the domain, which happens when $p=1$ and $r=-\bar r$, ie.
   % \begin{equation}
-  %   M = c(1,-\bar r) = -U(\bar r).
+  %   M = c(1,-\bar r) = -u(\bar r).
   % \end{equation}
 
   % In the linear utility case, 
@@ -376,6 +379,102 @@ Therefore, we have the following out of sample generalization bound for linear u
   %   &\qquad \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda n} + \left(\frac{2k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{\lambda} + M\right)\sqrt{\frac{\log(2/\delta)}{2n}}.
   % \end{align}
 
+\paragraph{Bound characterization in terms of returns.}
+While useful, the bound \eqref{boundWithK} does have the disadvantage of being expressed
+in terms of $k$ (since $\alpha_n \sim k^2$), wich is in itself an artificial variable
+representing the invariance of the utility to scaling, ie. $\tilde u \simeq k u$. We would
+therefore like to get rid of this quantity to obtain a bound on
+\begin{equation*}
+  u^{-1}(|\trueRisk(\hat q) - \hat R(\hat q)|),
+\end{equation*}
+which can be interpreted in `units of returns'. 
+
+% \subparagraph{Assumption.} In the following discussion, we will assume that $0<k<1$, so
+% that $k^2<k$. 
+
+To do so, we can first write down the form of $u^{-1}$ from \eqref{linearUtility}:
+\begin{equation*}
+  u^{-1}(t) = \frac{1}{k}\max(t,t/\beta).
+\end{equation*}
+Let us also define 
+\begin{equation*}
+  \gamma_n := \frac{\alpha_n}{k^2}. 
+\end{equation*}
+
+Then, \eqref{boundWithK} can be rewritten as
+\begin{align}
+  |\trueRisk(\hat{q}) - \hat{R}(\hat{q})| &\leq k^2\left(
+  2\gamma_n + \left(4n\gamma_n + n\gamma_n\frac{\bar r - R_f}{\bar r +
+      R_f}\right) \sqrt{\frac{\log(2/\delta)}{2n}}\right) \nonumber \\
+  \label{newKBound}
+  &\leq k\left(
+  2\gamma_n + \left(4n\gamma_n + n\gamma_n\frac{\bar r - R_f}{\bar r +
+      R_f}\right) \sqrt{\frac{\log(2/\delta)}{2n}}\right).
+\end{align}
+None of the expression within the outher brackets depend on $k$. 
+
+Now, because $\uInv$ is convex and non decreasing, if $a<b$, then $\uInv(a)\leq\uInv(b)$,
+from which it follows that
+\begin{equation*}
+  \uInv(|\trueRisk(\hat{q}) - \hat{R}(\hat{q})|) \leq \uInv\left(k\left(
+  2\gamma_n + \left(4n\gamma_n + n\gamma_n\frac{\bar r - R_f}{\bar r +
+      R_f}\right) \sqrt{\frac{\log(2/\delta)}{2n}}\right)\right).
+\end{equation*}
+Therefore, by the definition of $\uInv$, 
+\begin{equation*}
+  \uInv(|\trueRisk(\hat{q}) - \hat{R}(\hat{q})|) \leq 
+  \frac{\gamma_n}{\beta}\left[2+ n\left(4 + \frac{\bar r - R_f}{\bar r +
+      R_f}\right) \sqrt{\frac{\log(2/\delta)}{2n}}\right].
+\end{equation*}
+
+% Next, we derive some results needed to transform the bound \eqref{newKBound}. First,
+% because $u^{-1}$ is convex and non decreasing, if $a\leq b$, then 
+% \begin{equation*}
+%   u^{-1}(a)\leq u^{-1}(b).
+% \end{equation*}
+% Also, if $\lambda$ is a supergradient to $u$ at $0$, ie. $u(r) \leq \lambda
+% r$, then $r \leq u^{-1}(\lambda r) \leq \lambda u^{-1}(r)$, ie.
+% \begin{equation*}
+%   \frac{r}{\lambda} \leq u^{-1}(r).
+% \end{equation*}
+% Which follows from the convexity of $u^{-1}$, ie. we have
+% $u^{-1}(\lambda t) \leq \lambda u^{-1}(t)$.
+
+% For simplicity, let's rewrite \eqref{newKBound} as
+% \begin{equation*}
+%   Q \leq kB. 
+% \end{equation*}
+% We then have
+% \begin{equation*}
+%   \uInv(Q) \leq \uInv(kB)
+% \end{equation*}
+% and
+% \begin{equation*}
+%   B \leq \uInv(kB).
+% \end{equation*}
+% \textsl{
+% We want to put $Q$ and $\uInv(B)$ in relation. Ideally we would have a bound of the form
+% \begin{equation*}
+%   Q \leq A + C\uInv(B).
+% \end{equation*}
+% }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \paragraph{Absolute bound.}
 Finally, we derive a measure of performance when we compare $\hat q=A_{S_n}$ with the true
 optimal $q^\star$ over the distribution, and how each perfom when applied on the true risk
@@ -385,7 +484,7 @@ of the distribution\ldots
 
 We now turn our attention toward the regret cost, ie.
 \begin{equation*}
-  c(p,r) = \floor{U(\max(r,R_f)) - U(pr + (1-p)R_f)}.
+  c(p,r) = \floor{u(\max(r,R_f)) - u(pr + (1-p)R_f)}.
 \end{equation*}
 This type cost is different from the canonical cost in that to does not encourage `risky'
 position for which $0<p<1$, since there's no gain in over-investing our portfolio in a
@@ -399,7 +498,7 @@ the algorithm $A$ might very well yield a position $0<p<1$.
   provided that $c(p_1,r), c(p_2,r) > 0$, then the expression $|c(p_1,r) - c(p_2,r)|$
   reduces to 
   \begin{equation*}
-    |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f)|,
+    |u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f)|,
   \end{equation*}
   wich has exactly the same form as \eqref{eq:above1}, and therefore yields the same
   $\sigma$ bound. Now for the case where, without loss of generality $c(p_2,r) = 0$. Let
@@ -408,7 +507,7 @@ the algorithm $A$ might very well yield a position $0<p<1$.
   \begin{align*}
     |c(p_1,r) - c(p_2,r)| &= |\floor{\tilde c(p_1,r)} - \floor{\tilde c(p_2,r)}|\\
     &\leq |\tilde c(p_1,r) - \tilde c(p_2,r)|\\
-    &= |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f)|,
+    &= |u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f)|,
   \end{align*}
   which has again the the same form as \eqref{eq:above1}.
 
@@ -443,7 +542,7 @@ the algorithm $A$ might very well yield a position $0<p<1$.
   here, this value is again reached for an investment $p=1$ on a losing asset at $r=-\bar
   r$, so that,
   \begin{equation*}
-    M = \floor{U(R_f) - U(\bar r)}.
+    M = \floor{u(R_f) - u(\bar r)}.
   \end{equation*}
 
   We are left with the same expression for the generalization bounds, in the linear
