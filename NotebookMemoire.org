@@ -1103,3 +1103,9 @@ for. However, it remains true that, without bias, then
 				      E[P] = E_{X}[q^{T}X]
 
 the expectation of P, the `random' allocation scalar will have 0 mean. 
+
+
+
+* Le 1er octobre
+
+IDEA: Features should also include ratios and such. 

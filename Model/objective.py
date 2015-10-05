@@ -29,7 +29,7 @@ def objective(X,r,q):
     return total_cost
 
 def true_risk(q):
-    
+    expect_p = 
 
 
 if (__name__ == "__main__"):

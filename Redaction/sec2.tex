@@ -203,20 +203,33 @@ decision. Both are quite similar in their results.
 \subsubsection{Canonical cost.}
 We first consider the case where 
 \begin{equation*}
-  c(p,r) = -U(pr + (1-p)R_f).
+  c(p,r) = -k U(pr + (1-p)R_f).
 \end{equation*}
 
-\paragraph{$\sigma$-admissibility.}  We first remark that for both forms of $U$, $c$ is a
-convex function of $p$ with $r$ fixed, since $U$ is concave.
+\paragraph{$\sigma$-admissibility.}  The canonical cost is $\sigma$-adimissible, with 
+\begin{equation}
+  \label{linearSigmaAdmissibility}
+  \sigma = k(\bar r+R_f)
+\end{equation}
+for the linear utility and 
+\begin{equation}
+  \label{expSigmaAdmissibility}
+  \sigma = k (\bar r+ R_f) \mu\exp\mu\bar r
+\end{equation}
+for the exponential utility.
+
+\begin{proof}We first remark that for both forms of $U$, $c$ is a convex function of $p$
+  with $r$ fixed, since $U$ is concave.
 
 Next, the expression $|c(p_1,r)-c(p_2,r)|$ reduces to
 \begin{equation}
-  \label{eq:above1} |U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
+  \label{eq:above1} 
+  k|U(p_1r + (1-p_1)R_f) - U(p_2r + (1-p_2)R_f|.
 \end{equation} Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its
 domain, and so \eqref{eq:above1} is bounded by
 \begin{equation}
   \label{eq:above2} 
-  \alpha |p_1r + (1-p_1)R_f - (p_2r + (1-p_2)R_f)| = \alpha|p_1-p_2||r-R_f|
+  \alpha k|p_1r + (1-p_1)R_f - (p_2r + (1-p_2)R_f)| = \alpha k|p_1-p_2||r-R_f|
 \end{equation} 
 where
 \begin{equation*} 
@@ -224,16 +237,17 @@ where
 \end{equation*}
 
 In the linear case, the derivative is piecewise constant, and is set to 1 on for returns
-below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \exp\mu r$, and $\alpha
-= \exp \mu \bar r$.
+below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \mu\exp\mu r$, and $\alpha
+= \mu\exp \mu \bar r$.
 
 The bound \eqref{eq:above2} must hold for any $r$. The expression $|r-R_f|$ will reach
 its largest value at $r=-\bar r$, since $R_f$ is assumed to be non-negative, and therefore
 \begin{equation*} 
-  |c(p_1,r) - c(p_2,r)| \leq \alpha (\bar r + R_f)|p_1-p_2|,
+  |c(p_1,r) - c(p_2,r)| \leq \alpha k(\bar r + R_f)|p_1-p_2|,
 \end{equation*} 
 which shows that $\ell$ is $\sigma$-admissible with the canonical cost,
-with $\sigma=\alpha(\bar r+ R_f)$.
+with $\sigma=\alpha k(\bar r+ R_f)$.
+\end{proof}
 
 We also remark that the utility is actually invariant to scaling, ie. $\tilde{U} = kU$
 where $k$ is positive yields the same relative utility. The $\sigma$ bound can therefore
@@ -243,15 +257,16 @@ algorithm will yield the same result.
 \paragraph{Algorithmic stability.}
 Because the loss function is $\sigma$-admissible, the conditions for Theorem \ref{thm1}
 are respected: if we take the kernel on the space $\real^p$ as the regular inner product,
-then $\kappa(x,x)\leq X^2_{\max}$. Therefore, our algorithm has algorithmic stability
-with:
+then $\kappa(x,x)\leq X^2_{\max}$. Therefore, using results
+\eqref{linearSigmaAdmissibility} and \eqref{expSigmaAdmissibility}, our algorithm has
+algorithmic stability with:
 \begin{equation}
   \label{algoStabilityLinear}
   \alpha_n \leq \frac{k^2(\bar r+R_f)^2X^2_{\max}}{2\lambda n}
 \end{equation}
  with linear utility and
 \begin{equation*}
-   \alpha_n \leq \frac{k^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{2\lambda n}
+   \alpha_n \leq \frac{k^2 \mu^2 \exp(2\mu\bar r)(\bar r + R_f)^2 X^2_{\max}}{2\lambda n}
 \end{equation*}
 in the case of exponential utility.
 
@@ -286,23 +301,23 @@ To do so, we first note that
     g'(s) &= \frac{\dd}{\dd s}\left[\frac{1}{n} \sum_{i=1}^n c(s\, q^{T}x_i, r_i) + \lambda s^2\right]\\
           &= 2\lambda s + \frac{1}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd c(p_i,r_i)}{\dd p_i} \right|_{p_i =
             s\,q^{T}x_i} \\
-          &= 2\lambda s - \frac{1}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd}{\dd p_i} U(p_i r_i +
+          &= 2\lambda s - \frac{k}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd}{\dd p_i} U(p_i r_i +
             (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}\\
-          &= 2\lambda s - \frac{1}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
+          &= 2\lambda s - \frac{k}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
             (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}.
 \end{align*}
 
 In particular, in the case of the linear utility \eqref{linearUtility}, because
 $q^Tx_i\leq X_{\max}$, $r_i-R_f\leq \bar r - R_f$ and $U'\leq 1$, we have
 \begin{equation*}
-  \frac{1}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
-    (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i} \leq X_{\max}(\bar{r}-R_f).
+ k X_{\max}(\bar{r}-R_f) \geq \frac{k}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
+    (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}.
 \end{equation*}
 
-Therefore, for
+Therefore, with
 \begin{equation}
   \label{scalarBound}
-  \bar s = \frac{X_{\max}(\bar r-R_f)}{2\lambda},
+  \bar s := \frac{k}{2\lambda}X_{\max}(\bar r-R_f),
 \end{equation}
 we have for any $s>\bar s$
 \begin{equation*}
@@ -313,10 +328,10 @@ decision vector, ie. $\|q^\star\|_2 \leq \bar s$. From this bound, we can finall
 bound on the optimal allocation scalar
 \begin{equation}
   \label{allocationBound}
-  |p_i| = |q^{T}x_i|\leq \frac{1}{2\lambda} X^2_{\max}(\bar r -R_f).
+  |p_i| = |q^{T}x_i|\leq \frac{k}{2\lambda} X^2_{\max}(\bar r -R_f).
 \end{equation}
 
-\paragraph{Generalization bound.}
+\paragraph{Generalization bound for linear utility.}
 Using Theorem \ref{thm2}, we can derive an out-of-sample bound on the result produced by
 our algorithm for each utility forms that holds with probability $1-\delta$, for
 $0<\delta<1$. The $M$ value stated by Theorem \ref{thm2} corresponds to the highest loss
@@ -325,20 +340,20 @@ lowest.
 
 With linear utility, using result \eqref{allocationBound}, we have
 \begin{align*}
-  M &\leq c(X^2_{\max}(\bar r - R_f), -\bar r)\\
-    &=-U\left(\frac{X^2_{\max}(1+\beta)(R_f+\bar r)(R_f-\bar r)}{2\lambda} + R_f\right)\\
-    &=\frac{X^2_{\max}(\bar r + R_f)(\bar r - R_f)}{2\lambda} - R_f,
+  M &\leq c(k X^2_{\max}(\bar r - R_f)/2\lambda, -\bar r)\\
+    &=-k U\left(\frac{k}{2\lambda} X^2_{\max}(R_f+\bar r)(R_f-\bar r) + R_f\right)\\
+    &=\frac{k^2}{2\lambda} X^2_{\max}(\bar r + R_f)(\bar r - R_f) - k R_f,
 \end{align*}
 which leads, using result \eqref{algoStabilityLinear}, to
 \begin{equation*}
-  M \leq \frac{\bar r - R_f}{\bar r + R_f}\frac{n\,\alpha_n}{k^2} - R_f.
+  M \leq n\alpha_n \frac{\bar r - R_f}{\bar r + R_f} - kR_f.
 \end{equation*}
 Therefore, we have the following out of sample generalization bound for linear utility:
 \begin{equation*}
   |\trueRisk(\hat{q}) - \hat{R}(\hat{q})| \leq 
-     2\alpha_n + \left(4n\alpha_n + \frac{\bar r - R_f}{\bar r +
-         R_f}\frac{n\,\alpha_n}{k^2} - R_f\right)
-     \sqrt{\frac{\log(2/\delta)}{2n}}.
+  2\alpha_n + \left(4n\alpha_n + n\alpha_n\frac{\bar r - R_f}{\bar r +
+      R_f} - kR_f\right)
+  \sqrt{\frac{\log(2/\delta)}{2n}}.
 \end{equation*}
   % Using Theorem \ref{thm2}, we can derive an out-of-sample bound on the result produced by
   % our algorithm for each utility forms that holds with probability $1-\delta$, for
