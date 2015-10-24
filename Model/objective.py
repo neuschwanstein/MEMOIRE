@@ -28,10 +28,6 @@ def objective(X,r,q):
     total_cost = 1.0/n * sum(cost(np.dot(X,t),r)) + cfg.Lambda*sum(t**2)
     return total_cost
 
-def true_risk(q):
-    expect_p = 
-
-
 if (__name__ == "__main__"):
     X = np.load("Data/dataset.npy")
     r = np.load("Data/returns.npy")
