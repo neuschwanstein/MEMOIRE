@@ -1082,6 +1082,7 @@ la forme
 A partir des vecteurs mots, determiner une distribution muultinormale qui represente le
 document: vecteur \mu et matrice de covariance. 
 
+
 * Le 28 septembre 2015
 
 Some thoughts are needed here. First we assumed that all exogenous random variables X_i are
@@ -1106,6 +1107,187 @@ the expectation of P, the `random' allocation scalar will have 0 mean.
 
 
 
-* Le 1er octobre
+* Le 1er octobre2   
 
 IDEA: Features should also include ratios and such. 
+
+
+* Le 16 octobre
+
+Tout ceci manque de discipline. Mais les cahier Hilroy sont si efficaces, pourquoi s'en
+priver?
+
+Delage a raison. Il ne sert a rien d'etablir des resultats sur des valeurs sans
+unites. Fondamentalement, ce qu'on /maximise/, c'est une utilite. On sait alors qu'en
+appliquant une certaine decision q^*, on maximise l'utilite sur l'ensemble de notre
+echantillon de rendements et de donnees. On reussit ensuite a quantifier de combien cette
+utilite peut changer lorsqu'on evalue l'utilite esperee lorsqu'on applique notre decision
+q^*. Autrement dit, on obtient une borne de la forme 
+
+				   `|R_true(q) - R'(q')|
+
+ou on adopte ici, pour des raisons typographiques, la convention selon laquelle R' est la
+distribution empirique et q' est la decision obtenue a partir de la distribution empirique
+discrete. 
+
+Alors quels resultats devraient etre presentes a un gestionnaire de portefeuille? Car
+quoiqu'il arrive, on doit d'abord se doter d'une utilite u.
+
+On lui dira donc, determinez d'abord un q' a partir de notre methode, a partir de donnees
+anterieures. Puis appliquez le. Supposons par exemple que sur l'ensemble d'echantillonage,
+il obtienne un certain rendement positif r (par exemple 12%). Ce rendement correspond
+alors au rendement maximal qu'il peut obtenir en appliquant des decisions lineaires
+regularisees sur l'ensemble d'echantillon, en tenant compte de son utilite
+personelle. L'utilite personnelle, eut-elle ete moins averse au risque, aurait pu fournir
+une decision engendrant un rendement superieur a 12%, par exemple 14%. Mais puisque
+l'optimisation se fait compte tenu de cette utilite particuliere, c'est effectivement le
+rendement optimal. 
+
+Or, il s'avere que ce fameux rendement optimal, qu'on peut noter r', peut etre determine a
+partir de
+
+				     r' = u^{-1}(R'(q')),
+
+toujours pour une utilite fixee (donc pour un k donne, note a moi meme). 
+
+Enfin, je comprends mal pourquoi on voudrait introduire un parametre d'echelle k dans la
+definition de l'utilite. Car si, oui, l'utilite est en soit abstraite, elle devient
+concrete, avec une unite sous forme d'utilite lorsque sa forme est bien determinee. S'il
+s'agit bien d'une fonction associant (bijectivement) des unites de rendements a des unites
+d'utilite, alors il n'y a aucun besoin d'introduire un parametre d'echelle. Car alors on
+comprend precisement ce que, par exemple, /deux utilites/ signifie. Cela signifie par
+exemple qu'on passe d'un rendement de 0 a 10%, ou bien de -20% a 0% (par exemple). 
+
+Et alors la borne 
+
+				  `|R_true(q') - R'(q')|
+
+a une veritable interpretation. On determine de combien /d'utilites/ notre algorithme est
+susceptible d'etre instable, ie. a quel point on peut etre mecontent de la performance de
+l'algorithme par rapport a la performance empirique. x
+
+
+* Le 18 octobre 2015
+
+Let us delve further in the Newsvendor article, particularly the notes on the convergence
+of q_\lambda and the rate of convergence in the case of the unregularized algorithm. 
+
+Let us first begin with the unregularized version. The authors succeed in
+bounding |R_true(q^*) - R'(q')| with a term proportional to
+
+				    (b \vee{} h) E[q^* - q'].
+
+This corresponds to *Theorem 3*. By looking at Theorem 3 on p.16, then they somehow achieve
+in bounding this quantity with 
+
+			        (b \vee h) M \radic{}log(n) / n^{s/(2s+p)},
+
+with an argument provided by the now famous Chaudhuri et al. And then, sure enough,
+Chaudhuri indeed provides an asymptotic convergence /of measure/ as n \to \infty. Hence the M
+constant, which must unfortunately be unknown (the authors specify that /M is a constant
+that depends on the demand distribution/).
+
+In the case of the regularized algorithm, the absolute bound has another term, which
+ofcourse happens because of the presence of the regularization term, and is of the form 
+
+				   E_{D}[|q_\lambda - q'|],
+
+which is completely irritating. 
+
+Now perhaps there is some (theoretical) optimal way of chosing \lambda in function of n so that
+as n gets large, \lambda tends to 0. 
+
+To be understood: "[Chaudhuri et al.] provides the optimal convergence rate of q' to q^* in
+the asymptotic minimax sense."
+
+Let \rho^* = R_true(q^*) and \rho' = R'(q'_\lambda). We have already shown that 
+
+			    `|\rho^* - \rho'| \leq K |q^* - q'_\lambda{}|.
+
+We can further suppose that with q' := q'_{\lambda=0}, then q' is an unbiased estimator of
+q^*, that is E[q'] = q^*, whereas q'_\lambda is a /biased/ estimator of q', since 
+
+			    E[q'_\lambda{}] - q^* = \beta_{\lambda},
+
+where \beta_\lambda is the bias of q. We wish to know the mathematical comportement of
+\beta_\lambda. 
+
+Because I have the feeling that by using the delta method and properties of our cost
+function, it might very well be possible to bound |q^* - q'| with something similar to what
+was done previously for the newsvendor cost function. 
+
+_Things we might want to plot._
+
+1. Behaviour of q' vs q'_\lambda.
+2. Behaviour of q^* vs q' vs q'_\lambda.
+
+By how much do we have to offset q'_\lambda to make it an unbiased estimator? 
+
+Actually, what again is the real use of \lambda? \lambda is purely here for pratical reasons,
+ie. because we are limited with a set of n entries, and we'll always be limited to a set
+with finite entries. And so what we give up on bias (ie. we move away from the true
+expectation), we however gain on the variance of the estimator.
+
+In the Markowitz portfolio, a great deal of care is put in allowing the investor to
+/control/ the trade-off between bias and variance, perhaps with a single parameter
+(representing the ratio perhaps) \nu. 
+
+But \lambda really should be specified, given such a ratio on how much you're ready to give up
+in order to have low varying/precise estimations, ie. there should have a relation \lambda =
+\lambda(\nu). 
+
+However, doesn't \beta and/or \mu in our utility functions wholly determine the investor
+tolerance to risk? And in that regard, couldn't it be used in turn to determine the level
+of bias-variance tradeoff we're ready to accept in the model?
+
+Actually, \lambda should be a function of n and \beta/\mu. 
+
+_Delta Theorem._
+
+			    \radic{}n \Norm{}q' - q^*\Norm^2_2 \to N(0, JVJ^T)
+
+where J is the jacobian of the transformation. 
+
+*However* don't we have a problem for q'? Without a \lambda parameter to curve the objective
+function upward, q' might very well be undefined, as the empirical risk will be -\infty. This
+is paradoxical, as q^* is assumed to be well defined, and q^* does not depend on \lambda. 
+
+
+* Le 23 octobre
+
+OK. Today we'll try to characterize q^*_{\lambda=0} for the portfolio problem. That is,
+
+  q^*_{\lambda=0} = argmax_q E_{D}[u(q,D)], with D = (X,R) ~ *D*
+       = argmax_q E_{D}[R q^{T}X + (1-R_f)q^{T}X] up to a \beta constant
+       = argmax_q E_{D}[t(X) q^{T}X + (1-R_f)q^{T}X] where it is assumed that R = t(X).
+
+So we informally assumed that we only need the X marginal distribution and the rule t to
+determine the distribution of R.
+
+In results, if X features are uncorrelated, ie. \Sigma = I, that q^* = max_q q^{T}X, which means
+that \Norm{}q^*\Norm_2 = \infty (in the directions where t is positive).      
+
+Shapiro (Theorem 5.23) tells us that q' \to q^* at an exponential rate in n. However, no
+mention is made about the curvature of the objective function, all that's asumed is that
+the objective is indeed convex (provided with the presence of \lambda \Norm{}q\Norm_2^2.
+
+Precisely, 
+
+			    \Norm{}q' - q^*\Norm_2 = O(c exp(-N\beta)).
+
+Now, it is intuitevely sound that with a higher regularization value \lambda, q' shall converge
+faster to q^*, however, is this convergence linear or exponential (or anything else for
+that matter...)
+
+This is the kind of problem you want to solve numerically to give you some idea of you
+what you want to prove :)
+
+So here is the /precise/ steps of what we want to solve. 
+
+  1. Fix n high enough so that CLT has time applies.
+  2. Fix \lambda = \lambda_0
+  3. Generate a dataset S_n, and then use S_n to solve q'_n, using \lambda.
+  4. Generate a high enough number of solutions q'_n, and draw statistics out of them. For
+     example a confidence ellipsoid. Then perhaps take a top2 out of its eigenvalues.
+  5. Repeat 2, with a new value \lambda = \lambda + \delta{}\lambda.
+  6. With some luck, the eigenvalues should somehow shrink exponentially. 

@@ -84,7 +84,7 @@ We will be concerned with probabilistic confidence bounds on results produced us
 following algorithm, using dataset $S_n$. We shall denote this algorithm as $A_{S_n}$.
 \begin{equation}
   \label{algo}
-  q^\star = \argmin_{q\in\real^p}\frac{1}{n} \sum_{i=1}^{n} c(q^Tx_i,r_i) + \lambda\|q\|^2_2.
+  \hat q = \argmin_{q\in\real^p}\frac{1}{n} \sum_{i=1}^{n} c(q^Tx_i,r_i) + \lambda\|q\|^2_2.
 \end{equation}
 
 \paragraph{Assumptions.}
@@ -165,6 +165,7 @@ definitions and theorems are taken verbatim from \cite{bousquet2002}.
 \begin{deff}
   The \emph{true risk} with respect to algorithm $A$ and set $S_n$ is defined as
   \begin{equation*}
+    \label{trueRiskDef}
     R_{\text{true}}(A,S_n) = E_d[\ell(A_{S_n},d)],
   \end{equation*}
   which is, in plain words, the expected loss incured when applying the algorithm created
@@ -199,13 +200,13 @@ algorithm with the (theoretical) expected cost over the whole distribution when 
 same decision vector. 
 
 The analysis will be done in two parts, one for each of our cost functions: first with
-$c=-U$ (the canonical cost) and second with the cost function as the regret at each
+$c=-u$ (the canonical cost) and second with the cost function as the regret at each
 decision. Both are quite similar in their results. 
 
 \subsubsection{Canonical cost.}
 We first consider the case where 
 \begin{equation*}
-  c(p,r) = -k u(pr + (1-p)R_f).
+  c(p,r) = -u(pr + (1-p)R_f).
 \end{equation*}
 
 \paragraph{$\sigma$-admissibility.}  The canonical cost is $\sigma$-adimissible, with 
@@ -220,14 +221,14 @@ for the linear utility and
 \end{equation}
 for the exponential utility.
 
-\begin{proof}We first remark that for both forms of $U$, $c$ is a convex function of $p$
-  with $r$ fixed, since $U$ is concave.
+\begin{proof}We first remark that for both forms of $u$, $c$ is a convex function of $p$
+  with $r$ fixed, since $u$ is concave.
 
 Next, the expression $|c(p_1,r)-c(p_2,r)|$ reduces to
 \begin{equation}
   \label{eq:above1} 
-  k|u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f|.
-\end{equation} Now because $r\in[-\bar r,\bar r]$, $U$ is Lipschitz continuous on its
+  |u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f|.
+\end{equation} Now because $r\in[-\bar r,\bar r]$, $u$ is Lipschitz continuous on its
 domain, and so \eqref{eq:above1} is bounded by
 \begin{equation}
   \label{eq:above2} 
@@ -239,7 +240,7 @@ where
 \end{equation*}
 
 In the linear case, the derivative is piecewise constant, and is set to 1 on for returns
-below $r_c$, so that $\alpha=1$. In the exponential case, $U'(r) = \mu\exp\mu r$, and $\alpha
+below $r_c$, so that $\alpha=1$. In the exponential case, $u'(r) = \mu\exp\mu r$, and $\alpha
 = \mu\exp \mu \bar r$.
 
 The bound \eqref{eq:above2} must hold for any $r$. The expression $|r-R_f|$ will reach
@@ -251,10 +252,10 @@ which shows that $\ell$ is $\sigma$-admissible with the canonical cost,
 with $\sigma=\alpha k(\bar r+ R_f)$.
 \end{proof}
 
-We also remark that the utility is actually invariant to scaling, ie. $\tilde{U} = kU$
-where $k$ is positive yields the same relative utility. The $\sigma$ bound can therefore
-be as tight as desired, since it can be scaled by an arbitrary positive constant, and the
-algorithm will yield the same result.
+% We also remark that the utility is actually invariant to scaling, ie. $\tilde{U} = kU$
+% where $k$ is positive yields the same relative utility. The $\sigma$ bound can therefore
+% be as tight as desired, since it can be scaled by an arbitrary positive constant, and the
+% algorithm will yield the same result.
 
 \paragraph{Algorithmic stability.}
 Because the loss function is $\sigma$-admissible, the conditions for Theorem \ref{thm1}
@@ -303,16 +304,16 @@ To do so, we first note that
     g'(s) &= \frac{\dd}{\dd s}\left[\frac{1}{n} \sum_{i=1}^n c(s\, q^{T}x_i, r_i) + \lambda s^2\right]\\
           &= 2\lambda s + \frac{1}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd c(p_i,r_i)}{\dd p_i} \right|_{p_i =
             s\,q^{T}x_i} \\
-          &= 2\lambda s - \frac{k}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd}{\dd p_i} u(p_i r_i +
+          &= 2\lambda s - \frac{1}{n} \sum_{i=1}^n q^{T}x_i \left. \frac{\dd}{\dd p_i} u(p_i r_i +
             (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}\\
-          &= 2\lambda s - \frac{k}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
+          &= 2\lambda s - \frac{1}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. u'(p_i r_i +
             (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}.
 \end{align*}
 
 In particular, in the case of the linear utility \eqref{linearUtility}, because
 $q^Tx_i\leq X_{\max}$, $r_i-R_f\leq \bar r - R_f$ and $U'\leq 1$, we have
 \begin{equation*}
- k X_{\max}(\bar{r}-R_f) \geq \frac{k}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. U'(p_i r_i +
+ k X_{\max}(\bar{r}-R_f) \geq \frac{1}{n} \sum_{i=1}^n q^{T}x_i (r_i-R_f) \left. u'(p_i r_i +
     (1-p_i)R_f) \right|_{p_i = s\,q^{T}x_i}.
 \end{equation*}
 
@@ -401,7 +402,7 @@ Let us also define
   \gamma_n := \frac{\alpha_n}{k^2}. 
 \end{equation*}
 
-Then, \eqref{boundWithK} can be rewritten as
+Then, since $0<k<1$, \eqref{boundWithK} can be rewritten as
 \begin{align}
   |\trueRisk(\hat{q}) - \hat{R}(\hat{q})| &\leq k^2\left(
   2\gamma_n + \left(4n\gamma_n + n\gamma_n\frac{\bar r - R_f}{\bar r +
@@ -418,9 +419,9 @@ from which it follows that
 \begin{equation*}
   \uInv(|\trueRisk(\hat{q}) - \hat{R}(\hat{q})|) \leq \uInv\left(k\left(
   2\gamma_n + \left(4n\gamma_n + n\gamma_n\frac{\bar r - R_f}{\bar r +
-      R_f}\right) \sqrt{\frac{\log(2/\delta)}{2n}}\right)\right).
+      R_f}\right) \sqrt{\frac{\log(2/\delta)}{2n}}\right)\right),
 \end{equation*}
-Therefore, by the definition of $\uInv$, 
+and so, by the definition of $\uInv$, 
 \begin{equation*}
   \uInv(|\trueRisk(\hat{q}) - \hat{R}(\hat{q})|) \leq 
   \frac{\gamma_n}{\beta}\left[2+ n\left(4 + \frac{\bar r - R_f}{\bar r +
@@ -459,26 +460,68 @@ Therefore, by the definition of $\uInv$,
 % \end{equation*}
 % }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \paragraph{Absolute bound.}
-Finally, we derive a measure of performance when we compare $\hat q=A_{S_n}$ with the true
-optimal $q^\star$ over the distribution, and how each perfom when applied on the true risk
-of the distribution\ldots
+Finally, we derive a measure of performance where we compare the empiric risk
+$\hat R(\hat q)$ with the optimal risk $\trueRisk(q^\star)$.
+
+We have the following inequality:
+\begin{equation*}
+  |\trueRisk(q^\star)-\hat R(\hat q)| \leq |\trueRisk(\hat q) - \hat R(\hat q)|
+                                        + |\trueRisk(q^\star) - \trueRisk(\hat q)|,
+\end{equation*}
+the first term being already identified by \eqref{boundWithK}. Using the definition of the
+true risk \eqref{trueRiskDef}, we can expand the second term in the following way:
+\begin{equation*}
+  |\trueRisk(q^\star) - \trueRisk(\hat q)| = |E_D[c(q^\star,X,R)] - E_D[c(\hat q,X,R)]|,
+\end{equation*}
+where $D$ is the joint distribution of $X$ and $R$, the random features and
+returns. Decomposing further with the cost definition, we find
+\begin{align*}
+  &|E_D[c(q^\star,X,R)] - E_D[c(\hat q,X,R)]|\\
+  &\qquad = |E_D[u(\qStar^TXR - (1-\qStar^TX)R_f)] - E_D[u(\qHat^TXR -
+    (1-\qHat^TX)R_f)]|\\
+  &\qquad = |u(E_D[\qStar^TXR - (1-\qStar^TX)R_f]) - u(E_D[\qHat^TXR -
+    (1-\qHat^TX)R_f])|\\
+  &\qquad \leq |E_D[\qStar^TXR - (1-\qStar^TX)R_f] - E_D[\qHat^TXR -
+    (1-\qHat^TX)R_f]|\\
+  &\qquad = |E_D[(\qStar-\qHat)^TXR - (1-(\qStar-\qHat)^TX)R_f]|\\
+  &\qquad \leq \cdots\\
+  &\qquad \leq X_{\max}(\bar r + R_f)E_D[\|\qStar-\qHat\|_2].
+\end{align*}
+Therefore, in order to correctly characterize the absolute bound, we need a bound on
+$E_D[\|\qStar-\qHat\|_2]$. 
+
+To do so, we will need a modified version of the McDiarmid inequality.
+
+\begin{thm}[McDiarmid]
+  Let $S$ and $S^i$ be identical datasets of $n$ iid draws from $\bm D$, except in the
+  $i$\textsuperscript{th} entry, redrawn in the case of $S^i$. Let also
+  $f: \real^{n\times p}\to\real$ be any measurable function for which there exists a
+  constant $c$, such that
+  \begin{equation*}
+    \sup_{S\in\bm R^n, d_i'\sim\bm D} |f(S) - f(S^i)| \leq c.
+  \end{equation*}
+  Then, 
+  \begin{equation*}
+    P[f(S) - E[f(S)] \geq \epsilon] \leq \exp\left(-\frac{2\epsilon^2}{nc^2}\right).
+  \end{equation*}
+\end{thm}
+
+We will need a similar result, but for the case where $f$ maps into a vector space,
+ie. $f:\real^{n\times p}\to\real^m$. We can then apply the McDiarmid inequality in each of
+the components of $f$. Then the total bound on
+\begin{equation*}
+  P[\|f(S) - E[f(S)]\|_2 \geq \epsilon]
+\end{equation*}
+will then be \textit{at most} the product of the bound on each of the components of $f$,
+since we have no knowledge on the independance of each of its components. 
+
+We end up with the following result:
+\begin{thm}
+  Let $S$ and $S^i$ be defined as above. Let also $f: \real^{n\times p}\to\real^m$ be any
+  measurable function for which there exists a con
+\end{thm}
+
 
 \subsubsection{Regret cost.}
 
