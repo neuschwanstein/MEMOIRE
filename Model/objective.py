@@ -10,10 +10,10 @@ def normalize_data(data):
     vol = data.std(axis=0)
     return (data-mu)/vol
 
-def solve_objective(X,r):
+def solve_objective(X,r,l):
     # cvx_utility = lambda r: -expexp(-cfg.mu*r)
     cvx_cost = lambda p,r: -cfg.cvx_utility(mul_elemwise(r,p) + (1-p)*cfg.Rf)
-    cvx_total_cost = lambda t: 1.0/n * sum_entries(cvx_cost(X*t,r)) + cfg.Lambda*norm(t,2)**2
+    cvx_total_cost = lambda t: 1.0/n * sum_entries(cvx_cost(X*t,r)) + l*norm(t,2)**2
 
     q = Variable(p)
     objective = Minimize(cvx_total_cost(q))
@@ -22,10 +22,10 @@ def solve_objective(X,r):
 
     return q.value, problem.value
 
-def objective(X,r,q):
+def objective(X,r,q,l):
     # utility = lambda r: -np.exp(-cfg.mu*r)
     cost = lambda p,r: -cfg.utility(r*p + (1-p)*cfg.Rf)
-    total_cost = 1.0/n * sum(cost(np.dot(X,t),r)) + cfg.Lambda*sum(t**2)
+    total_cost = 1.0/n * sum(cost(np.dot(X,t),r)) + l*sum(t**2)
     return total_cost
 
 if (__name__ == "__main__"):

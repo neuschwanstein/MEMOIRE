@@ -7,7 +7,7 @@ def create_data(t,n,p):
     S = np.random.randn(n,p)
     S = np.concatenate((ones_col,S), axis=1)
 
-    noise = np.random.randn(n,1)
+    noise = np.random.randn(n)
 
     r = np.dot(S,t) + noise
 
