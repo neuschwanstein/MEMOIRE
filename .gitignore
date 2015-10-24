@@ -11,3 +11,5 @@ Erick&Thierry alias
 *.#
 *.pyc
 *.npy
+*.org_archive
+_region_.tex
