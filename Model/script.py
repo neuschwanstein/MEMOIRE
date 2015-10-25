@@ -5,31 +5,26 @@ import numpy as np
 
 cfg = config.config
 
-cfg.n,cfg.p = 2000,100
+n,p = 2000,10
+cfg.n,cfg.p = n,p
 
 t = create_data.create_rule()
-# create_data.create_data(t)
+N = 2000
 
-# X = np.load("Data/dataset.npy")
-# r = np.load("Data/returns.npy")
+ls = range(1,21)
+results = np.empty(len(ls))
 
-# q,_ = obj.solve_objective(X,r,0.01)
+# for i,l in enumerate(ls):
+#     qs = np.empty((cfg.p+1,N))
+#     print("lambda=",l)
 
-N = 1
-results = np.zeros(N);
-for i in range(N):
-    X,r = create_data.create_data(t)
-    q,_ = obj.solve_objective(X,r,1)
-    # results[i] = q
-    
-
-# lambda0 = 0.01
-# nLambda = 10
-# endLambda = 0.01
-
-# n = 10000
-# for l in np.linspace(lambda0,endLambda,nLambda):
-#     results = np.empty(N)   
-#     for i in xrange(N):
+#     for j in range(N):
+#         print(j)
+#         X,r = create_data.create_data(t)
 #         q,_ = obj.solve_objective(X,r,l)
-#         results[i] = q
+#         qs[:,j] = q
+
+#     cov_matrix = np.cov(qs)
+#     eigenvals, eigenvecs = np.linalg.eig(cov_matrix)
+
+#     results[i] = np.sort(eigenvals)[0]

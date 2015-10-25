@@ -14,7 +14,7 @@ def solve_objective(X,r,l):
     n,p = cfg.n,cfg.p+1
 
     cvx_cost = lambda p,r: -cfg.cvx_utility(mul_elemwise(r,p) + (1-p)*cfg.Rf)
-    cvx_total_cost = lambda t: 1.0/n * (sum_entries(cvx_cost(X*t,r)) + l*norm(t,2)**2)
+    cvx_total_cost = lambda t: 1.0/n * sum_entries(cvx_cost(X*t,r)) + l*norm(t,2)**2
 
     q = Variable(p)
     objective = Minimize(cvx_total_cost(q))
