@@ -1,0 +1,85 @@
+\documentclass[11pt]{article}
+
+\include{preamble}
+
+\title{Portfolio Optimization in a Big Data Context}
+\author{Thierry \textsc{Bazier-Matte}}
+\date{Summer 2015}
+
+\begin{document}
+\maketitle
+
+\paragraph{Notation.}
+In the following, $\bm A$ (capital boldface) are assumed to represent a real subset of any
+dimension, $A$ (capital case) represent random variables (or distribution) and $a$ (lower
+case) represent deterministic variables or realization. $\real$ represents the real set.
+
+Let $M=(X,R)$ the \textsl{market} be an unknown distribution with support
+$\bm M = \bm X\times \bm R \subseteq\real^{p+1}$, ie. numerically qualifiable, with
+$(x,r) = m\sim M$ a \textsl{market observation}, consisting in one part \textsl{state}
+$x\in\real^p$ and another part \textsl{outcome} $r\in\real$. Typically $x$ is a vector of
+observations from various variable of interests, such as financial or economical news,
+etc. Scalar $r$ in this article shall represent the return from a financial asset of
+interest. Finally, let $M_n = \{M,\dots,M\}$ be a \textsl{random set} of $n$ (unrealized)
+observations (with support $\bm M^n$). Therefore $\mu_n \sim M_n$ represents an iid sample
+of $n$ market observations.
+
+This article shall study \textsl{linear investment decisions} $q^Tx$, with
+$q\in \bm Q\subseteq\real^p$.
+
+\begin{deff}
+  Let $\ell:\bm M\to\real$ be a \textsl{loss function} defined by
+  \begin{equation*}
+    \ell(m,q) = \ell(x,r,q) = -u(r\,q^{T}x + (1-R_f)q^{T}x),
+  \end{equation*}
+  where $u(r) = \min(r,\beta r)$ and $R_f$ the risk free rate. 
+\end{deff}
+
+\begin{deff}
+  The \textsl{empirical risk} $\hat R: \bm M\times \bm Q \to \real$ associated with decision
+  $q$ and market sample $\mu_n$ is given by
+ \begin{equation*}
+   \hat R_{\mu_n}(q) = n^{-1} \sum_{i=1}^n \ell(m_i,q).
+ \end{equation*}
+\end{deff}
+
+\begin{deff}
+  The \textsl{empirical decision algorithm} $\hat A_n:\bm M^n \to \bm Q$ associated with
+  market sample $\mu_n$ is the optimal value of the problem
+  \begin{equation*}
+    \text{minimize}\quad\hat R_{\mu_n}(q) + \lambda\|q\|_2^2.
+  \end{equation*}
+\end{deff}
+
+From now on, $\hat q_n := \hat A_n(\mu_n)$ the empirical decision associated with market sample
+$\mu_n$ and $\hat Q_n := A_n(S_n)$ the random empirical decision, ie. $\hat q_n \sim \hat Q_n$.
+
+\begin{deff}
+  The \textsl{true risk} $\trueRisk:\bm Q\to\real$ associated with decision $q$ is given by
+  \begin{equation*}
+    \trueRisk(q) = E_M[\ell(m,q)].
+  \end{equation*}
+\end{deff}
+
+\begin{deff}
+  The \textsl{optimal decision} $\qStar$ is the optimal value of the problem
+  \begin{equation*}
+    \text{minimize}\quad \trueRisk(q) + \lambda\|q\|_2^2.
+  \end{equation*}
+\end{deff}
+\end{document}
+
+
+% \section{Appendix}
+
+% \begin{tabular}{ll}
+% \toprule
+% $\bs A$ & $Real set 
+  
+\end{tabular}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

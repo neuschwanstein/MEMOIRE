@@ -1,0 +1,66 @@
+\usepackage{amsmath}
+%\usepackage{pdfcomment}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{subcaption}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{xparse}
+\usepackage{mathtools}
+\usepackage{color}
+\usepackage{marginnote}
+\usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+\usepackage{mathrsfs} 
+
+% \setlength{\parindent}{0em}
+\setlength{\parskip}{0.8em}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator{\st}{s.t.}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator*{\minimize}{minimize}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand{\ts}{\textsuperscript}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+
+\newcommand{\iso}{\simeq}
+\newcommand{\dd}{\partial}
+\newcommand{\real}{\mathscr{R}}
+\newcommand{\trueRisk}{R_{\mathrm{true}}}
+\newcommand{\uInv}{u^{-1}}
+\newcommand{\qHat}{{\hat q}}
+\newcommand{\qStar}{{q^\star}}
+
+\newcommand{\starsection}{\vspace{1em}\begin{center}$\star\quad\star\quad\star$\end{center}\vspace{1em}}
+
+% http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
+\NewDocumentCommand{\minimizeEquation}{m >{\SplitList{,}}O{}}
+{\begin{align}\text{minimize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}\end{align}}
+
+
+\NewDocumentCommand{\stCommand}{m}
+{& \quad #1}
+
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem*{deff}{Definition}
+\newtheorem*{rem}{Remark}
+
+
+\geometry{letterpaper}
+\IEEEeqnarraydefcolsep{0}{\leftmargini}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End:

@@ -1291,3 +1291,95 @@ So here is the /precise/ steps of what we want to solve.
      example a confidence ellipsoid. Then perhaps take a top2 out of its eigenvalues.
   5. Repeat 2, with a new value \lambda = \lambda + \delta{}\lambda.
   6. With some luck, the eigenvalues should somehow shrink exponentially. 
+
+
+* Le 25 octobre
+
+We've numerically seen that the convergence of q' to q^* seems to be dependant on something
+like exp(-\lambda). Note: when we speak about \lambda, what we really mean with the algorithm is
+really \lambda/n, as this is the `true' regularization term of the objective.
+
+/Let us translate Shapiro's theorem in our context./
+
+First, we would have to asume that q is bounded. So far we've always asumed that q \in R^{p+1}
+without any restriction.
+
+Min_{q \in Q} {f(q) := E[F(q,\xi)]  (5.1)
+F(q,\xi) = \ell(q,\xi) + \lambda\Norm{}q\Norm^2_2
+f'_N(q) = N^{-1} \sum_i F(q,\xi_i) = N^-1 (\sum_i \ell(q,\xi) + \lambda\Norm{}q\Norm^2_2)
+
+X \leftarrow\to Q \ni q, ie. the region of R^{p+1} from which we can make decision from
+
+(M4) For any q_1, q_2 \in Q, there exists constant \sigma > 0 (dependant on q_1, q_2) such
+that the moment generation function 
+
+				    M(t) = E[exp(tY)]
+
+of random function
+
+		          Y = [F(q_2,\xi) - f(q_2)] - [F(q_1,\xi) - f(q_2)],
+
+satisfies
+
+		      	        M(t) \leq exp(\sigma^{2}t^2/2) \forall t.
+
+
+* Le 26 octobre 2015
+
+_Defintion._ The /true risk/ associated with decision q \in R^p is given by
+
+				R_true(q) = E_{D}[\ell(q,\xi)].
+
+
+_Definition._ The /empirical risk/ associated with decision q \in R^p and sample S_n is given by
+
+			     R'_{S_n}(q) = n^-1 \sum_{i=1}^n \ell(q,\xi_i).
+
+
+_Definition._ The /empirical decision/ q'_n associated with sample S_n is the optimal problem of
+the following ??? program
+
+			       minimize R'_{S_n}(q) + \lambda\Norm{}q\Norm_2^2.
+
+
+_Definition._ The /optimal decision/ q^* is the optimal value of the following stochastic
+program:
+
+			       minimize R_true(q) + \lambda\Norm{}q\Norm_2^2.
+
+
+_Definition._ The /random loss/ associated with empirical decision q_n is given by 
+
+				      \vartheta_n = \ell(q_n,\xi)
+
+where \xi ~ D. The /optimal random loss/ \vartheta^* is given by
+
+				      \vartheta^* = \ell(q^*,\xi).
+
+_Remark._ 
+
+
+_Definition._ The random loss has \alpha_n stability if, for any iid sample S_n, we have
+
+			          `|\vartheta_n - \vartheta_{n\i}| \leq \alpha_n
+
+for all n.
+
+
+_Theorem._ The random loss \vartheta_n is stable with the following coefficient
+
+			      \alpha_n = (r_max + R_f)^2 X_Max^2 / 2\lambda{}n.
+
+
+					  \star \star \star
+
+Let M the /market/ be an unknown distribution with support D \sube R^{p+1}, ie. numerically
+qualifiable. Let also m ~ M, a market observation, one part state x, another part outcome
+r, such that m = (x,r), with x \in R^p and r \in R. Typically x is a vector of observation from
+variable of interests such as financial or economical news, etc. r in this article shall
+denote the return from a financial asset of interest. Finally, let \mu_n = {m_1,\dots,m_n}, m_i
+~ M a /random set/ of observations (with value in R^{n \times (p+1)}), and S_n a realization of
+this set. 
+
+Let \beta be a risk aversion parameter and u a convex utility function.
+
