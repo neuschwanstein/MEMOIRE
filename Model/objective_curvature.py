@@ -1,3 +1,7 @@
+# For a fixed N we draw a sample of empirical optimal decision vectors q, we study the
+# influence of the lambda regularization parameter of the algorithm on the `size' of
+# covariance ellipsoid (using the largest eigenvalue as a measure of its size).
+
 import config
 import create_data
 import objective as obj

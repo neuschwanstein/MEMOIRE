@@ -11,8 +11,9 @@
 
 \paragraph{Notation.}
 In the following, $\bm A$ (capital boldface) are assumed to represent a real subset of any
-dimension, $A$ (capital case) represent random variables (or distribution) and $a$ (lower
-case) represent deterministic variables or realization. $\real$ represents the real set.
+dimension, $A$ (capital case) represents random variables (or distributions) and $a$
+(lower case) represents deterministic variables or realizations. $\real$ represents the
+real set.
 
 Let $M=(X,R)$ the \textsl{market} be an unknown distribution with support
 $\bm M = \bm X\times \bm R \subseteq\real^{p+1}$, ie. numerically qualifiable, with
@@ -24,19 +25,31 @@ interest. Finally, let $M_n = \{M,\dots,M\}$ be a \textsl{random set} of $n$ (un
 observations (with support $\bm M^n$). Therefore $\mu_n \sim M_n$ represents an iid sample
 of $n$ market observations.
 
-This article shall study \textsl{linear investment decisions} $q^Tx$, with
+This article studies \textsl{linear investment decisions} $q^Tx$, with
 $q\in \bm Q\subseteq\real^p$.
 
+\begin{assumption}
+  We suppose that observed returns $r$ are constrained by $|r| \leq \bar r$ with
+  probability $1-\delta_r$ and that observed states $x$ are constrained by
+  $\|x\|_2 \leq \xMax$ with probability $1-\delta_x$.
+\end{assumption}
+
 \begin{deff}
-  Let $\ell:\bm M\to\real$ be a \textsl{loss function} defined by
+  Let $\ell:\bm M\times \bm Q\to\real$ be a \textsl{loss function} defined by
   \begin{equation*}
-    \ell(m,q) = \ell(x,r,q) = -u(r\,q^{T}x + (1-R_f)q^{T}x),
+    \ell(m,q) = \ell(x,r,q) = -u(r\,q^{T}x + R_f (1 - q^{T}x)),
   \end{equation*}
-  where $u(r) = \min(r,\beta r)$ and $R_f$ the risk free rate. 
+  where $R_f$ is the risk free return rate and $u(r) = \min(r,\beta r)$, with $0<\beta<1$
+  the risk aversion parameter. We also define the \textsl{cost function}
+  $c:\real\times\bm R\to\real$ as
+  \begin{equation*}
+    c(p,r) = -u(pr + (1-p)R_f),
+  \end{equation*}
+  so that $\ell(x,r,q) = c(q^Tx,r)$. 
 \end{deff}
 
 \begin{deff}
-  The \textsl{empirical risk} $\hat R: \bm M\times \bm Q \to \real$ associated with decision
+  The \textsl{empirical risk} $\hat R: \bm M^n\times \bm Q \to \real$ associated with decision
   $q$ and market sample $\mu_n$ is given by
  \begin{equation*}
    \hat R_{\mu_n}(q) = n^{-1} \sum_{i=1}^n \ell(m_i,q).
@@ -67,16 +80,64 @@ $\mu_n$ and $\hat Q_n := A_n(S_n)$ the random empirical decision, ie. $\hat q_n 
     \text{minimize}\quad \trueRisk(q) + \lambda\|q\|_2^2.
   \end{equation*}
 \end{deff}
+
+
+\section{Stability Definitions and Theorems}
+
+\begin{deff}
+  Let $\hat q_n=\hat A_n(\mu_n)$ and
+  $\hat q_{n\backslash i}=\hat A_n(\mu_{n\backslash i})$, where $\mu_n$ and
+  $\mu_{n\backslash i}$ only differs in their $i$\textsuperscript{th} observation, which
+  has been redrawn from $M$ in the case of $\mu_{n\backslash i}$. The algorithm $\hat A_n$
+  is said to have \textsl{uniform stability} $\alpha_n$ if, for any $m\sim M$,
+  \begin{equation*}
+    |\ell(m,\hat q_n) - \ell(m,\hat q_{n\backslash i})| \leq \alpha_n. 
+  \end{equation*}
+\end{deff}
+
+\begin{deff}
+  A loss function $\ell$ is $\sigma$-admissible if its cost function $c$ is convex with
+  respect to $p$ the investment decision and the following holds for any $p_1,p_2$ and r:
+  \begin{equation*}
+    |c(p_1,r) - c(p_2,r)| \leq \sigma|p_1-p_2|.
+  \end{equation*}
+\end{deff}
+
+\begin{rem}
+  The loss function as defined above is $\sigma$-admissible with $\sigma=\bar r+R_f$.
+\end{rem}
+
+\begin{thm}
+  If $\ell$ is $\sigma$-admissible and if, for any $x\in\bm X$, $\|x\|_2^2\leq\xMax^2$,
+  then $\hat A_n$ has uniform stability with
+  \begin{equation*}
+    \alpha_n = \frac{\sigma^2 \xMax^2}{2\lambda n}.
+  \end{equation*}
+\end{thm}
+
+\begin{proof}
+  See Bousquet, Theorem 22. 
+\end{proof}
+
+We therefore conclude that $\hat A_n$ has uniform stability with
+\begin{equation*}
+  \alpha_n = \frac{(\bar r+R_f)^2\xMax^2}{2\lambda n}.
+\end{equation*}
+
+\begin{thm}
+  If $\hat A_n$ has uniform stability $\alpha_n$ and the loss function is such that for
+  any $m\sim M$ and any $\hat q_n=\hat A_n(\mu_n)$, $0\leq \ell(m,\hat q_n)\leq B_n$, then
+  for any $\delta\in(0,1)$, the following bound holds with probability at least $1-\delta$
+  over the random sample draw $\mu_n\sim M_n$:
+  \begin{equation*}
+    |\trueRisk(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n + B_n)\sqrt{\frac{\log(2/\delta)}{2n}}.
+  \end{equation*}
+\end{thm}
+
+% \begin{proof}
+%   See Bousquet, Theorem
+% \end{proof}
 \end{document}
-
-
-% \section{Appendix}
-
-% \begin{tabular}{ll}
-% \toprule
-% $\bs A$ & $Real set 
-  
-\end{tabular}
 
 
 %%% Local Variables:

@@ -27,7 +27,7 @@ def solve_objective(X,r,l):
 def objective(X,r,q,l):
     # utility = lambda r: -np.exp(-cfg.mu*r)
     cost = lambda p,r: -cfg.utility(r*p + (1-p)*cfg.Rf)
-    total_cost = 1.0/n * sum(cost(np.dot(X,t),r)) + l*sum(t**2)
+    total_cost = 1.0/n * sum(cost(np.dot(X,q),r)) + l*sum(q**2)
     return total_cost
 
 # if (__name__ == "__main__"):
