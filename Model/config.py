@@ -31,6 +31,6 @@ class config:
     @classmethod
     def utility(cls,r):
         if cls.utility_shape == 'exp':
-            -np.exp(-cls.mu*r)
+            return -np.exp(-cls.mu*r)
         elif cls.utility_shape == 'linear':
-            min(r,cls.beta*r)
+            return np.amin(np.array([r,cls.beta*r]), axis=0)

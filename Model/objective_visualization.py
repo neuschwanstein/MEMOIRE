@@ -6,29 +6,39 @@ import config
 import create_data
 import objective as obj
 import numpy as np
+import matplotlib.pyplot as plt
 
 cfg = config.config
 
-n,p = 2000,10
+n,p = 100,1
 cfg.n,cfg.p = n,p
+l = 1
 
 t = create_data.create_rule()
-N = 2000
+X,r = create_data.create_data(t)
 
-ls = range(1,22,5)
-results = np.empty(len(ls))
+(q1,q2),_ = obj.solve_objective(X,r,l)
+q1s = np.arange(-5,5,0.1) + q1
+q2s = np.arange(-5,5,0.1) + q2
+ys = [obj.objective(X,r,[q1,q2],l) for q2 in q2s]
 
-for i,l in enumerate(ls):
-    qs = np.empty((cfg.p+1,N))
-    print("lambda=",l)
+plt.plot(q2s,ys)
+plt.show()
 
-    for j in range(N):
-        print(j)
-        X,r = create_data.create_data(t)
-        q,_ = obj.solve_objective(X,r,l)
-        qs[:,j] = q
+# ls = range(1,22,5)
+# results = np.empty(len(ls))
 
-    cov_matrix = np.cov(qs)
-    eigenvals, eigenvecs = np.linalg.eig(cov_matrix)
+# for i,l in enumerate(ls):
+#     qs = np.empty((cfg.p+1,N))
+#     print("lambda=",l)
 
-    results[i] = np.sort(eigenvals)[-1]
+#     for j in range(N):
+#         print(j)
+#         X,r = create_data.create_data(t)
+#         q,_ = obj.solve_objective(X,r,l)
+#         qs[:,j] = q
+
+#     cov_matrix = np.cov(qs)
+#     eigenvals, eigenvecs = np.linalg.eig(cov_matrix)
+
+#     results[i] = np.sort(eigenvals)[-1]
