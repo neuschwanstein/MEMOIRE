@@ -31,6 +31,12 @@ def objective(X,r,q,l):
     total_cost = 1.0/n * sum(cost(np.dot(X,q),r)) + l*sum(q**2)
     return total_cost
 
+def risk(X,r,q):
+    n = cfg.n
+    cost = lambda p,r: -cfg.utility(r*p + (1-p)*cfg.Rf)
+    total_cost = 1.0/n * sum(cost(np.dot(X,q),r))
+    return total_cost
+
 # if (__name__ == "__main__"):
 #     X = np.load("Data/dataset.npy")
 #     r = np.load("Data/returns.npy")

@@ -1,5 +1,6 @@
-#This plot shows the direct effect lambda (the reg coefficient) has on the curvature of
-#the objective function when taking in account a sample of n market obervations (x,r)
+#This plot shows the direct effect lambda (the reg coefficient) has on the curvature and
+#on the optimal qStar of the objective function when taking in account a sample of n
+#market obervations (x,r)
 
 import config
 import create_data
@@ -32,8 +33,8 @@ for l in ls:
 
 plt.legend(loc='upper left')
 plt.xlabel("$q$")
-plt.ylabel("$\hat R(\hat q)$")
+plt.ylabel("$\hat R_n(\hat q)+\lambda\Vert q\Vert_2^2$")
 plt.gca().set_xlim([x_min,x_max])
-plt.show()
+# plt.show()
 
-# plt.savefig("Figures/ObjectiveVisualization.pdf", bbox_inches='tight')
+plt.savefig("Figures/ObjectiveVisualization.pdf", bbox_inches='tight')
