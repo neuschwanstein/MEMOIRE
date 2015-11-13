@@ -2,9 +2,9 @@
 # influence of the lambda regularization parameter of the algorithm on the `size' of
 # covariance ellipsoid (using the largest eigenvalue as a measure of its size).
 
-import config
-import create_data
-import objective as obj
+import pfopt.config as config
+import pfopt.create_data as create_data
+import pfopt.objective as obj
 import numpy as np
 
 cfg = config.config

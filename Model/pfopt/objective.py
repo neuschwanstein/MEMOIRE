@@ -1,9 +1,8 @@
 from cvxpy import *
 import numpy as np
-import config
-import helper
+import pfopt.config
 
-cfg = config.config
+cfg = pfopt.config.config
 
 def normalize_data(data):
     mu = data.mean(axis=0)      # axis=0: along column

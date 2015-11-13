@@ -2,9 +2,9 @@
 #on the optimal qStar of the objective function when taking in account a sample of n
 #market obervations (x,r)
 
-import config
-import create_data
-import objective as obj
+import pfopt.config as config
+import pftopt.create_data as create_data
+import pftopt.objective as obj
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -35,6 +35,6 @@ plt.legend(loc='upper left')
 plt.xlabel("$q$")
 plt.ylabel("$\hat R_n(\hat q)+\lambda\Vert q\Vert_2^2$")
 plt.gca().set_xlim([x_min,x_max])
-# plt.show()
+plt.show()
 
-plt.savefig("Figures/ObjectiveVisualization.pdf", bbox_inches='tight')
+# plt.savefig("../Figures/ObjectiveVisualization.pdf", bbox_inches='tight')

@@ -1,8 +1,8 @@
 import numpy as np
-import helper
-import config
+import pfopt.config
+import pfopt.helper as helper
 
-cfg = config.config
+cfg = pfopt.config.config
 
 def create_data(t, save=False):
     n,p = cfg.n,cfg.p
