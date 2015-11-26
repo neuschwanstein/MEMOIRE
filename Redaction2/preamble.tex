@@ -39,13 +39,15 @@
 \newcommand{\qHat}{{\hat q}}
 \newcommand{\qStar}{{q^\star}}
 \newcommand{\xMax}{X_{\max}}
+\newcommand{\grad}{\nabla}
 
 \newcommand{\starsection}{\vspace{1em}\begin{center}$\star\quad\star\quad\star$\end{center}\vspace{1em}}
 
 % http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
-\NewDocumentCommand{\minimizeEquation}{m >{\SplitList{,}}O{}}
-{\begin{align}\text{minimize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}\end{align}}
+\NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{,}}O{}}
+{\text{minimize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}}
 
+\newcommand{\minimizeEquation}[1]{\text{minimize} \quad {#1}}
 
 \NewDocumentCommand{\stCommand}{m}
 {& \quad #1}
@@ -53,6 +55,7 @@
 \theoremstyle{plain}
 \newtheorem{prop}{Proposition}
 \newtheorem{thm}{Theorem}
+\newtheorem{claim}{Claim}
 
 \theoremstyle{definition}
 \newtheorem*{deff}{Definition}

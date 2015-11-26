@@ -20,6 +20,11 @@ def solve_objective(X,r,l):
     problem = Problem(objective)
     problem.solve()
 
+    if problem.status == 'unbounded':
+        raise Exception(problem.status)
+    if problem.status == 'optimal_inaccurate':
+        print(problem.status + " with l=" + l)
+    
     return q.value.A1, problem.value
 
 

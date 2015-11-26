@@ -3,8 +3,8 @@
 #market obervations (x,r)
 
 import pfopt.config as config
-import pftopt.create_data as create_data
-import pftopt.objective as obj
+import pfopt.create_data as create_data
+import pfopt.objective as obj
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,7 +12,6 @@ cfg = config.config
 
 n,p = 5000,1
 cfg.n,cfg.p = n,p
-# ls = [0,1.0,1.2,1.4,1.6,1.8,2.0]
 ls = np.arange(1,5.2,0.5)
 
 t = create_data.create_rule()
