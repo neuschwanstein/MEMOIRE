@@ -1,0 +1,8 @@
+Optimisation de portefeuille dans un contexte big data
+
+Ce travail vise à mettre au point un algorithme d'investissement, ainsi qu'étudier ses
+propriétés statistiques. Plus spécifiquement, donné un jeu de données historiques relié à
+l'état du marché ainsi qu'une fonction d'utilité, notre algorithme prescrit une règle
+optimale d'investissement basé sur de nouvelles données. Notre algorithme retourne
+également des bornes statistiques sur l'équivalent certain de l'utilité. Enfin, des
+résultats empiriques produits à partir de nouvelles économiques seront présentés.
