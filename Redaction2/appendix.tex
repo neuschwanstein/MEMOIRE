@@ -1,0 +1,149 @@
+\section*{Appendix}
+\begin{claim}
+  \label{claim0}
+  The following inequality holds:
+  \begin{equation*}
+    |c(p_1,r) - c(p_2,r)| \leq k\gamma(\bar r+R_f)|p_1-p_2|.
+  \end{equation*}
+\end{claim}
+\begin{proof}
+  Using the Lipschitz property of $\bar u$ we have:
+  \begin{align*}
+    |c(p_1,r) - c(p_2,r)| &= |u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f)|\\
+    &= k|\bar u(p_1 r + (1-p_1)R_f) - \bar u(p_2 r + (1-p_2)R_f)|\\
+    &\leq k c |p_1 r + (1-p_1)R_f - p_2r - (1-p_2)R_f|\\
+    &= k\gamma |r-R_f||p_1-p_2|\\
+    &\leq k\gamma(\bar r+R_f)|p_1-p_2|.\qedhere
+  \end{align*}
+\end{proof}
+
+
+\begin{claim}
+  \label{claim_p_bound}
+  The $\ell_2$ norm of decision vectors $\qHat_n$ obtained from algorithm $\hat A_n$ are
+  bounded by $\bar p = k\gamma\xMax(\bar r-R_f)/(2\lambda)$.
+\end{claim}
+\begin{proof}
+  Let $\mu_n$ be a sample of the market. The empirical decision algorithm 
+  \begin{equation*}
+    \minimizeEquation{n^{-1}\sum_{i=1}^n\ell(m_i,q) + \lambda\|q\|^2_2}
+  \end{equation*}
+  is equivalent to 
+  \begin{align*}
+    \minimizeEquationSt{n^{-1}\sum_{i=1}^n \ell(m_i,sq) + \lambda s^2}[s\geq0\\,\|q\|_2=1],
+  \end{align*}
+  where the optimization variables are now on the direction ($q$) and the scale
+  ($s$). Therefore, for any direction $q$, we can define a convex function $g(s)$ which
+  becomes the objective:
+  \begin{align*}
+    \minimizeEquationSt{g(s)}[s\geq 0],
+  \end{align*}
+  where
+  \begin{equation*}
+    g(s) = n^{-1}\sum_{i=1}^n \ell(m_i, sq) + \lambda s^2.
+  \end{equation*}
+  Convexity of $g$ follows from convexity of $\ell$ (see [Claim ??]).
+
+  
+  Because $g$ is convex, we can consider two cases: either the minimum is realized at the
+  boundary, ie. $s^\star=0$, or there exists an optimal value $s^\star > 0$ such that
+  $g'(s^\star)=0$. To derive a bound on $s^\star$, we can seek a value $\bar s$ such
+  that for any $q$, $g'(\bar s)>0$ and therefore $\bar s > s^\star$.
+
+  To do so, we first note that 
+  \begin{align*}
+    g'(s) &= \grad_s \left[n^{-1}\sum_{i=1}^n\ell(m_i,sq) + \lambda s^2\right]\\
+          &= 2\lambda s - kn^{-1}\sum_{i=1}^n \grad_s \bar u(sr_iq^Tx_i+R_f(1-sq^Tx_i))\\
+          &= 2\lambda s - kn^{-1}\sum_{i=1}^n (r_i-R_f)q^Tx_i \, \bar u'(sr_iq^Tx_i+R_f(1-sq^Tx_i)).
+  \end{align*}
+  Now, because $\|q\|_2=1$, we have $q^Tx_i\leq\|x_i\|_2\leq\xMax$. We also have
+  $r_i-R_f\leq \bar r-R_f$ and $\bar u'\leq\gamma$, so that
+  \begin{equation*}
+    k\gamma\xMax(\bar r-R_f) \geq n^{-1}\sum_{i=1}^n (r_i-R_f)q^Tx_i \, \bar u'(sr_iq^Tx_i+R_f(1-sq^Tx_i)).
+  \end{equation*}
+  Therefore, with
+  \begin{equation*}
+    \bar s := \frac{k\gamma}{2\lambda}\xMax(\bar r-R_f),
+  \end{equation*}
+  for any $s>\bar s$,
+  \begin{equation*}
+    g'(s) \geq 0.
+  \end{equation*}
+  The previous inequality therefore implies that the norm $\|\qHat_n\|_2$ is at most $\bar
+  s$. 
+\end{proof}
+
+
+\begin{claim}
+\label{claim1}
+ The following inequality holds:
+\begin{equation*}
+  |\trueRisk(\qStar) - \trueRisk(\hat q)| \leq (\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f.
+\end{equation*}
+\end{claim}
+
+\begin{proof}
+The following development holds:
+\begin{align*}
+  |\trueRisk(\qStar) - \trueRisk(\qHat_n)| &= |E_M[\ell(m,\qStar)] + E_M[-\ell(m,\qHat_n)]\\
+                                           & = |E_M[\ell(m,\qStar) - \ell(m,\qHat_n)]|\\
+                                           & \leq E_M[|\ell(m,\qStar) - \ell(m,\qHat_n)|].\\
+  \intertext{Now, if we let $m=(x,r)$, using the Lipschitz property of $u$, with Lipschitz constant 
+  $\gamma$, and the Hölder's inequality, we also have the following identity:}
+  |\ell(m,\qStar) - \ell(m,\qHat_n)| &= |u(r\,\qStar^Tx + R_f(1-\qStar^{T}x)) - u(r\,\qHat_n^Tx + R_f(1-\qHat_n^{T}x))| \\
+                                           & \leq \gamma|r\,\qStar^Tx + R_f(1-\qStar^Tx) - r\,\qHat_n^Tx - R_f(1-\qHat_n^Tx)|\\
+                                           & = \gamma|r(\qStar-\qHat_n)^Tx + R_f(1-(\qStar-\qHat_n)^Tx)|\\
+                                           & \leq \gamma|r(\qStar-\qHat_n)^Tx| + R_f|1-(\qStar-\qHat_n)^Tx|\\
+                                           & \leq \gamma(\bar r\xMax \|\qStar-\qHat_n\|_2 + R_f(1+\xMax \|\qStar-\qHat_n\|_2))\\
+                                           & = \gamma((\bar r + R_f)\xMax \|\qStar - \qHat_n\|_2 + R_f).
+\end{align*}
+Where we used the bounds on outcomes $x$ and $r$. And so we are left with the claimed
+inequality. 
+\end{proof}
+
+
+\begin{claim}
+  \label{out_of_sample_claim}
+  The out of sample average returns are bounded below by $u^{-1}(-\hat R(\qHat_n) - \Omega_n)$.
+\end{claim}
+\begin{proof}
+  Using the convexity of $u^{-1}$ and Jensen's inequality, we first have
+  \begin{align*}
+    E[u^{-1}(-\ell(M,\qHat_n))] &\geq u^{-1}(E[-\ell(M,\qHat_n)])\\
+                                &=u^{-1}(-\trueRisk(\qHat_n)).
+  \end{align*}
+  From Theorem \ref{thm2}, we also have 
+  \begin{equation*}
+    -\trueRisk(\qHat_n) \geq -\Omega_n - \hat R(\qHat_n).
+  \end{equation*}
+  Since $u^{-1}$ is monotonically increasing, we finally obtain
+  \begin{equation*}
+    u^{-1}(-\trueRisk(\qHat_n)) \geq u^{-1}(-\Omega_n - \hat R(\qHat_n)).\qedhere
+  \end{equation*}
+\end{proof}
+
+
+% \begin{claim}
+%   If the utility $u(r)$ is unbounded as $r\to\infty$ and the random return $R$ is a linear
+%   transformation of the random market state, ie. $R = t^T X$, then $\|\qStar\|_2$ is
+%   unbounded.
+% \end{claim}
+% \begin{proof}
+%   We first observe that, by definition, $\qStar$ is the minimal value of $E_M[\ell(m,q)]$, ie.
+%   \begin{align*}
+%     \qStar &= \argmax_q E_M[u(r\,q^{T}x + R_f(1-q^{T}x)]\\
+%     &\leq \argmax_q E_M[r\,q^Tx + R_f(1-q^Tx)]\\
+%     &= \argmax_q E_M[t^Txq^Tx] + R_fE_M[1-q^Tx]\\
+%     &= \argmax_q t^T E_M[xx^T] q + R_fE_M[1-q^Tx]\\
+%     &= \argmax_q t^T\Sigma q + R_fE_M[1-q^Tx],
+%   \end{align*}
+% with $\Sigma$ the covariance of $X$. It is therefore easy to see that if $(t^T\Sigma)_i$
+% is positive, we set $q_i=\infty$ and if $(t^T\Sigma)_i$ is negative, we set $q_i=-\infty$,
+% so that the total expression tends to infinity. [The general idea is here, but the proof
+% is far from perfect.]
+% \end{proof}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End:

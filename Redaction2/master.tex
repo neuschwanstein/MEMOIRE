@@ -3,8 +3,7 @@
 \include{preamble}
 
 \title{Portfolio Optimization in a Big Data Context}
-\author{Thierry \textsc{Bazier-Matte}}
-\date{Summer 2015}
+\author{Thierry \textsc{Bazier-Matte} \and Erick \textsc{Delage}}
 
 \begin{document}
 \maketitle
@@ -33,9 +32,10 @@ interest. Finally, let $M_n = \{M,\dots,M\}$ be a \textsl{random set} of $n$ (un
 observations (with support $\bm M^n$). Therefore $\mu_n \sim M_n$ represents an iid sample
 of $n$ market observations.
 
-We shall study linear investment decisions $q$ such that $p=q^Tx$ part of the portfolio is
-allocated to the risky asset with return $r$, and $1-p$ part of the portfolio is allocated
-to the riskless asset, providing a total return $rp + R_f(1-p)$.
+We shall study linear investment decisions $q\in\bm Q\subseteq\real^p$ such that $p=q^Tx$
+part of the portfolio is allocated to the risky asset with return $r$, and $1-p$ part of
+the portfolio is allocated to the riskless asset, providing a total return
+$rp + R_f(1-p)$.
 \begin{assumption}
   We suppose that observed returns $r$ are constrained by $|r| \leq \bar r$ and that
   observed states $x$ are constrained by $\|x\|_2 \leq \xMax$.
@@ -48,7 +48,7 @@ to the riskless asset, providing a total return $rp + R_f(1-p)$.
   \begin{itemize}
   \item $\bar u$ is concave and non-decreasing;
   \item Let $X$ be the random returns of the portfolio. Then
-    $CE[X] \leq E[X] - \epsilon Var(X)$;
+    $\CE[X] \leq \E[X] - \epsilon \Var(X)$;
   \item $\bar u$ is Lipschitz continuous, with constant $\gamma$, ie.
     $|\bar u(r_1) - \bar u(r_2)| \leq \gamma|r_1-r_2|$;
   \item $\bar u$ is bounded above, ie. there exists a constant $M$ such that $\bar
@@ -56,9 +56,17 @@ to the riskless asset, providing a total return $rp + R_f(1-p)$.
   \item $\bar u(0) = 0$;
   \item $\lim_{r\to 0^{+}} \bar u(r) = 1$.
   \end{itemize}
-  Examples of standard utility functions are $\bar u(r) = \min(\beta x,x)$ with
-  $\beta > 1$ and $\bar u(r) = \beta^{-1}(e^{\beta x}-1)$ with $\beta>0$. [Pente non
-  contrôlée!]
+
+  An example of such a normalized utility is 
+  \begin{equation*}
+    \bar u(r) = \begin{cases}
+      \beta^{-1}(1-e^{-\beta r}) & r > r_0\\
+      re^{-\beta r_0} + \beta^{-1}(1-(1+\beta r_0)e^{-\beta r_0}) & r \leq r_0
+    \end{cases}
+  \end{equation*}
+  with $\beta>0$. The else part is here to enforce the Lipschitz condition which is not
+  respected on a standard exponential function. Other examples include piecewise linear
+  functions.
 \end{assumption}
 
 \begin{deff}
@@ -90,13 +98,14 @@ to the riskless asset, providing a total return $rp + R_f(1-p)$.
   \end{equation*}
 \end{deff}
 
-From now on, $\hat q_n := \hat A_n(\mu_n)$ the empirical decision associated with market sample
-$\mu_n$ and $\hat Q_n := A_n(S_n)$ the random empirical decision, ie. $\hat q_n \sim \hat Q_n$.
+From now on, let $\hat q_n := \hat A_n(\mu_n)$ the empirical decision associated with
+market sample $\mu_n$ and $\hat Q_n := A_n(S_n)$ the random empirical decision, ie.
+$\hat q_n \sim \hat Q_n$.
 
 \begin{deff}
   The \textsl{true risk} $\trueRisk:\bm Q\to\real$ associated with decision $q$ is given by
   \begin{equation*}
-    \trueRisk(q) = E_M[\ell(m,q)].
+    \trueRisk(q) = E[\ell(M,q)].
   \end{equation*}
 \end{deff}
 
@@ -117,23 +126,9 @@ $\mu_n$ and $\hat Q_n := A_n(S_n)$ the random empirical decision, ie. $\hat q_n 
 \end{deff}
 
 
-\section{[Stability Definitions and Theorems]}
+\section{Performance Bounds}
 
-We adapt in this section a number of theorems and definitions from Bousquet 2002 [Add
-reference].
-
-\subsection{Algorithmic Stability}
-
-\begin{deff}
-  Let $\hat q_n=\hat A_n(\mu_n)$ and
-  $\hat q_{n\backslash i}=\hat A_n(\mu_{n\backslash i})$, where $\mu_n$ and
-  $\mu_{n\backslash i}$ only differs in their $i$\textsuperscript{th} observation, which
-  has been redrawn from $M$ in the case of $\mu_{n\backslash i}$. The algorithm $\hat A_n$
-  is said to have \textsl{uniform stability} $\alpha_n$ if, for any $m\sim M$,
-  \begin{equation*}
-    |\ell(m,\hat q_n) - \ell(m,\hat q_{n\backslash i})| \leq \alpha_n. 
-  \end{equation*}
-\end{deff}
+\subsection{Out of Sample Bound}
 
 \begin{deff}
   A loss function $\ell$ is $\sigma$-admissible if its cost function $c$ is convex with
@@ -148,6 +143,17 @@ reference].
   Claim \ref{claim0}.
 \end{rem}
 
+\begin{deff}
+  Let $\hat q_n=\hat A_n(\mu_n)$ and
+  $\hat q_{n\backslash i}=\hat A_n(\mu_{n\backslash i})$, where $\mu_n$ and
+  $\mu_{n\backslash i}$ only differs in their $i$\textsuperscript{th} observation, which
+  has been redrawn from $M$ in the case of $\mu_{n\backslash i}$. The algorithm $\hat A_n$
+  is said to have \textsl{uniform stability} $\alpha_n$ if, for any $m\sim M$,
+  \begin{equation*}
+    |\ell(m,\hat q_n) - \ell(m,\hat q_{n\backslash i})| \leq \alpha_n. 
+  \end{equation*}
+\end{deff}
+
 \begin{thm}
   If $\ell$ is $\sigma$-admissible and if, for any $x\in\bm X$, $\|x\|_2^2\leq\xMax^2$,
   then $\hat A_n$ has uniform stability with
@@ -160,36 +166,43 @@ reference].
   See Bousquet, Theorem 22. 
 \end{proof}
 
-We therefore conclude that $\hat A_n$ has uniform stability with
-\begin{equation*}
-  \alpha_n = \frac{k^2\gamma^2(\bar r+R_f)^2\xMax^2}{2\lambda n}.
-\end{equation*}
-
-\subsection{Out of Sample Bound}
+\begin{rem}
+  We conclude that $\hat A_n$ has uniform stability given by
+  \begin{equation*}
+    \alpha_n = \frac{k^2\gamma^2(\bar r+R_f)^2\xMax^2}{2\lambda n}.
+  \end{equation*}
+\end{rem}
 
 \begin{thm}
   \label{thm2}
   If $\hat A_n$ has uniform stability $\alpha_n$ and the loss function is such that for
-  any $m\sim M$ and any $\hat q_n=\hat A_n(\mu_n)$, $0\leq \ell(m,\hat q_n)\leq B_n$, then
-  for any $\delta\in(0,1)$, the following bound holds with probability at least $1-\delta$
+  any $m\sim M$ and any $\hat q_n=\hat A_n(\mu_n)$, $|\ell(m,\hat q_n)|\leq B_n$, then for
+  any $\delta\in(0,1)$, the following bound holds with probability at least $1-\delta$
   over the random sample draw $\mu_n\sim M_n$:
   \begin{equation*}
-    |\trueRisk(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n + B_n)\sqrt{\frac{\log(2/\delta)}{2n}}.
+    |\trueRisk(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n +
+    B_n)\sqrt{\frac{\log(2/\delta)}{2n}} = \Omega_n.
   \end{equation*}
 \end{thm}
 
-The bound $B_n$ from Theorem \ref{thm2}, can be explicitly stated: the highest loss occurs
-when investment decision is at its highest and the return at its lowest. With the
-definition of $\bar p$ from Claim \ref{claim_p_bound}, we find that
-\begin{align*}
-  c(p,r) &\leq c(\bar p,-\bar r)\\
-         &= -k\bar u(-\bar p\bar r+(1-\bar p)R_f) - l\\
-         &\leq |l| + k|\bar u(-\bar p\bar r+(1-\bar p)R_f)|\\
-         &\leq |l| + k\gamma|R_f - \bar p(\bar r + R_f)|.
-\end{align*}
-[Can we do better? Here, we've taken the maximum slope of $\bar u$, ie. $\gamma$ to derive
-the results, where as we should check the slope at this particular point.]
+\begin{proof}
+  The original proof can be found in Bousquet 2002, Theorem 12. See also Rudin 2015,
+  Theorem 2. \underline{\textbf{Check conditions! $|\ell|\leq B$}}
+\end{proof}
 
+\begin{rem}
+  % The bound $B_n$ from Theorem \ref{thm2}, can be explicitly stated: 
+  The highest loss occurs when investment decision is at its highest and the return at its
+  lowest. From Claim \ref{claim_p_bound}, allocation scalar is bounded by $\bar p$ and we
+  obtain $B_n = c(\bar p, -\bar r)$.
+\end{rem}
+
+We can finally draw a PAC bound on the out of sample average returns:
+\begin{equation}
+  E[u^{-1}(-\ell(M,q))] \geq u^{-1}(-\hat R(\hat q_n) - \Omega_n).
+\end{equation}
+See Claim \ref{out_of_sample_claim} for further details.
+ 
 \subsection{True Optimal Bound}
 
 We now derive a measure of performance where we compare the empiric risk $\hat R(\hat q)$
@@ -213,129 +226,9 @@ $\qStar_\lambda$ and therefore its variance can tell us how close we are from it
 value $\qStar_\lambda$].
 
 \newpage
-
-\section*{Appendix}
-\begin{claim}
-  \label{claim0}
-  The following inequality holds:
-  \begin{equation*}
-    |c(p_1,r) - c(p_2,r)| \leq k\gamma(\bar r+R_f)|p_1-p_2|.
-  \end{equation*}
-\end{claim}
-\begin{proof}
-  Using the Lipschitz property of $\bar u$ we have:
-  \begin{align*}
-    |c(p_1,r) - c(p_2,r)| &= |u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f)|\\
-    &= k|\bar u(p_1 r + (1-p_1)R_f) - \bar u(p_2 r + (1-p_2)R_f)|\\
-    &\leq k c |p_1 r + (1-p_1)R_f - p_2r - (1-p_2)R_f|\\
-    &= k\gamma |r-R_f||p_1-p_2|\\
-    &\leq k\gamma(\bar r+R_f)|p_1-p_2|.\qedhere
-  \end{align*}
-\end{proof}
+\input{appendix}
 
 
-\begin{claim}
-  \label{claim_p_bound}
-  The $\ell_2$ norm of decision vectors $\qHat_n$ obtained from algorithm $\hat A_n$ are
-  bounded by $\bar p = k\gamma\xMax(\bar r-R_f)/(2\lambda)$.
-\end{claim}
-\begin{proof}
-  Let $\mu_n$ be a sample of the market. The empirical decision algorithm 
-  \begin{equation*}
-    \minimizeEquation{n^{-1}\sum_{i=1}^n\ell(m_i,q) + \lambda\|q\|^2_2}
-  \end{equation*}
-  is equivalent to 
-  \begin{align*}
-    \minimizeEquationSt{n^{-1}\sum_{i=1}^n \ell(m_i,sq) + \lambda s^2}[s\geq0\\,\|q\|_2=1],
-  \end{align*}
-  where the optimization variables are now on the direction ($q$) and the scale
-  ($s$). Therefore, for any direction $q$, we can define a convex function $g(s)$ which
-  becomes the objective:
-  \begin{align*}
-    \minimizeEquationSt{g(s)}[s\geq 0],
-  \end{align*}
-  where
-  \begin{equation*}
-    g(s) = n^{-1}\sum_{i=1}^n \ell(m_i, sq) + \lambda s^2.
-  \end{equation*}
-  Convexity of $g$ follows from convexity of $\ell$ (see [Claim ??]).
-
-  
-  Because $g$ is convex, we can consider two cases: either the minimum is realized at the
-  boundary, ie. $s^\star=0$, or there exists an optimal value $s^\star > 0$ such that
-  $g'(s^\star)=0$. To derive a bound on $s^\star$, we can seek a value $\bar s$ such
-  that for any $q$, $g'(\bar s)>0$ and therefore $\bar s > s^\star$.
-
-  To do so, we first note that 
-  \begin{align*}
-    g'(s) &= \grad_s \left[n^{-1}\sum_{i=1}^n\ell(m_i,sq) + \lambda s^2\right]\\
-          &= 2\lambda s - kn^{-1}\sum_{i=1}^n \grad_s \bar u(sr_iq^Tx_i+R_f(1-sq^Tx_i))\\
-          &= 2\lambda s - kn^{-1}\sum_{i=1}^n (r_i-R_f)q^Tx_i \, \bar u'(sr_iq^Tx_i+R_f(1-sq^Tx_i)).
-  \end{align*}
-  Now, because $\|q\|_2=1$, we have $q^Tx_i\leq\|x_i\|_2\leq\xMax$. We also have
-  $r_i-R_f\leq \bar r-R_f$ and $\bar u'\leq\gamma$, so that
-  \begin{equation*}
-    k\gamma\xMax(\bar r-R_f) \geq n^{-1}\sum_{i=1}^n (r_i-R_f)q^Tx_i \, \bar u'(sr_iq^Tx_i+R_f(1-sq^Tx_i)).
-  \end{equation*}
-  Therefore, with
-  \begin{equation*}
-    \bar s := \frac{k\gamma}{2\lambda}\xMax(\bar r-R_f),
-  \end{equation*}
-  for any $s>\bar s$,
-  \begin{equation*}
-    g'(s) \geq 0.
-  \end{equation*}
-  The previous inequality therefore implies that the norm $\|\qHat_n\|_2$ is at most $\bar
-  s$. 
-\end{proof}
-
-
-\begin{claim}
-\label{claim1}
- The following inequality holds:
-\begin{equation*}
-  |\trueRisk(\qStar) - \trueRisk(\hat q)| \leq (\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f.
-\end{equation*}
-\end{claim}
-
-\begin{proof}
-The following development holds:
-\begin{align*}
-  |\trueRisk(\qStar) - \trueRisk(\qHat_n)| &= |E_M[\ell(m,\qStar)] + E_M[-\ell(m,\qHat_n)]\\
-                                           & = |E_M[\ell(m,\qStar) - \ell(m,\qHat_n)]|\\
-                                           & \leq E_M[|\ell(m,\qStar) - \ell(m,\qHat_n)|].\\
-  \intertext{Now, if we let $m=(x,r)$, using the Lipschitz property of $u$, with Lipschitz constant 
-  $\gamma$, and the Hölder's inequality, we also have the following identity:}
-  |\ell(m,\qStar) - \ell(m,\qHat_n)| &= |u(r\,\qStar^Tx + R_f(1-\qStar^{T}x)) - u(r\,\qHat_n^Tx + R_f(1-\qHat_n^{T}x))| \\
-                                           & \leq \gamma|r\,\qStar^Tx + R_f(1-\qStar^Tx) - r\,\qHat_n^Tx - R_f(1-\qHat_n^Tx)|\\
-                                           & = \gamma|r(\qStar-\qHat_n)^Tx + R_f(1-(\qStar-\qHat_n)^Tx)|\\
-                                           & \leq \gamma|r(\qStar-\qHat_n)^Tx| + R_f|1-(\qStar-\qHat_n)^Tx|\\
-                                           & \leq \gamma(\bar r\xMax \|\qStar-\qHat_n\|_2 + R_f(1+\xMax \|\qStar-\qHat_n\|_2))\\
-                                           & = \gamma((\bar r + R_f)\xMax \|\qStar - \qHat_n\|_2 + R_f).
-\end{align*}
-Where we used the bounds on outcomes $x$ and $r$. And so we are left with the claimed
-inequality. 
-\end{proof}
-
-\begin{claim}
-  If the utility $u(r)$ is unbounded as $r\to\infty$ and the random return $R$ is a linear
-  transformation of the random market state, ie. $R = t^T X$, then $\|\qStar\|_2$ is
-  unbounded.
-\end{claim}
-\begin{proof}
-  We first observe that, by definition, $\qStar$ is the minimal value of $E_M[\ell(m,q)]$, ie.
-  \begin{align*}
-    \qStar &= \argmax_q E_M[u(r\,q^{T}x + R_f(1-q^{T}x)]\\
-    &\leq \argmax_q E_M[r\,q^Tx + R_f(1-q^Tx)]\\
-    &= \argmax_q E_M[t^Txq^Tx] + R_fE_M[1-q^Tx]\\
-    &= \argmax_q t^T E_M[xx^T] q + R_fE_M[1-q^Tx]\\
-    &= \argmax_q t^T\Sigma q + R_fE_M[1-q^Tx],
-  \end{align*}
-with $\Sigma$ the covariance of $X$. It is therefore easy to see that if $(t^T\Sigma)_i$
-is positive, we set $q_i=\infty$ and if $(t^T\Sigma)_i$ is negative, we set $q_i=-\infty$,
-so that the total expression tends to infinity. [The general idea is here, but the proof
-is far from perfect.]
-\end{proof}
 \end{document}
 
 
