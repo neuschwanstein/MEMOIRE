@@ -103,24 +103,32 @@ market sample $\mu_n$ and $\hat Q_n := A_n(S_n)$ the random empirical decision, 
 $\hat q_n \sim \hat Q_n$.
 
 \begin{deff}
-  The \textsl{true risk} $\trueRisk:\bm Q\to\real$ associated with decision $q$ is given by
+  The \textsl{true risk} $R:\bm Q\to\real$ associated with decision $q$ is given by
   \begin{equation*}
-    \trueRisk(q) = E[\ell(M,q)].
+    R(q) = E[\ell(M,q)].
+  \end{equation*}
+\end{deff}
+
+\begin{deff}
+  The \textsl{true regularized risk} $R_\lambda:\bm Q\to\real$ associated with decision $q$
+  is given by 
+  \begin{equation*}
+    R_\lambda(q) = E[\ell(M,q)] + \lambda\|q\|^2_2.
   \end{equation*}
 \end{deff}
 
 \begin{deff}
   The \textsl{optimal decision} $\qStar$ is the optimal value of the problem
   \begin{equation*}
-    \text{minimize}\quad \trueRisk(q).
+    \text{minimize}\quad R(q).
   \end{equation*}
 \end{deff}
 
 \begin{deff}
-  The \textsl{optimal regularized decision} $\qStar_\lambda$ is the optimal value of the
+  The \textsl{optimal regularized decision} $q^\star_\lambda$ is the optimal value of the
   regularized problem 
   \begin{equation*}
-        \text{minimize}\quad \trueRisk(q) + \lambda\|q\|_2^2.
+        \text{minimize}\quad R_\lambda(q).
   \end{equation*}
   % In particular, $\qStar = \qStar_{\lambda=0}$. 
 \end{deff}
@@ -180,7 +188,7 @@ $\hat q_n \sim \hat Q_n$.
   any $\delta\in(0,1)$, the following bound holds with probability at least $1-\delta$
   over the random sample draw $\mu_n\sim M_n$:
   \begin{equation*}
-    |\trueRisk(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n +
+    |R(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n +
     B_n)\sqrt{\frac{\log(2/\delta)}{2n}} = \Omega_n.
   \end{equation*}
 \end{thm}
@@ -205,25 +213,37 @@ See Claim \ref{out_of_sample_claim} for further details.
  
 \subsection{True Optimal Bound}
 
-We now derive a measure of performance where we compare the empiric risk $\hat R(\hat q)$
-with the optimal risk $\trueRisk(\qStar)$.
+We now seek a bound on the empirical returns when compared to the out of sample returns
+applying the (unknown) optimal decision vector $\qStar$. 
 
-We have the following inequality:
+To do so, we can decompose the performance distance:
+\begin{align}
+  |R(\qStar) - \hat R(\qHat_\lambda)| &\leq |R(\qStar) - R_\lambda(q^\star_\lambda)|\label{eq2}\\
+                                      &\qquad + |R_\lambda(q^\star_\lambda) - \hat R_\lambda(\hat q_\lambda)|\label{eq3}\\
+                                      &\qquad + |\hat R_\lambda(\hat q_\lambda) - \hat R(\hat q_\lambda)|\label{eq4}.
+\end{align}
+Using Claim \ref{delage_bound_claim} and \ref{claim_q_bound}, the first component
+\eqref{eq2} of the above inequality can be bounded by
 \begin{equation*}
-  |\trueRisk(\qStar) - \hat R(\qHat_n)| \leq |\trueRisk(\hat q) - \hat R(\hat q)| +
-  |\trueRisk(\qStar) - \trueRisk(\hat q)|.
+  |R(q^\star) - R_\lambda(q^\star_\lambda)| \leq \frac{1}{2}k\gamma X_{\max}(\bar r-R_f).
 \end{equation*}
-The first term has already been identified in the previous equation (REFERENCE), while the
-second is bounded by
-\begin{equation*}
-  |\trueRisk(\qStar) - \trueRisk(\hat q)| \leq (\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f.
-\end{equation*}
-See Claim \ref{claim1} in appendix for proof. 
 
-Therefore, what we're looking for is a probabilistic bound on the variance of
-$\hat q_n = \hat A_n(\mu_n)$ [because, using CLT, $\qHat_n$ converges in distribution to
-$\qStar_\lambda$ and therefore its variance can tell us how close we are from its expected
-value $\qStar_\lambda$].
+% We have the following inequality:
+% \begin{equation*}
+%   |\trueRisk(\qStar) - \hat R(\qHat_n)| \leq |\trueRisk(\hat q) - \hat R(\hat q)| +
+%   |\trueRisk(\qStar) - \trueRisk(\hat q)|.
+% \end{equation*}
+% The first term has already been identified in the previous equation (REFERENCE), while the
+% second is bounded by
+% \begin{equation*}
+%   |\trueRisk(\qStar) - \trueRisk(\hat q)| \leq (\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f.
+% \end{equation*}
+% See Claim \ref{claim1} in appendix for proof. 
+
+% Therefore, what we're looking for is a probabilistic bound on the variance of
+% $\hat q_n = \hat A_n(\mu_n)$ [because, using CLT, $\qHat_n$ converges in distribution to
+% $\qStar_\lambda$ and therefore its variance can tell us how close we are from its expected
+% value $\qStar_\lambda$].
 
 \newpage
 \input{appendix}
