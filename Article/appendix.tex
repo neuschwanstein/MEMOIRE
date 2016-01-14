@@ -178,30 +178,11 @@ inequality.
   by hypothesis, there exists a $\delta<0$ such that $\pp\{Z<\delta\}=p>0$. Let $B$ a
   discrete random variable such that $\pp\{B=\delta\}=1-\pp\{B=M\}=p$. Then $\pp\{B\geq
   z\}\geq\pp\{Z\geq z\}$ for any $z$. This in turn implies that
-  $\E[u(kB)]\geq\E[u(kZ)]$. But 
+  $\E[u(kB)]\geq\E[u(kZ)]$ \comment{Too fast?}. But 
   \begin{equation*}
     \lim_{k\to\infty}\E[u(kB)] = \lim_{k\to\infty}p\,u(k\delta)+(1-p)u(kM) = -\infty.\qedhere
   \end{equation*}
 \end{proof}
-% \begin{claim}
-%   If the utility $u(r)$ is unbounded as $r\to\infty$ and the random return $R$ is a linear
-%   transformation of the random market state, ie. $R = t^T X$, then $\|\qStar\|_2$ is
-%   unbounded.
-% \end{claim}
-% \begin{proof}
-%   We first observe that, by definition, $\qStar$ is the minimal value of $E_M[\ell(m,q)]$, ie.
-%   \begin{align*}
-%     \qStar &= \argmax_q E_M[u(r\,q^{T}x + R_f(1-q^{T}x)]\\
-%     &\leq \argmax_q E_M[r\,q^Tx + R_f(1-q^Tx)]\\
-%     &= \argmax_q E_M[t^Txq^Tx] + R_fE_M[1-q^Tx]\\
-%     &= \argmax_q t^T E_M[xx^T] q + R_fE_M[1-q^Tx]\\
-%     &= \argmax_q t^T\Sigma q + R_fE_M[1-q^Tx],
-%   \end{align*}
-% with $\Sigma$ the covariance of $X$. It is therefore easy to see that if $(t^T\Sigma)_i$
-% is positive, we set $q_i=\infty$ and if $(t^T\Sigma)_i$ is negative, we set $q_i=-\infty$,
-% so that the total expression tends to infinity. [The general idea is here, but the proof
-% is far from perfect.]
-% \end{proof}
 
 %%% Local Variables:
 %%% mode: latex

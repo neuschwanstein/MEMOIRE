@@ -47,20 +47,16 @@ $rp + R_f(1-p)$.
   $u(r) = k\bar u(r) + l$, where $k>0$ and $\bar u$ has the following properties:
   \begin{itemize}
   \item $\bar u$ is concave and non-decreasing;
-  % \item Let $X$ be the random returns of the portfolio. Then
-  %   $\CE[X] \leq \E[X] - \epsilon \Var(X)$;
   \item $\bar u$ is Lipschitz continuous, with constant $\gamma$, ie.
     $|\bar u(r_1) - \bar u(r_2)| \leq \gamma|r_1-r_2|$; \comment{Since random variables
       are bounded (Claims \ref{claim_q_bound} and \ref{claim_finite}), this assumption
       can be relaxed}
-  % \item $\bar u$ is bounded above, ie. there exists a constant $M$ such that $\bar
-  %   u(r)\leq M$ for any $r$;
   \item $\bar u(0) = 0$;
   \item With representation
     $\bar u(x) = \bar u_-(x)\bm1_{\{x<0\}}+\bar u_+(x)\bm 1_{\{x\geq 0\}}$, we have
     $u_+(x) = o(u_-(x))$, ie. $\bar u_-$ dominates $\bar u_+$. \comment{Solve the
       Lipschitz contradiction.}
-  \item $\lim_{r\to 0^{+}} \bar u(r) = 1$ \comment{Necessary?}
+  \item $\lim_{r\to 0^{+}} \bar u'(r) = 1$ \comment{Necessary?}
   \end{itemize}
 
   An example of such a normalized utility is 
@@ -136,7 +132,6 @@ empirical risk.
   \begin{equation*}
         \text{minimize}\quad R_\lambda(q).
   \end{equation*}
-  % In particular, $\qStar = \qStar_{\lambda=0}$. 
 \end{deff}
 
 
@@ -206,7 +201,6 @@ empirical risk.
 \end{proof}
 
 \begin{rem}
-  % The bound $B_n$ from Theorem \ref{thm2}, can be explicitly stated: 
   The highest loss occurs when investment decision is at its highest and the return at its
   lowest. From Claim \ref{claim_p_bound}, allocation scalar is bounded by $\bar p$ and we
   obtain $B_n = c(\bar p, -\bar r)$.
@@ -219,10 +213,6 @@ We can finally draw a PAC bound on the out of sample average returns:
 See Claim \ref{out_of_sample_claim} for further details.
  
 \subsection{True Optimal Bound}
-
-% By imposing more functional structure to the utility function it is possible to derive a
-% bounded distance between the in-sample risk and the expected risk using the optimal
-% decision vector $q^\star$. 
 
 We now seek a bound on the empirical returns when compared to the out of sample returns
 applying the (unknown) optimal decision vector $\qStar$. 
@@ -246,32 +236,6 @@ then
   |R(q^\star) - \hat R(\hat q_\lambda)| \leq k\gamma((\bar r+R_f)\xMax B^\star + R_f) +
   \Omega_n = \Omega^\star.
 \end{equation*}
-
-
-% To do so, we can decompose the performance distance:
-% \begin{align}
-%   |R(\qStar) - \hat R(\qHat_\lambda)| &\leq |R(\qStar) - R_\lambda(q^\star_\lambda)|\label{eq2}\\
-%                                       &\qquad + |R_\lambda(q^\star_\lambda) - \hat R_\lambda(\hat q_\lambda)|\label{eq3}\\
-%                                       &\qquad + |\hat R_\lambda(\hat q_\lambda) - \hat R(\hat q_\lambda)|\label{eq4}.
-% \end{align}
-
-
-% We have the following inequality:
-% \begin{equation*}
-%   |\trueRisk(\qStar) - \hat R(\qHat_n)| \leq |\trueRisk(\hat q) - \hat R(\hat q)| +
-%   |\trueRisk(\qStar) - \trueRisk(\hat q)|.
-% \end{equation*}
-% The first term has already been identified in the previous equation (REFERENCE), while the
-% second is bounded by
-% \begin{equation*}
-%   |\trueRisk(\qStar) - \trueRisk(\hat q)| \leq (\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f.
-% \end{equation*}
-% See Claim \ref{claim1} in appendix for proof. 
-
-% Therefore, what we're looking for is a probabilistic bound on the variance of
-% $\hat q_n = \hat A_n(\mu_n)$ [because, using CLT, $\qHat_n$ converges in distribution to
-% $\qStar_\lambda$ and therefore its variance can tell us how close we are from its expected
-% value $\qStar_\lambda$].
 
 \newpage
 \input{appendix}
