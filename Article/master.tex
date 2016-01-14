@@ -22,15 +22,15 @@ dimension, $A$ (capital case) represents random variables (or distributions) and
 (lower case) represents deterministic variables or realizations. $\real$ represents the
 real set.
 
-Let $M=(X,R)$ the \textsl{market} be a random variable with support
+Let $M=(X,R)$ the market be a random variable with support
 $\bm M = \bm X\times \bm R \subseteq\real^{p+1}$, ie. numerically qualifiable, with
-$(x,r) = m\sim M$ a \textsl{market observation}, consisting in one part \textsl{state}
-$x\in\real^p$ and another part \textsl{outcome} $r\in\real$. Typically $x$ is a vector of
-observations from various variable of interests, such as financial or economical news,
-etc. Scalar $r$ in this article shall represent the return from a financial asset of
-interest. Finally, let $M_n = \{M,\dots,M\}$ be a \textsl{random set} of $n$ (unrealized)
-observations (with support $\bm M^n$). Therefore $\mu_n \sim M_n$ represents an iid sample
-of $n$ market observations.
+$(x,r) = m\sim M$ a market observation, consisting in one part state $x\in\real^p$ and
+another part outcome $r\in\real$. Typically $x$ is a vector of observations from various
+variable of interests, such as financial or economical news, etc. Scalar $r$ in this
+article shall represent the return from a financial asset of interest. Finally, let
+$M_n = \{M,\dots,M\}$ be a random set of $n$ (unrealized) observations (with support
+$\bm M^n$). Therefore $\mu_n \sim M_n$ represents an iid sample of $n$ market
+observations.
 
 We shall study linear investment decisions $q\in\bm Q\subseteq\real^p$ such that $p=q^Tx$
 part of the portfolio is allocated to the risky asset with return $r$, and $1-p$ part of
@@ -47,14 +47,20 @@ $rp + R_f(1-p)$.
   $u(r) = k\bar u(r) + l$, where $k>0$ and $\bar u$ has the following properties:
   \begin{itemize}
   \item $\bar u$ is concave and non-decreasing;
-  \item Let $X$ be the random returns of the portfolio. Then
-    $\CE[X] \leq \E[X] - \epsilon \Var(X)$;
+  % \item Let $X$ be the random returns of the portfolio. Then
+  %   $\CE[X] \leq \E[X] - \epsilon \Var(X)$;
   \item $\bar u$ is Lipschitz continuous, with constant $\gamma$, ie.
-    $|\bar u(r_1) - \bar u(r_2)| \leq \gamma|r_1-r_2|$;
-  \item $\bar u$ is bounded above, ie. there exists a constant $M$ such that $\bar
-    u(r)\leq M$ for any $r$;
+    $|\bar u(r_1) - \bar u(r_2)| \leq \gamma|r_1-r_2|$; \comment{Since random variables
+      are bounded (Claims \ref{claim_q_bound} and \ref{claim_finite}), this assumption
+      can be relaxed}
+  % \item $\bar u$ is bounded above, ie. there exists a constant $M$ such that $\bar
+  %   u(r)\leq M$ for any $r$;
   \item $\bar u(0) = 0$;
-  \item $\lim_{r\to 0^{+}} \bar u(r) = 1$.
+  \item With representation
+    $\bar u(x) = \bar u_-(x)\bm1_{\{x<0\}}+\bar u_+(x)\bm 1_{\{x\geq 0\}}$, we have
+    $u_+(x) = o(u_-(x))$, ie. $\bar u_-$ dominates $\bar u_+$. \comment{Solve the
+      Lipschitz contradiction.}
+  \item $\lim_{r\to 0^{+}} \bar u(r) = 1$ \comment{Necessary?}
   \end{itemize}
 
   An example of such a normalized utility is 
@@ -98,14 +104,14 @@ $rp + R_f(1-p)$.
   \end{equation*}
 \end{deff}
 
-From now on, let $\hat q_n := \hat A_n(\mu_n)$ the empirical decision associated with
-market sample $\mu_n$ and $\hat Q_n := A_n(S_n)$ the random empirical decision, ie.
-$\hat q_n \sim \hat Q_n$.
+From now on, as a notation shortcut, let $\hat q_n := \hat A_n(\mu_n)$ the empirical
+decision associated with random market sample $\mu_n$ and $\hat R:=\hat R_{\mu_n}$ the
+empirical risk.
 
 \begin{deff}
   The \textsl{true risk} $R:\bm Q\to\real$ associated with decision $q$ is given by
   \begin{equation*}
-    R(q) = E[\ell(M,q)].
+    R(q) = \E[\ell(M,q)].
   \end{equation*}
 \end{deff}
 
@@ -113,7 +119,7 @@ $\hat q_n \sim \hat Q_n$.
   The \textsl{true regularized risk} $R_\lambda:\bm Q\to\real$ associated with decision $q$
   is given by 
   \begin{equation*}
-    R_\lambda(q) = E[\ell(M,q)] + \lambda\|q\|^2_2.
+    R_\lambda(q) = \E[\ell(M,q)] + \lambda\|q\|^2_2.
   \end{equation*}
 \end{deff}
 
@@ -140,7 +146,8 @@ $\hat q_n \sim \hat Q_n$.
 
 \begin{deff}
   A loss function $\ell$ is $\sigma$-admissible if its cost function $c$ is convex with
-  respect to $p$ the investment decision and the following holds for any $p_1,p_2$ and r:
+  respect to $p$ the investment decision and the following holds for any $p_1,p_2$ and
+  $r$:
   \begin{equation*}
     |c(p_1,r) - c(p_2,r)| \leq \sigma|p_1-p_2|.
   \end{equation*}
@@ -175,7 +182,7 @@ $\hat q_n \sim \hat Q_n$.
 \end{proof}
 
 \begin{rem}
-  We conclude that $\hat A_n$ has uniform stability given by
+  We conclude that $\hat A_n$ has uniform stability with
   \begin{equation*}
     \alpha_n = \frac{k^2\gamma^2(\bar r+R_f)^2\xMax^2}{2\lambda n}.
   \end{equation*}
@@ -195,7 +202,7 @@ $\hat q_n \sim \hat Q_n$.
 
 \begin{proof}
   The original proof can be found in Bousquet 2002, Theorem 12. See also Rudin 2015,
-  Theorem 2. \underline{\textbf{Check conditions! $|\ell|\leq B$}}
+  Theorem 2. \comment{Check conditions! $|\ell|\leq B$}
 \end{proof}
 
 \begin{rem}
@@ -207,7 +214,7 @@ $\hat q_n \sim \hat Q_n$.
 
 We can finally draw a PAC bound on the out of sample average returns:
 \begin{equation}
-  E[u^{-1}(-\ell(M,q))] \geq u^{-1}(-\hat R(\hat q_n) - \Omega_n).
+  \E[u^{-1}(-\ell(M,q))] \geq u^{-1}(-\hat R(\hat q_n) - \Omega_n).
 \end{equation}
 See Claim \ref{out_of_sample_claim} for further details.
  

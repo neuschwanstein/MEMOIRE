@@ -93,7 +93,7 @@
 \begin{proof}
   Using the convexity of $u^{-1}$ and Jensen's inequality, we first have
   \begin{align*}
-    E[u^{-1}(-\ell(M,\qHat_n))] &\geq u^{-1}(E[-\ell(M,\qHat_n)])\\
+    \E[u^{-1}(-\ell(M,\qHat_n))] &\geq u^{-1}(\E[-\ell(M,\qHat_n)])\\
                                 &=u^{-1}(-R(\qHat_n)).
   \end{align*}
   From Theorem \ref{thm2}, we also have 
@@ -111,24 +111,27 @@
 \label{claim1}
  The following inequality holds:
 \begin{equation*}
-  |R(\qStar) - R(\hat q)| \leq (\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f.
+  |R(\qStar) - R(\hat q)| \leq k\gamma((\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f).
 \end{equation*}
 \end{claim}
 
 \begin{proof}
 We have:
 \begin{align*}
-  |R(\qStar) - R(\qHat_n)| &= |E_M[\ell(m,\qStar)] + E_M[-\ell(m,\qHat_n)]\\
-                                           & = |E_M[\ell(m,\qStar) - \ell(m,\qHat_n)]|\\
-                                           & \leq E_M[|\ell(m,\qStar) - \ell(m,\qHat_n)|].\\
-  \intertext{Now, if we let $m=(x,r)$, using the Lipschitz property of $u$, with Lipschitz constant 
-  $\gamma$, and the Hölder's inequality, we also have the following identity:}
-  |\ell(m,\qStar) - \ell(m,\qHat_n)| &= |u(r\,\qStar^Tx + R_f(1-\qStar^{T}x)) - u(r\,\qHat_n^Tx + R_f(1-\qHat_n^{T}x))| \\
-                                           & \leq \gamma|r\,\qStar^Tx + R_f(1-\qStar^Tx) - r\,\qHat_n^Tx - R_f(1-\qHat_n^Tx)|\\
-                                           & = \gamma|r(\qStar-\qHat_n)^Tx + R_f(1-(\qStar-\qHat_n)^Tx)|\\
-                                           & \leq \gamma|r(\qStar-\qHat_n)^Tx| + R_f|1-(\qStar-\qHat_n)^Tx|\\
-                                           & \leq \gamma(\bar r\xMax \|\qStar-\qHat_n\|_2 + R_f(1+\xMax \|\qStar-\qHat_n\|_2))\\
-                                           & = \gamma((\bar r + R_f)\xMax \|\qStar - \qHat_n\|_2 + R_f).
+  |R(\qStar) - R(\qHat_n)| &= |\E[\ell(M,\qStar)] + E[-\ell(M,\qHat_n)]\\
+                                           & = |\E[\ell(M,\qStar) - \ell(M,\qHat_n)]|\\
+                                           & \leq \E[|\ell(M,\qStar) - \ell(M,\qHat_n)|].
+\end{align*}
+Now, if we let $m=(x,r)\sim M$, using the Lipschitz property of $u$, with Lipschitz
+constant $k\gamma$, and the Hölder's inequality, we also have the following inequality:
+\begin{align*}
+  |\ell(m,\qStar) - \ell(m,\qHat_n)| 
+  &= |u(r\,\qStar^Tx + R_f(1-\qStar^{T}x)) - u(r\,\qHat_n^Tx + R_f(1-\qHat_n^{T}x))| \\
+  & \leq k\gamma|r\,\qStar^Tx + R_f(1-\qStar^Tx) - r\,\qHat_n^Tx - R_f(1-\qHat_n^Tx)|\\
+  & = k\gamma|r(\qStar-\qHat_n)^Tx + R_f(1-(\qStar-\qHat_n)^Tx)|\\
+  & \leq k\gamma|r(\qStar-\qHat_n)^Tx| + R_f|1-(\qStar-\qHat_n)^Tx|\\
+  & \leq k\gamma(\bar r\xMax \|\qStar-\qHat_n\|_2 + R_f(1+\xMax \|\qStar-\qHat_n\|_2))\\
+  & = k\gamma((\bar r + R_f)\xMax \|\qStar - \qHat_n\|_2 + R_f).
 \end{align*}
 Where we used the bounds on outcomes $x$ and $r$. And so we are left with the claimed
 inequality. 
@@ -161,11 +164,12 @@ inequality.
 \end{proof}
 
 \begin{claim}
+  \label{claim_finite}
   If $u:\real\to\real$ monotonically increasing is such that $u(0) = 0$,
   $u(x) = u_-(x)\bm1_{\{x<0\}}+u_+(x)\bm 1_{\{x\geq 0\}}$ and $u_+(x) = o(u_-(x))$, then,
   for any real random variable $X$ with $|X|\leq M$ and $\lim_{x\to0^-}F_X(x)>0$,
   \begin{equation*}
-    \argmax_k \E[u(kX)]
+    \argmax_{k>0} \E[u(kX)]
   \end{equation*}
   is finite.
 \end{claim}

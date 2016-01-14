@@ -56,11 +56,11 @@
 % http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
 \NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{,}}O{}}
 {\text{minimize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}}
-
 \newcommand{\minimizeEquation}[1]{\text{minimize} \quad {#1}}
-
 \NewDocumentCommand{\stCommand}{m}
 {& \quad #1}
+
+\newcommand{\comment}[1]{\textbf{[#1]}}
 
 \theoremstyle{plain}
 \newtheorem{prop}{Proposition}
