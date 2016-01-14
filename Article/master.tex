@@ -220,24 +220,41 @@ See Claim \ref{out_of_sample_claim} for further details.
  
 \subsection{True Optimal Bound}
 
-By imposing more functional structure to the utility function it is possible to derive a
-bounded distance between the in-sample risk and the expected risk using the optimal
-decision vector $q^\star$. 
+% By imposing more functional structure to the utility function it is possible to derive a
+% bounded distance between the in-sample risk and the expected risk using the optimal
+% decision vector $q^\star$. 
 
 We now seek a bound on the empirical returns when compared to the out of sample returns
 applying the (unknown) optimal decision vector $\qStar$. 
 
-To do so, we can decompose the performance distance:
-\begin{align}
-  |R(\qStar) - \hat R(\qHat_\lambda)| &\leq |R(\qStar) - R_\lambda(q^\star_\lambda)|\label{eq2}\\
-                                      &\qquad + |R_\lambda(q^\star_\lambda) - \hat R_\lambda(\hat q_\lambda)|\label{eq3}\\
-                                      &\qquad + |\hat R_\lambda(\hat q_\lambda) - \hat R(\hat q_\lambda)|\label{eq4}.
-\end{align}
-Using Claim \ref{delage_bound_claim} and \ref{claim_q_bound}, the first component
-\eqref{eq2} of the above inequality can be bounded by
+To do so, we can decompose the performance distance: \comment{Maybe it's tigher using
+  another decomposition?}
 \begin{equation*}
-  |R(q^\star) - R_\lambda(q^\star_\lambda)| \leq \frac{1}{2}k\gamma X_{\max}(\bar r-R_f).
+  |R(q^\star) - \hat R(\hat q_\lambda)| \leq |R(q^\star) + R(\hat q_\lambda)| 
+  + |R(\hat q_\lambda) - \hat R(\hat q_\lambda)|.
 \end{equation*}
+Using Claim \ref{claim1}, the first term is bounded by
+$k\gamma((\bar r+R_f)\xMax\|q^\star - \hat q_\lambda\|_2 + R_f)$, while the second one is
+nothing more than $\Omega_n$. Now, unless we know the distribution of $M$, we can't bound
+$\|q^\star\|_2$, however we know from Claim \ref{claim_finite} that it's
+finite. Therefore, if we let $B^\star$ such that
+\begin{equation*}
+  \|q^\star - \hat q_\lambda\|_2 \leq B^\star,
+\end{equation*}
+then
+\begin{equation*}
+  |R(q^\star) - \hat R(\hat q_\lambda)| \leq k\gamma((\bar r+R_f)\xMax B^\star + R_f) +
+  \Omega_n = \Omega^\star.
+\end{equation*}
+
+
+% To do so, we can decompose the performance distance:
+% \begin{align}
+%   |R(\qStar) - \hat R(\qHat_\lambda)| &\leq |R(\qStar) - R_\lambda(q^\star_\lambda)|\label{eq2}\\
+%                                       &\qquad + |R_\lambda(q^\star_\lambda) - \hat R_\lambda(\hat q_\lambda)|\label{eq3}\\
+%                                       &\qquad + |\hat R_\lambda(\hat q_\lambda) - \hat R(\hat q_\lambda)|\label{eq4}.
+% \end{align}
+
 
 % We have the following inequality:
 % \begin{equation*}

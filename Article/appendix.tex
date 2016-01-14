@@ -88,7 +88,7 @@
 
 \begin{claim}
   \label{out_of_sample_claim}
-  The out of sample average returns are bounded below by $u^{-1}(-\hat R(\qHat_n) - \Omega_n)$.
+  The out of sample average returns are at least $u^{-1}(-\hat R(\qHat_n) - \Omega_n)$.
 \end{claim}
 \begin{proof}
   Using the convexity of $u^{-1}$ and Jensen's inequality, we first have
@@ -167,18 +167,18 @@ inequality.
   \label{claim_finite}
   If $u:\real\to\real$ monotonically increasing is such that $u(0) = 0$,
   $u(x) = u_-(x)\bm1_{\{x<0\}}+u_+(x)\bm 1_{\{x\geq 0\}}$ and $u_+(x) = o(u_-(x))$, then,
-  for any real random variable $X$ with $|X|\leq M$ and $\lim_{x\to0^-}F_X(x)>0$,
+  for any real random variable $Z$ with $|Z|\leq M$ and $\lim_{x\to0^-}F_Z(x)>0$,
   \begin{equation*}
-    \argmax_{k>0} \E[u(kX)]
+    \argmax_{k>0} \E[u(kZ)]
   \end{equation*}
   is finite.
 \end{claim}
 \begin{proof}
-  We first note that $\lim_{k\to\infty} \E[u(kX)]=-\infty$ is a sufficient condition. Next,
-  by hypothesis, there exists a $\delta<0$ such that $\pp\{X<\delta\}=p>0$. Let $B$ a
+  We first note that $\lim_{k\to\infty} \E[u(kZ)]=-\infty$ is a sufficient condition. Next,
+  by hypothesis, there exists a $\delta<0$ such that $\pp\{Z<\delta\}=p>0$. Let $B$ a
   discrete random variable such that $\pp\{B=\delta\}=1-\pp\{B=M\}=p$. Then $\pp\{B\geq
-  x\}\geq\pp\{X\geq x\}$ for any $x$. This in turn implies that
-  $\E[u(kB)]\geq\E[u(kX)]$. But 
+  z\}\geq\pp\{Z\geq z\}$ for any $z$. This in turn implies that
+  $\E[u(kB)]\geq\E[u(kZ)]$. But 
   \begin{equation*}
     \lim_{k\to\infty}\E[u(kB)] = \lim_{k\to\infty}p\,u(k\delta)+(1-p)u(kM) = -\infty.\qedhere
   \end{equation*}
