@@ -8,32 +8,33 @@ import pfopt.objective as obj
 import numpy as np
 import matplotlib.pyplot as plt
 
-cfg = config.config
+def objective_visualization():
+        cfg = config.config
 
-n,p = 5000,1
-cfg.n,cfg.p = n,p
-ls = np.arange(1,5.2,0.5)
+        n,p = 5000,1
+        cfg.n,cfg.p = n,p
+        ls = np.arange(1,5.2,0.5)
 
-t = create_data.create_rule()
+        t = create_data.create_rule()
 
-x_min,x_max=-100,100
+        x_min,x_max=-100,100
 
-for l in ls:
-    X,r = create_data.create_data(t)
-    (q1,q2),val = obj.solve_objective(X,r, l==0 and 1 or l)
-    q1s = np.arange(-1,1,0.01) + q1
-    q2s = np.arange(-1,1,0.01) + q2
-    ys = [obj.objective(X,r,[q1,q2],l) for q2 in q2s]
-    x_min = max(x_min,q2s[0])
-    x_max = min(x_max,q2s[-1])
-    plt.plot(q2s,ys,label="$\lambda={0}$".format(l))
-    if l!=0:
-        plt.plot([q2],[val],'ko')
+        for l in ls:
+            X,r = create_data.create_data(t)
+            (q1,q2),val = obj.solve_objective(X,r, l==0 and 1 or l)
+            q1s = np.arange(-1,1,0.01) + q1
+            q2s = np.arange(-1,1,0.01) + q2
+            ys = [obj.objective(X,r,[q1,q2],l) for q2 in q2s]
+            x_min = max(x_min,q2s[0])
+            x_max = min(x_max,q2s[-1])
+            plt.plot(q2s,ys,label="$\lambda={0}$".format(l))
+            if l!=0:
+                plt.plot([q2],[val],'ko')
 
-plt.legend(loc='upper left')
-plt.xlabel("$q$")
-plt.ylabel("$\hat R_n(\hat q)+\lambda\Vert q\Vert_2^2$")
-plt.gca().set_xlim([x_min,x_max])
-plt.show()
+        plt.legend(loc='upper left')
+        plt.xlabel("$q$")
+        plt.ylabel("$\hat R_n(\hat q)+\lambda\Vert q\Vert_2^2$")
+        plt.gca().set_xlim([x_min,x_max])
+        plt.show()
 
-# plt.savefig("../Figures/ObjectiveVisualization.pdf", bbox_inches='tight')
+        # plt.savefig("../Figures/ObjectiveVisualization.pdf", bbox_inches='tight')
