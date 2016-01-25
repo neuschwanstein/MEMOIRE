@@ -11,35 +11,26 @@ class Config(object):
 
     Rf = 0.0
     n,p = 1000,100
-        
-class Returns(object):
-    def __init__(self, mean=None,vol=None):
-        self.mean = mean if mean else 12.0
-        self.vol = vol if vol else 8.0
-        self.sample = lambda size: np.random.normal(self.mean,self.vol,size)
-
-r = Returns()
 
 
 class Copula(object):
-    def __init__(self,p):
-        if p < 2:
-            raise ValueError('The dimension mustbe higher than 2.')
+    def __init__(self,p=None):
+        self.p = p if p else 2
 
 
 class IndependanceCopula(Copula):
-    def __init__(self,p):
-        self.p = p              # Call base class (super?)
+    def __init__(self,p=None):
+        super().__init__(p)
 
     def sample(self,n):
         return np.random.uniform(0,1,(n,self.p))
 
 
 class ClaytonCopula(Copula):
-    def __init__(self,p,t):
+    def __init__(self,t,p=None):
         if t <= 0:
             raise ValueError('theta must lie in (0,+infty)')
-        self.p = p
+        super().__init__(p)
         self.t = t
 
     def sample(self,n):
@@ -49,7 +40,7 @@ class ClaytonCopula(Copula):
         t = self.t
         ss = np.random.gamma(1/t,1,n)
         ess = np.random.exponential(1,(n,self.p))
-        return [[(1+e/s)**(-1/t) for e in es] for es,s in zip(ess,ss)]
+        return [[(1+e/s)**(-1/t) for e in es] for es,s in zip(ess,ss)] # Matlab style?
 
 
 class UniformDistribution(object):
@@ -70,9 +61,8 @@ class NormalDistribution(object):
         return self.mu + self.vol*np.sqrt(2)*sp.special.erfinv(2*p - 1)
 
 
-def market_sample(distrs,copula,n):
-    p = len(distrs)
-    cop = copula(p)
+def market_sample(distrs,cop,n):
+    cop.p = len(distrs)
     unif_sample = cop.sample(n)
     return [[d.inverse(u) for d,u in zip(distrs,us)] for us in unif_sample]
 
@@ -81,5 +71,6 @@ x1 = NormalDistribution()
 x2 = NormalDistribution()
 r = NormalDistribution(7,8)
 
-m = market_sample((x1,x2,r),IndependanceCopula,10000)
+cop = IndependanceCopula()
+m = market_sample((x1,x2,r),cop,10000)
 print(np.mean(m, axis=0))
