@@ -66,14 +66,13 @@ def market_sample(xs,r,cop,n):
     function returns a sample (matrix) of the features and a sample vector of the returns.
 
     '''
-    cop.p = len(xs)+1
-    unif_sample = cop.sample(n)
     distrs = tuple(xs) + (r,)
+    cop.p = len(distrs)
+    unif_sample = cop.sample(n)
     sample = [[d.inverse(u) for d,u in zip(distrs,us)] for us in unif_sample]
     sample = np.asarray(sample)
     return sample[:,0:-1], sample[:,-1]
     
-
 
 x1 = NormalDistribution()
 x2 = NormalDistribution()
@@ -81,3 +80,4 @@ r = NormalDistribution(7,8)
 
 cop = IndependanceCopula()
 xss_sample, rs_sample  = market_sample([x1,x2],r,cop,10000)
+
