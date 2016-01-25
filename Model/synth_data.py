@@ -1,21 +1,12 @@
 import numpy as np
 import scipy as sp
-from copulalib.copulalib import Copula
-
-class Config(object):
-    instance = None
-    def __new__(cls):
-        if cls.instance is None:
-            cls.instance = object.__new__(cls)
-        return cls.instance
-
-    Rf = 0.0
-    n,p = 1000,100
-
 
 class Copula(object):
     def __init__(self,p=None):
         self.p = p if p else 2
+
+    def sample(self,n):
+        raise NotImplementedError
 
 
 class IndependanceCopula(Copula):
@@ -73,11 +64,11 @@ def market_sample(xs,r,cop,n):
     sample = np.asarray(sample)
     return sample[:,0:-1], sample[:,-1]
     
+if __name__ == '__main__':
+    x1 = NormalDistribution()
+    x2 = NormalDistribution()
+    r = NormalDistribution(7,8)
 
-x1 = NormalDistribution()
-x2 = NormalDistribution()
-r = NormalDistribution(7,8)
-
-cop = IndependanceCopula()
-xss_sample, rs_sample  = market_sample([x1,x2],r,cop,10000)
+    cop = IndependanceCopula()
+    xss_sample, rs_sample  = market_sample([x1,x2],r,cop,10000)
 

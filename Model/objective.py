@@ -1,13 +1,16 @@
 from cvxpy import *
 import numpy as np
-import pfopt.config
-
-cfg = pfopt.config.config
+from config import cfg
 
 def normalize_data(data):
     mu = data.mean(axis=0)      # axis=0: along column
     vol = data.std(axis=0)
     return (data-mu)/vol
+
+def append_bias(xss):
+    n,_ = xss.shape
+    bias = np.ones(n)
+    return np.c_[bias,xss]
 
 def solve_objective(X,r,l):
     n,p = cfg.n,cfg.p+1
@@ -23,7 +26,7 @@ def solve_objective(X,r,l):
     if problem.status == 'unbounded':
         raise Exception(problem.status)
     if problem.status == 'optimal_inaccurate':
-        print(problem.status + " with l=" + l)
+        print(problem.status, " with l=", l)
     
     return q.value.A1, problem.value
 
