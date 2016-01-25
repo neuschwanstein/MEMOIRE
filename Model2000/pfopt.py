@@ -1,0 +1,92 @@
+import numpy as np
+import scipy as sp
+from copulalib.copulalib import Copula
+
+class Config(object):
+    instance = None
+    def __new__(cls):
+        if cls.instance is None:
+            cls.instance = object.__new__(cls)
+        return cls.instance
+
+    Rf = 0.0
+    n,p = 1000,100
+
+    # returns = dict(
+    #     mean = 5.0,
+    #     vol = 8.0,
+        
+class Returns(object):
+    def __init__(self, mean=None,vol=None):
+        self.mean = mean if mean else 12.0
+        self.vol = vol if vol else 8.0
+        self.sample = lambda size: np.random.normal(self.mean,self.vol,size)
+
+r = Returns()
+
+
+class Copula(object):
+    def __init__(self,p):
+        if p < 2:
+            raise ValueError('The dimension mustbe higher than 2.')
+
+
+class IndependanceCopula(Copula):
+    def __init__(self,p):
+        if p < 2:
+            raise ValueError('The dimension must be higher than 2.')
+        self.p = p
+
+    def sample(self,n):
+        return np.random.uniform(0,1,(n,self.p))
+
+
+class UniformDistribution(object):
+    def __init__(self,a=None,b=None):
+        self.a = a if not a else 0
+        self.b = b if not b else 1
+        
+    def inverse(self,p):
+        return self.a + p*(self.b - p)
+
+
+class NormalDistribution(object):
+    def __init__(self, mu=None, vol=None):
+        self.mu = mu if  mu else 0
+        self.vol = vol if vol else 1
+
+    def inverse(self,p):
+        return self.mu + self.vol*np.sqrt(2)*sp.special.erfinv(2*p - 1)
+
+
+def market_sample(distrs,copula,n):
+    p = len(distrs)
+    cop = copula(p)
+    unif_sample = cop.sample(n)
+    return [[d.inverse(u) for d,u in zip(distrs,us)] for us in unif_sample]
+
+
+x1 = NormalDistribution()
+x2 = NormalDistribution()
+r = NormalDistribution(7,8)
+
+m = market_sample([x1,x2,r],IndependanceCopula,10)
+print(np.asarray(m))
+
+
+
+# def create_data():
+#     t = simplex_sample(cfg.p)
+#     t = np.sqrt(t * cfg.r_vol**2)
+#     t = np.append(cfg.r_mean, t)
+    
+
+
+
+# def simplex_sample(n):
+#     # http://cs.stackexchange.com/a/3229
+#     unif = np.random.uniform
+#     p = [0] + [unif() for _ in range(n-1)] + [1]
+#     p = np.sort(p)
+#     t = p[1:] - p[:-1]
+#     return t
