@@ -61,10 +61,18 @@ class NormalDistribution(object):
         return self.mu + self.vol*np.sqrt(2)*sp.special.erfinv(2*p - 1)
 
 
-def market_sample(distrs,cop,n):
-    cop.p = len(distrs)
+def market_sample(xs,r,cop,n):
+    '''For specified marginal distributions for features and market return, and a copula, this
+    function returns a sample (matrix) of the features and a sample vector of the returns.
+
+    '''
+    cop.p = len(xs)+1
     unif_sample = cop.sample(n)
-    return [[d.inverse(u) for d,u in zip(distrs,us)] for us in unif_sample]
+    distrs = tuple(xs) + (r,)
+    sample = [[d.inverse(u) for d,u in zip(distrs,us)] for us in unif_sample]
+    sample = np.asarray(sample)
+    return sample[:,0:-1], sample[:,-1]
+    
 
 
 x1 = NormalDistribution()
@@ -72,5 +80,4 @@ x2 = NormalDistribution()
 r = NormalDistribution(7,8)
 
 cop = IndependanceCopula()
-m = market_sample((x1,x2,r),cop,10000)
-print(np.mean(m, axis=0))
+xss_sample, rs_sample  = market_sample([x1,x2],r,cop,10000)
