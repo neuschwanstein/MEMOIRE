@@ -11,10 +11,6 @@ class Config(object):
 
     Rf = 0.0
     n,p = 1000,100
-
-    # returns = dict(
-    #     mean = 5.0,
-    #     vol = 8.0,
         
 class Returns(object):
     def __init__(self, mean=None,vol=None):
@@ -33,12 +29,27 @@ class Copula(object):
 
 class IndependanceCopula(Copula):
     def __init__(self,p):
-        if p < 2:
-            raise ValueError('The dimension must be higher than 2.')
-        self.p = p
+        self.p = p              # Call base class (super?)
 
     def sample(self,n):
         return np.random.uniform(0,1,(n,self.p))
+
+
+class ClaytonCopula(Copula):
+    def __init__(self,p,t):
+        if t <= 0:
+            raise ValueError('theta must lie in (0,+infty)')
+        self.p = p
+        self.t = t
+
+    def sample(self,n):
+        '''Partly implemented for theta>0. See Stats. Methd. for Fin. Eng. p.305 for more details.
+
+        '''
+        t = self.t
+        ss = np.random.gamma(1/t,1,n)
+        ess = np.random.exponential(1,(n,self.p))
+        return [[(1+e/s)**(-1/t) for e in es] for es,s in zip(ess,ss)]
 
 
 class UniformDistribution(object):
@@ -70,23 +81,5 @@ x1 = NormalDistribution()
 x2 = NormalDistribution()
 r = NormalDistribution(7,8)
 
-m = market_sample([x1,x2,r],IndependanceCopula,10)
-print(np.asarray(m))
-
-
-
-# def create_data():
-#     t = simplex_sample(cfg.p)
-#     t = np.sqrt(t * cfg.r_vol**2)
-#     t = np.append(cfg.r_mean, t)
-    
-
-
-
-# def simplex_sample(n):
-#     # http://cs.stackexchange.com/a/3229
-#     unif = np.random.uniform
-#     p = [0] + [unif() for _ in range(n-1)] + [1]
-#     p = np.sort(p)
-#     t = p[1:] - p[:-1]
-#     return t
+m = market_sample((x1,x2,r),IndependanceCopula,10000)
+print(np.mean(m, axis=0))
