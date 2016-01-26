@@ -1,5 +1,8 @@
+import multiprocessing
+
 import numpy as np
 import scipy as sp
+import scipy.special
 
 class Copula(object):
     def __init__(self,p=None):
@@ -29,9 +32,9 @@ class ClaytonCopula(Copula):
 
         '''
         t = self.t
-        ss = np.random.gamma(1/t,1,n)
-        ess = np.random.exponential(1,(n,self.p))
-        return [[(1+e/s)**(-1/t) for e in es] for es,s in zip(ess,ss)] # Matlab style?
+        s = np.random.gamma(1/t,1,(n,1))
+        e = np.random.exponential(1,(n,self.p))
+        return (1 + e/s)**(-1/t)
 
 
 class UniformDistribution(object):
@@ -40,7 +43,7 @@ class UniformDistribution(object):
         self.b = b if not b else 1
         
     def inverse(self,p):
-        if p<0 or p>1:
+        if np.min([p])<0 or np.max([p])>1:
             raise ValueError('p must lie in (0,1)')
         return self.a + p*(self.b - p)
 
@@ -51,7 +54,7 @@ class NormalDistribution(object):
         self.vol = vol
 
     def inverse(self,p):
-        if p<0 or p>1:
+        if np.min([p])<0 or np.max([p])>1:
             raise ValueError('p must lie in (0,1)')
         return self.mu + self.vol*np.sqrt(2)*sp.special.erfinv(2*p - 1)
 
@@ -64,15 +67,16 @@ def market_sample(xs,r,cop,n):
     distrs = tuple(xs) + (r,)
     cop.p = len(distrs)
     unif_sample = cop.sample(n)
-    sample = [[d.inverse(u) for d,u in zip(distrs,us)] for us in unif_sample]
-    sample = np.asarray(sample)
+    sample = np.array([d.inverse(us) for d,us in zip(distrs,unif_sample.T)]).T
     return sample[:,0:-1], sample[:,-1]
     
-if __name__ == '__main__':
-    x1 = NormalDistribution()
-    x2 = NormalDistribution()
-    r = NormalDistribution(7,8)
+if (__name__ == '__main__'):
+    p = 100
+    n_true = 100000
+    x_distrs = [NormalDistribution() for _ in range(p)]
+    r_distr = NormalDistribution(8,10)
+    cop = ClaytonCopula(10) # TODO Investigate meaning of the argument.
 
-    cop = IndependanceCopula()
-    xss_sample, rs_sample  = market_sample([x1,x2],r,cop,10000)
+    xss,rs = market_sample(x_distrs,r_distr,cop,n_true)
 
+    print('Done.')
