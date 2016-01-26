@@ -1,3 +1,6 @@
+import multiprocessing
+
+import numpy as np
 import numpy.random as rm
 
 import synth_data as synth
@@ -16,13 +19,16 @@ cop = synth.ClaytonCopula(10) # TODO Investigate meaning of the argument.
 
 xss_true,rs_true = synth.market_sample(x_distrs,r_distr,cop,n_true)
 
-i=1
-def sample_risk():
-    print("Processing ",i)
+# i is dummy and is only there to multiprocess the task.
+def sample_risk(i):
+    # print("Processing ",i)
     xss,rs = synth.market_sample(x_distrs,r_distr,cop,n_sample)
     q_sample,risk_sample = obj.solve_objective(xss,rs,λ)
     true_risk = obj.risk(xss_true,rs_true,q_sample)
     return np.abs(risk_sample - true_risk)
 
-risk_sample = [sample_risk()]*n_experiments
+n_cpus = multiprocessing.cpu_count()
+with multiprocessing.Pool(n_cpus) as pool:
+    risk_sample = pool.map(sample_risk, range(n_experiments))
+
 print("Done.")
