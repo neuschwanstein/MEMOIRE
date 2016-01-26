@@ -3,7 +3,6 @@ import numpy as np
 
 class Config:
     Rf = 0.0
-    n,p = 1000,100
     
     mu = 1.0
     beta = 0.8

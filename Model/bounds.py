@@ -1,21 +1,28 @@
 import numpy.random as rm
 
-import synth_data
+import synth_data as synth
 import objective as obj
 from config import cfg
 
-p,n = 3,100
-cfg.p,cfg.n = p,n
+n_experiments = 500
+λ = 0.9
+p = 100
+n_sample = 100
+n_true = 100000
 
-# Create random distributions for features and fixed distribution for returns, with
-# dependance given with Clayton copula. Then draw sample out of it.
-x_mus = rm.uniform(-3,3,p)
-x_vols = rm.uniform(1,6,p)
-x_distrs = [synth_data.NormalDistribution(mu,vol) for mu,vol in zip(x_mus,x_vols)]
-r_distr = synth_data.NormalDistribution(8,10)
-cop = synth_data.ClaytonCopula(1.0)
+x_distrs = [synth.NormalDistribution() for _ in range(p)]
+r_distr = synth.NormalDistribution(8,10)
+cop = synth.ClaytonCopula(10) # TODO Investigate meaning of the argument.
 
-xss,rs = synth_data.market_sample(x_distrs,r_distr,cop,n)
-xss = obj.append_bias(xss)
+xss_true,rs_true = synth.market_sample(x_distrs,r_distr,cop,n_true)
 
-q,val = obj.solve_objective(xss,rs,0.2)
+i=1
+def sample_risk():
+    print("Processing ",i)
+    xss,rs = synth.market_sample(x_distrs,r_distr,cop,n_sample)
+    q_sample,risk_sample = obj.solve_objective(xss,rs,λ)
+    true_risk = obj.risk(xss_true,rs_true,q_sample)
+    return np.abs(risk_sample - true_risk)
+
+risk_sample = [sample_risk()]*n_experiments
+print("Done.")

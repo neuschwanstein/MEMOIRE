@@ -40,15 +40,19 @@ class UniformDistribution(object):
         self.b = b if not b else 1
         
     def inverse(self,p):
+        if p<0 or p>1:
+            raise ValueError('p must lie in (0,1)')
         return self.a + p*(self.b - p)
 
 
 class NormalDistribution(object):
-    def __init__(self, mu=None, vol=None):
-        self.mu = mu if  mu else 0
-        self.vol = vol if vol else 1
+    def __init__(self, mu=0, vol=1):
+        self.mu = mu
+        self.vol = vol
 
     def inverse(self,p):
+        if p<0 or p>1:
+            raise ValueError('p must lie in (0,1)')
         return self.mu + self.vol*np.sqrt(2)*sp.special.erfinv(2*p - 1)
 
 
