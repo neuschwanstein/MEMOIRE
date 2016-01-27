@@ -1,8 +1,9 @@
 import multiprocessing
+import importlib
 
 import numpy as np
 import numpy.random as rm
-# import matplotlib.pyplot as plt
+from scipy.stats import gaussian_kde
 
 import synth_data as synth
 from utility import *
@@ -30,9 +31,14 @@ def abs_risk_deviation(i):
     return np.abs(insample_cost - outsample_cost)
 
 n_cpus = multiprocessing.cpu_count()
+# n_cpus = 4
 with multiprocessing.Pool(n_cpus) as pool:
     risk_deviation = pool.map(abs_risk_deviation, range(n_experiments))
 
-# plt.hist(risk_sample)
+import matplotlib.pyplot as plt
+density = gaussian_kde(risk_deviation)
+x = np.linspace(np.min(risk_deviation), np.max(risk_deviation), num=40)
+plt.plot(x, density(x))
+plt.show()
 
 print("Done.")
