@@ -19,15 +19,17 @@ x_distrs = [synth.NormalDistribution() for _ in range(p)]
 r_distr = synth.NormalDistribution(8,10)
 cop = synth.ClaytonCopula(10) # TODO Investigate meaning of the argument.
 
-X,r = synth.market_sample(x_distrs,r_distr,cop,n_true)
-true_problem = Problem(X,r,reg,u,Rf=0.0)
-true_cost = true_problem.solve()
+X_true,r_true = synth.market_sample(x_distrs,r_distr,cop,n_true)
+# true_problem = Problem(X,r,reg,u,Rf=0.0)
+# true_cost = true_problem.solve()
 
 # i is dummy and is only there to multiprocess the task.
 def abs_risk_deviation(i):
     X,r = synth.market_sample(x_distrs,r_distr,cop,n_sample)
-    sample_cost = true_problem.outsample_risk(X,r)
-    return np.abs(sample_cost - true_cost)
+    sample_problem = Problem(X,r,reg,u,Rf=0)
+    insample_cost = sample_problem.solve()
+    outsample_cost = sample_problem.outsample_risk(X_true,r_true)
+    return np.abs(insample_cost - outsample_cost)
 
 n_cpus = multiprocessing.cpu_count()
 with multiprocessing.Pool(n_cpus) as pool:

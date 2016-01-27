@@ -46,15 +46,16 @@ class Problem(object):
         if problem.status == 'unbounded':
             raise Exception(problem.status)
         if problem.status == 'optimal_inaccurate':
-            print(problem.status, " with l=", l)
+            # print(problem.status, " with reg =", λ)
+            print(problem.status)
 
         self.q = q.value.A1
         self.insample_cost = problem.value
-        self.sample_cost
+        return self.insample_cost
 
     def outsample_risk(self,X,r):
         X = self.__append_bias(X)
         n,_ = X.shape
-        cost = lambda p,r: -self.u.utility(r*p + (1-p)*self.Rf)
+        cost = lambda p,r: -self.u.util(r*p + (1-p)*self.Rf)
         total_cost = 1/n * sum(cost(np.dot(X,self.q),r))
         return total_cost
