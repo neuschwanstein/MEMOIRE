@@ -2,6 +2,7 @@ import multiprocessing
 
 import numpy as np
 import numpy.random as rm
+# import matplotlib.pyplot as plt
 
 import synth_data as synth
 import objective as obj
@@ -30,4 +31,24 @@ n_cpus = multiprocessing.cpu_count()
 with multiprocessing.Pool(n_cpus) as pool:
     risk_sample = pool.map(abs_risk_deviation, range(n_experiments))
 
+# plt.hist(risk_sample)
+
 print("Done.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
