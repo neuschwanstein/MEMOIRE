@@ -20,8 +20,6 @@ r_distr = synth.NormalDistribution(8,10)
 cop = synth.ClaytonCopula(10) # TODO Investigate meaning of the argument.
 
 X_true,r_true = synth.market_sample(x_distrs,r_distr,cop,n_true)
-# true_problem = Problem(X,r,reg,u,Rf=0.0)
-# true_cost = true_problem.solve()
 
 # i is dummy and is only there to multiprocess the task.
 def abs_risk_deviation(i):
