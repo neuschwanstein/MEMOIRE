@@ -30,12 +30,30 @@ class Problem(object):
         # And so is this one!
         self.X_max = np.percentile(norm(self.X,axis=0), 95)
 
+    def sigma_admissibility(self):
+        k,gamma = self.u.k, self.u.gamma_lipschitz
+        return k*gamma*(self.r_bar + self.Rf)
+
+    def alpha_stability(self,n):
+        sigma = self.sigma_admissibility()
+        return (sigma*self.X_max)**2 / (2*self.λ*n)
+
+    def outsample_bound(self,n,δ):
+        k,gamma,X_max,r_bar = self.u.k,self.u.gamma,self.X_max,self.r_bar
+        alpha = self.alpha_stability(n)
+        p_max = k*gamma*X_max**2*(r_bar-self.Rf) / (2*self.λ)
+        return cost(p_max,-r_bar)
+
+    def cost(p,r):
+        return -self.u.util(p*r + (1-p)*self.Rf)
+
+    def cvx_cost(p,r):
+        return -self.u.cvx_util(cvx.mul_elemwise(p,r) + (1-p)*self.Rf)
+
     def solve(self):
-        def cost(p,r):
-            return -self.u.cvx_util(cvx.mul_elemwise(r,p) + (1-p)*self.Rf)
+        n,X,r,λ = self.n,self.X,self.r,self.λ
 
         def total_cost(q):
-            n,X,r,λ = self.n,self.X,self.r,self.λ
             return 1/n * cvx.sum_entries(cost(X*q,r)) + λ*cvx.norm(q)**2
 
         q = cvx.Variable(self.p)
@@ -56,6 +74,6 @@ class Problem(object):
     def outsample_risk(self,X,r):
         X = self.__append_bias(X)
         n,_ = X.shape
-        cost = lambda p,r: -self.u.util(r*p + (1-p)*self.Rf)
-        total_cost = 1/n * sum(cost(np.dot(X,self.q),r))
+        p = np.dot(X,self.q)
+        total_cost = 1/n * sum(self.cost(p,r))
         return total_cost
