@@ -44,17 +44,18 @@ class Problem(object):
         p_max = k*gamma*X_max**2*(r_bar-self.Rf) / (2*self.λ)
         return cost(p_max,-r_bar)
 
-    def cost(p,r):
+    def cost(self,p,r):
         return -self.u.util(p*r + (1-p)*self.Rf)
 
-    def cvx_cost(p,r):
-        return -self.u.cvx_util(cvx.mul_elemwise(p,r) + (1-p)*self.Rf)
+    def cvx_cost(self,p,r):
+        return -self.u.cvx_util(cvx.mul_elemwise(r,p) + (1-p)*self.Rf)
 
     def solve(self):
         n,X,r,λ = self.n,self.X,self.r,self.λ
 
         def total_cost(q):
-            return 1/n * cvx.sum_entries(cost(X*q,r)) + λ*cvx.norm(q)**2
+            p = X*q
+            return 1/n * cvx.sum_entries(self.cvx_cost(p,r)) + λ*cvx.norm(q)**2
 
         q = cvx.Variable(self.p)
         objective = cvx.Minimize(total_cost(q))
@@ -63,9 +64,10 @@ class Problem(object):
 
         if problem.status == 'unbounded':
             raise Exception(problem.status)
-        if problem.status == 'optimal_inaccurate':
+        # if problem.status == 'optimal_inaccurate':
             # print(problem.status, " with reg =", λ)
-            print(problem.status)
+            # print(problem.status)
+            # print('Problem.')
 
         self.q = q.value.A1
         self.insample_cost = problem.value
