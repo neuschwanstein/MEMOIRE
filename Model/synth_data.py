@@ -3,6 +3,7 @@ import multiprocessing
 import numpy as np
 import scipy as sp
 import scipy.special
+from scipy.stats import norm
 
 class Copula(object):
     def __init__(self,p=None):
@@ -35,6 +36,19 @@ class ClaytonCopula(Copula):
         s = np.random.gamma(1/t,1,(n,1))
         e = np.random.exponential(1,(n,self.p))
         return (1 + e/s)**(-1/t)
+
+
+class GaussianCopula(Copula):
+    def __init__(self,Σ,p=None):
+        if not p:
+            p,_ = Σ.shape
+        self.p = p
+        self.Σ = Σ
+
+    def sample(self,n):
+        μ = np.zeros(n)
+        z = np.random.multivariate_normal(μ,self.Σ,n)
+        return norm.cdf(z)    
 
 
 class UniformDistribution(object):
