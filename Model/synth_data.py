@@ -24,7 +24,7 @@ class IndependanceCopula(Copula):
 class ClaytonCopula(Copula):
     def __init__(self,t,p=None):
         if t <= 0:
-            raise ValueError('theta must lie in (0,+infty)')
+            raise ValueError('θ must lie in (0, +∞)')
         super().__init__(p)
         self.t = t
 
@@ -39,16 +39,15 @@ class ClaytonCopula(Copula):
 
 
 class GaussianCopula(Copula):
-    def __init__(self,Σ,p=None):
-        if not p:
-            p,_ = Σ.shape
-        self.p = p
+    def __init__(self,Σ):
+        Σ = np.array(Σ)
+        self.p,_ = Σ.shape
         self.Σ = Σ
 
     def sample(self,n):
-        μ = np.zeros(n)
+        μ = np.zeros(self.p)
         z = np.random.multivariate_normal(μ,self.Σ,n)
-        return norm.cdf(z)    
+        return norm.cdf(z)
 
 
 class UniformDistribution(object):
@@ -63,14 +62,17 @@ class UniformDistribution(object):
 
 
 class NormalDistribution(object):
-    def __init__(self, mu=0, vol=1):
-        self.mu = mu
-        self.vol = vol
+    def __init__(self, μ=0, σ=1):
+        self.μ = μ
+        self.σ = σ
+
+    def __repr__(self):
+        return 'N(μ=%2.2f,σ=%2.2f)' % (self.μ, self.σ)
 
     def inverse(self,p):
         if np.min([p])<0 or np.max([p])>1:
             raise ValueError('p must lie in (0,1)')
-        return self.mu + self.vol*np.sqrt(2)*sp.special.erfinv(2*p - 1)
+        return self.μ + self.σ*np.sqrt(2)*sp.special.erfinv(2*p - 1)
 
 
 def market_sample(xs,r,cop,n):
