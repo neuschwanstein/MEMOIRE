@@ -60,14 +60,12 @@ class Problem(object):
         q = cvx.Variable(self.p)
         objective = cvx.Minimize(total_cost(q))
         problem = cvx.Problem(objective)
-        problem.solve()
+        problem.solve(solver=cvx.SCS)
 
         if problem.status == 'unbounded':
             raise Exception(problem.status)
-        # if problem.status == 'optimal_inaccurate':
-            # print(problem.status, " with reg =", λ)
-            # print(problem.status)
-            # print('Problem.')
+        if problem.status == 'optimal_inaccurate':
+            print(problem.status, " with reg =", λ)
 
         self.q = q.value.A1
         self.insample_cost = problem.value

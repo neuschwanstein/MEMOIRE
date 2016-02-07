@@ -81,10 +81,11 @@ def market_sample(xs,r,cop,n):
 
     '''
     distrs = tuple(xs) + (r,)
-    cop.p = len(distrs)
     unif_sample = cop.sample(n)
     sample = np.array([d.inverse(us) for d,us in zip(distrs,unif_sample.T)]).T
-    return sample[:,0:-1], sample[:,-1]
+    X = sample[:,0:-1]
+    r = sample[:,-1]
+    return X,r
     
 if (__name__ == '__main__'):
     p = 100
@@ -94,5 +95,3 @@ if (__name__ == '__main__'):
     cop = ClaytonCopula(10) # TODO Investigate meaning of the argument.
 
     xss,rs = market_sample(x_distrs,r_distr,cop,n_true)
-
-    print('Done.')
