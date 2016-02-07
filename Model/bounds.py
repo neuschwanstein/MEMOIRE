@@ -4,7 +4,9 @@ import multiprocessing as mp
 import numpy as np
 import numpy.random as rm
 from scipy.stats import gaussian_kde
+
 import matplotlib as mpl; mpl.use('pdf')
+mpl.rcParams['text.usetex'] = True
 import matplotlib.pyplot as plt
 
 import synth_data as synth
@@ -16,7 +18,7 @@ filename = 'fig/plot.pdf'
 
 n_experiments = 800
 λ = 1
-p = 40
+p = 10
 n_true = 100000
 u = LinearUtility(0.8)
 
@@ -34,9 +36,6 @@ r_distr = synth.NormalDistribution(8,10)
 v = [α]*p + [1]
 Σ = get_correlation_matrix(v)
 cop = synth.GaussianCopula(Σ)
-
-clayton_cop = synth.ClaytonCopula(7)
-clayton_cop.p = p+1
 
 X_true,r_true = synth.market_sample(x_distrs,r_distr,cop,n_true)
 
@@ -64,9 +63,13 @@ if (__name__ == '__main__'):
         risk_deviation = get_outsample_distribution(ctx,n_sample)
         density = gaussian_kde(risk_deviation)
         x = np.linspace(np.min(risk_deviation), np.max(risk_deviation), num=40)
-        plt.plot(x, density(x), label='n_sample=%d'%n_sample)
+        plt.plot(x, density(x), label='$n=%d$'%n_sample)
 
     plt.legend()
+    title = 'Out of Sample Risk Histogram ($p={},\lambda={}$)'.format(p,λ)
+    print(title)
+    plt.title(title)
+
     plt.savefig(filename)
     os.system('open ' + filename)
     plt.clf()
