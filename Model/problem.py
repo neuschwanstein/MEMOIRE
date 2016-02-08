@@ -1,52 +1,71 @@
+import multiprocessing as mp
+
 import cvxpy as cvx
 import numpy as np
 from numpy.linalg import norm
 
 from utility import *
 
-class Problem(object):
-    def __init__(self,X,r, λ=1.0, u=LinearUtility(0.8), Rf=0):
-        self.X = self.__append_bias(X)
-        self.r = r
-        self.n, self.p = self.X.shape
+class BaseProblem(object):
+    def __init__(self,λ,u,Rf=0):
         self.λ = λ
         self.u = u
         self.Rf = Rf
 
-        self.__initialize_rbar()
-        self.__initialize_Xmax()
+    def cost(self,p,r):
+        return -self.u.util(p*r + (1-p)*self.Rf)
+        
 
-    @staticmethod
-    def __append_bias(X):
-        n,_ = X.shape
-        bias = np.ones(n)
-        return np.c_[bias,X]
-
-    def __initialize_rbar(self):
-        # This method is up to you!
-        self.r_bar = np.percentile(np.abs(self.r), 95)
-
-    def __initialize_Xmax(self):
-        # And so is this one!
-        self.X_max = np.percentile(norm(self.X,axis=0), 95)
-
+class AbstractProblem(BaseProblem):
+    def __init__(self,market,λ,u,Rf=0):
+        self.m = market
+        super().__init__(λ,u,Rf)
+        
     def sigma_admissibility(self):
         k,gamma = self.u.k, self.u.gamma_lipschitz
-        return k*gamma*(self.r_bar + self.Rf)
+        return k*gamma*(self.m.r_bar + self.Rf)
 
     def alpha_stability(self,n):
         sigma = self.sigma_admissibility()
-        return (sigma*self.X_max)**2 / (2*self.λ*n)
+        return (sigma*self.m.X_max)**2 / (2*self.λ*n)
 
     def outsample_bound(self,n,δ):
-        k,gamma,X_max,r_bar = self.u.k,self.u.gamma,self.X_max,self.r_bar
-        alpha = self.alpha_stability(n)
+        '''The returned bound holds with probability at least 1-δ 
+        over a random draw of size n. See Theorem2.
+        '''        
+        k,gamma = self.u.k,self.u.gamma_lipschitz
+        X_max,r_bar = self.m.X_max,self.m.r_bar
+        
+        α = self.alpha_stability(n)
         p_max = k*gamma*X_max**2*(r_bar-self.Rf) / (2*self.λ)
-        return cost(p_max,-r_bar)
+        B = self.cost(p_max,-r_bar)
+        Ω = 2*α + (4*n*α + B)*np.sqrt(np.log(2/δ)/(2*n))
+        return Ω
 
-    def cost(self,p,r):
-        return -self.u.util(p*r + (1-p)*self.Rf)
+    def outsample_risk(self,n_sample):
+        X,r = self.m.sample(n_sample)
+        sample_problem = Problem(X,r,self.λ,self.u,self.Rf)
+        insample_cost = sample_problem.solve()
+        outsample_cost = sample_problem.outsample_cost(self.X_true,self.r_true)
+        return np.abs(insample_cost - outsample_cost)
 
+    def risk_distribution(self,n,n_experiments=1000,n_true=100000):
+        self.X_true,self.r_true = self.m.sample(n_true)
+        
+        ctx = mp.get_context('forkserver')
+        with ctx.Pool(ctx.cpu_count()) as pool:
+            risk_distribution = pool.map(self.outsample_risk, [n]*n_experiments)
+
+        return risk_distribution
+
+
+class Problem(BaseProblem):
+    def __init__(self,X,r,λ,u,Rf=0):
+        self.X = X
+        self.r = r
+        self.n,self.p = X.shape
+        super().__init__(λ,u,Rf)        
+        
     def cvx_cost(self,p,r):
         return -self.u.cvx_util(cvx.mul_elemwise(r,p) + (1-p)*self.Rf)
 
@@ -65,14 +84,13 @@ class Problem(object):
         if problem.status == 'unbounded':
             raise Exception(problem.status)
         if problem.status == 'optimal_inaccurate':
-            print(problem.status, " with reg =", λ)
+            print(problem.status, " with λ =", λ)
 
         self.q = q.value.A1
         self.insample_cost = problem.value
         return self.insample_cost
 
-    def outsample_risk(self,X,r):
-        X = self.__append_bias(X)
+    def outsample_cost(self,X,r):
         n,_ = X.shape
         p = np.dot(X,self.q)
         total_cost = 1/n * sum(self.cost(p,r))
