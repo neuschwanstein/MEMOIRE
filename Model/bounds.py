@@ -23,28 +23,30 @@ x_distrs = [synth.NormalDistribution() for _ in range(p)]
 market = synth.GaussianMarket(r_distr,x_distrs)
 
 problem = AbstractProblem(market,u=u)
+problem.λ = 1
+problem.n = 100
 
-n = 100
-λs = np.arange(0.5,5,0.1)
-mean_risk = np.empty(len(λs))
-median_risk = np.empty(len(λs))
-for i,λ in enumerate(λs):
-    problem.λ = λ
-    h = problem.risk_distribution(n)
-    mean_risk[i] = np.mean(h)
-    median_risk[i] = np.median(h)
+# n = 100
+# λs = np.arange(0.5,5,0.1)
+# mean_risk = np.empty(len(λs))
+# median_risk = np.empty(len(λs))
+# for i,λ in enumerate(λs):
+#     problem.λ = λ
+#     h = problem.risk_distribution(n)
+#     mean_risk[i] = np.mean(h)
+#     median_risk[i] = np.median(h)
 
-plt.plot(λs,mean_risk,label='Mean risk')
-plt.plot(λs,median_risk,label='Median risk')
-plt.xlabel('$\lambda$')
-plt.legend()
-title = 'Out of sample Risk Histogram ($p={},n={}$)'.format(p,n)
-plt.title(title)
+# plt.plot(λs,mean_risk,label='Mean risk')
+# plt.plot(λs,median_risk,label='Median risk')
+# plt.xlabel('$\lambda$')
+# plt.legend()
+# title = 'Out of sample Risk Histogram ($p={},n={}$)'.format(p,n)
+# plt.title(title)
 
-plt.savefig(filename)
-os.system('open ' + filename)
-plt.clf()
-    
+# plt.savefig(filename)
+# os.system('open ' + filename)
+# plt.clf()
+
 
 # ns = [50,100,200]
 

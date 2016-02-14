@@ -93,19 +93,19 @@ class AbstractProblem(BaseProblem):
         Ω = 2*α + (4*n*α + B)*np.sqrt(np.log(2/δ)/(2*n))
         return Ω
 
-    def outsample_risk(self,_=None):
+    def outsample_risk(self,_):
         X,r = self.m.sample(self.n)
         sample_problem = Problem(X,r,self.λ,self.u,self.Rf)
         insample_cost = sample_problem.solve()
         outsample_cost = sample_problem.outsample_cost(self.X_true,self.r_true)
         return np.abs(insample_cost - outsample_cost)
 
-    def risk_distribution(self,n,n_experiments=1000,n_true=100000):
+    def outsample_risk_distribution(self,n_experiments=1000,n_true=100000):
         self.X_true,self.r_true = self.m.sample(n_true)
         
         ctx = mp.get_context('forkserver')
         with ctx.Pool(ctx.cpu_count()) as pool:
-            risk_distribution = pool.map(self.outsample_risk, [n]*n_experiments)
+            risk_distribution = pool.map(self.outsample_risk, [self.n]*n_experiments)
 
         return risk_distribution
 
@@ -147,7 +147,8 @@ class Problem(BaseProblem):
 
         self.q = q.value.A1
         self.insample_cost = problem.value
-        return self.insample_cost
+        raise ValueError("no! Must take the empirical lost without λ regularizer!")
+        # return self.insample_cost
 
     def outsample_cost(self,X,r):
         n,_ = X.shape

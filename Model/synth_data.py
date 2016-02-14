@@ -5,6 +5,10 @@ import scipy as sp
 import scipy.special
 from scipy.stats import norm
 
+from math_ops import *
+
+Γ = scipy.special.gamma
+
 class Copula(object):
     def __init__(self,p=None):
         self.p = p if p else 2
@@ -50,20 +54,23 @@ class GaussianCopula(Copula):
         return norm.cdf(z)
 
 
-class Distribution(object):
-    def inverse(self,p):
-        raise NotImplemented
-
-
 class UniformDistribution(Distribution):
-    def __init__(self,a=None,b=None):
-        self.a = a if not a else 0
-        self.b = b if not b else 1
+    def __init__(self,a=0,b=1):
+        if b <= a:
+            raise ValueError('Must have b > a')
+        self.a = a
+        self.b = b
         
     def inverse(self,p):
         if np.min([p])<0 or np.max([p])>1:
             raise ValueError('p must lie in (0,1)')
         return self.a + p*(self.b - p)
+
+    def E(self):
+        return 0.5*(self.a + self.b)
+
+    def var(self):
+        return 1/12 * (self.b - self.a)**2
 
 
 class NormalDistribution(Distribution):
@@ -74,10 +81,35 @@ class NormalDistribution(Distribution):
     def __repr__(self):
         return 'N(μ=%2.2f,σ=%2.2f)' % (self.μ, self.σ)
 
+    def E(self):
+        return self.μ
+
+    def var(self):
+        return self.σ**2
+    
     def inverse(self,p):
         if np.min([p])<0 or np.max([p])>1:
             raise ValueError('p must lie in (0,1)')
         return self.μ + self.σ*np.sqrt(2)*sp.special.erfinv(2*p - 1)
+
+
+class KumaraswamyDistribution(Distribution):
+    def __init__(self,α,β):
+        if α <= 0 or β <= 0:
+            raise ValueError('α and β must be higher than 0')
+        self.α = α
+        self.β = β
+
+    def __repr__(self):
+        return 'Kumaraswamy(α=%2.2f,β=%2.2f)' % (self.α,self.β)
+
+    def E(self):
+        a,b = self.a,self.b
+        return b*Γ(1+1/a)*Γ(b) / Γ(1+1/a+b)
+
+    def inverse(self,p):
+        inv = (1 - (1-u)**(1/β))**(1/α)
+        return inv
 
 
 class Market(object):
@@ -87,25 +119,16 @@ class Market(object):
         self.p = len(x_distrs) + 1 # +1: bias feature
         self.cop = cop
 
-        highest_quantile = \
-            lambda d: np.max(np.abs([d.inverse(0.02),d.inverse(.98)]))
-        self.r_bar = highest_quantile(r_distr)
-        self._X_max = None
-        self.X_max = np.linalg.norm([highest_quantile(x_d) for x_d in x_distrs])
+        X,r = self.sample(100000)
+        self.X_max = np.percentile(np.linalg.norm(X,axis=1),98) # Not quite...
+        self.r_bar = np.max(np.abs([np.percentile(r,2),np.percentile(r,98)]))
 
-    @property
-    def X_max(self):
-        '''Or implement theoretical value?'''
-        if self._X_max:
-            return self._X_max
-        X,_ = self.sample(100000)
-        self._X_max = np.percentile(np.linalg.norm(self.X,axis=1),98)
-        return self._X_max
-
-    @X_max.setter
-    def X_max(self,val):
-        self._X_max = val
-
+    def feature_correlation(i):
+        '''Returns empirical correlation of returns with feature i'''
+        X,r = self.sample(100000)
+        corr_mat = np.corrcoef(X[:,i],r)
+        return corr_mat[0,1]
+        
     def sample(self,n):
         distrs = tuple(self.x_distrs) + (self.r_distr,)
         unif_sample = self.cop.sample(n)
@@ -118,11 +141,18 @@ class Market(object):
 
 
 class GaussianMarket(Market):
-    def __init__(self,r_distr,x_distrs):
+    def __init__(self,r_distr,x_distrs,corr_vector=None):
         p = len(x_distrs)
-        ε = 0.001
-        α = (1-ε)/p                     # Information from every feature
-        v = [α]*p + [1]
+        if corr_vector:
+            if len(corr_vector) is not p:
+                raise ValueError('Invalid correlation vector. Must have one entry for each feature.')
+            if sum(v) >= 1.0:
+                raise ValueError('Must have elements summing to less than 1.')
+            v = corr_vector
+        else:
+            ε = 0.001
+            α = (1-ε)/p                     # Information from every feature
+            v = [α]*p + [1]
         Σ = np.empty((p+1,p+1))
         Σ[:-1,:-1] = np.eye(p)
         Σ[-1,:] = v

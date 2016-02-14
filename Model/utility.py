@@ -1,9 +1,10 @@
 import cvxpy as cvx
 import numpy as np
 
-class Utility:
-    pass
+from math_ops import *
 
+class Utility(Function):
+    pass
 
 class ExpUtility(Utility):
     def __init__(self,μ):
@@ -22,9 +23,15 @@ class LinearUtility(Utility):
         self.k=1
         self.gamma_lipschitz = β
 
+    def __repr__(self):
+        return 'u(r) = min(r,%2.2fr)' % self.β
+
     def cvx_util(self,r):
         return cvx.min_elemwise(r, self.β * r)
 
-    def util(self,r):
+    def __call__(self,r):
         # TODO Rewrite the method
         return np.amin(np.array([r,self.β*r]),axis=0)
+
+    def _derive(self,r):
+        return (r<=0)*1 + (r>0)*self.β
