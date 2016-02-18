@@ -13,7 +13,7 @@ class BaseProblem(object):
         self.Rf = Rf
 
     def cost(self,p,r):
-        return -self.u.util(p*r + (1-p)*self.Rf)
+        return -self.u(p*r + (1-p)*self.Rf)
         
 
 class AbstractProblem(BaseProblem):
@@ -110,6 +110,7 @@ class AbstractProblem(BaseProblem):
         return risk_distribution
 
     def find_optimal_λ(self,n,λ0 = 1.0):
+        raise NotImplementedError
         def objective(λ):
             self.λ = λ
             return np.mean(self.risk_distribution(n))

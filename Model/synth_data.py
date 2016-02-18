@@ -7,8 +7,6 @@ from scipy.stats import norm
 
 from math_ops import *
 
-Γ = scipy.special.gamma
-
 class Copula(object):
     def __init__(self,p=None):
         self.p = p if p else 2
@@ -78,38 +76,68 @@ class NormalDistribution(Distribution):
         self.μ = μ
         self.σ = σ
 
-    def __repr__(self):
+    def __str__(self):
         return 'N(μ=%2.2f,σ=%2.2f)' % (self.μ, self.σ)
 
     def E(self):
         return self.μ
 
+    def __add__(self,μ0):
+        return NormalDistribution(self.μ+μ0,self.σ)
+
+    def __sub__(self,μ0):
+        return self.__add__(-μ0)
+
+    def __sub__(self,a):
+        return NormalDistribution(self.μ,a*self.σ)
+
     def var(self):
         return self.σ**2
     
     def inverse(self,p):
-        if np.min([p])<0 or np.max([p])>1:
-            raise ValueError('p must lie in (0,1)')
-        return self.μ + self.σ*np.sqrt(2)*sp.special.erfinv(2*p - 1)
+        self._inverse_check(p)
+        p = np.array(p)
+        inv = self.μ + self.σ*np.sqrt(2)*sp.special.erfinv(2*p - 1)
+        return inv
 
 
 class KumaraswamyDistribution(Distribution):
-    def __init__(self,α,β):
+    def __init__(self,α,β,x_min=0,x_max=1):
         if α <= 0 or β <= 0:
             raise ValueError('α and β must be higher than 0')
         self.α = α
         self.β = β
+        self.x_min = x_min
+        self.x_max = x_max
 
     def __repr__(self):
-        return 'Kumaraswamy(α=%2.2f,β=%2.2f)' % (self.α,self.β)
+        return 'Kumaraswamy(α=%2.2f,β=%2.2f) on domain [%2.2f,%2.2f]' \
+            % (self.α,self.β,self.x_min,self.x_max)
+
+    def __add__(self,μ):
+        return KumaraswamyDistribution(self.α,self.β,self.x_min+μ,self.x_max+μ)
+
+    def __sub__(self,μ):
+        return self.__add__(-μ)
+
+    def __rmul__(self,σ):
+        return KumaraswamyDistribution(self.α,self.β,σ*self.x_min,σ*self.x_max)
 
     def E(self):
-        a,b = self.a,self.b
-        return b*Γ(1+1/a)*Γ(b) / Γ(1+1/a+b)
+        Γ = scipy.special.gamma
+        α,β = self.α,self.β
+        std_mean = β*Γ(1+1/α)*Γ(β) / Γ(1+1/α+β)
+        return std_mean*(self.x_max - self.x_min) + self.x_min
 
     def inverse(self,p):
-        inv = (1 - (1-u)**(1/β))**(1/α)
-        return inv
+        self._inverse_check(p)
+        p = np.array(p)
+        α,β = self.α,self.β        
+        std_inv = (1 - (1-p)**(1/β))**(1/α)
+        return std_inv*(self.x_max - self.x_min) + self.x_min
+
+    def var(self):
+        return NotImplementedError
 
 
 class Market(object):
