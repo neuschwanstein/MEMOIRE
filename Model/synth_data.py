@@ -120,14 +120,22 @@ class KumaraswamyDistribution(Distribution):
     def __sub__(self,μ):
         return self.__add__(-μ)
 
+    def raw_moment(self,n):
+        '''Returns E[X^n]'''
+        Γ = scipy.special.gamma
+        α,β = self.α, self.β
+        m = β*Γ(1 + n/α)*Γ(b) / Γ(1+β+n/α)
+        return m
+
     def __rmul__(self,σ):
         return KumaraswamyDistribution(self.α,self.β,σ*self.x_min,σ*self.x_max)
 
     def E(self):
-        Γ = scipy.special.gamma
-        α,β = self.α,self.β
-        std_mean = β*Γ(1+1/α)*Γ(β) / Γ(1+1/α+β)
+        std_mean = self.raw_moment(1)
         return std_mean*(self.x_max - self.x_min) + self.x_min
+
+    def var(self):
+        
 
     def inverse(self,p):
         self._inverse_check(p)
