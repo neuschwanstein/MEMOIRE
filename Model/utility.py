@@ -4,39 +4,55 @@ import cvxpy as cvx
 import numpy as np
 
 from math_ops import *
+from lipschitzexp import LipschitzExp
 
 class Utility(Function):
     pass
 
 class ExpUtility(Utility):
     def __init__(self,β):
-        warnings.warn('r0 is assumed to be = 0', Warning)
         self.β = β
-        self.r0 = 0
+        self.k = 1
 
     def __str__(self):
         return 'u(r) = -exp(-%2.2fr + 1)' % self.β
 
     def __call__(self,r):
-        β,r0  = self.β, self.r0
+        β = self.β
         exp = np.exp
-        pos = lambda x: x*(x >= 0)
-        neg = lambda x: -x*(x<0)
-        return 1/β * (1-exp(-β*pos(r-r0))) + \
-               -neg(r-r0)*exp(-β*r0) + 1/β * (1 - (1+β*r0)*exp(-β*r0))
+        return 1/β * (1 - exp(-β*r))
 
-    def cvx_util(self,r,constraints):
-        β,r0 = self.β, self.r0
+    def cvx_util(self,r):
+        β = self.β
         exp = cvx.exp
-        x = cvx.Variable()
-        y = cvx.Variable()
+        return 1/β * (1 - exp(-β*r))
 
-        obj = cvx.Maximize(1/β * (1 - exp(-β*(x+r0))) - y*exp(-β*r0))
-        constraints = constraints + [r - r0 == x - y, x >= 0, y >= 0]
-        prob = cvx.Problem(obj,constraints)
-        prob.solve()
-        self._cvx_x,self._cvx_y = x.value,y.value
-        return prob.value
+    def _derive(self,r):
+        return np.exp(-β*r)
+
+class LipschitzExpUtility(Utility):
+    def __init__(self,β,r0):
+        self.β = β
+        self.r0 = r0
+        self.k = 1
+
+    def __call__(self,r):
+        β,r0 = self.β,self.r0
+        exp = np.exp
+        return (r >= r0)* (1/β * (1 - exp(-β*r))) + (r<r0) * (r*exp(-β*r0) + 1/β*(1-(1+β*r0)*exp(-β*r0)))
+
+    def cvx_util(self,r):
+        return LipschitzExp(r,self.β,self.r0)
+        # β,r0 = self.β,self.r0
+        # exp = cvx.exp
+        # x,y = cvx.Variable(),cvx.Variable()
+        # constraints = [r-r0 == x-y, x>=0, y>=0]
+        # obj = cvx.Maximize(1/β * (1-exp(-β*(x+r0))) - y*exp(-β*r0)) # + 1/β*(1-(1+β*r0)*exp(-β*r0)))
+        # problem = cvx.Problem(obj,constraints)
+        # problem.solve(solver=cvx.ECOS)
+        # self.x = x.value
+        # self.y = y.value
+        # return problem
 
 
 class LinearUtility(Utility):

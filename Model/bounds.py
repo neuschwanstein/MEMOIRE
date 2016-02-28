@@ -1,8 +1,8 @@
 import os
 
 import numpy as np
-import matplotlib as mpl; mpl.use('pdf')
-mpl.rcParams['text.usetex'] = True
+# import matplotlib as mpl; mpl.use('pdf')
+# mpl.rcParams['text.usetex'] = True
 import matplotlib.pyplot as plt
 
 import synth_data as synth
@@ -10,20 +10,20 @@ from utility import *
 from problem import *
 
 
-filename = 'fig/plot.pdf'
+# filename = 'fig/plot.pdf'
 
 n_experiments = 800
-λ = 1
+λ = 0
 p = 10
 n_true = 100000
-u = LinearUtility(0.8)
+u = ExpUtility(0.8)
 
-r_distr = synth.NormalDistribution(8,10)
-x_distrs = [synth.NormalDistribution() for _ in range(p)]
-market = synth.GaussianMarket(r_distr,x_distrs)
+R = synth.NormalDistribution(8,10)
+X = [synth.NormalDistribution() for _ in range(p)]
+market = synth.GaussianMarket(R,X)
 
 problem = AbstractProblem(market,u=u)
-problem.λ = 1
+problem.λ = λ
 problem.n = 100
 
 # n = 100

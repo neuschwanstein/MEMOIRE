@@ -1,11 +1,11 @@
+import random as rm
 import multiprocessing
 
 import numpy as np
 import scipy as sp
 import scipy.special
-from scipy.stats import norm
 
-from math_ops import *
+from distrs import *
 
 class Copula(object):
     def __init__(self,p=None):
@@ -49,107 +49,11 @@ class GaussianCopula(Copula):
     def sample(self,n):
         μ = np.zeros(self.p)
         z = np.random.multivariate_normal(μ,self.Σ,n)
-        return norm.cdf(z)
-
-
-class UniformDistribution(Distribution):
-    def __init__(self,a=0,b=1):
-        if b <= a:
-            raise ValueError('Must have b > a')
-        self.a = a
-        self.b = b
-        
-    def inverse(self,p):
-        if np.min([p])<0 or np.max([p])>1:
-            raise ValueError('p must lie in (0,1)')
-        return self.a + p*(self.b - p)
-
-    def E(self):
-        return 0.5*(self.a + self.b)
-
-    def var(self):
-        return 1/12 * (self.b - self.a)**2
-
-
-class NormalDistribution(Distribution):
-    def __init__(self, μ=0, σ=1):
-        self.μ = μ
-        self.σ = σ
-
-    def __str__(self):
-        return 'N(μ=%2.2f,σ=%2.2f)' % (self.μ, self.σ)
-
-    def E(self):
-        return self.μ
-
-    def __add__(self,μ0):
-        return NormalDistribution(self.μ+μ0,self.σ)
-
-    def __sub__(self,μ0):
-        return self.__add__(-μ0)
-
-    def __sub__(self,a):
-        return NormalDistribution(self.μ,a*self.σ)
-
-    def var(self):
-        return self.σ**2
-    
-    def inverse(self,p):
-        self._inverse_check(p)
-        p = np.array(p)
-        inv = self.μ + self.σ*np.sqrt(2)*sp.special.erfinv(2*p - 1)
-        return inv
-
-
-class KumaraswamyDistribution(Distribution):
-    def __init__(self,α,β,x_min=0,x_max=1):
-        if α <= 0 or β <= 0:
-            raise ValueError('α and β must be higher than 0')
-        self.α = α
-        self.β = β
-        self.x_min = x_min
-        self.x_max = x_max
-
-    def __repr__(self):
-        return 'Kumaraswamy(α=%2.2f,β=%2.2f) on domain [%2.2f,%2.2f]' \
-            % (self.α,self.β,self.x_min,self.x_max)
-
-    def __add__(self,μ):
-        return KumaraswamyDistribution(self.α,self.β,self.x_min+μ,self.x_max+μ)
-
-    def __sub__(self,μ):
-        return self.__add__(-μ)
-
-    def raw_moment(self,n):
-        '''Returns E[X^n]'''
-        Γ = scipy.special.gamma
-        α,β = self.α, self.β
-        m = β*Γ(1 + n/α)*Γ(b) / Γ(1+β+n/α)
-        return m
-
-    def __rmul__(self,σ):
-        return KumaraswamyDistribution(self.α,self.β,σ*self.x_min,σ*self.x_max)
-
-    def E(self):
-        std_mean = self.raw_moment(1)
-        return std_mean*(self.x_max - self.x_min) + self.x_min
-
-    def var(self):
-        
-
-    def inverse(self,p):
-        self._inverse_check(p)
-        p = np.array(p)
-        α,β = self.α,self.β        
-        std_inv = (1 - (1-p)**(1/β))**(1/α)
-        return std_inv*(self.x_max - self.x_min) + self.x_min
-
-    def var(self):
-        return NotImplementedError
+        return scipy.stats.norm.cdf(z)
 
 
 class Market(object):
-    def __init__(self,r_distr,x_distrs,cop):
+    def __init__(self,x_distrs,r_distr,cop):
         self.r_distr = r_distr
         self.x_distrs = x_distrs
         self.p = len(x_distrs) + 1 # +1: bias feature
@@ -166,6 +70,7 @@ class Market(object):
         return corr_mat[0,1]
         
     def sample(self,n):
+        '''Returns X,r tuple sampled from market distribution.'''
         distrs = tuple(self.x_distrs) + (self.r_distr,)
         unif_sample = self.cop.sample(n)
         sample = np.array([d.inverse(us) for d,us in zip(distrs,unif_sample.T)]).T
@@ -177,8 +82,20 @@ class Market(object):
 
 
 class GaussianMarket(Market):
-    def __init__(self,r_distr,x_distrs,corr_vector=None):
-        p = len(x_distrs)
+    '''Represent synthetic market distribution where dependance between features and returns
+    stems from a gaussian copula. It is assumed that features are jointly
+    independant. Features and return distributions must be provided from the user.
+    '''
+    def __init__(self,Xs,R,corr_vector=None):
+        '''Instantiates the market distribution using user supplied distributions. if no
+        correlation vector is present, then Corr(Xᵢ,R) = Corr(Xⱼ,R) = (1-ε)/p.
+
+        Args:
+            r_distr return distribution. Must support the inverse() method.
+            x_distrs: list of features distribution, ie. [Xᵢ]
+            corr_vector [optional]: Vector [Corr(Xᵢ,R)]
+        '''
+        p = len(Xs)
         if corr_vector:
             if len(corr_vector) is not p:
                 raise ValueError('Invalid correlation vector. Must have one entry for each feature.')
@@ -194,4 +111,29 @@ class GaussianMarket(Market):
         Σ[-1,:] = v
         Σ[:,-1] = v
         cop = GaussianCopula(Σ)
-        super().__init__(r_distr,x_distrs,cop)
+        super().__init__(Xs,R,cop)
+
+
+class MarketDiscreteDistribution(DiscreteDistribution):
+    def __init__(self,X,R):
+        self.n = len(R)
+        self.X = DiscreteDistribution(X)
+        self.R = DiscreteDistribution(R)
+
+    def sample(self,k):
+        ks = rm.sample(range(self.n),k)
+        X = np.take(self.X.points,ks,axis=0)
+        r = np.take(self.R.points,ks,axis=0)
+        return X,r
+
+    @property
+    def X_max(self):
+        return max(np.linalg.norm(self.X.points,axis=1))
+
+    @property
+    def r_max(self):
+        return max(self.R.points)
+
+    @property
+    def r_inf(self):
+        return min(self.R.points)
