@@ -76,7 +76,9 @@ class LipschitzExp(Elementwise):
 
         #x-x0 == ξ + ψ, ξ >= 0, ψ <= 0
         zero = lu.create_const(0,(1,1))
+        zero = lu.promote(zero,size)
         constraints = constr_exp
+        x0 = lu.promote(x0,size)
         constraints.append(lu.create_eq(x,lu.sum_expr([x0,ξ,ψ])))
         constraints.append(lu.create_geq(ξ,zero))
         constraints.append(lu.create_leq(ψ,zero))

@@ -4,6 +4,7 @@ import multiprocessing
 import numpy as np
 import scipy as sp
 import scipy.special
+import scipy.stats
 
 from distrs import *
 
@@ -135,5 +136,14 @@ class MarketDiscreteDistribution(DiscreteDistribution):
         return max(self.R.points)
 
     @property
-    def r_inf(self):
+    def r_min(self):
         return min(self.R.points)
+
+    @property
+    def r_bar(self):
+        return max(np.abs([self.r_max,self.r_min]))
+
+    @property
+    def p(self):
+        _,p = self.X.points.shape
+        return p

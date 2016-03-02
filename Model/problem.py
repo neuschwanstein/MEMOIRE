@@ -43,7 +43,7 @@ class AbstractProblem(BaseProblem):
 
     @property
     def n(self):
-        if not self._n:
+        if self._n is None:
             raise ValueError('n must be initialized')
         return self._n
 
@@ -70,12 +70,16 @@ class AbstractProblem(BaseProblem):
         return self.m.X_max
 
     @property
-    def r_sup(self):
-        return self.m.r_sup
+    def r_max(self):
+        return self.m.r_max
 
     @property
-    def r_inf(self):
-        return self.m.r_inf
+    def r_min(self):
+        return self.m.r_min
+
+    @property
+    def r_bar(self):
+        return self.m.r_bar
 
     @property
     def k(self):
@@ -83,40 +87,83 @@ class AbstractProblem(BaseProblem):
 
     @property
     def γ(self):
-        p = self.p_max
-        r_inf = -self.r_inf
-        return D(self.u)(p*(r_inf - self.Rf) + Rf)
-        # return self.u.gamma_lipschitz
+        return self.u.γ
 
     @property
     def σ(self):
-        σ = self.k * self.γ * (self.r_bar + self.Rf)
+        '''Returns the σ Lipschitz attribute, ie. |c(p₁,r) - c(p₂,r)| ≤ σ|p₁ - p₂|.
+        
+        O(1)'''
+        k,γ,r_bar,Rf = self.k,self.γ,self.r_bar,self.Rf
+        σ = k*γ*(r_bar + Rf)
         return σ
 
     @property
     def α(self):
-        α = (self.σ * self.X_max)**2 / (2*self.λ*self.n)
+        '''Returns the α stability of the algorithm, ie. for two samples different by a single
+        entry i, |ℓ(m) - ℓ'(m)| ≤ α. Here ℓ refers to the unregularized loss.
+        
+        O(X_max²/(λn))
+        '''
+        σ,X_max,λ,n = self.σ,self.X_max,self.λ,self.n
+        α = (σ * X_max)**2 / (2*λ*n)
         return α
 
     @property
+    def q_max(self):
+        '''Maximum amplitude of the decision vector q, ie. ∥q∥₂ ≤ q_max.
+
+        O(X_max/λ)'''
+        k,Rf,γ,λ,r_max,X_max = self.k,self.Rf,self.γ,self.λ,self.r_max,self.X_max
+        q_max = k*γ*(r_max-Rf)*X_max / (2*λ)
+        return q_max
+
+    @property
     def p_max(self):
-        p_max = self.k * self.γ * self.X_max**2 * (self.r_bar - self.Rf) / (2*self.λ)
+        '''Maximum amplitude of the allocation scalar, ie. |p| ≤ p_max.
+
+        O(X_max²/λ)'''
+        p_max = self.q_max * self.X_max
         return p_max
 
     @property
-    def B(self):
-        B = self.cost(self.p_max, -self.r_bar)
-        return B
+    def ℓ_max(self):
+        '''Returns the maximum loss produced by the algorithm, ie. ℓ_max ≥ ℓ(m,q) ∀ S, m ~ M.
 
-    def outsample_bound(self,δ,n):
+        O(X_max²/λ)
+        '''
+        ℓ_max = self.cost(self.p_max, self.r_min)
+        return ℓ_max
+
+    @property
+    def ℓ_min(self):
+        '''Returns the minimum loss produced by the algorithm, ie. ℓ_min ≥ ℓ(m,q) ∀ S, m ~ M.
+
+        O(X_max²/λ) if u keeps increasing;
+        O(1) otherwise
+        '''
+        ℓ_min = self.cost(self.p_max, self.r_max)
+        return ℓ_min
+
+    def outsample_bound(self,δ,n=None):
         '''The returned bound holds with probability at least 1-δ over a random draw of size
         n. See Theorem2.
-        '''        
+
+        O(X_max²/(λ√n))
+        '''
+        self.n = n = np.array(n) if n is not None else self.n
         α = self.α
-        n = self.n
-        B = self.B
-        Ω = 2*α + (4*n*α + B)*np.sqrt(np.log(2/δ)/(2*n))
+        B = self.ℓ_max - self.ℓ_min
+
+        # Ω = 2*α + (4*n*α + B)* np.sqrt(np.log(2/δ)/(2*n))
+        first_part = 2*α
+        second_part = 4*n*α + B
+        third_part = np.sqrt(np.log(2/δ)/(2*n))
+        Ω = first_part + second_part*third_part
         return Ω
+
+    def Ω(self,δ,n=None):
+        return self.outsample_bound(δ,n)
 
     def find_optimal_λ(self,n,λ0 = 1.0):
         raise NotImplementedError
@@ -130,16 +177,6 @@ class AbstractProblem(BaseProblem):
 class ProblemsDistribution(BaseProblem):
     '''Set of routines for parallel sampling of variables of interest.'''
     
-    @property
-    def ps_hat(self):
-        if not self._ps_hat:
-            raise ValueError('The problems must be sampled first!')
-        return self._ps_hat
-
-    @ps_hat.setter
-    def ps_hat(self,ps_hat):
-        self._ps_hat = ps_hat
-
     def __init__(self,M,n,λ,u,Rf=0):
         '''Instantiates a distributed problem class using a market distribution M.'''
         self.M = M
@@ -147,6 +184,16 @@ class ProblemsDistribution(BaseProblem):
         self.λ = λ
         self.ps_hat = None
         super().__init__(u,Rf)
+
+    def sample(self,m):
+        '''Samples m problems.'''
+        self.m = m
+        ctx = mp.get_context('forkserver')
+        _ = 0
+        with ctx.Pool(ctx.cpu_count()) as pool:
+            ps_hat = pool.map(self._p_hat,[_]*m)
+        self.ps_hat = ps_hat
+        return ps_hat
 
     def _p_hat(self,_):
         '''Samples a problem p_hat using n market observations.''' 
@@ -165,15 +212,16 @@ class ProblemsDistribution(BaseProblem):
                 return None
         return p_hat
 
-    def sample(self,m):
-        self.m = m
-        '''Samples m problems.'''
-        ctx = mp.get_context('forkserver')
-        _ = 0
-        with ctx.Pool(ctx.cpu_count()) as pool:
-            ps_hat = pool.map(self._p_hat,[_]*m)
-        self.ps_hat = ps_hat
-        return ps_hat
+    @property
+    def ps_hat(self):
+        '''Returns a list of the samples of the problem with specified parameters.'''
+        if not self._ps_hat:
+            raise ValueError('The problems must be sampled first!')
+        return self._ps_hat
+
+    @ps_hat.setter
+    def ps_hat(self,ps_hat):
+        self._ps_hat = ps_hat
 
     @property
     def qs(self):
@@ -181,8 +229,25 @@ class ProblemsDistribution(BaseProblem):
 
     @property
     def Rs(self):
-        '''Returns a list of the insample risks R_hat, with λ=0'''
+        '''Returns a list of the insample risks R_hat, with λ=0.
+
+        R'(q') = 1/n ∑ℓ(mᵢ,q')
+        '''
         return np.array([p_hat.insample_cost() for p_hat in self.ps_hat])
+
+    @property
+    def CEs(self):
+        '''Returns a list of the insample certainty equivalents.
+
+        CE'(q') = u^{-1}(-R'(q'))
+        '''
+        u_inv = self.u.inverse
+        return u_inv(-self.Rs)
+
+    # def certainty_equivalent_bound(self,δ,n=None):
+    #     '''Gives a lower bound on the certainty equivalent for the return obtained from the market
+    #     investment.
+    #     '''
         
 
 class Problem(BaseProblem):
@@ -203,7 +268,8 @@ class Problem(BaseProblem):
         self.r = r
         self.λ = λ
         self.n,self.p = X.shape
-        self.solver = cvx.ECOS
+        # self.solver = cvx.ECOS
+        self.solver = None
         super().__init__(u,Rf)
         
     def _cvx_cost(self,p,r):

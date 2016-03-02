@@ -43,17 +43,10 @@ class LipschitzExpUtility(Utility):
 
     def cvx_util(self,r):
         return LipschitzExp(r,self.β,self.r0)
-        # β,r0 = self.β,self.r0
-        # exp = cvx.exp
-        # x,y = cvx.Variable(),cvx.Variable()
-        # constraints = [r-r0 == x-y, x>=0, y>=0]
-        # obj = cvx.Maximize(1/β * (1-exp(-β*(x+r0))) - y*exp(-β*r0)) # + 1/β*(1-(1+β*r0)*exp(-β*r0)))
-        # problem = cvx.Problem(obj,constraints)
-        # problem.solve(solver=cvx.ECOS)
-        # self.x = x.value
-        # self.y = y.value
-        # return problem
 
+    @property
+    def γ(self):
+        return np.exp(-self.β * self.r0)
 
 class LinearUtility(Utility):
     def __init__(self,β):
@@ -73,3 +66,53 @@ class LinearUtility(Utility):
 
     def _derive(self,r):
         return (r<=0)*1 + (r>0)*self.β
+
+
+class LinearPlateauUtility(Utility):
+    '''Piecewise linear utility such that ∂u(x) = 1 for x ∈ (-∞,0), ∂u(x) = β for x ∈ [0,x0]
+    and ∂u(x) = 0 for x>x0.
+    '''
+    def __init__(self,β,x0):
+        '''Instantiates the LinearPlateauUtility class.
+
+        Args:
+            β: second branch slope
+            x0: break-off point
+        '''
+        if β > 1:
+            raise ValueError('β must be lower than 1.')
+        if x0 <= 0:
+            raise ValueError('x0 must be higher or equal to 0.')
+        self.β = β
+        self.x0 = x0
+        self.k = 1
+        
+    def __str__(self):
+        return 'u(r) = min(β*r,r,x0)'
+
+    def cvx_util(self,r):
+        return cvx.min_elemwise(r, self.β*r, self.β*self.x0)
+
+    def __call__(self,r):
+        r = np.array(r)
+        return np.minimum(np.minimum(self.β*r,r),self.β*self.x0)
+
+    def inverse(self,r):
+        x0,β = self.x0,self.β
+        if isinstance(r,list) or isinstance(r,np.ndarray):
+            r = np.array(r)
+            inv = (r < 0) * r + \
+                  (r >= 0) * 1/β*r
+            inv[r>self.x0] = np.infty
+            return inv
+        else:
+            if r < 0:
+                return r
+            elif r <= self.x0:
+                return 1/β*r
+            else:
+                return np.infty                
+    
+    @property
+    def γ(self):
+        return self.β
