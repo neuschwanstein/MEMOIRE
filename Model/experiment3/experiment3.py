@@ -53,7 +53,7 @@ R_star_q_star = R_star(q_star)
 
 n_experiments = 800
 λ = 3
-ns = np.arange(25,2050,25)
+ns = np.arange(25,2025,25)
 δ = 0.2
 
 oos = np.empty(shape=(n_experiments,len(ns)))
