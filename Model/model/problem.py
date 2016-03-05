@@ -6,8 +6,8 @@ import numpy as np
 from numpy.linalg import norm
 import scipy.optimize
 
-from utility import *
-from math_ops import *
+from .utility import *
+from .math_ops import *
 
 class BaseProblem(object):
     def __init__(self,u,Rf=0):
@@ -185,23 +185,28 @@ class ProblemsDistribution(BaseProblem):
         self.ps_hat = None
         super().__init__(u,Rf)
 
-    def sample(self,m):
+    def sample(self,m,p_list=None,no_par=False):
         '''Samples m problems.'''
         self.m = m
-        ctx = mp.get_context('forkserver')
+        self.p_list = p_list
         _ = 0
-        with ctx.Pool(ctx.cpu_count()) as pool:
-            ps_hat = pool.map(self._p_hat,[_]*m)
+        if no_par:
+            ps_hat = []
+            for _ in range(m):
+                ps_hat.append(self._p_hat(_))
+        else:
+            ctx = mp.get_context('forkserver')
+            with ctx.Pool(ctx.cpu_count()) as pool:
+                ps_hat = pool.map(self._p_hat,[_]*m)
         self.ps_hat = ps_hat
         return ps_hat
 
     def _p_hat(self,_):
         '''Samples a problem p_hat using n market observations.''' 
-        x_hat,r_hat = self.M.sample(self.n)
+        x_hat,r_hat = self.M.sample(self.n,self.p_list)
         p_hat = Problem(x_hat,r_hat,self.λ,self.u,self.Rf)
         try:
             p_hat.solve()
-        # You dont wanna fuck it up too much as we're in parallel when calling
         except cvx.SolverError:
             print('Failed with %s solver. Retrying with CVXOPT solver...' % p_hat.solver)
             try:

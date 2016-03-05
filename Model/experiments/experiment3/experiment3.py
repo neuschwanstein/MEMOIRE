@@ -79,41 +79,4 @@ for i,n in enumerate(ns):
     CE_lb[:,i] = CE_star[:,i] - u.inverse(-pr_th.Ω(δ,n) - prs.Rs)
 
     
-def five_stats(data,x=None):
-    min = np.amin(data,axis=0)
-    q25 = np.percentile(data,25,axis=0)
-    median = np.percentile(data,50,axis=0)
-    q75 = np.percentile(data,75,axis=0)
-    max = np.amax(data,axis=0)
-    if x is None:
-        return min,q25,median,q75,max
-    else:
-        return x,min,x,q25,x,median,x,q75,x,max
-
-
-plt.rc('text',usetex=True)
-
-# GRAPH 1
-plt.plot(*five_stats(CE_ins,ns))
-plt.axis(xmin=25,xmax=2000,ymax=25)
-plt.xlabel('$\\textrm{Sample size}$')
-plt.ylabel('$\\textrm{Returns}$')
-plt.title('$\\textrm{Five-point summary of in-sample CE distribution}$')
-plt.show()
-    
-
-
-# oos = np.ma.masked_invalid(oos)
-# sbpt = np.ma.masked_invalid(sbpt)
-
-# # Plotting analysis
-# def rate_sqrtn(x,a,b): return a * 1/np.sqrt(x-b)
-# def rate_1n(x,a,b): return a * 1/(x-b)
-
-# from scipy.optimize import curve_fit
-# params_sqrtn,cov_sqrtn = curve_fit(rate_sqrtn,ns,mean_oos)
-# params_1n,cov_1n = curve_fit(rate_1n,ns,mean_oos)
-
-# plt.plot(ns,mean_oos,ns,rate_sqrtn(ns,*params_sqrtn),ns,rate_1n(ns,*params_1n))
-# plt.legend(['Empirical data','1/sqrt(n) fit','1/n fit'])
-# plt.show()
+# Add np.save directives here.     

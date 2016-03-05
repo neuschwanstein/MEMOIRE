@@ -3,8 +3,8 @@ import warnings
 import cvxpy as cvx
 import numpy as np
 
-from math_ops import *
-from lipschitzexp import LipschitzExp
+from .math_ops import *
+from .lipschitzexp import LipschitzExp
 
 class Utility(Function):
     pass

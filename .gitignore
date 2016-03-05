@@ -19,3 +19,4 @@ revue_litt.org
 *.nb
 /bibliographie.org
 /Model/bug.py
+*.pcl

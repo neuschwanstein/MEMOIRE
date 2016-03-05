@@ -6,7 +6,7 @@ import scipy as sp
 import scipy.special
 import scipy.stats
 
-from distrs import *
+from .distrs import *
 
 class Copula(object):
     def __init__(self,p=None):
@@ -117,14 +117,25 @@ class GaussianMarket(Market):
 
 class MarketDiscreteDistribution(DiscreteDistribution):
     def __init__(self,X,R):
-        self.n = len(R)
         self.X = DiscreteDistribution(X)
         self.R = DiscreteDistribution(R)
+        self.n,self.p = self.X.points.shape
 
-    def sample(self,k):
-        ks = rm.sample(range(self.n),k)
+    def sample(self,k,p=None):
+        """Samples from the discrete market distribution
+
+        :param k: int - Size of the sample 
+        :param p: list - of features to be returned. If not present, all the features are returned
+        :returns: X and r, where X is a matrix of features size k x len(p) and r is size k
+        :rtype: tuple
+
+        """
+        if p is None:
+            p = range(self.p)
+        ks = np.random.choice(self.n,k)
         X = np.take(self.X.points,ks,axis=0)
         r = np.take(self.R.points,ks,axis=0)
+        X = X[:,p]
         return X,r
 
     @property
@@ -142,8 +153,3 @@ class MarketDiscreteDistribution(DiscreteDistribution):
     @property
     def r_bar(self):
         return max(np.abs([self.r_max,self.r_min]))
-
-    @property
-    def p(self):
-        _,p = self.X.points.shape
-        return p
