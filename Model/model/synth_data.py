@@ -54,17 +54,17 @@ class GaussianCopula(Copula):
 
 
 class Market(object):
-    def __init__(self,x_distrs,r_distr,cop):
-        self.r_distr = r_distr
-        self.x_distrs = x_distrs
-        self.p = len(x_distrs) + 1 # +1: bias feature
+    def __init__(self,Xs,R,cop):
+        self.R = R
+        self.Xs = Xs
+        self.p = len(Xs) + 1 # +1: bias feature
         self.cop = cop
 
-        X,r = self.sample(100000)
-        self.X_max = np.percentile(np.linalg.norm(X,axis=1),98) # Not quite...
-        self.r_bar = np.max(np.abs([np.percentile(r,2),np.percentile(r,98)]))
+        # X,r = self.sample(100000)
+        # self.X_max = np.percentile(np.linalg.norm(X,axis=1),98) # Not quite...
+        # self.r_bar = np.max(np.abs([np.percentile(r,2),np.percentile(r,98)]))
 
-    def feature_correlation(i):
+    def feature_correlation(self,i):
         '''Returns empirical correlation of returns with feature i'''
         X,r = self.sample(100000)
         corr_mat = np.corrcoef(X[:,i],r)
@@ -72,7 +72,7 @@ class Market(object):
         
     def sample(self,n):
         '''Returns X,r tuple sampled from market distribution.'''
-        distrs = tuple(self.x_distrs) + (self.r_distr,)
+        distrs = tuple(self.Xs) + (self.R,)
         unif_sample = self.cop.sample(n)
         sample = np.array([d.inverse(us) for d,us in zip(distrs,unif_sample.T)]).T
         X = sample[:,0:-1]
@@ -97,12 +97,12 @@ class GaussianMarket(Market):
             corr_vector [optional]: Vector [Corr(Xᵢ,R)]
         '''
         p = len(Xs)
-        if corr_vector:
+        if corr_vector is not None:
             if len(corr_vector) is not p:
                 raise ValueError('Invalid correlation vector. Must have one entry for each feature.')
-            if sum(v) >= 1.0:
+            if sum(corr_vector) >= 1.0:
                 raise ValueError('Must have elements summing to less than 1.')
-            v = corr_vector
+            v = np.append(corr_vector,1)
         else:
             ε = 0.001
             α = (1-ε)/p                     # Information from every feature
@@ -121,7 +121,7 @@ class MarketDiscreteDistribution(DiscreteDistribution):
         self.R = DiscreteDistribution(R)
         self.n,self.p = self.X.points.shape
 
-    def sample(self,k,p=None):
+    def sample(self,k):
         """Samples from the discrete market distribution
 
         :param k: int - Size of the sample 
@@ -130,12 +130,9 @@ class MarketDiscreteDistribution(DiscreteDistribution):
         :rtype: tuple
 
         """
-        if p is None:
-            p = range(self.p)
         ks = np.random.choice(self.n,k)
         X = np.take(self.X.points,ks,axis=0)
         r = np.take(self.R.points,ks,axis=0)
-        X = X[:,p]
         return X,r
 
     @property
@@ -153,3 +150,19 @@ class MarketDiscreteDistribution(DiscreteDistribution):
     @property
     def r_bar(self):
         return max(np.abs([self.r_max,self.r_min]))
+
+
+class Feature(Distribution):
+    def __init__(self,X):
+        self.X = X
+
+    def test(self):
+        return 'hello'
+
+    def __dir__(self):
+        # return dir(self) + dir(self.X)
+        raise NotImplementedError
+
+    def __getattr__(self,arg):
+        return getattr(self.X,arg)
+

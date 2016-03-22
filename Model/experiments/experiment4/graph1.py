@@ -9,7 +9,7 @@ plt.rc('text',usetex=True)
 data,param = loader('graph1')
 
 plt.plot(*five_stats(data['CE_ins'],param['λs']))
-plt.xlabel('$\lambda$')
+plt.xlabel('$p$')
 plt.ylabel('$\\textrm{Returns}$')
 plt.title('$\\textrm{Five-point summary of in-sample CE distribution}$')
 plt.show()

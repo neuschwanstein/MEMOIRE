@@ -237,6 +237,59 @@ then
   \Omega_n = \Omega^\star.
 \end{equation*}
 
+
+\section{Saturation}
+In order to deal with the possible infinite support of the problem's features, we need to
+come up with some kind of censoring or saturation if we want to obtain meaningful
+guarantees. For example, if we have heavy tailed features distribution from which no
+extreme event was sampled in our training set, we want safeguards in case such an extreme
+point appears in the out of sample set. Otherwise, the decision scalar $q^Tx$ would
+itself take unrealistic values. 
+
+In order to contain the possible infinite support of $X_i$, we introduce a concave
+function $g$ which we apply to $X_i^2$. In the simplest case, if $\hat X_i^2$ is the
+sampled training set, then we can set $g:x\mapsto \min(x,\max\hat X_i^2)$, so that $\tilde
+X^2_i = g(X_i^2)$ is a saturated (or censored in statistics terminology) version of
+$X_i^2$. 
+
+Notice that $g$ needs not be so harsh, for example it could be smoothed for
+$x>\max \hat X_i^2$ using an inverse exponential. This would let extreme features values
+have some limited effect on the decision. Anyway, its concavity means that
+\[
+\E \tilde X^2_i = \E g(X_i^2) \leq g(\E X_i^2) = 1,
+\]
+provided that $g(1) = 1$, since we assumed that $\E X_i=0$ and $\Var X_i=1$. Therefore if
+we let $\tilde Z$ be the random vector of saturated features, then
+$\|\tilde Z\|^2 = \sum_{i=1}^p\tilde X^2_i$, and $\E\|\tilde Z\|^2\leq p$.
+
+We are now in a position to derive a concentration inequality of $\|\tilde Z\|^2$ around
+$p$. We have on one side
+\[
+  \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \geq \pp\{\|\tilde Z\|^2
+  \geq \epsilon + p\}.
+\]
+On the other side, if we let $\hat M^2 = \sum_{i=1}^p \max \hat X^2_i$ be the in-sample
+maximum \textbf{[It's possible to analyze $\hat M^2$ using concentration inequalities of
+  suprema of empirical processes!  Also, we must realize that $\hat M^2 =
+  O(p)$. Investigate.]}, then, using Hoeffding's theorem,
+\[
+  \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \leq
+  \exp\left(-\frac{2\epsilon^2}{\hat M^2}\right),
+\]
+and therefore
+\[
+  \pp\{\|\tilde Z\|^2 \geq \epsilon + p\} \leq \exp\left(-\frac{2\epsilon^2}{{\hat M}^2}\right). 
+\]
+
+Equivalently, we have, with probability $1-\delta$, 
+\[
+  \|\tilde Z\|^2 \leq p + \hat M\sqrt{\frac{\log(1/\delta)}{2}},
+\]
+ie. 
+\[
+  \|\tilde Z\| \leq O(\sqrt{p}).
+\]
+
 \newpage
 \input{appendix}
 

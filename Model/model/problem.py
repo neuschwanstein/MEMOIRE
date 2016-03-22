@@ -26,7 +26,7 @@ class BaseProblem(object):
 class AbstractProblem(BaseProblem):
     '''Abstract utility maximization problem exposing theoretical properties of the problem.'''
     
-    def __init__(self,market,n=None,λ=None,u=ExpUtility(0.8),Rf=0):
+    def __init__(self,M,n=None,λ=None,u=ExpUtility(0.8),Rf=0):
         '''Instiates an abstract problem.
 
         Args:
@@ -36,7 +36,7 @@ class AbstractProblem(BaseProblem):
             u: utility function
             Rf [optional]: risk free rate (Default 0)
         '''
-        self.m = market
+        self.M = M
         self._n = n
         self._λ = λ
         super().__init__(u,Rf)
@@ -63,23 +63,29 @@ class AbstractProblem(BaseProblem):
 
     @property
     def p(self):
-        return self.m.p
-
-    @property
-    def X_max(self):
-        return self.m.X_max
+        return self.M.p
 
     @property
     def r_max(self):
-        return self.m.r_max
+        t = 0.0001
+        R = self.M.R
+        if R.support[1] == np.infty:
+            return R.inverse(1-t)
+        else:
+            return R.support[1]
 
     @property
     def r_min(self):
-        return self.m.r_min
+        t = 0.0001
+        R = self.M.R
+        if R.support[0] == -np.infty:
+            return R.inverse(t)
+        else:
+            return R.support[0]
 
     @property
     def r_bar(self):
-        return self.m.r_bar
+        return max(np.abs([self.r_min,self.r_max]))
 
     @property
     def k(self):
@@ -88,6 +94,11 @@ class AbstractProblem(BaseProblem):
     @property
     def γ(self):
         return self.u.γ
+
+    @property
+    def X_max(self):
+        raise NotImplementedError
+        # return self.M.X_max
 
     @property
     def σ(self):
@@ -159,7 +170,7 @@ class AbstractProblem(BaseProblem):
         first_part = 2*α
         second_part = 4*n*α + B
         third_part = np.sqrt(np.log(2/δ)/(2*n))
-        Ω = first_part + second_part*third_part
+        Ω = first_t + second_part*third_part
         return Ω
 
     def Ω(self,δ,n=None):
@@ -182,28 +193,36 @@ class ProblemsDistribution(BaseProblem):
         self.M = M
         self.n = n
         self.λ = λ
-        self.ps_hat = None
+        self.ps = None
         super().__init__(u,Rf)
 
-    def sample(self,m,p_list=None,no_par=False):
+    def sample(self,m,f_list=None,par=True):
         '''Samples m problems.'''
+        print('Sampling %d problems of size %d × %d' % (m,self.n,self.M.p if f_list is None else len(f_list)))
+
         self.m = m
-        self.p_list = p_list
+        self.f_list = f_list
+
         _ = 0
-        if no_par:
-            ps_hat = []
-            for _ in range(m):
-                ps_hat.append(self._p_hat(_))
-        else:
+        if par:
             ctx = mp.get_context('forkserver')
             with ctx.Pool(ctx.cpu_count()) as pool:
-                ps_hat = pool.map(self._p_hat,[_]*m)
-        self.ps_hat = ps_hat
-        return ps_hat
+                ps = pool.map(self._p_hat,[_]*m)
+        else:
+            ps = [self._p_hat(_) for _ in range(m)]
+        self.ps = ps
+        return ps
+
+    def __call__(self):
+        return self.ps
 
     def _p_hat(self,_):
         '''Samples a problem p_hat using n market observations.''' 
-        x_hat,r_hat = self.M.sample(self.n,self.p_list)
+        x_hat,r_hat = self.M.sample(self.n)
+
+        f_list = self.f_list or range(self.M.p)
+        x_hat = x_hat[:,f_list]
+        
         p_hat = Problem(x_hat,r_hat,self.λ,self.u,self.Rf)
         try:
             p_hat.solve()
@@ -218,41 +237,51 @@ class ProblemsDistribution(BaseProblem):
         return p_hat
 
     @property
-    def ps_hat(self):
+    def ps(self):
         '''Returns a list of the samples of the problem with specified parameters.'''
-        if not self._ps_hat:
+        if not self._ps:
             raise ValueError('The problems must be sampled first!')
-        return self._ps_hat
+        return self._ps
 
-    @ps_hat.setter
-    def ps_hat(self,ps_hat):
-        self._ps_hat = ps_hat
+    @ps.setter
+    def ps(self,ps):
+        self._ps = ps
 
     @property
     def qs(self):
-        return [p_hat.q for p_hat in self.ps_hat]
+        return [p.q for p in self.ps]
 
     @property
-    def Rs(self):
+    def Rs_ins(self):
         '''Returns a list of the insample risks R_hat, with λ=0.
 
         R'(q') = 1/n ∑ℓ(mᵢ,q')
         '''
-        return np.array([p_hat.insample_cost() for p_hat in self.ps_hat])
+        return np.array([p.insample_cost() for p in self.ps])
 
     @property
-    def CEs(self):
+    def Rs_oos(self):
+        '''Returns a list of the outsample risks R∗(^q), with λ=0.
+
+        R∗(q') = E[ℓ(M,q')]
+        '''
+        return np.array([p.outsample_cost(self.M) for p in self.ps])
+
+    @property
+    def CEs_ins(self):
         '''Returns a list of the insample certainty equivalents.
 
         CE'(q') = u^{-1}(-R'(q'))
         '''
-        u_inv = self.u.inverse
-        return u_inv(-self.Rs)
+        return self.u.inverse(-self.Rs_ins)
 
-    # def certainty_equivalent_bound(self,δ,n=None):
-    #     '''Gives a lower bound on the certainty equivalent for the return obtained from the market
-    #     investment.
-    #     '''
+    @property
+    def CEs_oos(self):
+        '''Returns a list of the outsample CE CE∗(^q) with λ=0.
+
+        CE∗(q') = u^{-1}(-R∗(q'))
+        '''
+        return self.u.inverse(-self.Rs_oos)
         
 
 class Problem(BaseProblem):
@@ -286,22 +315,32 @@ class Problem(BaseProblem):
         '''
         return -self.u.cvx_util(cvx.mul_elemwise(r,p) + (1-p)*self.Rf)
 
-    def insample_cost(self,q=None):
+    def insample_cost(self,q=None,f_list=None,M_square=None):
         '''Average insample cost using decision vector q.
 
         Args:
             q [optional]: decision vector q
         '''
-        if not q:
-            q = self.q
-        n,X,r,λ = self.n,self.X,self.r,self.λ
+        q = q if q is not None else self.q
+        n,X,r = self.n,self.X,self.r
+        if f_list is not None:
+            X = X[:,f_list]
+        if M_square is not None:
+            X = np.sign(X)*np.abs(np.maximum(X,np.sqrt(M_square)))
         p = X@q
         return 1/n * sum(self.cost(p,r))
 
+    def insample_CE(self,q=None,f_list=None,M_square=None):
+        return self.u.inverse(-self.insample_cost(q,f_list,M_square))
+
     def solve(self):
-        '''Determines optimal decision vector q of the regularized problem at hand and returns in
-        sample cost, ie. R_hat(q_hat)
-        '''
+        """Determines optimal decision vector q of the regularized problem at hand and returns in
+        sample cost, ie. R'(q').
+
+        :returns: average in-sample cost
+        :rtype: double
+
+        """
         n,X,r,λ = self.n,self.X,self.r,self.λ
 
         def total_cost(q):
@@ -321,16 +360,44 @@ class Problem(BaseProblem):
         self.q = q.value.A1
         return self.insample_cost()
 
-    def outsample_cost(self,X,r):
-        '''R_true(q_hat), where R_true is determined using (large) sample of features and
+    @property
+    def M_square(self):
+        return np.max(self.X**2,axis=0)
+        
+        
+    def outsample_cost(self,M):
+        """R_true(q_hat), where R_true is determined using (large) sample of features and
         returns. The value will be exact if X and r represent all possible outcomes of a
         discrete distribution.
 
-        Args:
-            X: Large (ideally true) sample of the features
-            r: Large (ideally true) sample of the returns
-        '''
+        :param M: Market distribution
+        :returns: outsample cost according to market distribution
+        :rtype: float
+
+        """
+        X,R = M.X.points,M.R.points
         n,_ = X.shape
         p = np.dot(X,self.q)
-        total_cost = 1/n * sum(self.cost(p,r))
+        total_cost = 1/n * sum(self.cost(p,R))
         return total_cost
+
+
+class MaskedProblem(Problem):
+    '''Represents problem with hidden features.'''
+
+    def __init__(self,X,r,fs,λ,u,Rf=0):
+        """Instantiates a masked problem with features and returns samples, the list of hidden
+        features, regularization and so on.
+
+        :param X: Features matrix of size n × p+1
+        :param r: Returns vector size n
+        :param fs: List of visible features
+        :param λ: Regularization parameter
+        :param u: utility object
+        :param Rf: Risk-free rat
+        :returns: New instance
+        :rtype: MaskedProblem
+
+        """
+        self.fs = fs
+        super().__init__(X,r,λ,u,Rf)
