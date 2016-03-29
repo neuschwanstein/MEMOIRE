@@ -1,13 +1,14 @@
 import multiprocessing as mp
-import warnings
 
 import cvxpy as cvx
 import numpy as np
 from numpy.linalg import norm
-import scipy.optimize
+
+from helper.stats import empirical_cdf
 
 from .utility import *
 from .math_ops import *
+
 
 class BaseProblem(object):
     def __init__(self,u,Rf=0):
@@ -24,8 +25,10 @@ class BaseProblem(object):
 
 
 class AbstractProblem(BaseProblem):
-    '''Abstract utility maximization problem exposing theoretical properties of the problem.'''
-    
+    '''Abstract utility maximization problem exposing theoretical properties
+    of the problem.
+
+    '''
     def __init__(self,M,n=None,λ=None,u=ExpUtility(0.8),Rf=0):
         '''Instiates an abstract problem.
 
@@ -103,7 +106,7 @@ class AbstractProblem(BaseProblem):
     @property
     def σ(self):
         '''Returns the σ Lipschitz attribute, ie. |c(p₁,r) - c(p₂,r)| ≤ σ|p₁ - p₂|.
-        
+
         O(1)'''
         k,γ,r_bar,Rf = self.k,self.γ,self.r_bar,self.Rf
         σ = k*γ*(r_bar + Rf)
@@ -113,8 +116,9 @@ class AbstractProblem(BaseProblem):
     def α(self):
         '''Returns the α stability of the algorithm, ie. for two samples different by a single
         entry i, |ℓ(m) - ℓ'(m)| ≤ α. Here ℓ refers to the unregularized loss.
-        
+
         O(X_max²/(λn))
+
         '''
         σ,X_max,λ,n = self.σ,self.X_max,self.λ,self.n
         α = (σ * X_max)**2 / (2*λ*n)
@@ -170,123 +174,24 @@ class AbstractProblem(BaseProblem):
         first_part = 2*α
         second_part = 4*n*α + B
         third_part = np.sqrt(np.log(2/δ)/(2*n))
-        Ω = first_t + second_part*third_part
+        Ω = first_part + second_part*third_part
         return Ω
 
     def Ω(self,δ,n=None):
         return self.outsample_bound(δ,n)
 
-    def find_optimal_λ(self,n,λ0 = 1.0):
+    def find_optimal_λ(self,n,λ0=1.0):
         raise NotImplementedError
-        def objective(λ):
-            self.λ = λ
-            return np.mean(self.risk_distribution(n))
-        result = scipy.optimize.minimize(objective,λ0)
-        return result
+        # def objective(λ):
+        #     self.λ = λ
+        #     return np.mean(self.risk_distribution(n))
+        # result = scipy.optimize.minimize(objective,λ0)
+        # return result
 
-
-class ProblemsDistribution(BaseProblem):
-    '''Set of routines for parallel sampling of variables of interest.'''
-    
-    def __init__(self,M,n,λ,u,Rf=0):
-        '''Instantiates a distributed problem class using a market distribution M.'''
-        self.M = M
-        self.n = n
-        self.λ = λ
-        self.ps = None
-        super().__init__(u,Rf)
-
-    def sample(self,m,f_list=None,par=True):
-        '''Samples m problems.'''
-        print('Sampling %d problems of size %d × %d' % (m,self.n,self.M.p if f_list is None else len(f_list)))
-
-        self.m = m
-        self.f_list = f_list
-
-        _ = 0
-        if par:
-            ctx = mp.get_context('forkserver')
-            with ctx.Pool(ctx.cpu_count()) as pool:
-                ps = pool.map(self._p_hat,[_]*m)
-        else:
-            ps = [self._p_hat(_) for _ in range(m)]
-        self.ps = ps
-        return ps
-
-    def __call__(self):
-        return self.ps
-
-    def _p_hat(self,_):
-        '''Samples a problem p_hat using n market observations.''' 
-        x_hat,r_hat = self.M.sample(self.n)
-
-        f_list = self.f_list or range(self.M.p)
-        x_hat = x_hat[:,f_list]
-        
-        p_hat = Problem(x_hat,r_hat,self.λ,self.u,self.Rf)
-        try:
-            p_hat.solve()
-        except cvx.SolverError:
-            print('Failed with %s solver. Retrying with CVXOPT solver...' % p_hat.solver)
-            try:
-                p_hat.solver = cvx.CVXOPT
-                p_hat.solve()
-            except cvx.SolverError:
-                print('Failing with CVXOPT solver. Giving up...')
-                return None
-        return p_hat
-
-    @property
-    def ps(self):
-        '''Returns a list of the samples of the problem with specified parameters.'''
-        if not self._ps:
-            raise ValueError('The problems must be sampled first!')
-        return self._ps
-
-    @ps.setter
-    def ps(self,ps):
-        self._ps = ps
-
-    @property
-    def qs(self):
-        return [p.q for p in self.ps]
-
-    @property
-    def Rs_ins(self):
-        '''Returns a list of the insample risks R_hat, with λ=0.
-
-        R'(q') = 1/n ∑ℓ(mᵢ,q')
-        '''
-        return np.array([p.insample_cost() for p in self.ps])
-
-    @property
-    def Rs_oos(self):
-        '''Returns a list of the outsample risks R∗(^q), with λ=0.
-
-        R∗(q') = E[ℓ(M,q')]
-        '''
-        return np.array([p.outsample_cost(self.M) for p in self.ps])
-
-    @property
-    def CEs_ins(self):
-        '''Returns a list of the insample certainty equivalents.
-
-        CE'(q') = u^{-1}(-R'(q'))
-        '''
-        return self.u.inverse(-self.Rs_ins)
-
-    @property
-    def CEs_oos(self):
-        '''Returns a list of the outsample CE CE∗(^q) with λ=0.
-
-        CE∗(q') = u^{-1}(-R∗(q'))
-        '''
-        return self.u.inverse(-self.Rs_oos)
-        
 
 class Problem(BaseProblem):
     '''Realized instance of a utility maximization problem.'''
-    
+
     def __init__(self,X,r,λ,u,Rf=0):
         '''Instantiates the Problem with features and returns samples, as well as regularization
         and utility function.
@@ -305,10 +210,10 @@ class Problem(BaseProblem):
         # self.solver = cvx.ECOS
         self.solver = None
         super().__init__(u,Rf)
-        
+
     def _cvx_cost(self,p,r):
         '''[Internal] Returns the cvx cost for cvx Variable position p and numeric return r.
-        
+
         Args:
             p: Scalar or vector of portfolio composition
             r: Scalar or vector of asset return
@@ -323,10 +228,8 @@ class Problem(BaseProblem):
         '''
         q = q if q is not None else self.q
         n,X,r = self.n,self.X,self.r
-        if f_list is not None:
-            X = X[:,f_list]
-        if M_square is not None:
-            X = np.sign(X)*np.abs(np.maximum(X,np.sqrt(M_square)))
+        # if M_square is not None:
+        #     X = np.sign(X)*np.abs(np.maximum(X,np.sqrt(M_square)))
         p = X@q
         return 1/n * sum(self.cost(p,r))
 
@@ -354,28 +257,21 @@ class Problem(BaseProblem):
 
         if problem.status == 'unbounded':
             raise Exception(problem.status)
-        # if problem.status == 'optimal_inaccurate':
-            # print(problem.status, " with λ =", λ)
 
         self.q = q.value.A1
         return self.insample_cost()
 
-    @property
-    def M_square(self):
-        return np.max(self.X**2,axis=0)
-        
-        
-    def outsample_cost(self,M):
+    def outsample_cost(self,X,R):
         """R_true(q_hat), where R_true is determined using (large) sample of features and
         returns. The value will be exact if X and r represent all possible outcomes of a
         discrete distribution.
 
-        :param M: Market distribution
+        :param X: X features matrix
+        :param R: R returns vector
         :returns: outsample cost according to market distribution
         :rtype: float
 
         """
-        X,R = M.X.points,M.R.points
         n,_ = X.shape
         p = np.dot(X,self.q)
         total_cost = 1/n * sum(self.cost(p,R))
@@ -385,19 +281,138 @@ class Problem(BaseProblem):
 class MaskedProblem(Problem):
     '''Represents problem with hidden features.'''
 
-    def __init__(self,X,r,fs,λ,u,Rf=0):
+    def __init__(self,fs,X,r,λ,u,Rf=0):
         """Instantiates a masked problem with features and returns samples, the list of hidden
         features, regularization and so on.
-
-        :param X: Features matrix of size n × p+1
-        :param r: Returns vector size n
-        :param fs: List of visible features
-        :param λ: Regularization parameter
-        :param u: utility object
-        :param Rf: Risk-free rat
-        :returns: New instance
-        :rtype: MaskedProblem
-
         """
         self.fs = fs
+        X = X[:,fs]
         super().__init__(X,r,λ,u,Rf)
+
+    def outsample_cost(self,X,R):
+        X = X[:,self.fs]
+        return super().outsample_cost(X,R)
+
+
+class SaturatedFeaturesProblem(Problem):
+
+    def outsample_cost(self,X,R):
+        M = np.max(np.abs(self.X),axis=0)
+        X = np.sign(X)*np.abs(np.maximum(X,M))
+        return super().outsample_cost(X,R)
+
+
+class SaturatedFeaturesMaskedProblem(MaskedProblem,SaturatedFeaturesProblem):
+    pass
+
+
+class SaturatedNormProblem(Problem):
+    '''Applies empirical cdf to its in-sample to perform an size-independant training.'''
+
+    def __init__(self,X,r,λ,u,Rf=0):
+        self.ρs = norm(X,axis=1)
+        X = self.τ(X)
+        super().__init__(X,r,λ,u,Rf)
+
+    @property
+    def cdf(self):
+        return empirical_cdf(self.ρs)
+
+    def τ(self,X):
+        ρs = norm(X,axis=1)
+        X = (X.T/ρs).T                # Unit vector
+        k = self.cdf(ρs)
+        X = (k*X.T).T
+        return X
+
+    def outsample_cost(self,X,R):
+        X = self.τ(X)
+        return super().outsample_cost(X,R)
+
+
+class SaturatedNormMaskedProblem(MaskedProblem,SaturatedNormProblem):
+    pass
+
+
+class ProblemsDistribution(BaseProblem):
+    '''Set of routines for parallel sampling of variables of interest.'''
+
+    def __init__(self,M,n,λ,u,Rf=0,problem_t=Problem):
+        '''Instantiates a distributed problem class using a market distribution M.'''
+        self.M = M
+        self.X = M.X.points
+        self.R = M.R.points
+        self.n = n
+        self.λ = λ
+        self.ps = None
+        self.problem_t = problem_t
+        super().__init__(u,Rf)
+
+    def sample(self,m,specific_args={},par=True):
+        '''Samples m problems.'''
+        _ = 0
+        self.specific_args = specific_args
+        if par:
+            ctx = mp.get_context('forkserver')
+            with ctx.Pool(ctx.cpu_count()) as pool:
+                ps = pool.map(self._p_hat,[_]*m)
+        else:
+            ps = [self._p_hat(_) for _ in range(m)]
+        self.ps = ps
+        return ps
+
+    def _p_hat(self,_):
+        '''Samples a problem p_hat using n market observations.'''
+        X,R = self.M.sample(self.n)
+        default_args = { 'X':X,'r':R,'λ':self.λ,'u':self.u,'Rf':self.Rf }
+        default_args = { **default_args, **self.specific_args }
+        p_hat = self.problem_t(**default_args)
+        p_hat.solve()
+        return p_hat
+
+    @property
+    def ps(self):
+        '''Returns a list of the samples of the problem with specified parameters.'''
+        if not self._ps:
+            raise ValueError('The problems must be sampled first!')
+        return self._ps
+
+    @ps.setter
+    def ps(self,ps):
+        self._ps = ps
+
+    @property
+    def qs(self):
+        return np.array([p.q for p in self.ps])
+
+    @property
+    def Rs_ins(self):
+        '''Returns a list of the insample risks R_hat, with λ=0.
+
+        R'(q') = 1/n ∑ℓ(mᵢ,q')
+        '''
+        return np.array([p.insample_cost() for p in self.ps])
+
+    @property
+    def Rs_oos(self):
+        '''Returns a list of the outsample risks R∗(^q), with λ=0.
+
+        R∗(q') = E[ℓ(M,q')]
+        '''
+        return np.array([p.outsample_cost(self.X,self.R) for p in self.ps])
+
+    @property
+    def CEs_ins(self):
+        '''Returns a list of the insample certainty equivalents.
+
+        CE'(q') = u^{-1}(-R'(q'))
+        '''
+        return self.u.inverse(-self.Rs_ins)
+
+    @property
+    def CEs_oos(self):
+        '''Returns a list of the outsample CE CE∗(^q) with λ=0.
+
+        CE∗(q') = u^{-1}(-R∗(q'))
+        '''
+        return self.u.inverse(-self.Rs_oos)
