@@ -24,15 +24,15 @@ ie. when $p=O(n^k)$, where $n$ is the size of the training sample and $p$ is the
 available features of the market, and $k=O(1)$. The out of sample performance (oos) is of
 utmost importance for portfolio managers, and statistical guarantees offered by our
 framework suggest how $p$ and $n$ can interact to achieve a desired reduction in the
-portfolio perfomance.
+portfolio out of sample performance.
 
 We first present how we can expand on the statistical literature by obtaining computable
-PAC bounds $O(p/\sqrt{n}\lambda)$ on the oos performance, and then apply them to a
-risk-averse situation.. We also offer techniques in order to make a general problem
-compliant with our hypotheses. We then investigate the properties of our investment
-algorithm on a synthetic heavy tailed market distribution. Finally, we apply it to a high
-dimensional situation, exemplified with the use of document NLP in order to represent the
-market.
+PAC bounds $O(p/\sqrt{n}\lambda)$ on the oos performance, and then how they can bound the
+certainty equivalent (CE) of a risk-averse investor. We also offer techniques in order to
+make a general problem compliant with our hypotheses. We then investigate the properties
+of our investment algorithm on synthetic market distributions, in particular worst-case
+scenarios. Finally, we apply it to a high dimensional situation, exemplified with the use
+of document NLP in order to represent the market.
 
 \section{Theoretical Framework}
 
@@ -47,287 +47,356 @@ real set.
 Let $M=(X,R)$ be the unknown market distribution with support
 $\bm M = \bm X\times \bm R \subseteq\real^{p+1}$, with $(x,r) = m\sim M$ a market
 observation, consisting in one part state $x\in\real^p$ and another part outcome
-$r\in\real$. Typically $x$ is a vector of observations from various variable of interests,
-such as financial or economical news, etc. Scalar $r$ in this article shall represent the
-return from a financial asset of interest. Finally, let $M_n = \{M,\dots,M\}$ be a random
-set of $n$ (unrealized) observations (with support $\bm M^n$). Therefore $\mu_n \sim M_n$
-represents an iid sample of $n$ market observations.
+$r\in\real$. Typically $x=(x_1,\dots,x_p)\sim X$ is a vector of observations from various
+variable of interests, such as financial or economical news, etc. Scalar $r\sim R$ in this
+article shall represent the return from a financial asset of interest. 
 
-We shall study linear investment decisions $q\in\bm Q\subseteq\real^p$ such that $p=q^Tx$
-part of the portfolio is allocated to the risky asset with return $r$, and $1-p$ part of
-the portfolio is allocated to the riskless asset, providing a total return
-$(r-\rf)p + \rf$.
+% Finally, let
+% $M_n = \{M,\dots,M\}$ be a random set of $n$ (unrealized) observations (with support
+% $\bm M^n$). Therefore $\mu_n \sim M_n$ represents an iid sample of $n$ market
+% observations.
+
+We shall study linear investment decisions $q\in\bm Q\subseteq\real^p$ such that
+$p=q^Tx\in\bm I$ part of the portfolio is allocated to the risky asset with return $r$,
+and $1-p$ part of the portfolio is allocated to a riskless asset. We will, for greater
+simplicity, suppose that the riskless rate is $0$, so that the total return of the
+portfolio is $rp$. 
+
+% \begin{assumption}
+%   Every feature $X_i$ and $X_j$ is pairwise independant. 
+% \end{assumption}
+
+% \begin{assumption}
+%   Each feature has been standardized, ie. $\E X_i = 0$ and $\Var X_i = 1$. In particular,
+%   this implies that $\E X_i^2 = 1$.
+% \end{assumption}
 
 \begin{assumption}
-  Every feature $X_i$ and $X_j$ is pairwise independant. 
+  The random return has a finite support, ie.
+  $R\subsetsim \bm R \subseteq [r_{\min{}},r_{\max{}}]$. Additionally, $|R|\leq \bar r$.
 \end{assumption}
 
 \begin{assumption}
-  The random return has a finite support, ie. $R\subsetsim
-  [r_{\min{}},r_{\max{}}]$. Additionnaly, $|R|\leq \bar r$.
-\end{assumption}
-
-\begin{assumption}
-  The portfolio manager is endowed with an utility function $\bar u$ with these properties:
-  \begin{itemize}
-  \item $\bar u$ can be reexpressed as $\bar u(r) = ku(r) + l$, with $u(0) = 0$ and
-    $\lim_{r\to\rf^+}u'(r) = 1$.
-  \item $u(r) = o(r)$, ie. $u$ is sublinear;
+  The portfolio manager is endowed with an utility function $\bar u:\bm R\to \bm U$ with
+  these properties:
+  \begin{itemize}[noitemsep,topsep=0pt]
+  \item $\bar u$ can be reexpressed as $\bar u(r) = ku(r) + l$, $k>0$, with $u(0) = 0$ and
+    $\lim_{r\to0^+}u'(r) = 1$.
+  \item $u(r) = o(r)$, ie. the investor is risk-averse;
   \item $|u(r_1) - u(r_2)| \leq \gamma|r_1-r_2|$, ie. $u$ is $\gamma$-Lipschitz;
-  \item $u'(r) > 0$, ie. $u$ is monotonically increasing;
-  \item With $u(r) = u_-(r)\bm1_{\{r<\rf\}}+u_+(r)\bm 1_{\{r\geq \rf\}}$, then $u_+(r) =
+  \item $u$ is monotonically increasing;
+  \item With $u(r) = u_-(r)\bm1_{\{r<0\}}+u_+(r)\bm 1_{\{r\geq0\}}$, then $u_+(r) =
     o(u_-(r))$. In other words, $u_-$ decreases faster than $u_+$ increases. 
   \end{itemize}
 \end{assumption}
 
-% \begin{assumption}
-%   We also suppose that the investor's utility function $u$ is such that $u$ can be
-%   rescaled to a standard utility $\bar u$ with affine transformation
-%   $u(r) = k\bar u(r) + l$, where $k>0$ and $\bar u$ has the following properties:
-%   \begin{itemize}
-%   \item $\bar u$ is concave and non-decreasing;
-%   \item $\bar u$ is Lipschitz continuous, with constant $\gamma$, ie.
-%     $|\bar u(r_1) - \bar u(r_2)| \leq \gamma|r_1-r_2|$; \comment{Since random variables
-%       are bounded (Claims \ref{claim_q_bound} and \ref{claim_finite}), this assumption
-%       can be relaxed}
-%   \item $\bar u(0) = 0$;
-%   \item With representation
-%     $\bar u(x) = \bar u_-(x)\bm1_{\{x<0\}}+\bar u_+(x)\bm 1_{\{x\geq 0\}}$, we have
-%     $u_+(x) = o(u_-(x))$, ie. $\bar u_-$ dominates $\bar u_+$. \comment{Solve the
-%       Lipschitz contradiction.}
-%   \item $\lim_{r\to 0^{+}} \bar u'(r) = 1$ \comment{Necessary?}
-%   \end{itemize}
-
-%   An example of such a normalized utility is 
-%   \begin{equation*}
-%     \bar u(r) = \begin{cases}
-%       \beta^{-1}(1-e^{-\beta r}) & r > r_0\\
-%       re^{-\beta r_0} + \beta^{-1}(1-(1+\beta r_0)e^{-\beta r_0}) & r \leq r_0
-%     \end{cases}
-%   \end{equation*}
-%   with $\beta>0$. The else part is here to enforce the Lipschitz condition which is not
-%   respected on a standard exponential function. Other examples include piecewise linear
-%   functions.
-% \end{assumption}
-
 \begin{deff}
-  Let $\ell:\bm M\times \bm Q\to\real$ be a \textsl{loss function} defined by
-  \begin{equation*}
-    \ell(m,q) = \ell(x,r,q) = -u(r\,q^{T}x + R_f (1 - q^{T}x)),
-  \end{equation*}
-  where $R_f$ is the risk free return rate. We also define the \textsl{cost function}
-  $c:\real\times\bm R\to\real$ as
-  \begin{equation*}
-    c(p,r) = -u(pr + (1-p)R_f),
-  \end{equation*}
+  Let $\ell:\bm M\times \bm Q\to\bm U$ be a loss function defined by
+  \[
+    \ell(m,q) = \ell(x,r,q) = -u(rq^Tx)
+  \]
+  where $\rf$ is the risk free return rate. We also define the cost function
+  $c:\bm I\times\bm R\to\bm U$ as
+  \[
+    c(p,r) = -u(rp),
+  \]
   so that $\ell(x,r,q) = c(q^Tx,r)$. 
 \end{deff}
 
 \begin{deff}
-  The \textsl{empirical risk} $\hat R: \bm M^n\times \bm Q \to \real$ associated with decision
-  $q$ and market sample $\mu_n$ is given by
- \begin{equation*}
-   \hat R_{\mu_n}(q) = n^{-1} \sum_{i=1}^n \ell(m_i,q).
- \end{equation*}
+  The in-sample risk $\hat R: \bm M^n\times \bm Q \to \bm U$ associated with decision $q$
+  and market sample $\mu_n$ is given by
+  \[
+    \hat R_{\mu_n}(q) = n^{-1} \sum_{i=1}^n \ell(m_i,q).
+  \]
 \end{deff}
 
 \begin{deff}
-  The \textsl{empirical decision algorithm} $\hat A_n:\bm M^n \to \bm Q$ associated with
+  The empirical decision algorithm $\hat A_n:\bm M^n \to \bm Q$ associated with
   market sample $\mu_n$ is the optimal value of the problem
-  \begin{equation*}
-    \text{minimize}\quad\hat R_{\mu_n}(q) + \lambda\|q\|_2^2.
-  \end{equation*}
+  \[
+    \text{minimize}\quad\hat R_{\mu_n}(q) + \lambda\|q\|^2.
+  \]
 \end{deff}
 
-From now on, as a notation shortcut, let $\hat q_n := \hat A_n(\mu_n)$ the empirical
+From now on, as a notation shortcut, let $\hat q_n := \hat A_n(\mu_n)$ the in-sample
 decision associated with random market sample $\mu_n$ and $\hat R:=\hat R_{\mu_n}$ the
-empirical risk.
+in-sample risk function.
 
 \begin{deff}
-  The \textsl{true risk} $R:\bm Q\to\real$ associated with decision $q$ is given by
-  \begin{equation*}
-    R(q) = \E[\ell(M,q)].
-  \end{equation*}
+  The in-sample certainty equivalent $\hat\CE:\bm M^n\times\bm Q\to\bm R$ associated with
+  decision $q$ and market sample $\mu_n$ is given by
+  \[
+    \hat\CE(q) = ku^{-1}(-\hat R(q)) + l.
+  \]
 \end{deff}
+
+% \comment{Remove unnecessary definitions.}
 
 \begin{deff}
-  The \textsl{true regularized risk} $R_\lambda:\bm Q\to\real$ associated with decision $q$
-  is given by 
-  \begin{equation*}
-    R_\lambda(q) = \E[\ell(M,q)] + \lambda\|q\|^2_2.
-  \end{equation*}
+  The true risk $R:\bm Q\to\bm U$ associated with decision $q$ is given by
+  \[
+    R(q) = \E\ell(M,q).
+  \]
 \end{deff}
+
+% \begin{deff}
+%   The true regularized risk $R_\lambda:\bm Q\to\bm U$ associated with decision $q$ is
+%   given by
+%   \[
+%     R_\lambda(q) = \E\ell(M,q) + \lambda\|q\|^2.
+%   \]
+% \end{deff}
+
+% \begin{deff}
+%   The optimal decision $q^\star$ is the optimal value of the problem
+%   \[
+%     \text{minimize}\quad R(q).
+%   \]
+% \end{deff}
+
+% \begin{deff}
+%   The optimal regularized decision $q^\star_\lambda$ is the optimal value of the
+%   regularized problem
+%   \[
+%         \text{minimize}\quad R_\lambda(q).
+%   \]
+% \end{deff}
 
 \begin{deff}
-  The \textsl{optimal decision} $\qStar$ is the optimal value of the problem
-  \begin{equation*}
-    \text{minimize}\quad R(q).
-  \end{equation*}
+  The true certainty equivalent $\CE$ associated with decision $q$ is given by
+  \[
+    \CE(q) = ku^{-1}(-R(q)) + l.
+  \]
 \end{deff}
 
-\begin{deff}
-  The \textsl{optimal regularized decision} $q^\star_\lambda$ is the optimal value of the
-  regularized problem 
-  \begin{equation*}
-        \text{minimize}\quad R_\lambda(q).
-  \end{equation*}
-\end{deff}
+\subsection{Performance Bounds}
 
+We are concerned about how the in sample performance can deviate from the expected out sample
+performance, that is we want to identify $f_1$ such that
+\[
+  \CE(\hat q) \geq \hat\CE(\hat q) - f_1(n,p,\lambda)
+\]
+with high probability. We are also interested in the suboptimality of the problem, namely
+the function $f_2$ such that
+\[
+  \CE(q^\star) \geq \CE(\hat q) - f_2(n,p,\lambda),
+\]
+also with high probability. 
 
-\section{Performance Bounds}
+The following theorem is adapted from Bousquet (2002), and is the starting point of our
+analysis. 
 
-\subsection{Out of Sample Bound}
+\begin{thm}
+  \label{thm1}
+  The in-sample and out-sample performance of the algorithm given by $\hat q$ is bounded
+  by the following expression with probability $1-\delta$:
+  \begin{align*}
+    R(\hat q) &\leq \hat R(\hat q) + \frac{(\gamma\bar r\xMax)^2}{2\lambda n} +
+    \left(\frac{(\gamma\bar r\xMax)^2}{\lambda} + \frac{\gamma(\gamma+1)\xMax^2\,r_{\max}\bar
+    r}{2\lambda}\right)\sqrt{\frac{\log 1/\delta}{2n}}\\
+              &:= \hat R(\hat q) + \Omega.
+  \end{align*}
+\end{thm}
+
+\begin{proof}
+  \comment{See claim ????? for further details.}
+\end{proof}
+
+\begin{thm}
+  \label{thm2}
+  The following inequality holds with probability $1-\delta$:
+  \[
+    \CE(\hat q) \geq \hat\CE(\hat q) + ku^{-1}(\Omega).
+  \]
+\end{thm}
+
+\begin{proof}
+  The following steps follow directly from the monotonicity, convexity, and
+  superadditivity of $u^{-1}$ :
+  \begin{align*}
+    & R(\hat q) \leq \hat R(\hat q) + \Omega\\
+    \iff & -R(\hat q) \geq -\hat R(\hat q) - \Omega\\
+    \iff & u^{-1}(-R(\hat q)) \geq u^{-1}(-\hat R(\hat q) - \Omega)\\
+    \iff & u^{-1}(-R(\hat q)) \geq u^{-1}(-\hat R(\hat q)) + u^{-1}(-\Omega)\\
+    \iff & ku^{-1}(-R(\hat q))+l \geq ku^{-1}(-\hat R(\hat q))+l + ku^{-1}(-\Omega)\\
+    \iff & \CE(\hat q) \geq \hat\CE(\hat q) + ku^{-1}(-\Omega).\qedhere
+  \end{align*}
+\end{proof}
+
+Since $\Omega>0$, it follows that $u^{-1}(-\Omega) > -\Omega$, therefore we have the
+following relation:
+\[
+  \CE(\hat q) \geq \hat\CE(\hat q) - O\left(\frac{\xMax^2}{\sqrt{n}\lambda}\right).
+\]
 
 \begin{deff}
   A loss function $\ell$ is $\sigma$-admissible if its cost function $c$ is convex with
   respect to $p$ the investment decision and the following holds for any $p_1,p_2$ and
   $r$:
-  \begin{equation*}
+  \[
     |c(p_1,r) - c(p_2,r)| \leq \sigma|p_1-p_2|.
-  \end{equation*}
+  \]
 \end{deff}
 
-\begin{rem}
-  The loss function as defined above is $\sigma$-admissible with $\sigma=k\gamma(r+R_f)$. See
-  Claim \ref{claim0}.
-\end{rem}
 
-\begin{deff}
-  Let $\hat q_n=\hat A_n(\mu_n)$ and
-  $\hat q_{n\backslash i}=\hat A_n(\mu_{n\backslash i})$, where $\mu_n$ and
-  $\mu_{n\backslash i}$ only differs in their $i$\textsuperscript{th} observation, which
-  has been redrawn from $M$ in the case of $\mu_{n\backslash i}$. The algorithm $\hat A_n$
-  is said to have \textsl{uniform stability} $\alpha_n$ if, for any $m\sim M$,
-  \begin{equation*}
-    |\ell(m,\hat q_n) - \ell(m,\hat q_{n\backslash i})| \leq \alpha_n. 
-  \end{equation*}
-\end{deff}
+\subsection{Big Data Situation}
 
-\begin{thm}
-  If $\ell$ is $\sigma$-admissible and if, for any $x\in\bm X$, $\|x\|_2^2\leq\xMax^2$,
-  then $\hat A_n$ has uniform stability with
-  \begin{equation*}
-    \alpha_n = \frac{\sigma^2 \xMax^2}{2\lambda n}.
-  \end{equation*}
-\end{thm}
+The literature revolving around Theorem \ref{thm1} and its applications ([Shai-Shalev,
+Rudin]) generally leaves the $\xMax$ as an afterthought, but in real big-data contexts, if
+$n$ is insufficiently large compared to $p$, than out-of-sample convergence might not be
+certain. Actually, with $n=o(p^2)$, divergence is almost certain. 
 
-\begin{proof}
-  See Bousquet, Theorem 22. 
-\end{proof}
+Let $Z^2 = \sum_{i=1}^p X_i^2$. 
 
-\begin{rem}
-  We conclude that $\hat A_n$ has uniform stability with
-  \begin{equation*}
-    \alpha_n = \frac{k^2\gamma^2(\bar r+R_f)^2\xMax^2}{2\lambda n}.
-  \end{equation*}
-\end{rem}
 
-\begin{thm}
-  \label{thm2}
-  If $\hat A_n$ has uniform stability $\alpha_n$ and the loss function is such that for
-  any $m\sim M$ and any $\hat q_n=\hat A_n(\mu_n)$, $|\ell(m,\hat q_n)|\leq B_n$, then for
-  any $\delta\in(0,1)$, the following bound holds with probability at least $1-\delta$
-  over the random sample draw $\mu_n\sim M_n$:
-  \begin{equation*}
-    |R(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n +
-    B_n)\sqrt{\frac{\log(2/\delta)}{2n}} = \Omega_n.
-  \end{equation*}
-\end{thm}
 
-\begin{proof}
-  The original proof can be found in Bousquet 2002, Theorem 12. See also Rudin 2015,
-  Theorem 2. \comment{Check conditions! $|\ell|\leq B$}
-\end{proof}
 
-\begin{rem}
-  The highest loss occurs when investment decision is at its highest and the return at its
-  lowest. From Claim \ref{claim_p_bound}, allocation scalar is bounded by $\bar p$ and we
-  obtain $B_n = c(\bar p, -\bar r)$.
-\end{rem}
+% \begin{rem}
+%   The loss function as defined above is $\sigma$-admissible with $\sigma=k\gamma(r+\rf)$. See
+%   Claim \ref{claim0}.
+% \end{rem}
 
-We can finally draw a PAC bound on the out of sample average returns:
-\begin{equation}
-  \E[u^{-1}(-\ell(M,q))] \geq u^{-1}(-\hat R(\hat q_n) - \Omega_n).
-\end{equation}
-See Claim \ref{out_of_sample_claim} for further details.
+% \begin{deff}
+%   Let $\hat q_n=\hat A_n(\mu_n)$ and
+%   $\hat q_{n\backslash i}=\hat A_n(\mu_{n\backslash i})$, where $\mu_n$ and
+%   $\mu_{n\backslash i}$ only differs in their $i$\textsuperscript{th} observation, which
+%   has been redrawn from $M$ in the case of $\mu_{n\backslash i}$. The algorithm $\hat A_n$
+%   is said to have \textsl{uniform stability} $\alpha_n$ if, for any $m\sim M$,
+%   \[
+%     |\ell(m,\hat q_n) - \ell(m,\hat q_{n\backslash i})| \leq \alpha_n. 
+%   \]
+% \end{deff}
+
+
+% \begin{thm}[Bousquet (2002)]
+%   If $\ell$ is $\sigma$-admissible and if, for any $x\in\bm X$, $\|x\|^2\leq\xMax^2$,
+%   then $\hat A_n$ has uniform stability with
+%   \[
+%     \alpha_n = \frac{\sigma^2 \xMax^2}{2\lambda n}.
+%   \]
+% \end{thm}
+
+% % \begin{proof}
+% %   See Bousquet, Theorem 22. 
+% % \end{proof}
+
+% % \begin{rem}
+% %   We conclude that $\hat A_n$ has uniform stability with
+% %   \[
+% %     \alpha_n = \frac{k^2\gamma^2(\bar r+\rf)^2\xMax^2}{2\lambda n} =
+% %     O\left(\frac{\xMax^2}{\lambda n}\right).
+% %   \]
+% % \end{rem}
+
+% \begin{thm}[Bousquet (2002)]
+%   \label{thm2}
+%   If $\hat A_n$ has uniform stability $\alpha_n$ and the loss function is such that for
+%   any $m\sim M$ and any $\hat q_n$, $\ell_{\min}\leq|\ell(m,\hat q_n)|\leq \ell_{\max}$, then for
+%   any $\delta\in(0,1)$, the following bound holds with probability at least $1-\delta$
+%   over the random sample draw $\mu_n\sim M_n$:
+%   \[
+%     |R(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n + (\ell_{\max}-\ell_{\min}))\sqrt{\frac{\log(2/\delta)}{2n}}.
+%   \]
+% \end{thm}
+
+% In order to interpret Theorem \ref{thm2}, it is best to break each elements in smaller
+% pieces. We also move proofs to the appendix of this document. 
+
+% % \begin{proof}
+% %   The original proof can be found in Bousquet 2002, Theorem 12. See also Rudin 2015,
+% %   Theorem 2. \comment{Check conditions! $|\ell|\leq B$}
+% % \end{proof}
+
+% \begin{rem}
+%   The highest loss occurs when investment decision is at its highest and the return at its
+%   lowest. From Claim \ref{p_bound}, allocation scalar is bounded by $\bar p$ and we
+%   obtain $B_n = c(\bar p, -\bar r)$.
+% \end{rem}
+
+% We can finally draw a PAC bound on the out of sample average returns:
+% \begin{equation}
+%   \E[u^{-1}(-\ell(M,q))] \geq u^{-1}(-\hat R(\hat q_n) - \Omega_n).
+% \end{equation}
+% See Claim \ref{out_of_sample_claim} for further details.
  
-\subsection{True Optimal Bound}
+% \subsection{True Optimal Bound}
 
-We now seek a bound on the empirical returns when compared to the out of sample returns
-applying the (unknown) optimal decision vector $\qStar$. 
+% We now seek a bound on the empirical returns when compared to the out of sample returns
+% applying the (unknown) optimal decision vector $\qStar$. 
 
-To do so, we can decompose the performance distance: \comment{Maybe it's tigher using
-  another decomposition?}
-\begin{equation*}
-  |R(q^\star) - \hat R(\hat q_\lambda)| \leq |R(q^\star) + R(\hat q_\lambda)| 
-  + |R(\hat q_\lambda) - \hat R(\hat q_\lambda)|.
-\end{equation*}
-Using Claim \ref{claim1}, the first term is bounded by
-$k\gamma((\bar r+R_f)\xMax\|q^\star - \hat q_\lambda\|_2 + R_f)$, while the second one is
-nothing more than $\Omega_n$. Now, unless we know the distribution of $M$, we can't bound
-$\|q^\star\|_2$, however we know from Claim \ref{claim_finite} that it's
-finite. Therefore, if we let $B^\star$ such that
-\begin{equation*}
-  \|q^\star - \hat q_\lambda\|_2 \leq B^\star,
-\end{equation*}
-then
-\begin{equation*}
-  |R(q^\star) - \hat R(\hat q_\lambda)| \leq k\gamma((\bar r+R_f)\xMax B^\star + R_f) +
-  \Omega_n = \Omega^\star.
-\end{equation*}
+% To do so, we can decompose the performance distance: \comment{Maybe it's tigher using
+%   another decomposition?}
+% \[
+%   |R(q^\star) - \hat R(\hat q_\lambda)| \leq |R(q^\star) + R(\hat q_\lambda)| 
+%   + |R(\hat q_\lambda) - \hat R(\hat q_\lambda)|.
+% \]
+% Using Claim \ref{claim1}, the first term is bounded by
+% $k\gamma((\bar r+\rf)\xMax\|q^\star - \hat q_\lambda\|_2 + \rf)$, while the second one is
+% nothing more than $\Omega_n$. Now, unless we know the distribution of $M$, we can't bound
+% $\|q^\star\|_2$, however we know from Claim \ref{claim_finite} that it's
+% finite. Therefore, if we let $B^\star$ such that
+% \[
+%   \|q^\star - \hat q_\lambda\|_2 \leq B^\star,
+% \]
+% then
+% \[
+%   |R(q^\star) - \hat R(\hat q_\lambda)| \leq k\gamma((\bar r+\rf)\xMax B^\star + \rf) +
+%   \Omega_n = \Omega^\star.
+% \]
 
 
-\section{Saturation}
-In order to deal with the possible infinite support of the problem's features, we need to
-come up with some kind of censoring or saturation if we want to obtain meaningful
-guarantees. For example, if we have heavy tailed features distribution from which no
-extreme event was sampled in our training set, we want safeguards in case such an extreme
-point appears in the out of sample set. Otherwise, the decision scalar $q^Tx$ would
-itself take unrealistic values. 
+% \section{Saturation}
+% In order to deal with the possible infinite support of the problem's features, we need to
+% come up with some kind of censoring or saturation if we want to obtain meaningful
+% guarantees. For example, if we have heavy tailed features distribution from which no
+% extreme event was sampled in our training set, we want safeguards in case such an extreme
+% point appears in the out of sample set. Otherwise, the decision scalar $q^Tx$ would
+% itself take unrealistic values. 
 
-In order to contain the possible infinite support of $X_i$, we introduce a concave
-function $g$ which we apply to $X_i^2$. In the simplest case, if $\hat X_i^2$ is the
-sampled training set, then we can set $g:x\mapsto \min(x,\max\hat X_i^2)$, so that $\tilde
-X^2_i = g(X_i^2)$ is a saturated (or censored in statistics terminology) version of
-$X_i^2$. 
+% In order to contain the possible infinite support of $X_i$, we introduce a concave
+% function $g$ which we apply to $X_i^2$. In the simplest case, if $\hat X_i^2$ is the
+% sampled training set, then we can set $g:x\mapsto \min(x,\max\hat X_i^2)$, so that $\tilde
+% X^2_i = g(X_i^2)$ is a saturated (or censored in statistics terminology) version of
+% $X_i^2$. 
 
-Notice that $g$ needs not be so harsh, for example it could be smoothed for
-$x>\max \hat X_i^2$ using an inverse exponential. This would let extreme features values
-have some limited effect on the decision. Anyway, its concavity means that
-\[
-\E \tilde X^2_i = \E g(X_i^2) \leq g(\E X_i^2) = 1,
-\]
-provided that $g(1) = 1$, since we assumed that $\E X_i=0$ and $\Var X_i=1$. Therefore if
-we let $\tilde Z$ be the random vector of saturated features, then
-$\|\tilde Z\|^2 = \sum_{i=1}^p\tilde X^2_i$, and $\E\|\tilde Z\|^2\leq p$.
+% Notice that $g$ needs not be so harsh, for example it could be smoothed for
+% $x>\max \hat X_i^2$ using an inverse exponential. This would let extreme features values
+% have some limited effect on the decision. Anyway, its concavity means that
+% \[
+% \E \tilde X^2_i = \E g(X_i^2) \leq g(\E X_i^2) = 1,
+% \]
+% provided that $g(1) = 1$, since we assumed that $\E X_i=0$ and $\Var X_i=1$. Therefore if
+% we let $\tilde Z$ be the random vector of saturated features, then
+% $\|\tilde Z\|^2 = \sum_{i=1}^p\tilde X^2_i$, and $\E\|\tilde Z\|^2\leq p$.
 
-We are now in a position to derive a concentration inequality of $\|\tilde Z\|^2$ around
-$p$. We have on one side
-\[
-  \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \geq \pp\{\|\tilde Z\|^2
-  \geq \epsilon + p\}.
-\]
-On the other side, if we let $\hat M^2 = \sum_{i=1}^p \max \hat X^2_i$ be the in-sample
-maximum \textbf{[It's possible to analyze $\hat M^2$ using concentration inequalities of
-  suprema of empirical processes!  Also, we must realize that $\hat M^2 =
-  O(p)$. Investigate.]}, then, using Hoeffding's theorem,
-\[
-  \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \leq
-  \exp\left(-\frac{2\epsilon^2}{\hat M^2}\right),
-\]
-and therefore
-\[
-  \pp\{\|\tilde Z\|^2 \geq \epsilon + p\} \leq \exp\left(-\frac{2\epsilon^2}{{\hat M}^2}\right). 
-\]
+% We are now in a position to derive a concentration inequality of $\|\tilde Z\|^2$ around
+% $p$. We have on one side
+% \[
+%   \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \geq \pp\{\|\tilde Z\|^2
+%   \geq \epsilon + p\}.
+% \]
+% On the other side, if we let $\hat M^2 = \sum_{i=1}^p \max \hat X^2_i$ be the in-sample
+% maximum \textbf{[It's possible to analyze $\hat M^2$ using concentration inequalities of
+%   suprema of empirical processes!  Also, we must realize that $\hat M^2 =
+%   O(p)$. Investigate.]}, then, using Hoeffding's theorem,
+% \[
+%   \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \leq
+%   \exp\left(-\frac{2\epsilon^2}{\hat M^2}\right),
+% \]
+% and therefore
+% \[
+%   \pp\{\|\tilde Z\|^2 \geq \epsilon + p\} \leq \exp\left(-\frac{2\epsilon^2}{{\hat M}^2}\right). 
+% \]
 
-Equivalently, we have, with probability $1-\delta$, 
-\[
-  \|\tilde Z\|^2 \leq p + \hat M\sqrt{\frac{\log(1/\delta)}{2}},
-\]
-ie. 
-\[
-  \|\tilde Z\| \leq O(\sqrt{p}).
-\]
+% Equivalently, we have, with probability $1-\delta$, 
+% \[
+%   \|\tilde Z\|^2 \leq p + \hat M\sqrt{\frac{\log(1/\delta)}{2}},
+% \]
+% ie. 
+% \[
+%   \|\tilde Z\| \leq O(\sqrt{p}).
+% \]
 
 \newpage
 \input{appendix}

@@ -29,14 +29,14 @@ class AbstractProblem(BaseProblem):
     of the problem.
 
     '''
-    def __init__(self,M,n=None,λ=None,u=ExpUtility(0.8),Rf=0):
-        '''Instiates an abstract problem.
+    def __init__(self,M,n=None,λ=None,u=None,Rf=0):
+        '''Instantiates an abstract problem.
 
         Args:
             m: Market object
             n [optional]: Number of (theoretical) samples
             λ [optional]: Theoretical regularizer
-            u: utility function
+            u: [optional]: utility function
             Rf [optional]: risk free rate (Default 0)
         '''
         self.M = M
@@ -152,7 +152,7 @@ class AbstractProblem(BaseProblem):
 
     @property
     def ℓ_min(self):
-        '''Returns the minimum loss produced by the algorithm, ie. ℓ_min ≥ ℓ(m,q) ∀ S, m ~ M.
+        '''Returns the minimum loss produced by the algorithm, ie. ℓ_min ≤ ℓ(m,q) ∀ S, m ~ M.
 
         O(X_max²/λ) if u keeps increasing;
         O(1) otherwise

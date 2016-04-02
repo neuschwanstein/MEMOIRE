@@ -1,33 +1,28 @@
 \section*{Appendix}
 \begin{claim}
-  \label{claim0}
+  \label{sigma_admissibility}
   The following inequality holds:
-  \begin{equation*}
-    |c(p_1,r) - c(p_2,r)| \leq k\gamma(\bar r+R_f)|p_1-p_2|.
-  \end{equation*}
+  \[
+    |c(p_1,r) - c(p_2,r)| \leq \gamma\,\bar r\,|p_1-p_2|.
+  \]
 \end{claim}
 \begin{proof}
-  Using the Lipschitz property of $\bar u$ we have:
-  \begin{align*}
-    |c(p_1,r) - c(p_2,r)| &= |u(p_1r + (1-p_1)R_f) - u(p_2r + (1-p_2)R_f)|\\
-    &= k|\bar u(p_1 r + (1-p_1)R_f) - \bar u(p_2 r + (1-p_2)R_f)|\\
-    &\leq k c |p_1 r + (1-p_1)R_f - p_2r - (1-p_2)R_f|\\
-    &= k\gamma |r-R_f||p_1-p_2|\\
-    &\leq k\gamma(\bar r+R_f)|p_1-p_2|.\qedhere
-  \end{align*}
+  Using the Lipschitz property of $u$, the claim follows trivially.
 \end{proof}
 
 
 \begin{claim}
-  \label{claim_q_bound}
-  The $\ell_2$ norm of decision vectors $\qHat_n$ obtained from algorithm $\hat A_n$ are
-  bounded by $\bar s = k\gamma\xMax(\bar r-R_f)/(2\lambda)$.
+  \label{q_bound}
+  The following inequality holds:
+  \[
+    \|\hat q\| \leq \frac{\gamma\xMax r_{\max}}{2\lambda} = O\left(\frac{\xMax}{\lambda}\right).
+  \]
 \end{claim}
 \begin{proof}
   Let $\mu_n$ be a sample of the market. The empirical decision algorithm 
-  \begin{equation*}
-    \minimizeEquation{n^{-1}\sum_{i=1}^n\ell(m_i,q) + \lambda\|q\|^2_2}
-  \end{equation*}
+  \[
+    \minimizeEquation{n^{-1}\sum_{i=1}^n\ell(m_i,q) + \lambda\|q\|^2}
+  \]
   is equivalent to 
   \begin{align*}
     \minimizeEquationSt{n^{-1}\sum_{i=1}^n \ell(m_i,sq) + \lambda s^2}[s\geq0\\,\|q\|_2=1],
@@ -39,52 +34,70 @@
     \minimizeEquationSt{g(s)}[s\geq 0],
   \end{align*}
   where
-  \begin{equation*}
+  \[
     g(s) = n^{-1}\sum_{i=1}^n \ell(m_i, sq) + \lambda s^2.
-  \end{equation*}
-  Convexity of $g$ follows from convexity of $\ell$ (see [Claim ??]).
-
+  \]
   
-  Because $g$ is convex, we can consider two cases: either the minimum is realized at the
-  boundary, ie. $s^\star=0$, or there exists an optimal value $s^\star > 0$ such that
-  $g'(s^\star)=0$. To derive a bound on $s^\star$, we can seek a value $\bar s$ such
-  that for any $q$, $g'(\bar s)>0$ and therefore $\bar s > s^\star$.
+  Because $g:(0,+\infty)\to\real$ is convex, we can consider two cases: either the minimum
+  is realized at the boundary, ie. $s^\star=0$, or there exists an optimal value
+  $s^\star > 0$ such that $g'(s^\star)=0$. To derive a bound on $s^\star$, we can seek a
+  value $\bar s$ such that for any $q$, $g'(\bar s)>0$ and therefore $\bar s > s^\star$.
 
   To do so, we first note that 
   \begin{align*}
     g'(s) &= \grad_s \left[n^{-1}\sum_{i=1}^n\ell(m_i,sq) + \lambda s^2\right]\\
-          &= 2\lambda s - kn^{-1}\sum_{i=1}^n \grad_s \bar u(sr_iq^Tx_i+R_f(1-sq^Tx_i))\\
-          &= 2\lambda s - kn^{-1}\sum_{i=1}^n (r_i-R_f)q^Tx_i \, \bar u'(sr_iq^Tx_i+R_f(1-sq^Tx_i)).
+          &= 2\lambda s - n^{-1}\sum_{i=1}^n \grad_s u(r_i\,sq^Tx_i)\\
+          &= 2\lambda s - n^{-1}\sum_{i=1}^n r_i\,q^Tx_i \, u'(r_i\,sq^Tx_i).
   \end{align*}
-  Now, because $\|q\|_2=1$, we have $q^Tx_i\leq\|x_i\|_2\leq\xMax$. We also have
-  $r_i-R_f\leq \bar r-R_f$ and $\bar u'\leq\gamma$, so that
-  \begin{equation*}
-    k\gamma\xMax(\bar r-R_f) \geq n^{-1}\sum_{i=1}^n (r_i-R_f)q^Tx_i \, \bar u'(sr_iq^Tx_i+R_f(1-sq^Tx_i)).
-  \end{equation*}
+  Now, because $\|q\|=1$, we have $q^Tx_i\leq\|x_i\|\leq\xMax$. We also have
+  $r_i\leq r_{\max}$ and $u'\leq\gamma$, so that
+  \[
+    n^{-1}\sum_{i=1}^n r_i\,q^Tx_i \, u'(r_i\,sq^Tx_i) \leq \gamma\xMax r_{\max}.
+  \]
   Therefore, with
-  \begin{equation*}
-    \bar s := \frac{k\gamma}{2\lambda}\xMax(\bar r-R_f),
-  \end{equation*}
+  \[
+    \bar s := \frac{\gamma\xMax r_{\max}}{2\lambda},
+  \]
   for any $s>\bar s$,
-  \begin{equation*}
-    g'(s) \geq 0.
-  \end{equation*}
-  The previous inequality therefore implies that the norm $\|\qHat_n\|_2$ is at most $\bar
-  s$. 
+  \[
+    g'(s) \geq 0.\qedhere
+  \]
 \end{proof}
 
 \begin{claim}
-  \label{claim_p_bound}
-  The allocation scalar $p$ is bounded by $\bar p = k\gamma X_{\max}^2(\bar r- R_f)/(2\lambda)$.
+  \label{p_bound}
+  The following inequality holds:
+  \[
+    |\hat p| = |\hat q^Tx| \leq \bar p =\frac{\gamma\xMax^2 r_{\max}}{2\lambda} =
+    O\left(\frac{\xMax^2}{\lambda}\right).
+  \]
 \end{claim}
 \begin{proof}
-  Using Hölder's inequality and Claim \ref{claim_q_bound}, we have for any $\hat q_n$ and
-  $x$
-  \begin{equation*}
-    p = q^Tx \leq \|\hat q_n\|_2 \|x\|_2 \leq \frac{k\gamma X_{\max}^2(\bar
-      r-R_f)}{2\lambda}.\qedhere
-  \end{equation*}
+  The claim follows directly from Hölder's inequality and Claim \ref{q_bound}.
 \end{proof}
+
+\begin{claim}
+  \label{ell_bound}
+  The following inequalities hold:
+  \[
+    -\frac{\gamma\xMax^2r_{\max}\bar r}{2\lambda} \leq \ell(M,\hat q) \leq \frac{\gamma^2
+      \xMax^2 r_{\max} \bar r}{2\lambda}.
+  \]
+\end{claim}
+First, the maximum loss (ie. worst realized utility) is reached when $\hat p=\bar p$ as
+expressed by Claim \ref{p_bound}, and $r=-\bar r$, ie.
+$c(\bar p,-\bar r) \leq \gamma^2\xMax^2 r_{\max}\bar r/2\lambda$. Likewise, the minimum
+loss (best utility) occurs with $\hat p  = \bar p$ and $r = \bar r$, so that $c(\bar p,
+\bar r) \geq -\gamma\xMax^2r_{\max}\bar r/2\lambda$. 
+
+\begin{claim}
+  Set $\hat Q_{X_i}(\alpha)$ and $\hat Q_{X_i}(1-\alpha)$, $\alpha\in(0,1)$ two empirical
+  quantiles from the sampling of $X_i$. Then, the following inequality holds with
+  probability $1-\delta_X$:
+  \[
+    \xMax^2 \leq p + \cdots
+  \]
+\end{claim}
 
 \begin{claim}
   \label{out_of_sample_claim}
@@ -97,22 +110,22 @@
                                 &=u^{-1}(-R(\qHat_n)).
   \end{align*}
   From Theorem \ref{thm2}, we also have 
-  \begin{equation*}
+  \[
     -R(\qHat_n) \geq -\Omega_n - \hat R(\qHat_n).
-  \end{equation*}
+  \]
   Since $u^{-1}$ is monotonically increasing, we finally obtain
-  \begin{equation*}
+  \[
     u^{-1}(-R(\qHat_n)) \geq u^{-1}(-\Omega_n - \hat R(\qHat_n)).\qedhere
-  \end{equation*}
+  \]
 \end{proof}
 
 
 \begin{claim}
 \label{claim1}
  The following inequality holds:
-\begin{equation*}
+\[
   |R(\qStar) - R(\hat q)| \leq k\gamma((\bar r +R_f)\xMax\|\qStar - \qHat_n\|_2 + R_f).
-\end{equation*}
+\]
 \end{claim}
 
 \begin{proof}
@@ -140,27 +153,27 @@ inequality.
 \begin{claim}
   \label{delage_bound_claim}
   The following inequality holds:
-  \begin{equation*}
+  \[
     |R(q^\star) - R_\lambda(q^\star_\lambda)| \leq \lambda\|q^\star\|^2_2.
-  \end{equation*}
+  \]
 \end{claim}
 \begin{proof}
   We first have that
-  \begin{equation*}
+  \[
     R(q^\star) = \min_q R(q) \leq \min_q R(q) + \lambda\|q\|_2^2 = R_\lambda(q^\star_\lambda).
-  \end{equation*}
+  \]
   We also have that
-  \begin{equation*}
+  \[
     R_\lambda(q^\star_\lambda) = \min_q R(q) + \lambda\|q\|^2_2 \leq R(q^\star) + \lambda\|q^\star\|^2_2,
-  \end{equation*}
+  \]
   and therefore
-  \begin{equation*}
+  \[
     R_\lambda(q^\star_\lambda) - \lambda\|q^\star\|^2_2 \leq R(q^\star) \leq R_\lambda(q^\star_\lambda),
-  \end{equation*}
+  \]
   leading to
-  \begin{equation*}
+  \[
     0 \leq R_\lambda(q^\star_\lambda) - R(q^\star) \leq \lambda\|q^\star\|^2_2.\qedhere
-  \end{equation*}
+  \]
 \end{proof}
 
 \begin{claim}
@@ -168,9 +181,9 @@ inequality.
   If $u:\real\to\real$ monotonically increasing is such that $u(0) = 0$,
   $u(x) = u_-(x)\bm1_{\{x<0\}}+u_+(x)\bm 1_{\{x\geq 0\}}$ and $u_+(x) = o(u_-(x))$, then,
   for any real random variable $Z$ with $|Z|\leq M$ and $\lim_{x\to0^-}F_Z(x)>0$,
-  \begin{equation*}
+  \[
     \argmax_{k>0} \E[u(kZ)]
-  \end{equation*}
+  \]
   is finite.
 \end{claim}
 \begin{proof}
@@ -179,9 +192,9 @@ inequality.
   discrete random variable such that $\pp\{B=\delta\}=1-\pp\{B=M\}=p$. Then $\pp\{B\geq
   z\}\geq\pp\{Z\geq z\}$ for any $z$. This in turn implies that
   $\E[u(kB)]\geq\E[u(kZ)]$ \comment{Too fast?}. But 
-  \begin{equation*}
+  \[
     \lim_{k\to\infty}\E[u(kB)] = \lim_{k\to\infty}p\,u(k\delta)+(1-p)u(kM) = -\infty.\qedhere
-  \end{equation*}
+  \]
 \end{proof}
 
 %%% Local Variables:
