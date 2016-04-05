@@ -230,15 +230,6 @@ following relation:
   \CE(\hat q) \geq \hat\CE(\hat q) - O\left(\frac{\xMax^2}{\sqrt{n}\lambda}\right).
 \]
 
-\begin{deff}
-  A loss function $\ell$ is $\sigma$-admissible if its cost function $c$ is convex with
-  respect to $p$ the investment decision and the following holds for any $p_1,p_2$ and
-  $r$:
-  \[
-    |c(p_1,r) - c(p_2,r)| \leq \sigma|p_1-p_2|.
-  \]
-\end{deff}
-
 
 \subsection{Big Data Situation}
 
@@ -247,159 +238,39 @@ Rudin]) generally leaves the $\xMax$ as an afterthought, but in real big-data co
 $n$ is insufficiently large compared to $p$, than out-of-sample convergence might not be
 certain. Actually, with $n=o(p^2)$, divergence is almost certain. 
 
-Let $Z^2 = \sum_{i=1}^p X_i^2$. 
+Let's assume that $\E X_i = 0$ for all features, and let $Z^2 = \sum_{i=1}^p X_i^2$. In a
+general setting, if $\E X_i^2 \leq M$, then $\E Z^2 \leq Mp$, and Markov's inequality
+applies:
+\[
+  \pp\{Z^2 \geq t\} \leq \frac{\E Z^2}{t} \leq \frac{Mp}{t}.
+\]
+Equivalently, with probability $1-\delta$, 
+\[
+  Z^2 \leq \delta^{-1}Mp = O(p).
+\]
+
+If we further assume pairwise independance of features and that each feature is supported
+by a closed interval, wether because the support of the feature is known to be bounded or
+because it's been saturated in pre-processing, then each feature can be rescaled by $a_i$
+so that so that $a_iX_i = \tilde X_i \subsetsim[-1,1]$, or $\tilde X_i^2
+\subsetsim[0,1]$. Then, using Hoeffding's theorem,
+\[
+  \pp\{\tilde Z^2 \geq \tilde Mp + t\} \leq \exp\left(-\frac{2t^2}{p}\right),
+\]
+equivalently with probability $1-\delta$, 
+\[
+  \tilde Z^2 \leq \tilde Mp + \sqrt{\frac{p\log(1/\delta)}{2}} = O(p)
+\]
+Of course, it is easy to see that such a transformation is reversible. 
+
+The point is that in general cases, we expect to have $\xMax^2 =O(p)$, so that the
+convergence of our algorithm will be given by 
+\[
+  \CE(\hat q) \geq \hat\CE(\hat q) - O\left(\frac{p}{\sqrt{n}\lambda}\right).
+\]
 
 
-
-
-% \begin{rem}
-%   The loss function as defined above is $\sigma$-admissible with $\sigma=k\gamma(r+\rf)$. See
-%   Claim \ref{claim0}.
-% \end{rem}
-
-% \begin{deff}
-%   Let $\hat q_n=\hat A_n(\mu_n)$ and
-%   $\hat q_{n\backslash i}=\hat A_n(\mu_{n\backslash i})$, where $\mu_n$ and
-%   $\mu_{n\backslash i}$ only differs in their $i$\textsuperscript{th} observation, which
-%   has been redrawn from $M$ in the case of $\mu_{n\backslash i}$. The algorithm $\hat A_n$
-%   is said to have \textsl{uniform stability} $\alpha_n$ if, for any $m\sim M$,
-%   \[
-%     |\ell(m,\hat q_n) - \ell(m,\hat q_{n\backslash i})| \leq \alpha_n. 
-%   \]
-% \end{deff}
-
-
-% \begin{thm}[Bousquet (2002)]
-%   If $\ell$ is $\sigma$-admissible and if, for any $x\in\bm X$, $\|x\|^2\leq\xMax^2$,
-%   then $\hat A_n$ has uniform stability with
-%   \[
-%     \alpha_n = \frac{\sigma^2 \xMax^2}{2\lambda n}.
-%   \]
-% \end{thm}
-
-% % \begin{proof}
-% %   See Bousquet, Theorem 22. 
-% % \end{proof}
-
-% % \begin{rem}
-% %   We conclude that $\hat A_n$ has uniform stability with
-% %   \[
-% %     \alpha_n = \frac{k^2\gamma^2(\bar r+\rf)^2\xMax^2}{2\lambda n} =
-% %     O\left(\frac{\xMax^2}{\lambda n}\right).
-% %   \]
-% % \end{rem}
-
-% \begin{thm}[Bousquet (2002)]
-%   \label{thm2}
-%   If $\hat A_n$ has uniform stability $\alpha_n$ and the loss function is such that for
-%   any $m\sim M$ and any $\hat q_n$, $\ell_{\min}\leq|\ell(m,\hat q_n)|\leq \ell_{\max}$, then for
-%   any $\delta\in(0,1)$, the following bound holds with probability at least $1-\delta$
-%   over the random sample draw $\mu_n\sim M_n$:
-%   \[
-%     |R(\qHat_n) - \hat R(\qHat_n)| \leq 2\alpha_n + (4n\alpha_n + (\ell_{\max}-\ell_{\min}))\sqrt{\frac{\log(2/\delta)}{2n}}.
-%   \]
-% \end{thm}
-
-% In order to interpret Theorem \ref{thm2}, it is best to break each elements in smaller
-% pieces. We also move proofs to the appendix of this document. 
-
-% % \begin{proof}
-% %   The original proof can be found in Bousquet 2002, Theorem 12. See also Rudin 2015,
-% %   Theorem 2. \comment{Check conditions! $|\ell|\leq B$}
-% % \end{proof}
-
-% \begin{rem}
-%   The highest loss occurs when investment decision is at its highest and the return at its
-%   lowest. From Claim \ref{p_bound}, allocation scalar is bounded by $\bar p$ and we
-%   obtain $B_n = c(\bar p, -\bar r)$.
-% \end{rem}
-
-% We can finally draw a PAC bound on the out of sample average returns:
-% \begin{equation}
-%   \E[u^{-1}(-\ell(M,q))] \geq u^{-1}(-\hat R(\hat q_n) - \Omega_n).
-% \end{equation}
-% See Claim \ref{out_of_sample_claim} for further details.
- 
-% \subsection{True Optimal Bound}
-
-% We now seek a bound on the empirical returns when compared to the out of sample returns
-% applying the (unknown) optimal decision vector $\qStar$. 
-
-% To do so, we can decompose the performance distance: \comment{Maybe it's tigher using
-%   another decomposition?}
-% \[
-%   |R(q^\star) - \hat R(\hat q_\lambda)| \leq |R(q^\star) + R(\hat q_\lambda)| 
-%   + |R(\hat q_\lambda) - \hat R(\hat q_\lambda)|.
-% \]
-% Using Claim \ref{claim1}, the first term is bounded by
-% $k\gamma((\bar r+\rf)\xMax\|q^\star - \hat q_\lambda\|_2 + \rf)$, while the second one is
-% nothing more than $\Omega_n$. Now, unless we know the distribution of $M$, we can't bound
-% $\|q^\star\|_2$, however we know from Claim \ref{claim_finite} that it's
-% finite. Therefore, if we let $B^\star$ such that
-% \[
-%   \|q^\star - \hat q_\lambda\|_2 \leq B^\star,
-% \]
-% then
-% \[
-%   |R(q^\star) - \hat R(\hat q_\lambda)| \leq k\gamma((\bar r+\rf)\xMax B^\star + \rf) +
-%   \Omega_n = \Omega^\star.
-% \]
-
-
-% \section{Saturation}
-% In order to deal with the possible infinite support of the problem's features, we need to
-% come up with some kind of censoring or saturation if we want to obtain meaningful
-% guarantees. For example, if we have heavy tailed features distribution from which no
-% extreme event was sampled in our training set, we want safeguards in case such an extreme
-% point appears in the out of sample set. Otherwise, the decision scalar $q^Tx$ would
-% itself take unrealistic values. 
-
-% In order to contain the possible infinite support of $X_i$, we introduce a concave
-% function $g$ which we apply to $X_i^2$. In the simplest case, if $\hat X_i^2$ is the
-% sampled training set, then we can set $g:x\mapsto \min(x,\max\hat X_i^2)$, so that $\tilde
-% X^2_i = g(X_i^2)$ is a saturated (or censored in statistics terminology) version of
-% $X_i^2$. 
-
-% Notice that $g$ needs not be so harsh, for example it could be smoothed for
-% $x>\max \hat X_i^2$ using an inverse exponential. This would let extreme features values
-% have some limited effect on the decision. Anyway, its concavity means that
-% \[
-% \E \tilde X^2_i = \E g(X_i^2) \leq g(\E X_i^2) = 1,
-% \]
-% provided that $g(1) = 1$, since we assumed that $\E X_i=0$ and $\Var X_i=1$. Therefore if
-% we let $\tilde Z$ be the random vector of saturated features, then
-% $\|\tilde Z\|^2 = \sum_{i=1}^p\tilde X^2_i$, and $\E\|\tilde Z\|^2\leq p$.
-
-% We are now in a position to derive a concentration inequality of $\|\tilde Z\|^2$ around
-% $p$. We have on one side
-% \[
-%   \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \geq \pp\{\|\tilde Z\|^2
-%   \geq \epsilon + p\}.
-% \]
-% On the other side, if we let $\hat M^2 = \sum_{i=1}^p \max \hat X^2_i$ be the in-sample
-% maximum \textbf{[It's possible to analyze $\hat M^2$ using concentration inequalities of
-%   suprema of empirical processes!  Also, we must realize that $\hat M^2 =
-%   O(p)$. Investigate.]}, then, using Hoeffding's theorem,
-% \[
-%   \pp\{\|\tilde Z\|^2 \geq \epsilon + \E\|\tilde Z\|^2\} \leq
-%   \exp\left(-\frac{2\epsilon^2}{\hat M^2}\right),
-% \]
-% and therefore
-% \[
-%   \pp\{\|\tilde Z\|^2 \geq \epsilon + p\} \leq \exp\left(-\frac{2\epsilon^2}{{\hat M}^2}\right). 
-% \]
-
-% Equivalently, we have, with probability $1-\delta$, 
-% \[
-%   \|\tilde Z\|^2 \leq p + \hat M\sqrt{\frac{\log(1/\delta)}{2}},
-% \]
-% ie. 
-% \[
-%   \|\tilde Z\| \leq O(\sqrt{p}).
-% \]
-
-\newpage
-\input{appendix}
+\include{appendix}
 
 
 \end{document}
