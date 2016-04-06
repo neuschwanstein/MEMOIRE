@@ -2,7 +2,7 @@
 
 \include{preamble}
 
-\title{Portfolio Optimization in a Big Data Context}
+\title{Big Data Statistical Portfolio Optimization}
 \author{Thierry \textsc{Bazier-Matte} \and Erick \textsc{Delage}}
 
 \begin{document}
@@ -17,6 +17,8 @@ prescribed investment policy.
 
 \section{Introduction}
 \label{sec:intro}
+
+Bla bla bla, Markowtiz \cite{markowitz1952portfolio}, etc.
 
 This document investigates the role statistical learning can play in a portfolio
 management context, especially when a portfolio manager is in a big-data situation,
@@ -184,7 +186,7 @@ the function $f_2$ such that
 \]
 also with high probability. 
 
-The following theorem is adapted from Bousquet (2002), and is the starting point of our
+The following theorem is adapted from \cite{bousquet2002stability}, and is the starting point of our
 analysis. 
 
 \begin{thm}
@@ -201,6 +203,28 @@ analysis.
 
 \begin{proof}
   \comment{See claim ????? for further details.}
+\end{proof}
+
+\begin{thm}
+  \label{newthm}
+  The average out of sample performance of $\hat q$ converges toward the optimal risk
+  performance at a $O(\xMax^2/\lambda n)$ rate, namely
+  \[
+    \E_{\mu_n}[R(\hat q)] \leq R(q^\star) +\frac{\gamma^2\xMax^2}{2\lambda n}\left(\bar
+      r^2 + \frac{1}{2}r_{\max}^2\right).
+  \]
+\end{thm}
+
+\begin{proof}
+  It is well known that (see eg. \cite{koren2015fast}) that the following holds:
+  \[
+    \E_{\mu_n}[R(\hat q)] - R(q^\star) \leq \frac{1}{n}\sum_{i=1}^n\E_{\mu_n}[\ell(\hat
+    q_i, m_i) - \ell(\hat q, m_i)] + \frac{\lambda}{n}(\|q^\star\|^2 - \E_{\mu_n}\|\hat
+    q\|^2).
+  \]
+  The first term is bounded by the established uniform stability $\alpha$ of our algorithm
+  (Claim \ref{stability}). By Claim \ref{q_bound}, we also have that, at most, the second
+  term is bounded by $(\gamma r_{\max}\xMax/2\lambda)^2$, thus yielding the bound.
 \end{proof}
 
 \begin{thm}
@@ -223,6 +247,14 @@ analysis.
     \iff & \CE(\hat q) \geq \hat\CE(\hat q) + ku^{-1}(-\Omega).\qedhere
   \end{align*}
 \end{proof}
+
+\begin{thm}
+  \label{thm4}
+  Likewise, the following inequality holds:
+  \[
+    \E_{\mu_n}[\CE(\hat q)] \geq 
+  \]
+\end{thm}
 
 Since $\Omega>0$, it follows that $u^{-1}(-\Omega) > -\Omega$, therefore we have the
 following relation:
@@ -272,6 +304,7 @@ convergence of our algorithm will be given by
 
 \include{appendix}
 
+\printbibliography
 
 \end{document}
 
@@ -280,3 +313,9 @@ convergence of our algorithm will be given by
 %%% mode: latex
 %%% TeX-master: t
 %%% End:
+
+
+
+
+
+

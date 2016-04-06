@@ -20,3 +20,8 @@ revue_litt.org
 /bibliographie.org
 /Model/bug.py
 *.pcl
+/Article/master-blx.bib
+/Article/master.bbl
+/Article/master.bcf
+/Article/master.blg
+/Article/master.run.xml
