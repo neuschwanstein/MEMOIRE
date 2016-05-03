@@ -3,19 +3,21 @@
 
 # # Experiment 9
 # 
-# This experiment investigates the convergence rates of $E_{\mu_n}[R(\hat q)]$ compared to
-# constant $R(q^\star)$, using constant $p=6$, using $\lambda = O(1/n)$.
+# April 11th, 2016
 # 
-# This time, we should expect convergence $O(1/n)$.
+# This experiment investigates the convergence rates of $E_{\mu_n}[R(\hat q)]$ compared to
+# constant $R(q^\star)$, using constant $p=6$, using $\lambda = O(1/n^2)$.
+# 
+# This time, we should expect divergence?
 
-# In[99]:
+# In[1]:
 
 get_ipython().magic('matplotlib inline')
 get_ipython().magic('load_ext autoreload')
 get_ipython().magic('autoreload 2')
 
 
-# In[3]:
+# In[2]:
 
 import numpy as np
 import cvxpy as cvx
@@ -28,7 +30,7 @@ import model.problem as pr
 from helper.stats import five_stats
 
 
-# In[4]:
+# In[3]:
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -40,12 +42,12 @@ plt.rc('text',usetex=True)
 plt.rc('font',serif='times')
 
 
-# In[5]:
+# In[8]:
 
 p = 6
-ns = np.arange(50,2050,50)
+ns = np.floor(np.linspace(50,500,30))
 n_true = 50000
-n_experiments = 500
+n_experiments = 300
 λ = 150
 δ = 0.2
 
@@ -57,12 +59,12 @@ u = ut.LinearPlateauUtility(β,r_threshold)
 Rf = 0 
 
 
-# In[25]:
+# In[9]:
 
 print(ns)
 
 
-# In[26]:
+# In[10]:
 
 # True market
 R_true = NormalDistribution(8,10)
@@ -74,7 +76,7 @@ X,R = M_true.sample(n_true)
 M = synth.MarketDiscreteDistribution(X,R)
 
 
-# In[27]:
+# In[11]:
 
 # Real q∗ value computation
 p_star = pr.Problem(X,R,λ=0,u=u)
@@ -82,13 +84,13 @@ p_star.solve()
 q_star = p_star.q
 
 
-# In[28]:
+# In[12]:
 
 R_star_q_star = p_star.insample_cost(q_star)
 CE_star_q_star = p_star.insample_CE(q_star)
 
 
-# In[17]:
+# In[13]:
 
 # Results placeholder
 qs = np.zeros(shape=(len(ns),p+1,n_experiments))
@@ -98,12 +100,12 @@ Rs_ins = np.empty(shape=(len(ns),n_experiments))
 Rs_oos = np.empty(shape=(len(ns),n_experiments))
 
 
-# In[30]:
+# In[14]:
 
-# About 8minutes running time.
+# About 5minutes running time.
 for i,n in enumerate(ns):
     print('Sampling %d problems of size %d × %d' % (n_experiments,n,p+1))
-    prs = pr.ProblemsDistribution(M,n,λ/n,u,Rf)
+    prs = pr.ProblemsDistribution(M,n,λ/(n**2),u,Rf)
     prs.sample(n_experiments)
     qs[i,:p+1,:] = prs.qs.T
     CEs_ins[i,:] = prs.CEs_ins
@@ -226,98 +228,4 @@ y1 = np.sqrt(np.log(n)/n)
 y2 = np.sqrt(1/n)
 plt.plot(n,y1,n,y2)
 plt.legend(['$\\sqrt{\\frac{\\log n}{n}}$','$\\sqrt{\\frac{1}{n}}$']);
-
-
-# In[82]:
-
-X = DiscreteDistribution([-1,1])
-def ℓ(x): return np.maximum(-x,0)
-np.mean(ℓ(0.01*X.sample(10000)))
-
-
-# In[102]:
-
-import model.distrs as ds
-
-
-# In[114]:
-
-u1 = ut.LinearPlateauUtility(1,10)
-u2 = ut.LinearPlateauUtility(.5,10)
-x = np.linspace(-2,15,100)
-plt.plot(x,u1(x),x,u2(x))
-plt.axis(ymax=11,xmax=15);
-plt.legend(['u1','u2'])
-
-
-# In[143]:
-
-X = ds.DiscreteDistribution([-1,-1,-1,1])
-s = X.sample(50000)
-qs = np.linspace(0,20,50)
-y1 = np.empty_like(qs)
-y2 = np.empty_like(qs)
-for i,q in enumerate(qs):
-    y1[i] = np.mean(u1(q*s))
-    y2[i] = np.mean(u2(q*s))
-
-plt.plot(ks,y1,ks,y2);
-plt.xlabel('$\\|q\\|$');
-plt.ylabel('$E[u(kZ)]$');
-
-
-# In[179]:
-
-X = ds.DiscreteDistribution([-1,1,1,1])
-s = X.sample(50000)
-qs = np.linspace(0,20,50)
-y1 = np.empty_like(qs)
-y2 = np.empty_like(qs)
-for i,q in enumerate(qs):
-    y1[i] = np.mean(u1(q*s))
-    y2[i] = np.mean(u2(q*s))
-
-plt.plot(qs,y1,qs,y2);
-plt.xlabel('$\\|q\\|$');
-plt.ylabel('$E[u(kZ)]$');
-
-
-# In[193]:
-
-X = ds.DiscreteDistribution([-1,1,1,1])
-Y = ds.DiscreteDistribution([-1,1,1,1])
-u1(X)
-X = X.sample(50000)
-Y = Y.sample(50000)
-q1 = np.linspace(0,20,50)
-q2 = np.linspace(0,20,50)
-q1,q2 = np.meshgrid(q1,q2)
-y = np.empty_like(q1)
-y = np.mean(u1(q1*X + q2*Y))
-print(q2.shape)
-
-# y1 = np.empty_like(qs)
-# y2 = np.empty_like(qs)
-# for i,q in enumerate(qs):
-#     y1[i] = np.mean(u1(q*s))
-#     y2[i] = np.mean(u2(q*s))
-
-# plt.plot(qs,y1,qs,y2);
-# plt.xlabel('$\\|q\\|$');
-# plt.ylabel('$E[u(kZ)]$');
-
-
-# In[165]:
-
-Z = ds.DiscreteDistribution([-1,0.5,1])
-B = ds.DiscreteDistribution([-1,1,1])
-z = Z.sample(10000)
-b = B.sample(10000)
-print([E(Z),E(B)])
-print([Var(Z),Var(B)])
-
-
-# In[192]:
-
-u1(X)
 

@@ -8,7 +8,7 @@
 # 
 # This time, we should expect convergence $O(1/n)$.
 
-# In[99]:
+# In[2]:
 
 get_ipython().magic('matplotlib inline')
 get_ipython().magic('load_ext autoreload')
@@ -226,98 +226,4 @@ y1 = np.sqrt(np.log(n)/n)
 y2 = np.sqrt(1/n)
 plt.plot(n,y1,n,y2)
 plt.legend(['$\\sqrt{\\frac{\\log n}{n}}$','$\\sqrt{\\frac{1}{n}}$']);
-
-
-# In[82]:
-
-X = DiscreteDistribution([-1,1])
-def ℓ(x): return np.maximum(-x,0)
-np.mean(ℓ(0.01*X.sample(10000)))
-
-
-# In[102]:
-
-import model.distrs as ds
-
-
-# In[114]:
-
-u1 = ut.LinearPlateauUtility(1,10)
-u2 = ut.LinearPlateauUtility(.5,10)
-x = np.linspace(-2,15,100)
-plt.plot(x,u1(x),x,u2(x))
-plt.axis(ymax=11,xmax=15);
-plt.legend(['u1','u2'])
-
-
-# In[143]:
-
-X = ds.DiscreteDistribution([-1,-1,-1,1])
-s = X.sample(50000)
-qs = np.linspace(0,20,50)
-y1 = np.empty_like(qs)
-y2 = np.empty_like(qs)
-for i,q in enumerate(qs):
-    y1[i] = np.mean(u1(q*s))
-    y2[i] = np.mean(u2(q*s))
-
-plt.plot(ks,y1,ks,y2);
-plt.xlabel('$\\|q\\|$');
-plt.ylabel('$E[u(kZ)]$');
-
-
-# In[179]:
-
-X = ds.DiscreteDistribution([-1,1,1,1])
-s = X.sample(50000)
-qs = np.linspace(0,20,50)
-y1 = np.empty_like(qs)
-y2 = np.empty_like(qs)
-for i,q in enumerate(qs):
-    y1[i] = np.mean(u1(q*s))
-    y2[i] = np.mean(u2(q*s))
-
-plt.plot(qs,y1,qs,y2);
-plt.xlabel('$\\|q\\|$');
-plt.ylabel('$E[u(kZ)]$');
-
-
-# In[193]:
-
-X = ds.DiscreteDistribution([-1,1,1,1])
-Y = ds.DiscreteDistribution([-1,1,1,1])
-u1(X)
-X = X.sample(50000)
-Y = Y.sample(50000)
-q1 = np.linspace(0,20,50)
-q2 = np.linspace(0,20,50)
-q1,q2 = np.meshgrid(q1,q2)
-y = np.empty_like(q1)
-y = np.mean(u1(q1*X + q2*Y))
-print(q2.shape)
-
-# y1 = np.empty_like(qs)
-# y2 = np.empty_like(qs)
-# for i,q in enumerate(qs):
-#     y1[i] = np.mean(u1(q*s))
-#     y2[i] = np.mean(u2(q*s))
-
-# plt.plot(qs,y1,qs,y2);
-# plt.xlabel('$\\|q\\|$');
-# plt.ylabel('$E[u(kZ)]$');
-
-
-# In[165]:
-
-Z = ds.DiscreteDistribution([-1,0.5,1])
-B = ds.DiscreteDistribution([-1,1,1])
-z = Z.sample(10000)
-b = B.sample(10000)
-print([E(Z),E(B)])
-print([Var(Z),Var(B)])
-
-
-# In[192]:
-
-u1(X)
 

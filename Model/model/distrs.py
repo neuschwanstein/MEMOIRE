@@ -24,6 +24,12 @@ def Std(d):
     except AttributeError as e:
         print('Object {} is not a distribution.'.format(d))
 
+def RandomSample(X,n):
+    try:
+        return X.random_sample(n)
+    except NotImplementedError:
+        raise NotImplementedError
+
     
 class Distribution(object):
     def _inverse_check(self,p):
@@ -57,9 +63,21 @@ class Distribution(object):
     def __rsub__(self,x):
         return self.add(-x)
 
+    def random_sample(self,n):
+        raise NotImplementedError
+
 
 class UnknownDistribution(Distribution):
     pass
+
+
+class FunctionDistribution(Distribution):
+    def __init__(self,X,f):
+        self.X = X
+        self.f = f
+
+    def sample(self,n):
+        return self.f(self.X.sample(n))
 
 
 class PowerRandomVariable(UnknownDistribution):
@@ -109,7 +127,7 @@ class SumRandomVariable(UnknownDistribution):
 class DiscreteDistribution(Distribution):
     def __init__(self,points):
         self.n = len(points)
-        self.points = points
+        self.points = np.array(points)
 
     def __call__(self):
         return self.points
@@ -123,6 +141,9 @@ class DiscreteDistribution(Distribution):
     def sample(self,k):
         ks = np.random.choice(range(self.n),k)
         return np.take(self.points,ks,axis=0)
+
+    def __rmul__(self,a):
+        return DiscreteDistribution(a*self.points)
 
     @property
     def min(self):

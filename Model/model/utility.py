@@ -3,6 +3,8 @@ import warnings
 import cvxpy as cvx
 import numpy as np
 
+import model.distrs as ds
+
 from .math_ops import *
 from .lipschitzexp import LipschitzExp
 
@@ -17,7 +19,9 @@ class ExpUtility(Utility):
     def __str__(self):
         return 'u(r) = -exp(-%2.2fr + 1)' % self.β
 
-    def __call__(self,r):
+    def _call(self,r):
+        if isinstance(r,ds.Distribution):
+            return self._create_distribution(r)
         β = self.β
         exp = np.exp
         return 1/β * (1 - exp(-β*r))
@@ -36,7 +40,7 @@ class LipschitzExpUtility(Utility):
         self.r0 = r0
         self.k = 1
 
-    def __call__(self,r):
+    def _call(self,r):
         β,r0 = self.β,self.r0
         exp = np.exp
         return (r >= r0)* (1/β * (1 - exp(-β*r))) + (r<r0) * (r*exp(-β*r0) + 1/β*(1-(1+β*r0)*exp(-β*r0)))
@@ -60,7 +64,7 @@ class LinearUtility(Utility):
     def cvx_util(self,r):
         return cvx.min_elemwise(r, self.β * r)
 
-    def __call__(self,r):
+    def _call(self,r):
         # TODO Rewrite the method
         return np.amin(np.array([r,self.β*r]),axis=0)
 
@@ -93,7 +97,7 @@ class LinearPlateauUtility(Utility):
     def cvx_util(self,r):
         return cvx.min_elemwise(r, self.β*r, self.β*self.x0)
 
-    def __call__(self,r):
+    def _call(self,r):
         r = np.array(r)
         return np.minimum(np.minimum(self.β*r,r),self.β*self.x0)
 

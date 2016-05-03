@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
 \include{preamble}
 
@@ -18,12 +18,18 @@ prescribed investment policy.
 \section{Introduction}
 \label{sec:intro}
 
-Bla bla bla, Markowtiz \cite{markowitz1952portfolio}, etc.
+Bla bla bla, Markowtiz \cite{markowitz1952portfolio}, etc. For modern treatment see
+\comment{Robust Portfolio Optimzation.}
+
+Following \cite{rudin2015big}, we investigate properties of the generalized linear
+statistical learning framework in a big data situation.
+
+\comment{Merge these two paragraphs together.}
 
 This document investigates the role statistical learning can play in a portfolio
 management context, especially when a portfolio manager is in a big-data situation,
-ie. when $p=O(n^k)$, where $n$ is the size of the training sample and $p$ is the number of
-available features of the market, and $k=O(1)$. The out of sample performance (oos) is of
+ie. when $p=O(n^\gamma)$, where $n$ is the size of the training sample and $p$ is the number of
+available features of the market, and $\gamma=O(1)$. The out of sample performance (oos) is of
 utmost importance for portfolio managers, and statistical guarantees offered by our
 framework suggest how $p$ and $n$ can interact to achieve a desired reduction in the
 portfolio out of sample performance.
@@ -35,6 +41,24 @@ make a general problem compliant with our hypotheses. We then investigate the pr
 of our investment algorithm on synthetic market distributions, in particular worst-case
 scenarios. Finally, we apply it to a high dimensional situation, exemplified with the use
 of document NLP in order to represent the market.
+
+\subsection{Main contributions}
+
+This paper, in line with attempts made by \cite{rudin2015big}, is, to our knowledge, the
+first to consider $p$ as parameter in itself, rather than as a constant. Therefore, we
+expend on the empirical risk minimization (ERM) literature, while using classical tools
+like algorithmic stability and concentration inequalities to provide bounds on
+generalization. 
+
+To our knowledge, the characterization of this framework in order to optimize an utility
+function is also novel, as previous attempts would consider squared loss.
+
+
+\subsection{Previous and related works}
+
+This paper finds itself in continuity with previous attempts of building algorithmic
+portfolios without making assumption on the market distribution, a construction sometimes
+referred to as a `universal portfolio' \cite{cover1991universal}.
 
 \section{Theoretical Framework}
 
@@ -206,28 +230,6 @@ analysis.
 \end{proof}
 
 \begin{thm}
-  \label{newthm}
-  The average out of sample performance of $\hat q$ converges toward the optimal risk
-  performance at a $O(\xMax^2/\lambda n)$ rate, namely
-  \[
-    \E_{\mu_n}[R(\hat q)] \leq R(q^\star) +\frac{\gamma^2\xMax^2}{2\lambda n}\left(\bar
-      r^2 + \frac{1}{2}r_{\max}^2\right).
-  \]
-\end{thm}
-
-\begin{proof}
-  It is well known that (see eg. \cite{koren2015fast}) that the following holds:
-  \[
-    \E_{\mu_n}[R(\hat q)] - R(q^\star) \leq \frac{1}{n}\sum_{i=1}^n\E_{\mu_n}[\ell(\hat
-    q_i, m_i) - \ell(\hat q, m_i)] + \frac{\lambda}{n}(\|q^\star\|^2 - \E_{\mu_n}\|\hat
-    q\|^2).
-  \]
-  The first term is bounded by the established uniform stability $\alpha$ of our algorithm
-  (Claim \ref{stability}). By Claim \ref{q_bound}, we also have that, at most, the second
-  term is bounded by $(\gamma r_{\max}\xMax/2\lambda)^2$, thus yielding the bound.
-\end{proof}
-
-\begin{thm}
   \label{thm2}
   The following inequality holds with probability $1-\delta$:
   \[
@@ -248,7 +250,7 @@ analysis.
   \end{align*}
 \end{proof}
 
-\begin{thm}
+\begin{thm}\
   \label{thm4}
   Likewise, the following inequality holds:
   \[
