@@ -15,7 +15,6 @@ class Namedtuples(UserList):
 
     def __setattr__(self,key,values):
         if key is not 'fields' and key[-1] == 's' and key[:-1] in self.fields:
-            print('hello')
             key = key[:-1]
             for i,val in enumerate(values):
                 self.data[i] = self.data[i]._replace(**{key:val})

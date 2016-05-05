@@ -1,27 +1,44 @@
-\documentclass[10pt]{article}
+\documentclass{article}
 
 \include{preamble}
 
-\title{Big Data Statistical Portfolio Optimization}
-\author{Thierry \textsc{Bazier-Matte} \and Erick \textsc{Delage}}
+\title{Big Data Portfolio Optimization}
+% \author{Thierry \textsc{Bazier-Matte} \and Erick \textsc{Delage}}
+\author{
+  Erick Delage\\
+  Department of Decision Sciences\\
+  HEC Montreal\\
+  Montreal...\\
+  \texttt{erick.delage@hec.ca}\\
+  \And
+  Thierry Bazier-Matte\\
+  HEC Montreal\\
+  \texttt{thierry.bazier-matte@hec.ca}\\
+}
 
 \begin{document}
 \maketitle
 
+\begin{abstract}
+  Drawing on statistical learning theory, we propose a robust portfolio optimization
+  mechanism agnostic to market distribution. In particular, our algorithm returns a linear
+  investment policy based on the risk preferences of the investor, with guaranteed out of
+  sample performance. We also provide guidance for big-data scenarios, ie. when the number
+  of features is of the order of the size of the sample, thus enriching the learning
+  theory literature. \comment{We conclude by contrasting small- and big-data scenario in a real
+  application.}
+\end{abstract}
 
-The goal of this document is twofold. First, given a risk averse utility function and a
-sample of the market observations (returns and states), we want to prescribe an optimal
-linear investment policy depending on the risk aversion of the investor. Second, we also
-wish to return to the investor probabilist bounds on the certainty equivalent of the
-prescribed investment policy.
 
 \section{Introduction}
 \label{sec:intro}
 
-Bla bla bla, Markowtiz \cite{markowitz1952portfolio}, etc. For modern treatment see
+
+
+Bla bla bla, Markowtiz \citet{markowitz1952portfolio}, etc. For modern treatment see
 \comment{Robust Portfolio Optimzation.}
 
-Following \cite{rudin2015big}, we investigate properties of the generalized linear
+Following \citet{rudin2015big}, we investigate properties of the generalized linear
 statistical learning framework in a big data situation.
 
 \comment{Merge these two paragraphs together.}
@@ -105,7 +122,7 @@ portfolio is $rp$.
 \begin{assumption}
   The portfolio manager is endowed with an utility function $\bar u:\bm R\to \bm U$ with
   these properties:
-  \begin{itemize}[noitemsep,topsep=0pt]
+  \begin{itemize}
   \item $\bar u$ can be reexpressed as $\bar u(r) = ku(r) + l$, $k>0$, with $u(0) = 0$ and
     $\lim_{r\to0^+}u'(r) = 1$.
   \item $u(r) = o(r)$, ie. the investor is risk-averse;
@@ -306,7 +323,7 @@ convergence of our algorithm will be given by
 
 \include{appendix}
 
-\printbibliography
+%\printbibliography
 
 \end{document}
 

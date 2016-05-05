@@ -209,6 +209,7 @@ class Problem(BaseProblem):
         self.n,self.p = X.shape
         # self.solver = cvx.ECOS
         self.solver = None
+        self.verbose = True
         super().__init__(u,Rf)
 
     def _cvx_cost(self,p,r):
@@ -253,7 +254,7 @@ class Problem(BaseProblem):
         q = cvx.Variable(self.p)
         objective = cvx.Minimize(total_cost(q))
         problem = cvx.Problem(objective)
-        problem.solve(solver=self.solver)
+        problem.solve(solver=self.solver,verbose=self.verbose)
 
         if problem.status == 'unbounded':
             raise Exception(problem.status)
