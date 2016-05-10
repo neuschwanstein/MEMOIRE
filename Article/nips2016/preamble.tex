@@ -1,0 +1,119 @@
+\usepackage{nips_2016}
+
+% \usepackage{times}
+\usepackage{amsmath}
+% %\usepackage{pdfcomment}
+\usepackage{amsthm}
+\usepackage{graphicx}
+% \usepackage{geometry}
+% \usepackage{subcaption}
+\usepackage{bm}
+% \usepackage{hyperref}
+% \usepackage[retainorgcmds]{IEEEtrantools}
+\usepackage{xparse}
+% \usepackage{mathtools}
+% \usepackage{color}
+% \usepackage{marginnote}
+% \usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+\usepackage{mathrsfs}
+% \usepackage{enumitem}
+
+\usepackage{biblatex}
+\addbibresource{bibliography.bib}
+
+% \setlength{\parindent}{0em}
+% \setlength{\parskip}{0.8em}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\maximize}{maximize}
+% \DeclareMathOperator*{\minimize}{minimize}
+\DeclareMathOperator{\st}{s.t.}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\CE}{CE}
+% \DeclareMathOperator{\E}{E}
+
+\DeclareMathOperator*{\minimize}{minimize}
+% \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+
+\newcommand{\ts}{\textsuperscript}
+\newcommand{\figref}[1]{Fig.~\ref{#1}}
+
+\newcommand{\iso}{\simeq}
+\newcommand{\dd}{\partial}
+\newcommand{\real}{\mathscr{R}}
+\newcommand{\normal}{\mathscr{N}}
+\newcommand{\trueRisk}{R_{\mathrm{true}}}
+\newcommand{\uInv}{u^{-1}}
+\newcommand{\qHat}{{\hat q}}
+\newcommand{\qStar}{{q^\star}}
+% \newcommand{\xMax}{X_{\max}}
+\newcommand{\xMax}{\xi}
+\newcommand{\grad}{\nabla}
+% \newcommand{\dd}{\partial}
+\newcommand{\E}{\bm E} 
+\newcommand{\pp}{\bm P} 
+% \newcommand{\CE}{\bm{CE}}
+\newcommand\subsetsim{\mathrel{%
+  \ooalign{\raise0.2ex\hbox{$\subset$}\cr\hidewidth\raise-0.8ex\hbox{\scalebox{0.9}{$\sim$}}\hidewidth\cr}}}
+
+\def\rcurs{{\mbox{$\resizebox{.09in}{.08in}{\includegraphics[trim= 1em 0 14em
+        0,clip]{ScriptR}}$}}}
+\newcommand{\rf}{\rcurs_f}
+
+\renewcommand{\rf}{r_0}
+
+\newcommand{\starsection}{\vspace{1em}\begin{center}$\star\quad\star\quad\star$\end{center}\vspace{1em}}
+
+% http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
+\NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{,}}O{}}
+{\text{minimize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}}
+\newcommand{\minimizeEquation}[1]{\text{minimize} \quad {#1}}
+\NewDocumentCommand{\stCommand}{m}
+{& \quad #1}
+
+\NewDocumentCommand{\maximizeEquationSt}{m >{\SplitList{,}}O{}}
+{\text{maximize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}}
+\newcommand{\maximizeEquation}[1]{\text{maximize} \quad {#1}}
+% \NewDocumentCommand{\stCommand}{m}
+% {& \quad #1}
+
+\newcommand{\comment}[1]{\textbf{[#1]}}
+
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
+\newtheorem*{thm*}{Theorem}
+\newtheorem{claim}{Claim}
+\newtheorem{lemma}{Lemma}
+
+\theoremstyle{definition}
+\newtheorem*{deff}{Definition}
+\newtheorem*{rem}{Remark}
+\newtheorem*{assumption}{Assumption}
+
+%% http://tex.stackexchange.com/a/43971/4233
+\makeatletter
+\def\th@plain{%
+  \thm@notefont{}% same as heading font
+  \itshape % body font
+}
+\def\th@definition{%
+  \thm@notefont{}% same as heading font
+  \normalfont % body font
+}
+\makeatother
+
+
+%\geometry{letterpaper}
+%\IEEEeqnarraydefcolsep{0}{\leftmargini}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "big_data_portfolio_optimization"
+%%% End:

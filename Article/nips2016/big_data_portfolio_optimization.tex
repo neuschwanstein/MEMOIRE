@@ -1,0 +1,51 @@
+\documentclass{article}
+
+\include{preamble}
+
+\title{Big Data Portfolio Optimization}
+\author{
+  Erick Delage\\
+  Department of Decision Sciences\\
+  HEC Montreal\\
+  Montreal...\\
+  \texttt{erick.delage@hec.ca}\\
+  \And
+  Thierry Bazier-Matte\\
+  HEC Montreal\\
+  \texttt{thierry.bazier-matte@hec.ca}\\
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  Drawing on statistical learning theory, we propose a robust portfolio optimization
+  mechanism agnostic to market distribution. In particular, our algorithm returns a linear
+  investment policy based on the risk preferences of the investor, with guaranteed out of
+  sample performance. We also provide guidance for big-data scenarios, ie. when the number
+  of features is of the order of the size of the sample, thus enriching the learning
+  theory literature. \comment{We conclude by contrasting small- and big-data scenario in a real
+  application.}
+\end{abstract}
+
+\input{intro}
+\input{model}
+\input{empirical}
+\input{conclusion}
+\input{appendix}
+
+\printbibliography
+
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+
+
+
+
+

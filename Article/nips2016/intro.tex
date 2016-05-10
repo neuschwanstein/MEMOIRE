@@ -1,0 +1,62 @@
+\section{Introduction}
+\label{sec:intro}
+
+Ever since it was formally theorized by Markowitz \cite{markowitz1952portfolio}, one-step
+theoretical portfolio management has mostly kept the same approach: maximize the returns
+while minimizing the variance using a trade-off parameter. However, such an approach
+suffers from a fatal flaw, as it needs to make asumptions on the underlying distribution
+of the returns. While Markowitz considered gaussian returns, others have investigated more
+sophisticated distributions, using eg. jump diffusion, gamma returns,
+etc. \comment{citations needed.}  On the other side, \cite{cover1991universal} exhibits a
+clever stock-picking algorithm with asymptotic performance guarantees
+\comment{retravailler, plus de détails}. However, unlike classical portfolio theory, this
+method assumes a risk-neutral behaviour, ie. an investor wishing only to maximize profits,
+with no regards to the possible loss. \comment{Et ici aussi.}
+
+This work is an attempt at bridging these two concepts. Using a size $n$ sample of the
+(unknown) market distribution consisting of market features and market returns, a
+regularization parameter $\lambda$ and by specifying an arbitrary concave utility
+function, we can derive an in-sample optimal linear investment policy by optimizing the
+certainty equivalent on the sample. We first show that the out-sample performance of the
+policy is bounded by a $O(1/\sqrt{n})$ error term. Second, We also investigate how this
+this method scales when the number of market features $p$ is of the order of $n$, ie. in a
+\textit{big-data} regime, and show that the performance scales linearly in the number $p$
+of available features. As far as we are aware, this situation has not been studied by the
+learning theory, and consequently we hope to enrich the field. \comment{Remanier.}
+Finally, we determine the conditions under which the true optimal solution in regard to
+the market distribution can be attained. \comment{We conclude by presenting numerical results from
+different degenerated distributions.}
+
+The \textit{market} considered by this document could  be any  asset
+traded on the market.\comment{Incorporer quelque part.}
+
+At a higher level, this document should be mostly understood as providing guidance to
+portfolio managers who would wish to incorporate general statistical and machine learning
+strategies in order to uncover market returns indicators. In fact, as more and more
+features are poured into a model (for example by considering polynomial kernels
+\comment{reference needed}), there is real possibility that the out-sample performance
+becomes degraded, and we wish to show how it can be prevented. 
+
+
+
+Most of this work derives from statistical learning theory, and in particular from
+stability theory, as exposed by Bousquet and Elisseef in their seminal paper
+\cite{bousquet2002stability}.  The author showed, using powerful concentration
+inequalities, how the empirical risk minimization of a Lipschitz loss function with
+additional convexity driven by a $\ell_2$ regularization on the decision would converge in
+the size of the sample toward the out-sample performance. In particular, their results
+were a departure from classical learning theory as the tools they were using stems
+strictly from algorithmic and convexity analysis. 
+
+We also improve on results from \cite{rudin2015big} \comment{anonynimize?} who study the
+application of learning theory to a feature based newsvendor problem. However, while they
+explicitly consider the big-data regime, we believe our model is more general in the sense
+that we directly show the effects of $p$ on the performance of the algorithm. 
+
+\comment{Padder davantage, plus de details sur 1. theorie moderne de portefeuille,
+  2. portefeuille universel, 3. Theorie de la stabilité, 4. Donner plus de références.}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "master"
+%%% End:

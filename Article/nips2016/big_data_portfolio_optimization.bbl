@@ -1,0 +1,141 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.5 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \sortlist{nty}{nty}
+    \entry{bousquet2002stability}{article}{}
+      \name{author}{2}{}{%
+        {{hash=cf4fea95321213e7dc3532fd33b85112}{Bousquet}{B\bibinitperiod}{Olivier}{O\bibinitperiod}{}{}{}{}}%
+        {{hash=af1237fe610213b60eefaf767e506435}{Elisseeff}{E\bibinitperiod}{André}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {JMLR. org}%
+      }
+      \strng{namehash}{95b6cda25f84c26f4cee89f563e92bc3}
+      \strng{fullhash}{95b6cda25f84c26f4cee89f563e92bc3}
+      \field{sortinit}{B}
+      \field{sortinithash}{4ecbea03efd0532989d3836d1a048c32}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Journal of Machine Learning Research}
+      \field{title}{Stability and generalization}
+      \field{volume}{2}
+      \field{year}{2002}
+      \field{pages}{499\bibrangedash 526}
+      \range{pages}{28}
+    \endentry
+    \entry{cover1991universal}{article}{}
+      \name{author}{1}{}{%
+        {{hash=0b642fd2f793a208b1d7ad49191a015c}{Cover}{C\bibinitperiod}{Thomas\bibnamedelima M}{T\bibinitperiod\bibinitdelim M\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley Online Library}%
+      }
+      \strng{namehash}{0b642fd2f793a208b1d7ad49191a015c}
+      \strng{fullhash}{0b642fd2f793a208b1d7ad49191a015c}
+      \field{sortinit}{C}
+      \field{sortinithash}{59f25d509f3381b07695554a9f35ecb2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Mathematical finance}
+      \field{number}{1}
+      \field{title}{Universal portfolios}
+      \field{volume}{1}
+      \field{year}{1991}
+      \field{pages}{1\bibrangedash 29}
+      \range{pages}{29}
+    \endentry
+    \entry{laurent2000adaptive}{article}{}
+      \name{author}{2}{}{%
+        {{hash=d36fbd2fa613212b2404bd90e1603e39}{Laurent}{L\bibinitperiod}{Beatrice}{B\bibinitperiod}{}{}{}{}}%
+        {{hash=3fdc73538980b7e7479a1d199d366e08}{Massart}{M\bibinitperiod}{Pascal}{P\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {JSTOR}%
+      }
+      \strng{namehash}{8259a0730ad2ccdd859c70a0f4b937da}
+      \strng{fullhash}{8259a0730ad2ccdd859c70a0f4b937da}
+      \field{sortinit}{L}
+      \field{sortinithash}{872351f18d0f736066eda0bf18bfa4f7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annals of Statistics}
+      \field{title}{Adaptive estimation of a quadratic functional by model selection}
+      \field{year}{2000}
+      \field{pages}{1302\bibrangedash 1338}
+      \range{pages}{37}
+    \endentry
+    \entry{markowitz1952portfolio}{article}{}
+      \name{author}{1}{}{%
+        {{hash=bdfa1c8585b5a4ae901315043a00f2f2}{Markowitz}{M\bibinitperiod}{Harry}{H\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley Online Library}%
+      }
+      \strng{namehash}{bdfa1c8585b5a4ae901315043a00f2f2}
+      \strng{fullhash}{bdfa1c8585b5a4ae901315043a00f2f2}
+      \field{sortinit}{M}
+      \field{sortinithash}{2684bec41e9697b92699b46491061da2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The journal of finance}
+      \field{number}{1}
+      \field{title}{Portfolio selection}
+      \field{volume}{7}
+      \field{year}{1952}
+      \field{pages}{77\bibrangedash 91}
+      \range{pages}{15}
+    \endentry
+    \entry{mohri2012foundations}{book}{}
+      \name{author}{3}{}{%
+        {{hash=8298c87c77cd46a5b2b7e799ba087945}{Mohri}{M\bibinitperiod}{Mehryar}{M\bibinitperiod}{}{}{}{}}%
+        {{hash=7aef26bccf2dba53f4b3c49adfb2983e}{Rostamizadeh}{R\bibinitperiod}{Afshin}{A\bibinitperiod}{}{}{}{}}%
+        {{hash=70e0fe957473b80f1b1b5dcb8e99d31e}{Talwalkar}{T\bibinitperiod}{Ameet}{A\bibinitperiod}{}{}{}{}}%
+      }
+      \list{publisher}{1}{%
+        {MIT press}%
+      }
+      \strng{namehash}{79f7790e383ae556514d27a942686512}
+      \strng{fullhash}{79f7790e383ae556514d27a942686512}
+      \field{sortinit}{M}
+      \field{sortinithash}{2684bec41e9697b92699b46491061da2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Foundations of machine learning}
+      \field{year}{2012}
+    \endentry
+    \entry{rudin2015big}{article}{}
+      \name{author}{2}{}{%
+        {{hash=ed6b4fef67abb4c043b72d1843b36826}{Rudin}{R\bibinitperiod}{Cynthia}{C\bibinitperiod}{}{}{}{}}%
+        {{hash=78e4091dd35ad3fa0af666e25e60a59c}{Vahn}{V\bibinitperiod}{Gah-Yi}{G\bibinithyphendelim Y\bibinitperiod}{}{}{}{}}%
+      }
+      \strng{namehash}{0b52df45bcaa547ee6d97941df05c329}
+      \strng{fullhash}{0b52df45bcaa547ee6d97941df05c329}
+      \field{sortinit}{R}
+      \field{sortinithash}{c7387613477035a752d935acfc3e3ea2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Available at SSRN 2559116}
+      \field{title}{The big data newsvendor: Practical insights from machine learning}
+      \field{year}{2015}
+    \endentry
+  \endsortlist
+\endrefsection
+\endinput
+
