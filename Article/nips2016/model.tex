@@ -230,6 +230,8 @@ which is equivalent, with probability $1-\delta$ to:
   Z^2 < p + 2\sqrt{p\log(1/\delta)} + 2\log(1/\delta).
 \]
 
+\comment{Tail bound on squared $t$-Student distribution being a $F$-distribution?}
+
 As a somewhat more natural example, without making any asumption on the distribution of
 the features, we can consider the case where each of them is bounded, either by truncation
 in the pre-processing step or because their support is known to be finite. If
@@ -266,255 +268,69 @@ In particular, this implies that the error bound shrinks at a $O(p/\sqrt{n})$ ra
 
 \subsection{Market efficiency and true optimal}
 
-The last theoretical topic we want to discuss is how our model relates to the theory of
-market efficiency. 
-\begin{deff}
-  Let $q^\star = \argmax_q\Psi(q)$. Then $M$ is said to be efficient with respect to $u$
-  if $\|q^\star\|$ is bounded. 
-\end{deff}
+The last theoretical topic we want to discuss is the behaviour of
+$q^\star = \argmax_q\Psi(q)$ the optimal investment decision of $M$. Specifically, we want
+to know under which circumstances $\|q^\star\|$ is bounded. This notion relates to the
+efficiency of the market. To understand why, consider a risk neutral utility $u(r) =
+r$. Then,
+\begin{align*}
+  \E[u(R\,q^TX)] &= q_1\E[RX_1] + \cdots + q_p\E[RX_p].\\
+                 &= q_1\Cov(R,X_1) + \cdots + q_p\Cov(R,X_p),
+\end{align*}
+since $\E X_i=0$ for all $i$. Therefore, if $\Cov(R,X_i)>0$ set $q_i=\infty$ and if
+$\Cov(R,X_i)<0$, set $q_i=-\infty$. Such a decision $q$ will therefore yield an infinite
+expected utility. This is clearly unacceptable, and therefore we want to understand the
+conditions on $u$ and $M$ that make $q^\star$ bounded.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{Old.}
-
-% \begin{assumption}
-%   Every feature $X_i$ and $X_j$ is pairwise independant. 
-% \end{assumption}
-
-% \begin{assumption}
-%   Each feature has been standardized, ie. $\E X_i = 0$ and $\Var X_i = 1$. In particular,
-%   this implies that $\E X_i^2 = 1$.
-% \end{assumption}
-
-\begin{assumption}
-  The random return has a finite support, ie.
-  $R\subsetsim \bm R \subseteq [r_{\min{}},r_{\max{}}]$. Additionally, $|R|\leq \bar r$.
-\end{assumption}
-
-\begin{assumption}
-  The portfolio manager is endowed with an utility function $\bar u:\bm R\to \bm U$ with
-  these properties:
-  \begin{itemize}
-  \item $\bar u$ can be reexpressed as $\bar u(r) = ku(r) + l$, $k>0$, with $u(0) = 0$ and
-    $\lim_{r\to0^+}u'(r) = 1$.
-  \item $u(r) = o(r)$, ie. the investor is risk-averse;
-  \item $|u(r_1) - u(r_2)| \leq \gamma|r_1-r_2|$, ie. $u$ is $\gamma$-Lipschitz;
-  \item $u$ is monotonically increasing;
-  \item With $u(r) = u_-(r)\bm1_{\{r<0\}}+u_+(r)\bm 1_{\{r\geq0\}}$, then $u_+(r) =
-    o(u_-(r))$. In other words, $u_-$ decreases faster than $u_+$ increases. 
-  \end{itemize}
-\end{assumption}
-
-\begin{deff}
-  Let $\ell:\bm M\times \bm Q\to\bm U$ be a loss function defined by
+\begin{lemma}
+  Let $u:\real\to\real$ be a monotonically increasing Lipschitz function such that
+  $u(0) = 0$ and that there exists $r_M$ such that $\grad u(r) = 0$ for any $r>r_M$. Then,
+  for any real random variable $Z$ such that $\pp\{Z<0\}>0$,
   \[
-    \ell(m,q) = \ell(x,r,q) = -u(rq^Tx)
+    \argmax_{k>0} \E[u(kZ)].
   \]
-  where $\rf$ is the risk free return rate. We also define the cost function
-  $c:\bm I\times\bm R\to\bm U$ as
-  \[
-    c(p,r) = -u(rp),
-  \]
-  so that $\ell(x,r,q) = c(q^Tx,r)$. 
-\end{deff}
-
-\begin{deff}
-  The in-sample risk $\hat R: \bm M^n\times \bm Q \to \bm U$ associated with decision $q$
-  and market sample $\mu_n$ is given by
-  \[
-    \hat R_{\mu_n}(q) = n^{-1} \sum_{i=1}^n \ell(m_i,q).
-  \]
-\end{deff}
-
-\begin{deff}
-  The empirical decision algorithm $\hat A_n:\bm M^n \to \bm Q$ associated with
-  market sample $\mu_n$ is the optimal value of the problem
-  \[
-    \text{minimize}\quad\hat R_{\mu_n}(q) + \lambda\|q\|^2.
-  \]
-\end{deff}
-
-From now on, as a notation shortcut, let $\hat q_n := \hat A_n(\mu_n)$ the in-sample
-decision associated with random market sample $\mu_n$ and $\hat R:=\hat R_{\mu_n}$ the
-in-sample risk function.
-
-\begin{deff}
-  The in-sample certainty equivalent $\hat\CE:\bm M^n\times\bm Q\to\bm R$ associated with
-  decision $q$ and market sample $\mu_n$ is given by
-  \[
-    \hat\CE(q) = ku^{-1}(-\hat R(q)) + l.
-  \]
-\end{deff}
-
-% \comment{Remove unnecessary definitions.}
-
-\begin{deff}
-  The true risk $R:\bm Q\to\bm U$ associated with decision $q$ is given by
-  \[
-    R(q) = \E\ell(M,q).
-  \]
-\end{deff}
-
-% \begin{deff}
-%   The true regularized risk $R_\lambda:\bm Q\to\bm U$ associated with decision $q$ is
-%   given by
-%   \[
-%     R_\lambda(q) = \E\ell(M,q) + \lambda\|q\|^2.
-%   \]
-% \end{deff}
-
-% \begin{deff}
-%   The optimal decision $q^\star$ is the optimal value of the problem
-%   \[
-%     \text{minimize}\quad R(q).
-%   \]
-% \end{deff}
-
-% \begin{deff}
-%   The optimal regularized decision $q^\star_\lambda$ is the optimal value of the
-%   regularized problem
-%   \[
-%         \text{minimize}\quad R_\lambda(q).
-%   \]
-% \end{deff}
-
-\begin{deff}
-  The true certainty equivalent $\CE$ associated with decision $q$ is given by
-  \[
-    \CE(q) = ku^{-1}(-R(q)) + l.
-  \]
-\end{deff}
-
-\subsection{Performance Bounds}
-
-We are concerned about how the in sample performance can deviate from the expected out sample
-performance, that is we want to identify $f_1$ such that
-\[
-  \CE(\hat q) \geq \hat\CE(\hat q) - f_1(n,p,\lambda)
-\]
-with high probability. We are also interested in the suboptimality of the problem, namely
-the function $f_2$ such that
-\[
-  \CE(q^\star) \geq \CE(\hat q) - f_2(n,p,\lambda),
-\]
-also with high probability. 
-
-The following theorem is adapted from \cite{bousquet2002stability}, and is the starting point of our
-analysis. 
-
-\begin{thm}
-  \label{thm1}
-  The in-sample and out-sample performance of the algorithm given by $\hat q$ is bounded
-  by the following expression with probability $1-\delta$:
-  \begin{align*}
-    R(\hat q) &\leq \hat R(\hat q) + \frac{(\gamma\bar r\xMax)^2}{2\lambda n} +
-    \left(\frac{(\gamma\bar r\xMax)^2}{\lambda} + \frac{\gamma(\gamma+1)\xMax^2\,r_{\max}\bar
-    r}{2\lambda}\right)\sqrt{\frac{\log 1/\delta}{2n}}\\
-              &:= \hat R(\hat q) + \Omega.
-  \end{align*}
-\end{thm}
+\end{lemma}
 
 \begin{proof}
-  \comment{See claim ????? for further details.}
+  We first note that $\lim_{k\to\infty}\E[u(kZ)]=-\infty$ is a sufficient condition. Now,
+  let $\bar Z$ be such that its distribution function $F_{\bar Z}(r)$ is defined as
+  follows:
+  \[
+    F_{\bar Z}(r) =
+    \begin{cases}
+      F_Z(r)&r \leq r_M\\
+      % \pp\{Z>r_M\}&r = r_M\\
+      1 & r>r_M.
+    \end{cases}
+  \]
+  Then, 
+  \[
+    \E[u(kZ)] = \pp\{kZ \leq r_M\}\E[u(kZ)|kZ\leq r_M] + \pp\{kZ > r_M\}u(r_M) = \E[u(k\bar Z)].
+  \]
+  Now, by hypothesis, there exists $\delta<0$ such that
+  $\pp\{Z<\delta\}=\pp\{\bar Z<\delta\} = p > 0$. Let $B$ be a discrete random variable
+  with two states such that $\pp\{B=\delta\} = 1-\pp\{B=r_M\} = p$. Then, by construction
+  $\pp\{B\geq r\} \geq \pp\{\bar Z\geq r\}$, so that $\E B \geq \E\bar Z$. This in turn
+  implies \comment{reference needed!} that $\E[u(kB)] \geq \E[u(k\bar Z)]$. But,
+  \[
+    \lim_{k\to\infty}\E[u(kB)] = \lim_{k\to\infty}\big(u(k\delta) + (1-p)u(kr_M)\big) = \infty,
+  \]
+  since $u_{+}(x) = o(u_{-}(x))$. \comment{Prove the other way?? Also, can it be proven
+    only with $r = o(u_{+}(r))$, ie. without asuming the $r_M$?}
 \end{proof}
 
 \begin{thm}
-  \label{thm2}
-  The following inequality holds with probability $1-\delta$:
-  \[
-    \CE(\hat q) \geq \hat\CE(\hat q) + ku^{-1}(\Omega).
-  \]
+  If, for all $1\leq i\leq p$, $\pp\{RX_i<0\}>0$ and $\pp\{RX_i>0\}>0$ and if, in addition
+  to previous assumptions on $u$, we suppose that $u$ is bounded in such a way that there
+  exists $r_M$ such that $\grad u(r) = 0$ for all $r>r_M$, ie. additionnal returns past
+  $r_M$ provide no additional utility, then $\|q^\star\|$ is bounded.
 \end{thm}
-
 \begin{proof}
-  The following steps follow directly from the monotonicity, convexity, and
-  superadditivity of $u^{-1}$ :
-  \begin{align*}
-    & R(\hat q) \leq \hat R(\hat q) + \Omega\\
-    \iff & -R(\hat q) \geq -\hat R(\hat q) - \Omega\\
-    \iff & u^{-1}(-R(\hat q)) \geq u^{-1}(-\hat R(\hat q) - \Omega)\\
-    \iff & u^{-1}(-R(\hat q)) \geq u^{-1}(-\hat R(\hat q)) + u^{-1}(-\Omega)\\
-    \iff & ku^{-1}(-R(\hat q))+l \geq ku^{-1}(-\hat R(\hat q))+l + ku^{-1}(-\Omega)\\
-    \iff & \CE(\hat q) \geq \hat\CE(\hat q) + ku^{-1}(-\Omega).\qedhere
-  \end{align*}
+  Let $q\in\real^p$ such that $\|q\|=1$ and $Z=R\,q^TX\subsetsim\real$. By asumption, $XR$
+  can take negative values on all its axes and therefore so can the values of $Z$. The
+  results of Lemma 5 apply to $Z$, ie. $\argmax_{k>0} \E[u(kZ)]$ is bounded. Because we
+  considered an arbitrary $q$, the result of Theorem 3 follows.
 \end{proof}
-
-\begin{thm}\
-  \label{thm4}
-  Likewise, the following inequality holds:
-  \[
-    \E_{\mu_n}[\CE(\hat q)] \geq 
-  \]
-\end{thm}
-
-Since $\Omega>0$, it follows that $u^{-1}(-\Omega) > -\Omega$, therefore we have the
-following relation:
-\[
-  \CE(\hat q) \geq \hat\CE(\hat q) - O\left(\frac{\xMax^2}{\sqrt{n}\lambda}\right).
-\]
-
-
-\subsection{Big Data Situation}
-
-The literature revolving around Theorem \ref{thm1} and its applications ([Shai-Shalev,
-Rudin]) generally leaves the $\xMax$ as an afterthought, but in real big-data contexts, if
-$n$ is insufficiently large compared to $p$, than out-of-sample convergence might not be
-certain. Actually, with $n=o(p^2)$, divergence is almost certain. 
-
-Let's assume that $\E X_i = 0$ for all features, and let $Z^2 = \sum_{i=1}^p X_i^2$. In a
-general setting, if $\E X_i^2 \leq M$, then $\E Z^2 \leq Mp$, and Markov's inequality
-applies:
-\[
-  \pp\{Z^2 \geq t\} \leq \frac{\E Z^2}{t} \leq \frac{Mp}{t}.
-\]
-Equivalently, with probability $1-\delta$, 
-\[
-  Z^2 \leq \delta^{-1}Mp = O(p).
-\]
-
-If we further assume pairwise independance of features and that each feature is supported
-by a closed interval, wether because the support of the feature is known to be bounded or
-because it's been saturated in pre-processing, then each feature can be rescaled by $a_i$
-so that so that $a_iX_i = \tilde X_i \subsetsim[-1,1]$, or $\tilde X_i^2
-\subsetsim[0,1]$. Then, using Hoeffding's theorem,
-\[
-  \pp\{\tilde Z^2 \geq \tilde Mp + t\} \leq \exp\left(-\frac{2t^2}{p}\right),
-\]
-equivalently with probability $1-\delta$, 
-\[
-  \tilde Z^2 \leq \tilde Mp + \sqrt{\frac{p\log(1/\delta)}{2}} = O(p)
-\]
-Of course, it is easy to see that such a transformation is reversible. 
-
-The point is that in general cases, we expect to have $\xMax^2 =O(p)$, so that the
-convergence of our algorithm will be given by 
-\[
-  \CE(\hat q) \geq \hat\CE(\hat q) - O\left(\frac{p}{\sqrt{n}\lambda}\right).
-\]
 
 %%% Local Variables:
 %%% mode: latex
