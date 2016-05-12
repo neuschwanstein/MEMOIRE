@@ -63,6 +63,7 @@ ie. $\|X\|\leq\xi$, although we will relax this hypothesis in the next subsectio
 
 We are now in a position to present a bound on the out-sample error:
 \begin{thm}
+  \label{thm_oos}
   With probability $1-\delta$, the error between the in- and out-sample certainty
   equivalent is bounded by the following relation:
   \[
@@ -265,72 +266,6 @@ simply states that with probability $1-\delta$,
   \]
 In particular, this implies that the error bound shrinks at a $O(p/\sqrt{n})$ rate. 
 \end{thm}
-
-\subsection{Market efficiency and true optimal}
-
-The last theoretical topic we want to discuss is the behaviour of
-$q^\star = \argmax_q\Psi(q)$ the optimal investment decision of $M$. Specifically, we want
-to know under which circumstances $\|q^\star\|$ is bounded. This notion relates to the
-efficiency of the market. To understand why, consider a risk neutral utility $u(r) =
-r$. Then,
-\begin{align*}
-  \E[u(R\,q^TX)] &= q_1\E[RX_1] + \cdots + q_p\E[RX_p].\\
-                 &= q_1\Cov(R,X_1) + \cdots + q_p\Cov(R,X_p),
-\end{align*}
-since $\E X_i=0$ for all $i$. Therefore, if $\Cov(R,X_i)>0$ set $q_i=\infty$ and if
-$\Cov(R,X_i)<0$, set $q_i=-\infty$. Such a decision $q$ will therefore yield an infinite
-expected utility. This is clearly unacceptable, and therefore we want to understand the
-conditions on $u$ and $M$ that make $q^\star$ bounded.
-
-\begin{lemma}
-  Let $u:\real\to\real$ be a monotonically increasing Lipschitz function such that
-  $u(0) = 0$ and that there exists $r_M$ such that $\grad u(r) = 0$ for any $r>r_M$. Then,
-  for any real random variable $Z$ such that $\pp\{Z<0\}>0$,
-  \[
-    \argmax_{k>0} \E[u(kZ)].
-  \]
-\end{lemma}
-
-\begin{proof}
-  We first note that $\lim_{k\to\infty}\E[u(kZ)]=-\infty$ is a sufficient condition. Now,
-  let $\bar Z$ be such that its distribution function $F_{\bar Z}(r)$ is defined as
-  follows:
-  \[
-    F_{\bar Z}(r) =
-    \begin{cases}
-      F_Z(r)&r \leq r_M\\
-      % \pp\{Z>r_M\}&r = r_M\\
-      1 & r>r_M.
-    \end{cases}
-  \]
-  Then, 
-  \[
-    \E[u(kZ)] = \pp\{kZ \leq r_M\}\E[u(kZ)|kZ\leq r_M] + \pp\{kZ > r_M\}u(r_M) = \E[u(k\bar Z)].
-  \]
-  Now, by hypothesis, there exists $\delta<0$ such that
-  $\pp\{Z<\delta\}=\pp\{\bar Z<\delta\} = p > 0$. Let $B$ be a discrete random variable
-  with two states such that $\pp\{B=\delta\} = 1-\pp\{B=r_M\} = p$. Then, by construction
-  $\pp\{B\geq r\} \geq \pp\{\bar Z\geq r\}$, so that $\E B \geq \E\bar Z$. This in turn
-  implies \comment{reference needed!} that $\E[u(kB)] \geq \E[u(k\bar Z)]$. But,
-  \[
-    \lim_{k\to\infty}\E[u(kB)] = \lim_{k\to\infty}\big(u(k\delta) + (1-p)u(kr_M)\big) = \infty,
-  \]
-  since $u_{+}(x) = o(u_{-}(x))$. \comment{Prove the other way?? Also, can it be proven
-    only with $r = o(u_{+}(r))$, ie. without asuming the $r_M$?}
-\end{proof}
-
-\begin{thm}
-  If, for all $1\leq i\leq p$, $\pp\{RX_i<0\}>0$ and $\pp\{RX_i>0\}>0$ and if, in addition
-  to previous assumptions on $u$, we suppose that $u$ is bounded in such a way that there
-  exists $r_M$ such that $\grad u(r) = 0$ for all $r>r_M$, ie. additionnal returns past
-  $r_M$ provide no additional utility, then $\|q^\star\|$ is bounded.
-\end{thm}
-\begin{proof}
-  Let $q\in\real^p$ such that $\|q\|=1$ and $Z=R\,q^TX\subsetsim\real$. By asumption, $XR$
-  can take negative values on all its axes and therefore so can the values of $Z$. The
-  results of Lemma 5 apply to $Z$, ie. $\argmax_{k>0} \E[u(kZ)]$ is bounded. Because we
-  considered an arbitrary $q$, the result of Theorem 3 follows.
-\end{proof}
 
 %%% Local Variables:
 %%% mode: latex

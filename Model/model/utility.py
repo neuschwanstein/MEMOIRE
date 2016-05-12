@@ -71,6 +71,26 @@ class LinearUtility(Utility):
     def _derive(self,r):
         return (r<=0)*1 + (r>0)*self.β
 
+class RiskNeutralUtility(Utility):
+    def __init__(self):
+        self.k = 1
+        self.gamma_lipschitz = 1
+
+    def __str__(self):
+        return 'u(r) = r'
+
+    def cvx_util(self,r):
+        return r
+
+    def _call(self,r):
+        return r
+
+    def _derive(self,r):
+        try:
+            return np.ones_like(r)
+        except:
+            return 1
+
 
 class LinearPlateauUtility(Utility):
     '''Piecewise linear utility such that ∂u(x) = 1 for x ∈ (-∞,0), ∂u(x) = β for x ∈ [0,x0]
