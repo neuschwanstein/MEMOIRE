@@ -1,0 +1,52 @@
+\subsection{Proof of Theorem 2}
+
+First, in order to tidy up the proof, let
+\begin{gather*}
+  \EU(q) := \E_F(u(R\cdot q^T X))\,;\\
+  \EU_\lambda(q) := \E_F(u(R\cdot q^T X)) - \lambda\|q\|^2,
+\end{gather*}
+with $q^\star := \argmin_q \EU(q)$ and $q^\star_\lambda := \argmin_q
+\EU_\lambda(q)$. Next, note that using Theorem 1 from \cite{sridharan2009fast} and using
+$2\lambda$-convexity of $\EU_\lambda$ and $\gamma$-Lipschitz property of $u$, we have with
+probability $1-\delta$ that
+\[
+  -\lambda\|\hat q - q^\star_\lambda\|^2 \geq \EU_\lambda(\hat q) - \EU_\lambda(q^\star_\lambda) \geq -\omega.
+\]
+where
+\[
+  \omega = \frac{4\gamma^2\xi^2(32 + \log(1/\delta))}{\lambda n}.
+\]
+
+Notice that this inequality implies that 
+\[
+  \EU(\hat q) - \EU(q^\star_\lambda) \geq \lambda\bigl(\|\hat q\|^2 - \|q^\star_\lambda\|^2\bigr) -\omega.
+\]
+But,
+\[
+  \lambda\bigl(\|\hat q\|^2 - \|q^\star_\lambda\|^2\bigr) \geq -\lambda\bigl(\|\hat q -
+  q^\star_\lambda\|^2 +2\|\hat q\|\|\hat q - q^\star_\lambda\|\bigr).
+\]
+Since $\|\hat q\| \leq \bar r\xi/(2\lambda)$ and
+$\|\hat q - q^\star_\lambda\|^2 \leq \omega/\lambda$, and therefore
+$\|\hat q - q^\star_\lambda\| \leq \sqrt{\omega/\lambda}$, so that we end up with
+\[
+  \EU(\hat q) - \EU(q^\star_\lambda) \geq -2\omega - \bar r\xi\sqrt{\frac{\omega}{\lambda}}.
+\]
+
+If we let $\psi := \EU(q^\star) -\EU(q^\star_\lambda)$, we can then bound the
+suboptimality of decision $\hat q$ in the following fashion:
+\begin{align*}
+  \EU(\hat q) &= \EU(q^\star) + \EU(\hat q) - \EU(q^\star_\lambda) + \EU(q^\star_\lambda)
+                - \EU(q^\star)\\
+              &\geq \EU(q^\star) - \psi - \bar r\xi\sqrt{\frac{\omega}{\lambda}} - 2\omega.
+\end{align*}
+
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "big_data_portfolio_optimization"
+%%% End:

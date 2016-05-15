@@ -3,7 +3,7 @@
 % \usepackage{times}
 \usepackage{amsmath}
 % %\usepackage{pdfcomment}
-\usepackage{amsthm}
+\usepackage{amsthm,amsfonts}
 \usepackage{graphicx}
 % \usepackage{geometry}
 % \usepackage{subcaption}
@@ -19,8 +19,8 @@
 \usepackage{mathrsfs}
 % \usepackage{enumitem}
 
-\usepackage{biblatex}
-\addbibresource{bibliography.bib}
+%\usepackage{biblatex}
+%\addbibresource{bibliography.bib}
 
 % \setlength{\parindent}{0em}
 % \setlength{\parskip}{0.8em}
@@ -28,7 +28,7 @@
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\maximize}{maximize}
-% \DeclareMathOperator*{\minimize}{minimize}
+\DeclareMathOperator*{\minimize}{minimize}
 \DeclareMathOperator{\st}{s.t.}
 \DeclareMathOperator{\epi}{epi}
 \DeclareMathOperator{\diag}{diag}
@@ -39,7 +39,6 @@
 \DeclareMathOperator{\Cov}{Cov}
 % \DeclareMathOperator{\E}{E}
 
-\DeclareMathOperator*{\minimize}{minimize}
 % \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 
@@ -48,7 +47,8 @@
 
 \newcommand{\iso}{\simeq}
 \newcommand{\dd}{\partial}
-\newcommand{\real}{\mathscr{R}}
+\newcommand{\real}{\mathbb{R}}
+\renewcommand{\Re}{\real}
 \newcommand{\normal}{\mathscr{N}}
 \newcommand{\trueRisk}{R_{\mathrm{true}}}
 \newcommand{\uInv}{u^{-1}}
@@ -86,18 +86,21 @@
 % {& \quad #1}
 
 \newcommand{\comment}[1]{\textbf{[#1]}}
+\newcommand{\Erick}[1]{\textbf{[Erick says: #1]}}
 
 \theoremstyle{plain}
 \newtheorem{prop}{Proposition}
 \newtheorem{thm}{Theorem}
+\newtheorem{coro}{Corollary}
 \newtheorem*{thm*}{Theorem}
 \newtheorem{claim}{Claim}
 \newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
 
 \theoremstyle{definition}
-\newtheorem*{deff}{Definition}
+\newtheorem*{definition}{Definition}
 \newtheorem*{rem}{Remark}
-\newtheorem*{assumption}{Assumption}
+\newtheorem*{ex}{Example}
 
 %% http://tex.stackexchange.com/a/43971/4233
 \makeatletter

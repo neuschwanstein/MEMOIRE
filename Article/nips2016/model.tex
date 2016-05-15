@@ -1,271 +1,88 @@
 \section{Model and Main Results}
-
-\subsection{Assumptions and definitions}
-
-
-\comment{Nécesaire?} In the following, $\bm A$ (capital boldface) are assumed to represent
-a real subset of any dimension, $A$ (capital case) represents random variables (or
-distributions) and $a$ (lower case) represents deterministic variables or
-realizations. $\real$ represents the real set, $\subsetsim$ the support of a random
-variable, and $\|\cdot\|$ is the euclidean norm.
-
-Our model considers the market $M$ as being a $p+1$-variate random distribution, with on
-its first margin a random (finite) return
-$R\subsetsim\bm R=[r_{\min},r_{\max}]\subset\real$ \comment{Il peut être plus simple
-  d'avoir $|R|\leq\bar r$, notamment dans l'expression de $\Omega$} and on the other
-margin a random vector of features $(X_1,\dots,X_p)$, which would typically represent
-financial or economic news, etc. We will assume that all features are pairwise
-independant.
-
-We also suppose that the investor is endowed with a monotonically increasing concave
-utility function $\bar u:\bm R\to\bm U$, such that $\bar u$ can be rescaled to $u$ with
-$\bar u(r) = ku(r) + l$, with the additionnal requirements that $u(0)=0$,
-$\lim_{r\to0^+}\grad u(r) = 1$ and that $u$ is $\gamma$-Lipschitz, ie. such that for any
-$r_1,r_2\in\bm R$, $|u(r_1) - u(r_2)| \leq \gamma|r_1-r_2|$. For example, any piece-wise
-linear utility would fit the Lipschitz requirements.
-
-Our method studies optimal linear investment decisions $q\in\bm Q\subseteq\real^p$ over
-the random features so as to maximize the certainty equivalent $\CE(q)$ of the portfolio,
-where:
-\[
-  \CE(q) = u^{-1}(\Psi(q)),
-\]
-with
-\[
-  \Psi(q) = \E_M[u(R\,q^TX)]
-\]
-the out-sample utility of $q$. We would typically add a riskless return rate to the
-equation, however we set it to 0 for the sake of simplicity. Additionnally, given a sample
-$\{(x_i,r_i)\}_{i=1}^n$ drawn from $M^n$, we will also study the sample certainty
-equivalent $\hat\CE$:
-\[
-  \hat\CE(q) = u^{-1}(\hat\Psi(q)),
-\]
-with
-\[
-  \hat\Psi(q) = n^{-1}\sum_{i=1}^n u(r_i\,q^Tx_i)
-\]
-the in-sample utility of $q$. 
-
-\subsection{Out-sample complexity}
-
-Supposing we have a size $n$ sample drawn \textit{i.i.d.} from the market, then a natural
-choice for $q$ would be the optimal solution of the regularized in-sample utility:
-\[
-  \hat q = \argmax_q\{\hat\Psi(q)-\lambda\|q\|^2\}  = \argmax_q \left\{\frac{1}{n}\sum_{i=1}^n u(r_i\,q^Tx_i) - \lambda\|q\|^2\right\},
-\]
-where $\lambda\|q\|^2$ is here to avoid overfitting on the training sample. We will
-sometimes refer to $\hat q$ as the algorithm mapping from a market sample to the decision
-vector, rather than the decision vector itself.
-
-Before going on, we will assume that the random features vector is bounded,
-ie. $\|X\|\leq\xi$, although we will relax this hypothesis in the next subsection.
-
-We are now in a position to present a bound on the out-sample error:
-\begin{thm}
-  \label{thm_oos}
-  With probability $1-\delta$, the error between the in- and out-sample certainty
-  equivalent is bounded by the following relation:
-  \[
-    \CE(\hat q) \geq \hat\CE(\hat q) - \Omega\cdot\nabla u^{-1}(\hat\CE(\hat q)),
-  \]
-  where
-  \[
-    \Omega = \frac{(\bar r\xi)^2}{2\lambda} \left(\frac{\gamma^2}{n} + \frac{\gamma(1+3\gamma)}{\sqrt{2n}}\sqrt{\log(1/\delta)}\right).
-  \]
-In particular, this implies that the error bound shrinks at a $O(1/\sqrt{n})$ rate. 
-\end{thm}
-
-Our proof of Theorem 1 proceeds as follow. First, borrowing from the terminology
-introduced by \cite{bousquet2002stability}, we show that the algorithm leading to $\hat q$
-is $\beta$-stable. We then show that for any $\hat q$ generated from a sample of $M$, the
-utility derived from applying this decision will be absolutely bounded, regardless of the
-outcome from $M$. These last two conditions can therefore lead to a direct application of
-Bousquet-Ellisseef out-sample error bound theorem on the $\bm U$ space. We finally show how
-this result can be inverted back to the $\bm R$ space.
-
-\begin{lemma}
-  \label{sigma-adm}
-  Let $q_1,q_2\in\bm Q$, $x\sim X$ and $r\sim R$. The algorithm generating $\hat q$ has
-  $\sigma$-admissiblity of $\gamma\bar r$, ie.
-  \[
-    |u(r\,q_1^T x) - u(r\,q_2^T x)| \leq \gamma\bar r|q_1^Tx - q_2^Tx|.
-  \]
-\end{lemma}
-\begin{proof}
-  This lemma follows trivially from the Lipschitz property of $u$. See Definition 19 from
-  \cite{bousquet2002stability} for more details.
-\end{proof}
-
-\begin{lemma}
-  \label{beta-bound}
-  The algorithm generating $\hat q$ has $\beta$-stability, ie. with $s_n \sim M^n$ and
-  $s_n'$ differing from $s_n$ by a single resampling from $M$, then, 
-  \[
-    |u(R\,\hat q(s_n)^T X) - u(R\,\hat q(s_n')^T X)| \leq \beta,
-  \]
-  where
-  \[
-    \beta \leq \frac{(\gamma\bar r\xMax)^2}{2\lambda n}.
-  \]
-\end{lemma}
-\begin{proof}
-  Using Lemma \ref{sigma-adm}, this follows directly from Theorem 22 in
-  \cite{bousquet2002stability}.
-\end{proof}
-
-\begin{lemma}
-  \label{q-bound}
-  The norm of the decision $\hat q$ is bounded:
-  \[
-    \|\hat q\| \leq \frac{\gamma\bar r\xMax}{2\lambda}.
-  \]
-\end{lemma}
-\begin{proof}
-  Let $\{(x,r)\}_n \sim M^n$ be an \textit{i.i.d.} sample of the market. The empirical decision
-  algorithm is equivalent to
-  \begin{align*}
-    \maximizeEquationSt{n^{-1}\sum_{i=1}^n u(r_i\,q^Tx_i) - \lambda s^2}[s\geq0\\,\|q\|=1],
-  \end{align*}
-  where the optimization variables are now the direction $q$ and the scale $s$. Therefore,
-  for any direction $q$, we can define a concave function $g(s)$ which becomes the
-  objective:
-  \begin{align*}
-    \maximizeEquationSt{g(s) = n^{-1}\sum_{i=1}^n u(r_i\,sq^Tx_i) - \lambda s^2}[s\geq 0].
-  \end{align*}
-  
-  Because $g:\real_{+}\to\real$ is concave, we can consider two cases: either the maximum
-  is realized at the boundary, ie. $s^\star=0$, or there exists an optimal value
-  $s^\star > 0$ such that $\nabla g(s^\star)=0$. To derive a bound on $s^\star$, we can seek a
-  value $\bar s$ such that for any $q$, $\nabla{}g(\bar s)<0$ and therefore $s^\star < \bar s$.
-
-  To do so, we first note that 
-  \[
-    \grad g(s) = n^{-1}\sum_{i=1}^nr_i\,q^Tx_i\,u'(r_i\,sq^Tx_i) - 2\lambda s,
-  \]
-  bu because $\|q\|=1$, we have $q^Tx_i\leq\|x_i\|\leq\xMax$. We also have
-  $r_i\leq \bar r$ and $u'\leq\gamma$, so that
-  \[
-    \grad g(s) \leq \gamma\bar r\xi - 2\lambda s.
-  \]
-  Therefore, with
-  \[
-    \bar s = \frac{\gamma\bar r\xMax}{2\lambda},
-  \]
-  we have $\grad g(\bar s)\leq 0$. 
-\end{proof}
-
-\begin{lemma}
-  \label{u-bound}
-  For any $(x,r)\sim M$ and any $\hat q$,
-  \[
-    -\frac{(\gamma\xi \bar r)^2}{2\lambda} \leq u(r\,\hat q^Tx) \leq \frac{\gamma(\xi\bar r)^2}{2\lambda}.
-  \]
-\end{lemma}
-
-\begin{proof}
-  The maximum utility will be realized when $r = \bar r$, so that
-  \[
-    u(r\,\hat q^T x) \leq r {\hat q}^T x \leq \frac{\gamma(\xi\bar r)^2}{2\lambda},
-  \]
-  since the identity function bounds $u$ above. Likewise for negative returns, although
-  this time $\gamma$ applies. 
-\end{proof}
-
-The following theorem was first proven in \cite{bousquet2002stability}, although its
-statement is adapted from \cite{mohri2012foundations} and is presented in accordance to
-our particular setting.
-\begin{thm*}[Bousquet-Ellisseef Outsample Error Theorem]
-  Let $s_n=\{(x_i,r_i)\}_{i=1}^n$ by a size $n$ sample drawn \textit{i.i.d.} from $M$. If
-  $\hat q$ has $\beta$-stability and
-  $\hat u_{\min}\leq u(R\,\hat q^TX) \leq \hat u_{\max}$, then, with probability
-  $1-\delta$, 
-  \[
-    \Psi(\hat q) \geq \hat\Psi(\hat q) - \Omega_u,
-  \]
-  where
-  \[
-    \Omega_u = \beta + (2n\beta + (\hat u_{\max}-\hat u_{\min}))\sqrt{\frac{\log(1/\delta)}{2n}}.
-  \]
-\end{thm*}
-
-Using directly Lemma \ref{beta-bound} and \ref{u-bound}, we therefore find the following outsample
-error bound on the utility
-\[
-  \Omega_u = \frac{(\bar r\xi)^2}{2\lambda} \left(\frac{\gamma^2}{n} + \frac{\gamma(1+3\gamma)}{\sqrt{2n}}\sqrt{\log(1/\delta)}\right).
-\]
-
-We now show how to transform this last result on a bound on the CE of the decision. Note
-that for any convex function $f$, $f(a+b) \geq f(a) + b\cdot\grad f(a)$. Therefore, from
-the out-sample error bounding theorem, we have
-\[
-  u^{-1}(\Psi(\hat q)) \geq u^{-1}(\hat\Psi(\hat q) - \Omega_u) \geq u^{-1}(\hat\Psi(\hat
-  q)) - \Omega_u\cdot\grad(u^{-1})(\hat\Psi(\hat q)),
-\]
-since $u^{-1}$ is also a monotonic function. This proves Theorem 1. 
+\newcommand{\Expect}{E}
+\newcommand{\Prob}{P}
+\newcommand{\F}{F}
+\newcommand{\Fhat}{{\hat{\F}}}
+\newcommand{\qhat}{{\hat{q}}}
+\newcommand{\Sx}{{\mathcal{S}_X}}
+\newcommand{\Sr}{{\mathcal{S}_R}}
+\newcommand{\Sn}{S_n}
+\newcommand{\urange}{u_{\mbox{\footnotesize range}}}
+%\newcommand{\umin}{u_{\mbox{\footnotesize min}}}
+\newcommand{\qhatOp}{{\bold{\qhat}}}
 
 
-\subsection{Big Data Phenomenon}
-We now take a closer look on the effect the dimension of the feature space can have on the
-bound $\Omega$ stated in Theorem 1, and in particular on the bound $\xi^2$. If we let
-$Z^2 = \sum_{i=1}^nX_i^2$ be the random squared norm of $X$, we can show that $Z^2$ is of
-the order $O(p)$ with high probabiltiy . This implies that the algorithm $\hat q$ has in
-fact a sample complexity $O(p/\sqrt{n})$.
+%\newcommand{\EUFq}{\mbox{EU($q;\F$)}}
+%\newcommand{\EUFhqh}{\mbox{EU($\qhat;\Fhat$)}}
+%\newcommand{\EUFqh}{\mbox{EU($\qhat;\F$)}}
+%\newcommand{\CEFq}{\mbox{CE($q;\F$)}}
+%\newcommand{\CEFhqh}{\mbox{CE($\qhat;\Fhat$)}}
+%\newcommand{\CEFqh}{\mbox{CE($\qhat;\F$)}}
 
-We present three cases, each with additional generalization properties. In what follows,
-we will assume with no loss of generality (because it is an affine transformation) that
-$\E X_i=0$ and $\Var X_i = 1$, which already implies that $\E X_i^2=1$, and therefore
-$\E Z^2=p$.
 
-\comment{Ajouter de l'intuition pour le lecteur.}
 
-Let us first consider the specific case where $X\sim\normal(0,I)$, ie. $X$ is a
-$p$-mutlinormal random vector. It then follows that $Z^2\sim\chi^2(p)$. But we know from
-\cite{laurent2000adaptive} that a chi-square distribution has the following property for
-all $t$:
-\[
-\pp\{Z^2-p \geq 2\sqrt{pt} + 2t\} \leq e^{-t},
-\] 
-which is equivalent, with probability $1-\delta$ to:
-\[
-  Z^2 < p + 2\sqrt{p\log(1/\delta)} + 2\log(1/\delta).
-\]
 
-\comment{Tail bound on squared $t$-Student distribution being a $F$-distribution?}
 
-As a somewhat more natural example, without making any asumption on the distribution of
-the features, we can consider the case where each of them is bounded, either by truncation
-in the pre-processing step or because their support is known to be finite. If
-$X_i^2 \leq \nu_i$, and we let $\nu^2_0 = \sum_{i=1}^p \nu_i^2$, then, by Hoeffding's
-theorem,
-\[
-  \pp\{Z^2 - p\geq t\} \leq \exp\left(-\frac{t^2}{\nu_0^2}\right),
-\]
-which, again, can be reexpressed as the following inequality with probability $1-\delta$:
-\[
-  Z^2 < p + \nu_0\sqrt{\log(1/\delta)}.
-\]
-Finally, Markov's inequality provides the most general theorem for the situation, since it
-simply states that with probability $1-\delta$, 
-\[
-  Z^2 < \delta^{-1}p.
-\]
-\begin{thm}
-  With probability $1-(\delta_1+\delta_2)$, the error between the in- and out-sample certainty
-  equivalent is bounded by the following relation:
-  \[
-    \CE(\hat q) \geq \hat\CE(\hat q) - \Omega\cdot\nabla u^{-1}(\hat\CE(\hat q)),
-  \]
-  where
-  \[
-    \Omega = \frac{\bar r^2p}{2\lambda\delta_1} \left(\frac{\gamma^2}{n} + \frac{\gamma(1+3\gamma)}{\sqrt{2n}}\sqrt{\log(1/\delta_2)}\right).
-  \]
-  If the features are bounded, then 
-  \[
-    \Omega = (p+\nu_0\sqrt{\log(1/\delta_1)})\frac{\bar r^2}{2\lambda} \left(\frac{\gamma^2}{n} + \frac{\gamma(1+3\gamma)}{\sqrt{2n}}\sqrt{\log(1/\delta_2)}\right).
-  \]
-In particular, this implies that the error bound shrinks at a $O(p/\sqrt{n})$ rate. 
-\end{thm}
+We consider a classical financial portfolio selection problem involving a risky asset with
+random return rate $R$ and a risk-free asset with return rate of $0\%$ for simplicity. We
+also suppose that the investor's risk aversion can be characterized using expected utility
+theory using some strictly increasing concave utility function and has access to side
+information regarding the returns. This information might be the result of processing the
+most recent financial or economic news, etc. We let this information be described as a
+vector of $p$ random features $[X_1,X_2,\dots,X_p]$. In this context, if the the
+distribution $\F$ of the pair $(X,R)$ of side information and return is known, a linear
+investment policy that exploits the side information optimally for this investor can be
+obtained by solving the following optimization problem:
+\begin{equation}
+\maximize_{q\in\Re^p}\;\;\;\Expect_\F[u(R\cdot q^TX)]\;,\label{EUF}
+\end{equation}
+where it is assumed that short-selling is permitted. 
+
+In practice however, the exact distribution describing the relation between $X$ and $R$ is
+not available at the time of designing the investment policy and one might instead need to
+exploit a set of samples $\Sn:=\{(X_i,R_i)\}_{i=1}^n$ drawn independently and identically
+from $\F$. Unfortunately, when the $n$ is relatively small compared to $p$, it is well
+known that problem \eqref{EUF} where we replace $\F$ with the empirical distribution
+$\Fhat$ observed in the sample can suffer from severe overfitting and produce investment
+policies that perform badly out of sample. This is for instance illustrated in the
+following example.
+
+\begin{ex}
+  Consider for instance a case where $n=p$ and each feature $X_i$ is independantly and
+  identically drawn from a Gaussian distribution. Given that it is well known that the
+  probability that the random matrix $\Xi := [X_1\;X_2\;\dots\;X_n]$ be singular is null,
+  then one can easily establish that problem \eqref{EUF} with $\Fhat$ is
+  unbounded. Indeed, one can verify that $r_i \bar{q}^T x_i = 1$ for all $i=1,\dots,n$
+  when $\bar{q}$ is set to ${\Xi^{-1}}^T [1/r_1\;1/r_2\;\dots\;1/r_n]^T$. Hence, one can
+  achieve an arbitrarily large empirical expected utility by investing according to
+  $\alpha\bar{q}$ for $\alpha>0$.
+\end{ex}
+
+To prevent issues associated to overfitting, one might instead seek the optimal solution
+of the following regularized empirical expected utility maximization problem :
+\begin{equation}
+\maximize_{q\in\Re^p}\;\;\;\Expect_\Fhat[u(R\cdot q^TX)]+\lambda\|q\|^2\;.\label{EUFhatReg}
+\end{equation}
+Note that when it exists, we will refer to the optimal solution of this problem as $\qhat$.
+
+The question remains of understanding what guarantees does one have regarding out of
+sample performance of the portfolio investment policy obtained from such a regularized
+problem. In particular, since utility functions are expressed in units without any
+physical meaning for the investor, any guarantees derived using learning theory should be
+reinterpreted in terms of a guarantee on the certainty equivalent\footnote{The fact that
+  $c$ is the certainty equivalent of a random return $R$ implies that the investors is
+  indifferent between being exposed to the risk of $R$ or getting involved in a risk free
+  investment that has a return rate of $c$.} (in percent of return) of the risky
+investment produced by $\qhat^T X$. In other words, we will be interested in bounding how
+different the in-sample certainty equivalent performance of $\qhat$ might be compared to
+the out-of-sample certainty equivalent performance and how different \Erick{describe in
+  words the second bound}.
+
+
+\input{oos_performance}
+\input{true_optimal}
+\input{big_data}
+
 
 %%% Local Variables:
 %%% mode: latex

@@ -1,65 +1,9 @@
 \section{Appendix}
 
-\subsection{Proof of Theorem \ref{thm:outsampleBound1}}
+\input{thm1_proof}
+\input{thm2_proof}
 
-In this proof, we will employ a theorem made famous by Bousquet-Ellisseef to analyse relevant asymptotic statistical properties of the following estimator.
-\begin{definition}
-Let $\qhatOp:\Re^{(p+1)\times n}\rightarrow \Re^p$ be the procedure that generates the optimal solution of problem \eqref{EUFhatReg} based on a sample set $\{(x_i^1,r_i^1)\}_{i=1}^n$. 
-\end{definition}
-
-We start by presenting two lemmas that establish some important properties of problem \eqref{EUFhatReg}. 
-\begin{lemma}\label{beta-bound}
-  When assumptions \ref{ass:R} and \ref{ass:u}  are satisfied, the estimator $\bold{\qhat}(\cdot)$ has $\beta$-stability with $ \beta = \frac{(\gamma\bar r\xMax)^2}{2\lambda n}$. Namely, for any two sample sets $\Sn^1:=\{(x_i^1,r_i^1)\}_{i=1}^n$ and $\Sn^2:=\{(x_i^2,r_i^2)\}_{i=1}^n$ that are exactly identical except for the $j$-th sample, i.e., $(x_i^1,r_i^1)=(x_i^2,r_i^2)$ for all $i\neq j$, the following holds:
-  \[
-    |u(r\,\qhatOp(\Sn^1)^T x) - u(r\,\qhatOp(\Sn^2)^T x)| \leq \beta\,,\,\forall\,x\in\Sx\,,\,\forall\,r\in\Sr\;.
-  \]
-\end{lemma}
-\begin{proof}
-First, following the terminology presented in   \cite{bousquet2002stability} (see Definition 19), we can establish that $\qhatOp(\cdot)$ has $\sigma$-admissibility of $\gamma\bar{r}$. This is simply done by exploiting the fact that $\Sr$ is bounded and that $u(\cdot)$ is Lipschitz continuous. The detailed derivations consider that for any pair $(q_1,q_2)\in\Re^p\times\Re^p$, one has that
-\[ |u(r\,q_1^T x) - u(r\,q_2^T x)| \leq \gamma |rq_1^Tx - rq_2^Tx|\leq \gamma\bar{r}\ |q_1^Tx - q_2^Tx| \,,\,\forall\,r\in\Sr\,,\,\forall\,x\in\Sx\;.\]
- The $\beta$-stability of $\bold{\qhat}(\cdot)$ then follows directly from Theorem 22 in \cite{bousquet2002stability}.
-\end{proof}
-
-\begin{lemma}  \label{u-bound}
-  When assumptions \ref{ass:R}, \ref{ass:X} and \ref{ass:u}  are satisfied, the amount of utility attained by implementing the investment strategy characterized by $\qhatOp(S_n)$ is bounded by
-\[|u(R\,\qhatOp(\Sn)^TX)|\leq \frac{\gamma^2\xi^2 \bar{r}^2}{2\lambda}\;\mbox{with probability $1$.}\]  
-\end{lemma}
-
-\begin{proof}
-This proof relies mostly on demonstrating that $\qhatOp(\Sn)$ is bounded with probability one. Indeed, when this is the case, then we have that 
-\[ u(R\,\qhatOp(\Sn)^T X) \leq u(0) + \gamma | R\qhatOp(\Sn)^TX| \leq \gamma\bar{r}\xi \|\qhatOp(\Sn)\|\;\mbox{with probability $1$.}\]
-In order to show that $\qhatOp(\Sn)$ is bounded, we reformulate problem \eqref{EUFhatReg} as follows
-  \begin{eqnarray*}
-  \maximize_{s\in\Re,v\in\Re^p} && \frac{1}{n}\sum_{i=1}^n u(s R_i\,X_i^T v) - \lambda s^2\\
-\st&& s\geq0\;,\;\|v\|=1\;,
-  \end{eqnarray*}
-such that $\qhatOp(\Sn) =s^*\cdot v^*$ when $(s^*,v^*)$ is the pair of optimal assignments for this optimization problem. It is therefore clear that $s^*=\|\qhatOp(\Sn)\|$ and our proof reduces to establishing an upper bound for $s^*$.  By recognizing that $s^*=\argmax_{s\geq 0} g(s):=\frac{1}{n}\sum_{i=1}^n u(s R_i\,X_i^T v^*) - \lambda s^2$ and that $g(s)$ is a concave function, then it is necessarily the case that if there exists a $\bar{s}\geq 0$ such that $g(\cdot)$ is non-increasing at $\bar{s}$ then $s^* \leq \bar{s}$. We can actually show that this is the case for $\bar{s}:= \gamma\bar{r}\xi/(2\lambda)$ by upper bounding the impact of taking a step of $\Delta>0$: 
-\begin{eqnarray*}
-g(\bar{s}+\Delta)-g(\bar{s}) &=& \frac{1}{n}\sum_{i=1}^n (u((\bar{s}+\Delta) R_i\,X_i^T v^*) - u(\bar{s} R_i\,X_i^T v^*) ) - \lambda ((\bar{s}+\Delta)^2-\bar{s}^2)\\
-&\leq & \frac{1}{n}\sum_{i=1}^n \gamma \Delta R_i\,X_i^T v^* - \lambda (2\bar{s}\Delta + \Delta^2)\\
-&\leq & \gamma \Delta \bar{r} \xi  - 2\lambda \bar{s}\Delta -  \Delta^2 = -  \Delta^2 \leq 0\;,
-\end{eqnarray*}
-where we first used the Lipschitz continuity of $u(\cdot)$ and then used assumptions \ref{ass:R} and \ref{ass:X}. This completes our proof.
-\end{proof}
-
-Having established the above properties, the following theorem follows directly from Bousquet-Ellisseef Outsample Error Theorem \Erick{Is this the original name of the Theorem ?}. While we omit to describe the original theorem in this article for sake of compactness, we refer interested readers to the form presented Theorem XXX \Erick{Theorem number in reference ?} in \cite{mohri2012foundations} for more details.
-\begin{thm*}[Bousquet-Ellisseef Outsample Error Theorem]\label{thm:outsampleBound2}
-Given that assumptions \ref{ass:R}, \ref{ass:X}, and \ref{ass:u} are satisfied, then one has with confidence of $1-\delta$ that
-\[\Expect_\F[u(R\qhatOp(\Sn)^TX)] \geq \Expect_\F[u(R\qhatOp(\Sn)^TX)] - \Omega\;,\]
-where
-\begin{eqnarray*}
-\Omega &:=& \beta + (2n\beta+2\hat{u}_{\mbox{abs}})\sqrt{\frac{\log(1/\delta)}{2n}}})\\
-&=& \frac{\bar{r}^2\xi^2\gamma^2}{2\lambda} \left(\frac{1}{n} + \frac{4\log(1/\delta)}{\sqrt{2n}}\right)\;,
-\end{eqnarray*}
-where $\beta$ refers to the $\beta$-stability of $\qhatOp$ and $\hat{u}_{\mbox{abs}}$ refers to a uniform bound $\Prob(|u(R\qhatOp(\Sn)X)|\leq \hat{u}_{\mbox{abs}})=1$.
-Hence, the out-of-sample performance in terms of expected utility of the investment policy $\qhatOp(\Sn)$ is at most $O(1/\sqrt{n})$ worse than the in-sample one.
-\end{thm*}
-
-We conclude this section by demonstrating how Theorem \ref{thm:outsampleBound1} follows from Theorem \ref{thm:outsampleBound2}. In particular, by concavity of the utility function, we have that 
-\[u(\CE(\qhat;\F)\leq u(\CE(\qhat;\Fhat))+(\CE(\qhat;\F)-\CE(\qhat;\Fhat))\partial u(\CE(\qhat;\Fhat))\;,\]
-where $\partial u(r)$ denotes any supergradient of $u(\cdot)$ at $r$. In particular, since $u(\cdot)$ is an increasing concave $\lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon\geq 0$ is one of the supergradient at $\CE(\qhat;\Fhat)$. Combining this inequality with the inequality presented in Theorem \ref{thm:outsampleBound2}, we get 
-\[ u(\CE(\qhat;\Fhat)) - \frac{\bar{r}^2\xi^2\gamma^2}{2\lambda} \left(\frac{1}{n} + \frac{4\log(1/\delta)}{\sqrt{2n}}\right) \leq u(\CE(\qhat;\Fhat))+(\CE(\qhat;\F)-\CE(\qhat;\Fhat))\partial u(\CE(\qhat;\Fhat)\]
-so that
-\[ \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - \frac{1}{\partial u(\CE(\qhat;\Fhat))}\frac{(\gamma^2\bar{r}\xi)^2}{2\lambda} \left(\frac{1}{n} + \frac{4\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right)\]
-follows since it was assumed that $u(\cdot)$ is strictly increasing. This completes the proof of Theorem \ref{thm:outsampleBound1}.
-
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "big_data_portfolio_optimization"
+%%% End:

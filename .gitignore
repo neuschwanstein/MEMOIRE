@@ -25,3 +25,5 @@ revue_litt.org
 /Article/master.bcf
 /Article/master.blg
 /Article/master.run.xml
+*.bbl
+*.bcf

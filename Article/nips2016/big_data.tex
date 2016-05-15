@@ -1,0 +1,72 @@
+\subsection{Big Data Phenomenon}\label{sec:bigdata}
+
+In this section, we question how realistic assumption \ref{ass:X} is in a big data
+context. In particular, we expose two sets of natural conditions for the generation of the
+side information vector $X$ that leads to motivating the use of a support set which
+diameter grow proportionally to the square root of $p$.
+
+\begin{ex}
+  Consider a case where every terms of $X$ are independant from each other, while each
+  $X_i$ has a mean $\Expect[X_i]=0$, a variance $\Var[X_i]=1$, and are supported on their
+  respective intervals $\Prob(X_i\in [-\nu, \nu])=1$ for all $i$. By Hoeffding's
+  inequality, one can establish that
+  \[
+    \Prob\left(\left|\|X\|^2 - \sum_{i=1}^p \Expect[X_i^2]\right| \leq
+      \sqrt{2p\ln(\delta/2)\nu^2}\right) \geq 1-\delta
+  \]
+  so that $|\|X\|^2 \in [p- \sqrt{2p\ln(\delta/2)\nu^2}, p+ \sqrt{2p\ln(\delta/2)\nu^2}]$
+  with probability $1-\delta$. Hence, any ball of fixed radius $\xi$ will contain $X$ with
+  a probability that assymptotically converges to zero as $p$ increases, more specifically
+  $\Prob(\|X\|^2\leq \xi^2)\leq 2\exp(-2p(1-\xi^2/\sqrt{p})^2/\nu^2)$. On the other hand,
+  this inequality somehow also prescribes that the diameter of the support $\Sx$ should
+  increase proportionally to $\sqrt{p}$ in order to still contain $X$ with high
+  probability as $p$ increases.
+\end{ex}
+
+\begin{ex}
+  Consider a similar case as above but where the independance assumption is dropped. In
+  this context, although we might not have as much of a strong argument to discredit the
+  use of a constant diameter for $\Sx$, there is still a good motivation for employing a
+  radius that grows proportionally to $\sqrt{p}$. Namely, if each $X_i$ has a mean
+  $\Expect[X_i]=0$ and a variance $\Var[X_i]=1$ then the random variable $Z:=\|X\|^2$ is
+  necessarily positive with an expected value of $p$. Based on Markov inequality, this
+  implies that with probability $1-\delta$, we have that $\|X\|\leq \sqrt{p/\delta}$.
+\end{ex}
+
+Since we believe these two examples provide strong arguments for replacing assumption
+\ref{ass:X} with the assumption that it is within a ball of radius $\xi\sqrt{p}$, we
+reformulate our previous two results as follows.
+
+\begin{coro}\label{coro:outsampleBoundBigData}
+  Given that assumptions \ref{ass:R} and \ref{ass:u} are satisfied, and that
+  $\Prob(\|X\|\leq \xi\sqrt{p})=1$, the certainty equivalent of the out-of-sample
+  performance is at most $O(p/\sqrt{n})$ worse than the in-sample one. Specifically,
+  \[
+    \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - \Omega_2/
+    \lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon)\;,
+  \]
+  where
+  \[
+    \Omega_2 := \frac{\gamma\bar{r}^2\xi^2}{\lambda} \left(\frac{\gamma p}{2n} +
+      \frac{(1+\gamma)p\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right)
+  \]
+  and\\
+  \Erick{missing the big data result for suboptimality}\\
+  with probability $1-\delta$, 
+\end{coro}
+
+%This should be in conclusion of this section
+Note that assumption \ref{ass:X} was inspired by \cite{rudin2015big} who also studied
+assymptotic properties of a regularized decision problem in its Big data regime, i.e. when
+$n$ and $p$ go to infinity simultaneously. Our analysis indicate that the convergence in
+accuracy that is reported there for regime $p\propto n$ might be misleading for many
+practical problems.  In particular, our new results states that asymptotic convergence in
+accuracy when the sample set is large can only occur if $p=o(\sqrt{n})$. The numerical
+experiments that follow will empirically confirm this important insight.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "big_data_portfolio_optimization"
+%%% End:

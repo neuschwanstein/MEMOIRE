@@ -1,0 +1,80 @@
+\subsection{Out-of-sample performance bounds}
+
+In order to shed some light on the first question, we make the following assumptions.
+
+\begin{assumption}\label{ass:R}
+  The random return $R$ is supported on a bounded interval
+  $\Sr\subseteq [-\bar{r},\bar{r}]$ such that $\Prob(|R|\leq \bar{r})=1$.
+\end{assumption}
+
+\begin{assumption}\label{ass:X}
+  The random vector of side-information $X$ is supported on bounded set $\Sx$ such that
+  $\Prob(\|X\|\leq \xi)=1$.
+\end{assumption}
+
+\begin{assumption}\label{ass:u}
+  The utility function is normalized such that $u(0)=0$ and $\lim_{r\to0^+}u'(r) =
+  1$. Furthermore, it is Lipschitz continuous with a Lipschitz constant of $\gamma$, i.e.,
+  for any $r_1\in\Re$ and $r_2\in\Re$, we have that
+  $|u(r_1) - u(r_2)| \leq \gamma|r_1-r_2|$.
+\end{assumption}
+
+The first assumption is relatively realistic given that one can usually assess from
+historical data a large enough interval of returns which could be assumed to contain $R$
+with probability one. For instance, when looking at the last XXX years of daily returns
+for an index such as XXX, this interval can legitimately be set to $[XXX , XXX]$. The
+second assumption might require one to pre-process the vector of side information in order
+to rely on the results that will be presented. This could typically be done by projecting
+this vector on the surface of a ball of radius $\xi$ when $\|X|\>\xi$, which is as simple
+as replacing $X$ with $(\xi/\|X\|)\cdot X$. This assumption will be further studied in
+Section \ref{sec:bigdata}. Finally, while the last assumption is fairly common for
+establishing generalization bounds and can certainly accommodate any piecewise linear
+utility function (often used by numerical optimization methods), it is important to
+mention that it is not one that is commonly made in modern portfolio theory. If, for
+instance, an investor expresses an absolute risk aversion uniformly equal to $\alpha$,
+this suggests the use of $u(r):=(1/\alpha)(1-\exp(-\alpha r))$ which is not Lipschitz
+continuous. Fortunately, the theory that will be used only exploits the fact that the
+function is Lipschitz continuous on the interval
+$[-\bar{r}\xi/(2\lambda), \bar{r}\xi/(2\lambda)]$.
+
+%For example, any piece-wise linear utility would fit the Lipschitz requirements.
+
+We are now in a position to exploit a well-known learning theory result to establish a
+bound on the out-of-sample portfolio performance of $\qhat$ based its in-sample
+estimation:
+\begin{thm}\label{thm:outsampleBound1}
+  Given that assumptions \ref{ass:R}, \ref{ass:X} and \ref{ass:u} are satisfied, the
+  certainty equivalent of the out-of-sample performance is at most $O(1/\sqrt{n})$ worse
+  than the in-sample one. Specifically,
+  %\[    \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - u_{-1}'(\CE(\qhat;\Fhat))\\frac{(\gamme^2\bar{r}\xi)^2}{2\lambda} \left(\frac{1}{n} + \frac{4\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right),   \]
+  \[ 
+    \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) -
+    \Omega_1/\lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon)\;,
+  \]
+  where
+  \begin{gather*}
+    \CE(\qhat;\F):=u^{-1}(\Expect_\F[u(R\qhat^T X)])\;,\\
+    \CE(\qhat;\Fhat):=u^{-1}((1/n)\sum_{i=1}^n u(r_i \qhat^T x_i]))\;,
+  \end{gather*}
+and where
+  \[\Omega_1 := \frac{\bar{r}^2 \xi^2}{2\lambda} \left(\frac{\gamma^2}{n} + \frac{(2\gamma^2+\gamma+1)\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right)\]
+  with probability $1-\delta$, 
+\end{thm}
+
+Our proof of Theorem \ref{thm:outsampleBound1} proceeds as follow. First, borrowing from
+the terminology introduced by \cite{bousquet2002stability}, we show that the algorithm
+generates $\qhat$ from the sample set is $\beta$-stable. We then show that for any $\qhat$
+generated from a sample of $\F$, the amount of utility generated from implementing the
+$\qhat$ decision is absolutely bounded \Erick{What does this mean in words?} with
+probability one. Given that these two conditions are satisfied, we can then rely on
+Bousquet-Ellisseef's out-sample error bound theorem (typically used for inference
+problems) in order to establish out-of-sample guarantees in terms of expected utility. By
+exploiting the concavity of $u(\cdot)$, we are finally able to describe the implications
+in terms of certainty equivalent that are expressed in our theorem.
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "big_data_portfolio_optimization"
+%%% End:
