@@ -53,12 +53,15 @@ estimation:
   \]
   where
   \begin{gather*}
-    \CE(\qhat;\F):=u^{-1}(\Expect_\F[u(R\qhat^T X)])\;,\\
-    \CE(\qhat;\Fhat):=u^{-1}((1/n)\sum_{i=1}^n u(r_i \qhat^T x_i]))\;,
+    \CE(\qhat;\F):=u^{-1}(\E_\F[u(R\cdot\qhat^T X)])\;,\\
+    \CE(\qhat;\Fhat):=u^{-1}(n^{-1}\sum_{i=1}^n u(r_i\,\qhat^T x_i]))\;,
   \end{gather*}
-and where
-  \[\Omega_1 := \frac{\bar{r}^2 \xi^2}{2\lambda} \left(\frac{\gamma^2}{n} + \frac{(2\gamma^2+\gamma+1)\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right)\]
-  with probability $1-\delta$, 
+  and where
+  \[
+    \Omega_1 := \frac{\bar{r}^2 \xi^2}{2\lambda} \left(\frac{\gamma^2}{n} +
+      \frac{(2\gamma^2+\gamma+1)\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right)
+  \] 
+  with probability $1-\delta$,
 \end{thm}
 
 Our proof of Theorem \ref{thm:outsampleBound1} proceeds as follow. First, borrowing from

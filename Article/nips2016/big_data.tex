@@ -7,14 +7,14 @@ diameter grow proportionally to the square root of $p$.
 
 \begin{ex}
   Consider a case where every terms of $X$ are independant from each other, while each
-  $X_i$ has a mean $\Expect[X_i]=0$, a variance $\Var[X_i]=1$, and are supported on their
+  $X_i$ has a mean $\E[X_i]=0$, a variance $\Var[X_i]=1$, and are supported on their
   respective intervals $\Prob(X_i\in [-\nu, \nu])=1$ for all $i$. By Hoeffding's
   inequality, one can establish that
   \[
-    \Prob\left(\left|\|X\|^2 - \sum_{i=1}^p \Expect[X_i^2]\right| \leq
-      \sqrt{2p\ln(\delta/2)\nu^2}\right) \geq 1-\delta
+    \Prob\left(\Bigl|\|X\|^2 - \sum_{i=1}^p \E[X_i^2]\Bigr| \leq
+      \sqrt{2p\log(\delta/2)\nu^2}\right) \geq 1-\delta
   \]
-  so that $|\|X\|^2 \in [p- \sqrt{2p\ln(\delta/2)\nu^2}, p+ \sqrt{2p\ln(\delta/2)\nu^2}]$
+  so that $|\|X\|^2 \in [p- \sqrt{2p\log(\delta/2)\nu^2}, p+ \sqrt{2p\log(\delta/2)\nu^2}]$
   with probability $1-\delta$. Hence, any ball of fixed radius $\xi$ will contain $X$ with
   a probability that assymptotically converges to zero as $p$ increases, more specifically
   $\Prob(\|X\|^2\leq \xi^2)\leq 2\exp(-2p(1-\xi^2/\sqrt{p})^2/\nu^2)$. On the other hand,
@@ -28,7 +28,7 @@ diameter grow proportionally to the square root of $p$.
   this context, although we might not have as much of a strong argument to discredit the
   use of a constant diameter for $\Sx$, there is still a good motivation for employing a
   radius that grows proportionally to $\sqrt{p}$. Namely, if each $X_i$ has a mean
-  $\Expect[X_i]=0$ and a variance $\Var[X_i]=1$ then the random variable $Z:=\|X\|^2$ is
+  $\E[X_i]=0$ and a variance $\Var[X_i]=1$ then the random variable $Z:=\|X\|^2$ is
   necessarily positive with an expected value of $p$. Based on Markov inequality, this
   implies that with probability $1-\delta$, we have that $\|X\|\leq \sqrt{p/\delta}$.
 \end{ex}
@@ -50,8 +50,15 @@ reformulate our previous two results as follows.
     \Omega_2 := \frac{\gamma\bar{r}^2\xi^2}{\lambda} \left(\frac{\gamma p}{2n} +
       \frac{(1+\gamma)p\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right)
   \]
-  and\\
-  \Erick{missing the big data result for suboptimality}\\
+  and
+  \[
+    \CE(\hat q;F) \geq \CE(q^\star;F) - \omega_2/\lim_{\epsilon\to0^{-}}u'(CE(\hat q;F)+\epsilon)\;,
+  \]
+  where
+  \[
+    \omega_2 = -\psi -\frac{8\gamma^2p\xi^2(32+\log(1/\delta))}{n\lambda}
+    -\frac{2\gamma\bar rp\xi^2}{\lambda}\sqrt{\frac{32+\log(1/\delta)}{n}},
+  \]
   with probability $1-\delta$, 
 \end{coro}
 

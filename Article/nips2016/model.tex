@@ -1,12 +1,12 @@
 \section{Model and Main Results}
-\newcommand{\Expect}{E}
+% \newcommand{\Expect}{E}
 \newcommand{\Prob}{P}
 \newcommand{\F}{F}
 \newcommand{\Fhat}{{\hat{\F}}}
 \newcommand{\qhat}{{\hat{q}}}
 \newcommand{\Sx}{{\mathcal{S}_X}}
 \newcommand{\Sr}{{\mathcal{S}_R}}
-\newcommand{\Sn}{S_n}
+\newcommand{\Sn}{s_n}
 \newcommand{\urange}{u_{\mbox{\footnotesize range}}}
 %\newcommand{\umin}{u_{\mbox{\footnotesize min}}}
 \newcommand{\qhatOp}{{\bold{\qhat}}}
@@ -26,26 +26,26 @@
 We consider a classical financial portfolio selection problem involving a risky asset with
 random return rate $R$ and a risk-free asset with return rate of $0\%$ for simplicity. We
 also suppose that the investor's risk aversion can be characterized using expected utility
-theory using some strictly increasing concave utility function and has access to side
-information regarding the returns. This information might be the result of processing the
-most recent financial or economic news, etc. We let this information be described as a
-vector of $p$ random features $[X_1,X_2,\dots,X_p]$. In this context, if the the
-distribution $\F$ of the pair $(X,R)$ of side information and return is known, a linear
-investment policy that exploits the side information optimally for this investor can be
-obtained by solving the following optimization problem:
+theory using some strictly increasing concave utility function $u$, and that he has access
+to side information regarding the returns. This information might be the result of
+processing the most recent financial or economic news, etc. We let this information be
+described as a vector of $p$ random features $[X_1,X_2,\dots,X_p]$. In this context, if
+the the distribution $\F$ of the pair $(X,R)$ of side information and return is known, a
+linear investment policy that exploits the side information optimally for this investor
+can be obtained by solving the following optimization problem:
 \begin{equation}
-\maximize_{q\in\Re^p}\;\;\;\Expect_\F[u(R\cdot q^TX)]\;,\label{EUF}
+\maximize_{q\in\Re^p}\;\;\;\E_\F[u(R\cdot q^TX)]\;,\label{EUF}
 \end{equation}
 where it is assumed that short-selling is permitted. 
 
 In practice however, the exact distribution describing the relation between $X$ and $R$ is
 not available at the time of designing the investment policy and one might instead need to
-exploit a set of samples $\Sn:=\{(X_i,R_i)\}_{i=1}^n$ drawn independently and identically
-from $\F$. Unfortunately, when the $n$ is relatively small compared to $p$, it is well
-known that problem \eqref{EUF} where we replace $\F$ with the empirical distribution
-$\Fhat$ observed in the sample can suffer from severe overfitting and produce investment
-policies that perform badly out of sample. This is for instance illustrated in the
-following example.
+exploit a sample set $\Sn:=\{(x_i,r_i)\}_{i=1}^n$ drawn independently and identically from
+$\F$. Unfortunately, when the sample size $n$ is relatively small compared to $p$, it is
+well known that problem \eqref{EUF} where we replace $\F$ with the empirical distribution
+$\Fhat$ observed in the sample can suffer from severe overfitting \comment{References
+  needed!} and produce investment policies that perform badly out of sample. This is for
+instance illustrated in the following example.
 
 \begin{ex}
   Consider for instance a case where $n=p$ and each feature $X_i$ is independantly and
@@ -59,9 +59,9 @@ following example.
 \end{ex}
 
 To prevent issues associated to overfitting, one might instead seek the optimal solution
-of the following regularized empirical expected utility maximization problem :
+of the following regularized empirical expected utility maximization problem:
 \begin{equation}
-\maximize_{q\in\Re^p}\;\;\;\Expect_\Fhat[u(R\cdot q^TX)]+\lambda\|q\|^2\;.\label{EUFhatReg}
+\maximize_{q\in\Re^p}\;\;\;\E_\Fhat[u(R\cdot q^TX)]+\lambda\|q\|^2\;.\label{EUFhatReg}
 \end{equation}
 Note that when it exists, we will refer to the optimal solution of this problem as $\qhat$.
 

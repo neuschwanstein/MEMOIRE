@@ -1,64 +1,68 @@
-\subsection{Market efficiency and true optimal}
-\newcommand{\EU}{{\bf EU}}
-We now turn our attention to the suboptimality of the decision $\hat q$, specifically,
-how well it performs in comparison to the optimal decision $q^\star =
-\argmax_q\Psi(q)$. There are indeed some conditions on $u$ and on $M$. Consider a
-risk-neutral utility $u(r)=r$. Then,
-\[
-  \E[u(R\,q^TX)] = q_1\E[RX_i]+\cdots+q_p\E[RX_p].
-\]
-Therefore, if we set $q_i = \infty$ when $\E(RX_i)>0$ and $q_i=-\infty$ when $\E(RX_i)<0$,
-then $\CE(q)=\infty$ and no bounds on the suboptimality can be set. Likewise, if
-$\pp\{RX_i>0\}=1$, we can again set $q_i=\infty$ and the same kind of divergence will
-happen. This relates to the notion of arbitrage: we say a feature $X_i$ induces arbitrage
-if $\pp\{RX_i>0\}=1$ or $\pp\{RX_i<0\}=1$.
+\subsection{Suboptimality performance bounds}
+
+We now turn our attention to the suboptimality of the problem, \ie, we would like to
+understand the behaviour of the performance of the empirical investment policy $\hat q$
+compared to the optimal policy $q^\star := \argmax_q \E_F[u(R\cdot q^T X)]$. It is
+important to realize that in many instances, the optimal performance might be unbounded,
+and therefore any bound on the suboptimality would be meaningless.
+
+\begin{ex}
+  Consider for instance a risk neutral investor, \ie, such that $u(r)=r$ and suppose
+  $\E X_i=0$. The expected utility simply becomes
+  \[
+    \E_F[u(R\cdot q^T X)] = \sum_{i=1}^{n}q_i\Cov(R,X_i).
+  \]
+  If we simply let $\bar q_i = \Cov(R,X_i)$, it follows immediately that the expected
+  utility of $\bar q$ is infinite.
+\end{ex}
+
+\begin{ex}
+  Consider another example where feature $X_i$ induces arbitrage over $F$, by which we
+  mean that either $\pp\{RX_i<0\} = 1$ or $\pp\{RX_i > 0\} = 1$. In such a case, if we let
+  $\bar q_j = \delta_{ij}$, then the expected utility of $\alpha\bar q$ can once again
+  take arbitrarily lage values as $\alpha\to\infty$. 
+\end{ex}
+
+Given those two examples, we now introduce two new assumptions in order to obtain finite
+optimal values.
+
+\begin{assumption}\label{ass:usublinear}
+  The utility function is sublinear, \ie, $u(r) = o(r)$. 
+\end{assumption}
+
+\begin{assumption}\label{ass:arbitrage}
+  The feature space $X$ induces no arbitrage over $F$, that is, for all $X_i$, $\pp\{RX_i
+  < 0\} < 1$ and $\pp\{RX_i > 0\} < 1$. 
+\end{assumption}
+
+In a financial context, assumption \ref{ass:usublinear} is certainly realistic since the
+most utility functions describing risk preferences of an investor are usually sublinear
+(for example, with $O(\sqrt{r})$, $O(\log r)$ or $O(-e^{-r})$ shapes being the most common
+ones). As for assumption \ref{ass:arbitrage}, this notion or arbitrage relates directly to
+the notion or market efficiency, and in particular to the semi-strong version of it (see
+\cite{malkiel1970efficient} and \cite{fama1991efficient}).
 
 \begin{thm}
   \label{thm_truopt}
-  If $r=o(u(r))$, ie. $u(r)$ is sublinear and if no feature in the market induces
-  arbitrage, then 
+  Given that assumptions \ref{ass:R}, \ref{ass:X}, \ref{ass:u} are satisfied, the
+  suboptimaliy of the policy $\hat q$ can be expressed with confidence $1-3\delta$ by
   \[
-    \CE(q^\star) \geq \CE(\hat q) - \omega\cdot\grad(u^{-1})(\Psi(\hat q)),
+    \CE(\hat q;F) \geq \CE(q^\star;F) - \omega_1/\lim_{\epsilon\to0^{-}}u'(CE(\hat q;F)+\epsilon)\;,
   \]
   where
   \[
-    \omega = \gamma\bar r\xi\|q^\star - \hat q\|,
+    \omega_1 = -\psi -\frac{8\gamma^2\xi^2(32+\log(1/\delta))}{n\lambda} -\frac{2\gamma\bar
+    r\xi^2}{\lambda}\sqrt{\frac{32+\log(1/\delta)}{n}},
   \]
-  and $\omega$ is finite. 
+  and $\psi:=E_F[u(R\cdot {q^{\star}}^T X)] - E_F[u(R\cdot {q^\star_\lambda}^TX)]$.
+  Furthermore, if assumptions \ref{ass:usublinear} and \ref{ass:arbitrage} are satisfied, then
+  $\CE(q^\star;F)$ is finite. 
 \end{thm}
 
-Following is the proof of the first part of Theorem \ref{thm_truopt}. Note first that 
-\begin{align*}
-  |\Psi(q^\star)-\Psi(\hat q)| &\leq |\E[u(R\,{q^\star}^T)] - \E[u(R\,\hat q^TX)]|\\
-                             &\leq \E[|u(R{q^\star}^TX) - u(R\,\hat q^TX)|]\\
-                             &\leq \gamma \E[R({q^\star}-\hat q)^TX]\\
-                             &\leq \gamma\bar r\xi\|q^\star - \hat q\|=\omega,
-\end{align*}
-so that $\Psi(q^\star) \geq \Psi(\hat q) - \omega$. We can invert this result back in the
-result space using the same method as in Theorem \ref{thm:outsampleBound1} and the result
-follows.
-
-Next, we show that $\omega$ is bounded by proving that $\|q^\star\|$ is finite. Since the
-other values are also bounded the second part of Theorem \ref{thm_truopt} follows. 
-
-Let $Z(q)=R\,q^TX\subsetsim\real$. Instead of optimizing $q$ on $\real^p$, we can optimize
-its scale by taking $s^\star = \argmax_{s>0}g(s)$ where $g(s)$ is the solution of
-\begin{align*}
-  \maximizeEquationSt{\E[u(sZ(q))]}[\|q\|= 1].
-\end{align*}
-Let $q\in\real^p$ such that $\|q\|=1$. Since no feature induce arbitrage, it follows that,
-for any $q$, there exists a $\delta_q<0$ such that $\pp\{Z(q)<\delta_q\}=\varrho>0$. Now,
-let $B(q)$ be a discrete random variable with two states such that
-$\pp\{B(q)=\delta_q\}=1-\pp\{B=\bar r\xi\}=\varrho$. Since $|Z(q)|<\bar r\xi$, we have
-that $\pp\{B(q)\geq r\} \geq \pp\{Z(q)\geq r\}$, so that $\E B(q) \geq \E Z(q)$, from which
-it follows that $\E[u(sB(q))]\geq \E[u(sZ(q))]$. But, by the sublinearity asumption on
-$u$, 
-\[
-  \lim_{s\to\infty}\E[u(sB(q))] = \lim_{s\to\infty}\big(\varrho
-  u(s\delta_q)+(1-\varrho)u(s\bar r\xi)\big) = -\infty.
-\]
-And therefore, $\lim_{s\to\infty}\E[u(sZ(q))]=-\infty$ for all $q$, which shows that
-$s^\star$, and therefore $\|q^\star\|$, is bounded.
+Roughly, what Theorem \ref{thm_truopt} states is that the suboptimality of the problem
+will converge at a rate $O(1/\sqrt{n})$ toward the optimal regularized certainty
+equivalent of the problem, while leaving a gap $\psi$ that depends both on $F$ and on
+$\lambda$.
 
 
 %%% Local Variables:

@@ -1,45 +1,74 @@
-\subsection{Proof of Theorem 2}
+\subsection{Proof of Theorem \ref{thm_truopt}}
 
 First, in order to tidy up the proof, let
 \begin{gather*}
   \EU(q) := \E_F(u(R\cdot q^T X))\,;\\
   \EU_\lambda(q) := \E_F(u(R\cdot q^T X)) - \lambda\|q\|^2,
 \end{gather*}
-with $q^\star := \argmin_q \EU(q)$ and $q^\star_\lambda := \argmin_q
-\EU_\lambda(q)$. Next, note that using Theorem 1 from \cite{sridharan2009fast} and using
-$2\lambda$-convexity of $\EU_\lambda$ and $\gamma$-Lipschitz property of $u$, we have with
-probability $1-\delta$ that
-\[
-  -\lambda\|\hat q - q^\star_\lambda\|^2 \geq \EU_\lambda(\hat q) - \EU_\lambda(q^\star_\lambda) \geq -\omega.
-\]
-where
-\[
-  \omega = \frac{4\gamma^2\xi^2(32 + \log(1/\delta))}{\lambda n}.
-\]
+with $q^\star := \argmin_q \EU(q)$ and $q^\star_\lambda := \argmin_q \EU_\lambda(q)$.
 
-Notice that this inequality implies that 
+\begin{thm}[Theorem 1 in \cite{sridharan2009fast}]\label{thm:shai}
+  Given that assumptions \ref{ass:R}, \ref{ass:X}, and \ref{ass:u} are satisfied, and
+  since $EU_\lambda$ is $2\lambda$-strongly convex, then one has with confidence of
+  $1-\delta$ that
+  \[
+    -\lambda\|\hat q - q^\star_\lambda\| \geq \EU_\lambda(\hat q) - \EU_\lambda(q^\star_\lambda) \geq -\omega,
+  \]
+  where
+  \[
+    \omega = \frac{4\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n}.
+  \]
+\end{thm}
+
+Notice that Theorem \ref{thm:shai} implies with confidence $1-\delta$ that
 \[
-  \EU(\hat q) - \EU(q^\star_\lambda) \geq \lambda\bigl(\|\hat q\|^2 - \|q^\star_\lambda\|^2\bigr) -\omega.
+  \EU(\hat q) - \EU(q^\star_\lambda) \geq \lambda\bigl(\|\hat q\|^2 -
+  \|q^\star_\lambda\|^2\bigr) -\omega
+  \geq -\lambda\bigl(\|\hat q -
+  q^\star_\lambda\|^2 +2\|\hat q\|\|\hat q - q^\star_\lambda\|\bigr) - \omega.
 \]
-But,
-\[
-  \lambda\bigl(\|\hat q\|^2 - \|q^\star_\lambda\|^2\bigr) \geq -\lambda\bigl(\|\hat q -
-  q^\star_\lambda\|^2 +2\|\hat q\|\|\hat q - q^\star_\lambda\|\bigr).
-\]
-Since $\|\hat q\| \leq \bar r\xi/(2\lambda)$ and
+As shown in Section \ref{sec:thm1_proof}, $\|\hat q\| \leq \bar r\xi/(2\lambda)$. Reusing
+Theorem \ref{thm:shai}, we again obtain that
 $\|\hat q - q^\star_\lambda\|^2 \leq \omega/\lambda$, and therefore
-$\|\hat q - q^\star_\lambda\| \leq \sqrt{\omega/\lambda}$, so that we end up with
+$\|\hat q - q^\star_\lambda\| \leq \sqrt{\omega/\lambda}$, with probability $1-\delta$
+each, so that we end up with
 \[
   \EU(\hat q) - \EU(q^\star_\lambda) \geq -2\omega - \bar r\xi\sqrt{\frac{\omega}{\lambda}}.
 \]
+with probability $1-3\delta$.
 
-If we let $\psi := \EU(q^\star) -\EU(q^\star_\lambda)$, we can then bound the
-suboptimality of decision $\hat q$ in the following fashion:
+If now we let $\psi := \EU(q^\star) -\EU(q^\star_\lambda)$, we can then bound the
+suboptimality of decision $\hat q$ with probability $1-3\delta$ in the following fashion:
 \begin{align*}
   \EU(\hat q) &= \EU(q^\star) + \EU(\hat q) - \EU(q^\star_\lambda) + \EU(q^\star_\lambda)
                 - \EU(q^\star)\\
               &\geq \EU(q^\star) - \psi - \bar r\xi\sqrt{\frac{\omega}{\lambda}} - 2\omega.
 \end{align*}
+The can finally invert this last result in terms of CE using the same trick as in Section
+\ref{sec:thm1_proof}.
+
+Next, we show that $\CE(q^\star;F)$ is bounded by proving that $\|q^\star\|$ is
+finite. Since the other values are also bounded the second part of Theorem
+\ref{thm_truopt} follows.
+
+Let $Z(q)=R\,q^TX\subsetsim\real$. Instead of optimizing $q$ on $\real^p$, we can optimize
+its scale by taking $s^\star = \argmax_{s>0}g(s)$ where $g(s)$ is the solution of
+\begin{align*}
+  \maximizeEquationSt{\E[u(sZ(q))]}[\|q\|= 1].
+\end{align*}
+Let $q\in\real^p$ such that $\|q\|=1$. Since no feature induce arbitrage, it follows that,
+for any $q$, there exists a $\delta_q<0$ such that $\pp\{Z(q)<\delta_q\}=\varrho>0$. Now,
+let $B(q)$ be a discrete random variable with two states such that
+$\pp\{B(q)=\delta_q\}=1-\pp\{B=\bar r\xi\}=\varrho$. Since $|Z(q)|<\bar r\xi$, we have
+that $\pp\{B(q)\geq r\} \geq \pp\{Z(q)\geq r\}$, so that $\E B(q) \geq \E Z(q)$, from which
+it follows that $\E[u(sB(q))]\geq \E[u(sZ(q))]$. But, by the sublinearity asumption on
+$u$, 
+\[
+  \lim_{s\to\infty}\E[u(sB(q))] = \lim_{s\to\infty}\big(\varrho
+  u(s\delta_q)+(1-\varrho)u(s\bar r\xi)\big) = -\infty.
+\]
+And therefore, $\lim_{s\to\infty}\E[u(sZ(q))]=-\infty$ for all $q$, which shows that
+$s^\star$, and therefore $\|q^\star\|$, is bounded.
 
 
 

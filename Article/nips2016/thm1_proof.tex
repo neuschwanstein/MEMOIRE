@@ -1,11 +1,11 @@
-\subsection{Proof of Theorem \ref{thm:outsampleBound1}}
+\subsection{Proof of Theorem \ref{thm:outsampleBound1}}\label{sec:thm1_proof}
 
 In this proof, we will employ a theorem made famous by Bousquet-Ellisseef to analyse
 relevant asymptotic statistical properties of the following estimator.
 \begin{definition}
   Let $\qhatOp:\Re^{(p+1)\times n}\rightarrow \Re^p$ be the procedure that generates the
   optimal solution of problem \eqref{EUFhatReg} based on a sample set
-  $\{(x_i^1,r_i^1)\}_{i=1}^n$.
+  $\{(x_i,r_i)\}_{i=1}^n$.
 \end{definition}
 
 We start by presenting two lemmas that establish some important properties of problem
@@ -86,40 +86,47 @@ We start by presenting two lemmas that establish some important properties of pr
 Having established the above properties, the following theorem follows directly from
 Bousquet-Ellisseef Outsample Error Theorem \Erick{Is this the original name of the Theorem
   ?}. While we omit to describe the original theorem in this article for sake of
-compactness, we refer interested readers to the form presented Theorem XXX \Erick{Theorem
-  number in reference ?} in \cite{mohri2012foundations} for more details.
+compactness, we refer interested readers to the form presented in Theorem 11.1 of
+\cite{mohri2012foundations} for more details.
 
-\begin{thm*}[Bousquet-Ellisseef Outsample Error Theorem]\label{thm:outsampleBound2}
+\begin{thm}[Bousquet-Ellisseef Outsample Error Theorem]\label{thm:outsampleBound2}
   Given that assumptions \ref{ass:R}, \ref{ass:X}, and \ref{ass:u} are satisfied, then one
   has with confidence of $1-\delta$ that
   \[
-    \Expect_\F[u(R\qhatOp(\Sn)^TX)] \geq \Expect_\F[u(R\qhatOp(\Sn)^TX)] - \beta -
-    \left(2n\beta+\urange\right)\sqrt{\frac{\log(1/\delta)}{2n}}\;,
+    \E_{\F}[u(R\cdot\qhatOp(\Sn)^TX)] \geq \E_{\hat\F}[u(R\cdot\qhatOp(\Sn)^TX)] - \beta -
+    \left(2n\beta+\hat{u}_{\mbox{abs}}\right)\sqrt{\frac{\log(1/\delta)}{2n}}\;,
   \]
   where $\beta$ refers to the $\beta$-stability of $\qhatOp$ and $\hat{u}_{\mbox{abs}}$
   refers to a uniform bound $\Prob(|u(R\qhatOp(\Sn)X)|\leq \hat{u}_{\mbox{abs}})=1$.
   Overall, this reduces to
-  $\Expect_\F[u(R\qhatOp(\Sn)^TX)] \geq \Expect_\F[u(R\qhatOp(\Sn)^TX)] -
-  \Omega_1$. Hence, the out-of-sample performance in terms of expected utility of the
-  investment policy $\qhatOp(\Sn)$ is at most $O(1/\sqrt{n})$ worse than the in-sample
-  one.
-\end{thm*}
+  $\E_{\F}[u(R\cdot\qhatOp(\Sn)^TX)] \geq \E_{\hat\F}[u(R\cdot\qhatOp(\Sn)^TX)] - \Omega_1$. Hence,
+  the out-of-sample performance in terms of expected utility of the investment policy
+  $\qhatOp(\Sn)$ is at most $O(1/\sqrt{n})$ worse than the in-sample one.
+\end{thm}
 
 We conclude this section by demonstrating how Theorem \ref{thm:outsampleBound1} follows
 from Theorem \ref{thm:outsampleBound2}. In particular, by concavity of the utility
 function, we have that
-\[u(\CE(\qhat;\F)\leq u(\CE(\qhat;\Fhat))+(\CE(\qhat;\F)-\CE(\qhat;\Fhat))\partial
-  u(\CE(\qhat;\Fhat))\;,\] where $\partial u(r)$ denotes any supergradient of $u(\cdot)$
-at $r$. In particular, since $u(\cdot)$ is an increasing concave
-$\lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon\geq 0$ is one of the supergradient at
+\[
+  u(\CE(\qhat;\F))\leq u(\CE(\qhat;\Fhat))+(\CE(\qhat;\F)-\CE(\qhat;\Fhat))\,\partial
+  u(\CE(\qhat;\Fhat))\;,
+\] 
+where $\partial u(r)$ denotes any supergradient of $u(\cdot)$ at $r$. In particular, since
+$u(\cdot)$ is an increasing concave function, it follows that
+$\lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon)\geq 0$ is one of the supergradient at
 $\CE(\qhat;\Fhat)$. Combining this inequality with the inequality presented in Theorem
-\ref{thm:outsampleBound2}, we get
-\[ u(\CE(\qhat;\Fhat)) - \Omega_1 \leq
-  u(\CE(\qhat;\Fhat))+(\CE(\qhat;\F)-\CE(\qhat;\Fhat))\partial u(\CE(\qhat;\Fhat)\] so
-that
-\[ \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - \Omega_1/\partial u(\CE(\qhat;\Fhat))\] follows
-since it was assumed that $u(\cdot)$ is strictly increasing. This completes the proof of
-Theorem \ref{thm:outsampleBound1}.
+\ref{thm:outsampleBound2} \Thierry{There's only the first inequality involved here}, we
+get
+\[ 
+  u(\CE(\qhat;\Fhat)) - \Omega_1 \leq
+  u(\CE(\qhat;\Fhat))+(\CE(\qhat;\F)-\CE(\qhat;\Fhat))\partial u(\CE(\qhat;\Fhat))
+\]
+so that
+\[
+  \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - \Omega_1/\partial u(\CE(\qhat;\Fhat))
+\]
+follows since it was assumed that $u(\cdot)$ is strictly increasing. This completes the
+proof of Theorem \ref{thm:outsampleBound1}.
 
 
 %%% Local Variables:
