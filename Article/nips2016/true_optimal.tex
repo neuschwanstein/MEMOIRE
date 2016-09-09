@@ -1,10 +1,13 @@
-\subsection{Suboptimality performance bounds}
+\section{Suboptimality performance bounds}\label{sec:sub}
 
 We now turn our attention to the suboptimality of the problem, \ie, we would like to
 understand the behaviour of the performance of the empirical investment policy $\hat q$
 compared to the optimal policy $q^\star := \argmax_q \E_F[u(R\cdot q^T X)]$. It is
-important to realize that in many instances, the optimal performance might be unbounded,
-and therefore any bound on the suboptimality would be meaningless.
+important to realize that in general, there are situations in which the optimal
+performance according of \eqref{EUF} could be unbounded. Thus, if one wishes to establish
+a bound on the sub-optimality of an investment policy, it is necessary to impose
+additional assumptions on the class of problem that he is facing. The two following
+examples motivate these assumptions.
 
 \begin{ex}
   Consider for instance a risk neutral investor, \ie, such that $u(r)=r$ and suppose
@@ -13,56 +16,61 @@ and therefore any bound on the suboptimality would be meaningless.
     \E_F[u(R\cdot q^T X)] = \sum_{i=1}^{n}q_i\Cov(R,X_i).
   \]
   If we simply let $\bar q_i = \Cov(R,X_i)$, it follows immediately that the expected
-  utility of $\bar q$ is infinite.
+  utility of $\alpha \bar q$ can become arbitrarily large as $\alpha$ goes to infinity.
 \end{ex}
 
 \begin{ex}
-  Consider another example where feature $X_i$ induces arbitrage over $F$, by which we
-  mean that either $\pp\{RX_i<0\} = 1$ or $\pp\{RX_i > 0\} = 1$. In such a case, if we let
-  $\bar q_j = \delta_{ij}$, then the expected utility of $\alpha\bar q$ can once again
-  take arbitrarily lage values as $\alpha\to\infty$. 
+  Consider another example in which there exist a $j$ for which feature $X_j$ induces
+  arbitrage over $F$, namely that $\pp\{RX_j>0\} = 1$. In such a case, if we let
+  $\bar q_i = 1$ only when $i=j$ and otherwise zero, then the expected utility of
+  $\alpha\bar q$ can once again take an arbitrarily large value as $\alpha$ goes to
+  infinity.
 \end{ex}
 
-Given those two examples, we now introduce two new assumptions in order to obtain finite
-optimal values.
+Given those two examples, we now introduce two new assumptions that will ensure that
+problem \eqref{EUF} is bounded, \ie, it has a finite optimal solution.
 
 \begin{assumption}\label{ass:usublinear}
   The utility function is sublinear, \ie, $u(r) = o(r)$. 
 \end{assumption}
 
 \begin{assumption}\label{ass:arbitrage}
-  The feature space $X$ induces no arbitrage over $F$, that is, for all $X_i$, $\pp\{RX_i
-  < 0\} < 1$ and $\pp\{RX_i > 0\} < 1$. 
+  The side information $X$ induces no arbitrage opportunities, that is, for all $X_i$,
+  $\pp\{RX_i < 0\} > 0$ and $\pp\{RX_i > 0\} > 0$.
 \end{assumption}
 
-In a financial context, assumption \ref{ass:usublinear} is certainly realistic since the
-most utility functions describing risk preferences of an investor are usually sublinear
-(for example, with $O(\sqrt{r})$, $O(\log r)$ or $O(-e^{-r})$ shapes being the most common
-ones). As for assumption \ref{ass:arbitrage}, this notion or arbitrage relates directly to
-the notion or market efficiency, and in particular to the semi-strong version of it (see
-\cite{malkiel1970efficient} and \cite{fama1991efficient}).
+In a financial context, assumption \ref{ass:usublinear} is certainly realistic since a
+financial investor behaviour is usually taken to be risk averse, thus implying asumption
+\ref{ass:usublinear}.  As for assumption \ref{ass:arbitrage}, this notion or arbitrage relates
+directly to the notion or market efficiency, and in particular to the semi-strong version
+of it, which states that it should be impossible for an investor to constantly beat the
+market using publicly available information. See \cite{malkiel1970efficient} and
+\cite{fama1991efficient} for more details.
 
 \begin{thm}
   \label{thm_truopt}
   Given that assumptions \ref{ass:R}, \ref{ass:X}, \ref{ass:u} are satisfied, the
-  suboptimaliy of the policy $\hat q$ can be expressed with confidence $1-3\delta$ by
+  suboptimality of the policy $\hat q$ can be expressed with confidence $1-\delta$ by
   \[
-    \CE(\hat q;F) \geq \CE(q^\star;F) - \omega_1/\lim_{\epsilon\to0^{-}}u'(CE(\hat q;F)+\epsilon)\;,
+    \CE(\hat q;F) \geq \CE(q^\star;F) - \Omega_2/\lim_{\epsilon\to0^{-}}u'(CE(\hat q;F)+\epsilon)\;,
   \]
   where
   \[
-    \omega_1 = -\psi -\frac{8\gamma^2\xi^2(32+\log(1/\delta))}{n\lambda} -\frac{2\gamma\bar
-    r\xi^2}{\lambda}\sqrt{\frac{32+\log(1/\delta)}{n}},
+    \Omega_2 = \lambda\|q^\star\|^2 +\frac{8\gamma^2\xi^2(32+\log(1/\delta))}{n\lambda} +\frac{2\gamma\bar
+    r\xi^2}{\lambda}\sqrt{\frac{32+\log(1/\delta)}{n}}\;.
   \]
-  and $\psi:=E_F[u(R\cdot {q^{\star}}^T X)] - E_F[u(R\cdot {q^\star_\lambda}^TX)]$.
+%  and $\psi:=E_F[u(R\cdot {q^{\star}}^T X)] - E_F[u(R\cdot {q^\star_\lambda}^TX)]$.
   Furthermore, if assumptions \ref{ass:usublinear} and \ref{ass:arbitrage} are satisfied, then
   $\CE(q^\star;F)$ is finite. 
 \end{thm}
 
-Roughly, what Theorem \ref{thm_truopt} states is that the suboptimality of the problem
-will converge at a rate $O(1/\sqrt{n})$ toward the optimal regularized certainty
-equivalent of the problem, while leaving a gap $\psi$ that depends both on $F$ and on
-$\lambda$.
+The first term in $\Omega_2$ shows that, unless the regularization constant $\lambda$ is
+brought to zero as $n$ increases, the empirical maximization problem \eqref{EUFhatReg}
+will asymptotically converge toward a constant suboptimality bound based on the particular
+market distribution $F$ and on $\lambda$. The two other terms in $\Omega_2$ show that this
+bound will be reached at a $O(1/\sqrt{n})$ rate in the same fashion as with Theorem
+1. Therefore, the best suboptimality performance that can be hoped to be reached is at
+most $-\lambda\|q^\star\|^2 /\lim_{\epsilon\to0^{-}}u'(CE(\hat q;F)+\epsilon)$.
 
 
 %%% Local Variables:

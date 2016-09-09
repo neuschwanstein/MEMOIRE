@@ -7,13 +7,13 @@ from csv import reader as csv_reader
 from dateutil.parser import parse as date_parse
 import numpy as np
 import pytz
+import pandas as pd
 
 from helper.collections import Namedtuples
 
 ny_tz = pytz.timezone('America/New_York')
 beg_trading_time = dt.time(hour=16,microsecond=1,tzinfo=ny_tz) # Opening and closing time of NY stock exchange.
 end_trading_time = dt.time(hour=16,tzinfo=ny_tz)
-
 
 def get_sp500_records(beg_date='2007-01-01',end_date='2015-12-31'):
     filename = 'sp500/sp500_%s_%s.csv' % (beg_date,end_date)
@@ -49,3 +49,12 @@ def get_sp500_records(beg_date='2007-01-01',end_date='2015-12-31'):
         return Record(beg_date,end_date,logreturn)
     records = [create_record(beg,end) for beg,end in zip(SP500s[:-1],SP500s[1:])]
     return records
+
+
+
+    # ny_tz = pytz.timezone('America/New_York')
+    # opening_time = dt.time(hour=9)
+    # before_opening_time = beg_time + dt.timedelta(microseconds=-1)
+    
+    # data['beg_time'] = data.Date.apply(lambda d: ny_tz.localize(dt.datetime.combine(d,beg_time)))
+    # data['end_time'] = data.Date.apply(lambda d: ny_tz.localize(dt.datetime.combine(d,end_time)))

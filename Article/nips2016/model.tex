@@ -1,4 +1,4 @@
-\section{Model and Main Results}
+\section{Model and Assumptions}\label{sec:model}
 % \newcommand{\Expect}{E}
 \newcommand{\Prob}{P}
 \newcommand{\F}{F}
@@ -26,13 +26,13 @@
 We consider a classical financial portfolio selection problem involving a risky asset with
 random return rate $R$ and a risk-free asset with return rate of $0\%$ for simplicity. We
 also suppose that the investor's risk aversion can be characterized using expected utility
-theory using some strictly increasing concave utility function $u$, and that he has access
-to side information regarding the returns. This information might be the result of
+theory using a strictly increasing concave utility function $u$, and that the investor has
+access to side information regarding the returns. This information might be the result of
 processing the most recent financial or economic news, etc. We let this information be
-described as a vector of $p$ random features $[X_1,X_2,\dots,X_p]$. In this context, if
-the the distribution $\F$ of the pair $(X,R)$ of side information and return is known, a
-linear investment policy that exploits the side information optimally for this investor
-can be obtained by solving the following optimization problem:
+described as a vector of $p$ normalized random features $[X_1,X_2,\dots,X_p]$. In this
+context, if the the distribution $\F$ of the pair $(X,R)$ of side information and return
+is known, a linear investment policy that exploits the side information optimally for this
+investor can be obtained by solving the following optimization problem:
 \begin{equation}
 \maximize_{q\in\Re^p}\;\;\;\E_\F[u(R\cdot q^TX)]\;,\label{EUF}
 \end{equation}
@@ -42,10 +42,9 @@ In practice however, the exact distribution describing the relation between $X$ 
 not available at the time of designing the investment policy and one might instead need to
 exploit a sample set $\Sn:=\{(x_i,r_i)\}_{i=1}^n$ drawn independently and identically from
 $\F$. Unfortunately, when the sample size $n$ is relatively small compared to $p$, it is
-well known that problem \eqref{EUF} where we replace $\F$ with the empirical distribution
-$\Fhat$ observed in the sample can suffer from severe overfitting \comment{References
-  needed!} and produce investment policies that perform badly out of sample. This is for
-instance illustrated in the following example.
+well known that the problem \eqref{EUF} using the empirical distribution $\Fhat$ obtained
+from sample $s_n$ can suffer from severe overfitting and produce investment policies that
+perform badly out of sample. This is for instance illustrated in the following example.
 
 \begin{ex}
   Consider for instance a case where $n=p$ and each feature $X_i$ is independantly and
@@ -65,18 +64,6 @@ of the following regularized empirical expected utility maximization problem:
 \end{equation}
 Note that when it exists, we will refer to the optimal solution of this problem as $\qhat$.
 
-The question remains of understanding what guarantees does one have regarding out of
-sample performance of the portfolio investment policy obtained from such a regularized
-problem. In particular, since utility functions are expressed in units without any
-physical meaning for the investor, any guarantees derived using learning theory should be
-reinterpreted in terms of a guarantee on the certainty equivalent\footnote{The fact that
-  $c$ is the certainty equivalent of a random return $R$ implies that the investors is
-  indifferent between being exposed to the risk of $R$ or getting involved in a risk free
-  investment that has a return rate of $c$.} (in percent of return) of the risky
-investment produced by $\qhat^T X$. In other words, we will be interested in bounding how
-different the in-sample certainty equivalent performance of $\qhat$ might be compared to
-the out-of-sample certainty equivalent performance and how different \Erick{describe in
-  words the second bound}.
 
 
 \input{oos_performance}

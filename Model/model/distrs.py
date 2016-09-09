@@ -51,17 +51,23 @@ class Distribution(object):
         else:
             raise TypeError('Unsupported operation.')
 
+    def __neg__(self):
+        raise NotImplementedError
+
     def distr_add(self,X):
-        return SumRandomVariable(self,X)
+        return SumRandomVariable([self,X])
 
     def __radd__(self,x):
         return self.__add__(x)
 
     def __sub__(self,x):
-        return self.add(-x)
+        return self.__add__(-x)
 
     def __rsub__(self,x):
-        return self.add(-x)
+        return (-self).__add__(x)
+
+    def log(self):
+        return FunctionDistribution(self,np.log)
 
     def random_sample(self,n):
         raise NotImplementedError
@@ -71,7 +77,7 @@ class UnknownDistribution(Distribution):
     pass
 
 
-class FunctionDistribution(Distribution):
+class FunctionDistribution(UnknownDistribution):
     def __init__(self,X,f):
         self.X = X
         self.f = f
@@ -89,32 +95,31 @@ class PowerRandomVariable(UnknownDistribution):
         return '%s**%d' % (str(self.X),self.n)
 
     def sample(self,n):
-        return self.X.sample(n)**2
+        return self.X.sample(n)**self.n
 
-    def general_sum(self,μ):
+    def scalar_add(self,μ):
         if μ is not 0:
             raise NotImplemented('Only works for +0')
         else:
             return self
 
 class SumRandomVariable(UnknownDistribution):
-    def __init__(self,X1,X2):
-        self.Xs = [X1,X2]
+    def __init__(self,Xs):
+        self.Xs = Xs
 
     def __add__(self,X):
-        return SumRandomVariable(self,X)
+        return SumRandomVariable(self.Xs + [X])
+    # def __init__(self,X1,X2):
+    #     self.Xs = [X1,X2]
+
+    # def __add__(self,X):
+    #     return SumRandomVariable(self,X)
 
     def __str__(self):
         return ' + '.join([str(X) for X in self.Xs])
 
     def E(self):
-        sum = 0
-        for X in self.Xs:
-            try:
-                sum += E(X)
-            except:
-                raise ValueError('Expectation not defined for',X)
-        return sum
+        return sum([E(X) for X in self.Xs])
 
     def add_variable(self,Xi):
         return self.Xs.append(Xi)
@@ -145,6 +150,19 @@ class DiscreteDistribution(Distribution):
     def __rmul__(self,a):
         return DiscreteDistribution(a*self.points)
 
+    def scalar_add(self,x):
+        points = [p+x for p in self.points]
+        return DiscreteDistribution(points)
+
+    def inverse(self,p):
+        self._inverse_check(p)
+        p = np.array(p)
+        res = np.zeros_like(p)
+        ks = np.linspace(0,1,self.n+1)
+        for t,beg,end in zip(self.points,ks[:-1],ks[1:]):
+            res  = res + (p>=beg)*(p<end)*t
+        return res            
+
     @property
     def min(self):
         return np.min(self(),axis=0)
@@ -158,23 +176,47 @@ class DiscreteDistribution(Distribution):
         return np.array([self.min,self.max]).T
 
 
+class DiracDistribution(DiscreteDistribution):
+    def __init__(self,x):
+        super().__init__([x])
+
+
+class RademacherDistribution(DiscreteDistribution):
+    def __init__(self):
+        super().__init__([-1,1])
+
+    # def inverse(self,p):
+    #     self._inverse_check(p)
+    #     p = np.array(p)
+    #     inv = (p<1/2)*(-1) + (p>=1/2)
+    #     return inv
+
+
 class UniformDistribution(Distribution):
     def __init__(self,a=0,b=1):
         if b <= a:
             raise ValueError('Must have b > a')
         self.a = a
         self.b = b
+
+    def __str__(self):
+        return 'Unif(%2.2f,%2.2f)' % (self.a,self.b)
         
+    def __neg__(self):
+        return UniformDistribution(-self.b,-self.a)
+
     def inverse(self,p):
-        if np.min([p])<0 or np.max([p])>1:
-            raise ValueError('p must lie in (0,1)')
-        return self.a + p*(self.b - p)
+        self._inverse_check(p)
+        return self.a + p*(self.b - self.a)
 
     def E(self):
         return 0.5*(self.a + self.b)
 
     def var(self):
         return 1/12 * (self.b - self.a)**2
+
+    def scalar_add(self,x):
+        return UniformDistribution(self.a+x,self.b+x)
 
     @property
     def support(self):
@@ -334,3 +376,43 @@ class KumaraswamyDistribution(Distribution):
     @property
     def support(self):
         return [self.x_min,self.x_max]
+
+
+class Copula(Distribution):
+    pass
+
+
+class IndependanceCopula(Copula):
+    def __init__(self,p=None):
+        self.p = p
+
+    def sample(self,n):
+        return np.random.uniform(0,1,(n,self.p))
+
+
+class MixedDistribution(Distribution):
+    def __init__(self,Xs,cop):
+        self.Xs = Xs
+        self.cop = cop
+        self.p = len(self.Xs)
+
+    def sample(self,n):
+        us = self.cop.sample(n)
+        sample = np.array([X.inverse(u) for X,u in zip(self.Xs,us.T)]).T
+        return sample            
+
+
+class IndependantMixedDistribution(MixedDistribution):
+    def __init__(self,Xs):
+        cop = IndependanceCopula(p=len(Xs))
+        super().__init__(Xs,cop)
+
+    def E(self):
+        return [E(X) for X in self.Xs]
+
+    def var(self):
+        v = [Var(X) for X in self.Xs]
+        return np.diag(v)
+
+    
+        

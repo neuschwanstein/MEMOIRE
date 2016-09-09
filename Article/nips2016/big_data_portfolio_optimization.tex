@@ -2,7 +2,7 @@
 
 \include{preamble}
 
-\title{Big Data Portfolio Optimization}
+\title{Generalization Bounds for Regularized Portfolio Selection with Market Side Information}
 \author{
   Erick Delage\\
   Department of Decision Sciences\\
@@ -19,18 +19,33 @@
 \maketitle
 
 \begin{abstract}
-  Drawing on statistical learning theory, we propose a robust portfolio optimization
-  mechanism agnostic to market distribution. In particular, our algorithm returns a linear
-  investment policy based on the risk preferences of the investor, with guaranteed out of
-  sample performance. We also provide guidance for big-data scenarios, ie. when the number
-  of features is of the order of the size of the sample, thus enriching the learning
-  theory literature. \comment{We conclude by contrasting small- and big-data scenario in a real
-  application.}
+%  In recent years,  much pressure has been applied in order to allow portfolio management theory to address was required to evolve in order to  
+  Drawing on statistical learning theory, we derive out-of-sample and suboptimal
+  guarantees about the investment strategy obtained from a regularized portfolio
+  optimization model which attempts to exploit side information about the financial market
+  in order to reach an optimal risk-return tradeoff. This side information might include
+  for instance recent stock returns, volatility indexes, financial news indicators,
+  etc. In particular, we demonstrate that an investment policy that linearly combines this
+  side information in a way that is optimal from the perspective of a random sample set is
+  guaranteed to perform also relatively well (\ie, within an additive perturbation factor
+  of $O(1/\sqrt{n})$) with respect to the unknown distribution that generated this sample
+  set. Finally, we evaluate the sensitivity of these results in a high dimensional regime
+  where the size of the side information vector is of an order that is comparable to the
+  sample size.
+
+  % \Erick{Voici l'ancien abstract: Drawing on statistical learning theory, we propose a
+  %   robust portfolio optimization mechanism agnostic to market distribution based on side
+  %   information and on market returns. In particular, we exhibit a linear investment
+  %   policy based on the risk preferences of an investor and on a sample of the market and
+  %   show that out-of-sample and suboptimality guarantees on the quality of the certainty
+  %   equivalent of the proposed investment can be provided. In addition, we also consider
+  %   the high dimensional case where the number of these side informations is of the order
+  %   of the sample size. }
 \end{abstract}
 
 \input{intro}
 \input{model}
-\input{empirical}
+% \input{empirical}
 \input{conclusion}
 \input{appendix2}
 

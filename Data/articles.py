@@ -4,6 +4,7 @@ from collections import namedtuple
 conn = db.connect('dbname=TBM')
 cur = conn.cursor()
 
+'''Adaptor of the articles3 table.'''
 class Articles:
     def __init__(self,fields=['id','date','title','content','link'],n='ALL'):
         self.fields = fields

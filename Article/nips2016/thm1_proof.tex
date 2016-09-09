@@ -84,10 +84,9 @@ We start by presenting two lemmas that establish some important properties of pr
 \end{proof}
 
 Having established the above properties, the following theorem follows directly from
-Bousquet-Ellisseef Outsample Error Theorem \Erick{Is this the original name of the Theorem
-  ?}. While we omit to describe the original theorem in this article for sake of
-compactness, we refer interested readers to the form presented in Theorem 11.1 of
-\cite{mohri2012foundations} for more details.
+Theorem \ref{thm:outsampleBound2}. While we omit to describe the original theorem in this
+article for sake of compactness, we refer interested readers to the form presented in
+Theorem 11.1 of \cite{mohri2012foundations} for more details.
 
 \begin{thm}[Bousquet-Ellisseef Outsample Error Theorem]\label{thm:outsampleBound2}
   Given that assumptions \ref{ass:R}, \ref{ass:X}, and \ref{ass:u} are satisfied, then one
@@ -115,8 +114,7 @@ where $\partial u(r)$ denotes any supergradient of $u(\cdot)$ at $r$. In particu
 $u(\cdot)$ is an increasing concave function, it follows that
 $\lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon)\geq 0$ is one of the supergradient at
 $\CE(\qhat;\Fhat)$. Combining this inequality with the inequality presented in Theorem
-\ref{thm:outsampleBound2} \Thierry{There's only the first inequality involved here}, we
-get
+\ref{thm:outsampleBound2}, we get
 \[ 
   u(\CE(\qhat;\Fhat)) - \Omega_1 \leq
   u(\CE(\qhat;\Fhat))+(\CE(\qhat;\F)-\CE(\qhat;\Fhat))\partial u(\CE(\qhat;\Fhat))

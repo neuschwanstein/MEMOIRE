@@ -1,6 +1,35 @@
-\section{Conclusion}
+\section{Discussion}\label{sec:conc}
+
+As a conclusion, we would like to review the main messages we hope to deliver from this
+paper. First off, it is possible to use side information from the market, such as market
+news, financial indicators, economic variables and so on in order to build a portfolio
+with actual performance guarantees on the out-of-sample. Second, it is also possible to
+obtain performance bounds on the suboptimality of the empirical decision in comparison to
+what might have been the best decision, given full knowledge of the market. Third, there
+might be a cost to pay for increasing the number of side information treated by the model
+when the sample size on which the decision is based on is not large enough.
+
+That said, for ``small-data'' situations where $p=o(\sqrt{n})$, we believe our framework
+can be particularly well suited for aggregating and treating market side information in
+order to make a sound investment decision that is guaranteed to appeal to the investor's
+perception of risk.
+
+% % Finally, we would like to review once again the main message from Section
+% % \ref{sec:bigdata}. In particular, it is important to understand that Corollary 1 serves as
+% % a worst case scenario and that we don't necessarily expect to observe downgrading
+% % performances as soon as $n=o(p^2)$. Still, no matter what, there is a great cost to pay in
+% % pouring more and more features into this a portfolio problem, and this cost is directly
+% % exhibited through $\xi^2$ and the loosening of the guarantees bound. One might therefore
+% % wish to be prudent when facing such high-risk regimes.
+
+% However, for situation where $p=o(\sqrt{n})$, we believe our framework can be particularly
+% well-suited in analyzing portfolio selection based on side information of the market,
+% since performance on the investor certainty equivalent are known to be bound and to shrink
+% at a $O(p/\sqrt{n})$ rate.  \Erick{La conclusion doit être retravaillée. Noramelement, on
+%   resume le message important du papier ce qui n'est pas fait. La discussion que tu fait
+%   pourrait être raccourcie et insérée à la fin de la section 5. }
 
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "master"
+%%% TeX-master: "big_data_portfolio_optimization"
 %%% End:

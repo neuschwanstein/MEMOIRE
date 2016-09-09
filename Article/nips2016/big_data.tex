@@ -1,4 +1,4 @@
-\subsection{Big Data Phenomenon}\label{sec:bigdata}
+\section{Big Data Phenomenon}\label{sec:bigdata}
 
 In this section, we question how realistic assumption \ref{ass:X} is in a big data
 context. In particular, we expose two sets of natural conditions for the generation of the
@@ -14,9 +14,10 @@ diameter grow proportionally to the square root of $p$.
     \Prob\left(\Bigl|\|X\|^2 - \sum_{i=1}^p \E[X_i^2]\Bigr| \leq
       \sqrt{2p\log(\delta/2)\nu^2}\right) \geq 1-\delta
   \]
-  so that $|\|X\|^2 \in [p- \sqrt{2p\log(\delta/2)\nu^2}, p+ \sqrt{2p\log(\delta/2)\nu^2}]$
-  with probability $1-\delta$. Hence, any ball of fixed radius $\xi$ will contain $X$ with
-  a probability that assymptotically converges to zero as $p$ increases, more specifically
+  so that
+  $|\|X\|^2 \in [p- \sqrt{2p\log(\delta/2)\nu^2}, p+ \sqrt{2p\log(\delta/2)\nu^2}]$ with
+  probability $1-\delta$. Hence, any ball of fixed radius $\xi$ will contain $X$ with a
+  probability that asymptotically converges to zero as $p$ increases, more specifically
   $\Prob(\|X\|^2\leq \xi^2)\leq 2\exp(-2p(1-\xi^2/\sqrt{p})^2/\nu^2)$. On the other hand,
   this inequality somehow also prescribes that the diameter of the support $\Sx$ should
   increase proportionally to $\sqrt{p}$ in order to still contain $X$ with high
@@ -40,37 +41,50 @@ reformulate our previous two results as follows.
 \begin{coro}\label{coro:outsampleBoundBigData}
   Given that assumptions \ref{ass:R} and \ref{ass:u} are satisfied, and that
   $\Prob(\|X\|\leq \xi\sqrt{p})=1$, the certainty equivalent of the out-of-sample
-  performance is at most $O(p/\sqrt{n})$ worse than the in-sample one. Specifically,
+  performance is at most $O(p/\sqrt{n})$ worse than the in-sample one. Specifically, with
+  probability $1-\delta$,
   \[
-    \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - \Omega_2/
+    \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - \Omega_3/
     \lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon)\;,
   \]
   where
   \[
-    \Omega_2 := \frac{\gamma\bar{r}^2\xi^2}{\lambda} \left(\frac{\gamma p}{2n} +
-      \frac{(1+\gamma)p\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right)
+    \Omega_3 := \frac{\gamma\bar{r}^2\xi^2}{\lambda} \left(\frac{\gamma p}{2n} +
+      \frac{(1+\gamma)p\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right).
   \]
-  and
+  Likewise, the suboptimality of the decision $\hat q$ will reach a constant bound due to
+  regularization a rate of at most $O(p/\sqrt{n})$:
   \[
-    \CE(\hat q;F) \geq \CE(q^\star;F) - \omega_2/\lim_{\epsilon\to0^{-}}u'(CE(\hat q;F)+\epsilon)\;,
+    \CE(\hat q;F) \geq \CE(q^\star;F) - \Omega_4/\lim_{\epsilon\to0^{-}}u'(CE(\hat q;F)+\epsilon)\;,
   \]
   where
   \[
-    \omega_2 = -\psi -\frac{8\gamma^2p\xi^2(32+\log(1/\delta))}{n\lambda}
-    -\frac{2\gamma\bar rp\xi^2}{\lambda}\sqrt{\frac{32+\log(1/\delta)}{n}},
+    \Omega_4 = \lambda\|q^\star\|^2 +\frac{8\gamma^2p\xi^2(32+\log(1/\delta))}{n\lambda}
+    +\frac{2\gamma\bar rp\xi^2}{\lambda}\sqrt{\frac{32+\log(1/\delta)}{n}},
   \]
-  with probability $1-\delta$, 
+  with probability $1-\delta$.
 \end{coro}
 
 %This should be in conclusion of this section
 Note that assumption \ref{ass:X} was inspired by \cite{rudin2015big} who also studied
-assymptotic properties of a regularized decision problem in its Big data regime, i.e. when
+asymptotic properties of a regularized decision problem in its Big data regime, \ie, when
 $n$ and $p$ go to infinity simultaneously. Our analysis indicate that the convergence in
 accuracy that is reported there for regime $p\propto n$ might be misleading for many
-practical problems.  In particular, our new results states that asymptotic convergence in
-accuracy when the sample set is large can only occur if $p=o(\sqrt{n})$. The numerical
-experiments that follow will empirically confirm this important insight.
+problems, \eg, when the features can be considered independent from each other.  In
+particular, our new results states that asymptotic convergence in accuracy when the sample
+set is large only guaranteed to occur when $p=o(\sqrt{n})$. 
 
+However, it is important to understand that Corollary 1 serves as a worst case scenario
+and that we don't necessarily expect to observe downgrading performances as soon as
+$n=o(p^2)$. Still, no matter what, there is a cost to pay in pouring more and more
+features into such a portfolio selection problem, and this cost is directly exhibited
+through $\xi^2$ and the loosening of the guarantees bound. One might therefore wish to be
+prudent when facing such high-risk regimes.
+
+% \begin{ex}
+%   As a final example, consider Figure 1 where the out-of-sample deviation $\CE(\hat q;F) -
+%   \CE(\hat q;\hat F)$ is shown. 
+% \end{ex}
 
 
 %%% Local Variables:

@@ -227,7 +227,7 @@ class Problem(BaseProblem):
         Args:
             q [optional]: decision vector q
         '''
-        q = q if q is not None else self.q
+        q = q or self.q
         n,X,r = self.n,self.X,self.r
         # if M_square is not None:
         #     X = np.sign(X)*np.abs(np.maximum(X,np.sqrt(M_square)))
@@ -278,6 +278,9 @@ class Problem(BaseProblem):
         total_cost = 1/n * sum(self.cost(p,R))
         return total_cost
 
+    def outsample_CE(self,X,R):
+        return self.u.inverse(-self.outsample_cost(X,R))
+
 
 class MaskedProblem(Problem):
     '''Represents problem with hidden features.'''
@@ -299,7 +302,7 @@ class SaturatedFeaturesProblem(Problem):
 
     def outsample_cost(self,X,R):
         M = np.max(np.abs(self.X),axis=0)
-        X = np.sign(X)*np.abs(np.maximum(X,M))
+        X = np.sign(X)*np.minimum(np.abs(X),M)
         return super().outsample_cost(X,R)
 
 
@@ -347,6 +350,7 @@ class ProblemsDistribution(BaseProblem):
         self.λ = λ
         self.ps = None
         self.problem_t = problem_t
+        self.solver = None
         super().__init__(u,Rf)
 
     def sample(self,m,specific_args={},par=True):
@@ -368,6 +372,7 @@ class ProblemsDistribution(BaseProblem):
         default_args = { 'X':X,'r':R,'λ':self.λ,'u':self.u,'Rf':self.Rf }
         default_args = { **default_args, **self.specific_args }
         p_hat = self.problem_t(**default_args)
+        p_hat.solver = self.solver
         p_hat.solve()
         return p_hat
 

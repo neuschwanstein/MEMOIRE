@@ -135,7 +135,11 @@ class LinearPlateauUtility(Utility):
             elif r <= self.x0:
                 return 1/β*r
             else:
-                return np.infty                
+                return np.infty
+
+    def _derive(self,r):
+        r = np.array(r)
+        return (r<=0)*1 + (r>0)*(r<=self.x0)*self.β + (r>self.x0)*0
     
     @property
     def γ(self):

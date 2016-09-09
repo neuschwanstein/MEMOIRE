@@ -1,6 +1,20 @@
-\subsection{Out-of-sample performance bounds}
+\section{Out-of-sample performance bounds}\label{sec:oos}
 
-In order to shed some light on the first question, we make the following assumptions.
+The question remains of understanding what guarantees does one have regarding out of
+sample performance of the portfolio investment policy obtained from such a regularized
+problem. In particular, since utility functions are expressed in units without any
+physical meaning for the investor, any guarantees derived using learning theory should be
+reinterpreted in terms of a guarantee on the certainty equivalent\footnote{The fact that
+  $c$ is the certainty equivalent of a random return $R$ implies that the investors is
+  indifferent between being exposed to the risk of $R$ or getting involved in a risk free
+  investment that has a return rate of $c$.} (in percent of return) of the risky
+investment produced by $\qhat^T X$. In other words, we will be interested in bounding how
+different the in-sample certainty equivalent performance of $\qhat$ might be compared to
+the out-of-sample certainty equivalent performance. % Likewise, we will also show how we can
+% expect the policy $\hat q$ to converge toward an unknown market optimal investment policy
+% based on $u$ and $\lambda$.
+
+In order to shed some light on this question, we first make the following assumptions.
 
 \begin{assumption}\label{ass:R}
   The random return $R$ is supported on a bounded interval
@@ -9,7 +23,7 @@ In order to shed some light on the first question, we make the following assumpt
 
 \begin{assumption}\label{ass:X}
   The random vector of side-information $X$ is supported on bounded set $\Sx$ such that
-  $\Prob(\|X\|\leq \xi)=1$.
+  $\Prob(\|X\|\leq \xi)=1$. 
 \end{assumption}
 
 \begin{assumption}\label{ass:u}
@@ -21,21 +35,21 @@ In order to shed some light on the first question, we make the following assumpt
 
 The first assumption is relatively realistic given that one can usually assess from
 historical data a large enough interval of returns which could be assumed to contain $R$
-with probability one. For instance, when looking at the last XXX years of daily returns
-for an index such as XXX, this interval can legitimately be set to $[XXX , XXX]$. The
-second assumption might require one to pre-process the vector of side information in order
-to rely on the results that will be presented. This could typically be done by projecting
-this vector on the surface of a ball of radius $\xi$ when $\|X|\>\xi$, which is as simple
-as replacing $X$ with $(\xi/\|X\|)\cdot X$. This assumption will be further studied in
-Section \ref{sec:bigdata}. Finally, while the last assumption is fairly common for
-establishing generalization bounds and can certainly accommodate any piecewise linear
-utility function (often used by numerical optimization methods), it is important to
-mention that it is not one that is commonly made in modern portfolio theory. If, for
-instance, an investor expresses an absolute risk aversion uniformly equal to $\alpha$,
-this suggests the use of $u(r):=(1/\alpha)(1-\exp(-\alpha r))$ which is not Lipschitz
-continuous. Fortunately, the theory that will be used only exploits the fact that the
-function is Lipschitz continuous on the interval
-$[-\bar{r}\xi/(2\lambda), \bar{r}\xi/(2\lambda)]$.
+with probability one. For instance, when looking at the last 35 years of daily returns for
+an index such as S\&P 500, this interval can legitimately be set to $[-25\% , 25\%]$ daily
+returns. If some side information are not known to be bounded, the second assumption might
+require one to pre-process the vector of side information in order to rely on the results
+that will be presented. This could typically be done by projecting this vector on the
+surface of a ball of radius $\xi$ when $\|X\|>\xi$, which is as simple as replacing $X$
+with $(\xi/\|X\|)\cdot X$. This assumption will be further studied in Section
+\ref{sec:bigdata}. Finally, while the last assumption is fairly common for establishing
+generalization bounds and can certainly accommodate any piecewise linear utility function
+(often used by numerical optimization methods), it is important to mention that it is not
+one that is commonly made in modern portfolio theory. If, for instance, an investor
+expresses an absolute risk aversion uniformly equal to $\alpha$, this suggests the use of
+$u(r):=(1/\alpha)(1-\exp(-\alpha r))$ which is not Lipschitz continuous. Fortunately, the
+theory that will be used only exploits the fact that the function is Lipschitz continuous
+on the interval $[-\bar{r}^2\xi^2/(2\lambda), \bar{r}^2\xi^2/(2\lambda)]$.
 
 %For example, any piece-wise linear utility would fit the Lipschitz requirements.
 
@@ -46,7 +60,9 @@ estimation:
   Given that assumptions \ref{ass:R}, \ref{ass:X} and \ref{ass:u} are satisfied, the
   certainty equivalent of the out-of-sample performance is at most $O(1/\sqrt{n})$ worse
   than the in-sample one. Specifically,
-  %\[    \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) - u_{-1}'(\CE(\qhat;\Fhat))\\frac{(\gamme^2\bar{r}\xi)^2}{2\lambda} \left(\frac{1}{n} + \frac{4\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right),   \]
+  % \[ \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) -
+  %   u_{-1}'(\CE(\qhat;\Fhat))\\frac{(\gamme^2\bar{r}\xi)^2}{2\lambda} \left(\frac{1}{n}
+  %     + \frac{4\sqrt{\log(1/\delta)}}{\sqrt{2n}}\right), \]
   \[ 
     \CE(\qhat;\F) \geq \CE(\qhat;\Fhat) -
     \Omega_1/\lim_{\epsilon\to0^-}u'(\CE(\qhat;\Fhat)+\epsilon)\;,
@@ -54,7 +70,7 @@ estimation:
   where
   \begin{gather*}
     \CE(\qhat;\F):=u^{-1}(\E_\F[u(R\cdot\qhat^T X)])\;,\\
-    \CE(\qhat;\Fhat):=u^{-1}(n^{-1}\sum_{i=1}^n u(r_i\,\qhat^T x_i]))\;,
+    \CE(\qhat;\Fhat):=u^{-1}(n^{-1}\sum_{i=1}^n u(r_i\,\qhat^T x_i))\;,
   \end{gather*}
   and where
   \[
@@ -66,14 +82,14 @@ estimation:
 
 Our proof of Theorem \ref{thm:outsampleBound1} proceeds as follow. First, borrowing from
 the terminology introduced by \cite{bousquet2002stability}, we show that the algorithm
-generates $\qhat$ from the sample set is $\beta$-stable. We then show that for any $\qhat$
-generated from a sample of $\F$, the amount of utility generated from implementing the
-$\qhat$ decision is absolutely bounded \Erick{What does this mean in words?} with
-probability one. Given that these two conditions are satisfied, we can then rely on
-Bousquet-Ellisseef's out-sample error bound theorem (typically used for inference
-problems) in order to establish out-of-sample guarantees in terms of expected utility. By
-exploiting the concavity of $u(\cdot)$, we are finally able to describe the implications
-in terms of certainty equivalent that are expressed in our theorem.
+which produces $\qhat$ from the sample set is $\beta$-stable. We then show that for any
+$\qhat$ generated from a sample of $\F$, the amount of utility generated from implementing
+the $\qhat$ decision necessarily lies on an interval of bounded size. Given that these two
+conditions are satisfied, we can then rely on Bousquet-Ellisseef's out-sample error bound
+theorem (typically used for inference problems) in order to establish out-of-sample
+guarantees in terms of expected utility. By exploiting the concavity of $u(\cdot)$, we are
+finally able to describe the implications in terms of certainty equivalent that are
+expressed in our theorem.
 
 
 
