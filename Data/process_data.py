@@ -1,4 +1,3 @@
-from os.path import isfile
 import datetime as dt
 import itertools
 
@@ -7,22 +6,18 @@ from gensim.models.doc2vec import Doc2Vec
 import numpy as np
 import pandas as pd
 import pytz
-import requests
 import quandl
 
 import model.utility as ut
 import model.problem as pr
 
 quandl.ApiConfig.api_key = 'TFPsUSNkbZiK8TgJJ_qa'
-
-
-def process_col_name(feature_name,col_name):
-    return feature_name + '_' + col_name.lower().replace(' ','_')
+day_shift = 14
 
 
 def get_market(start_date,end_date):
     # Start a bit early
-    start_date = start_date + dt.timedelta(days=-10)
+    start_date = start_date + dt.timedelta(days=-day_shift)
 
     # Get absolute prices
     sp500 = quandl.get('YAHOO/INDEX_GSPC',start_date=start_date,end_date=end_date)
@@ -37,35 +32,29 @@ def get_market(start_date,end_date):
 
 def get_fnc(start_date,end_date):
     # Start again a bit early
-    start_date = start_date + dt.timedelta(days=-10)
+    start_date = start_date + dt.timedelta(days=-day_shift)
 
     def get_dataset(key,feature_name):
         ds = quandl.get(key,start_date=start_date,end_date=end_date)
-        ds.columns = [process_col_name(feature_name,col) for col in ds.columns]
+        ds.columns = [col.lower().replace(' ','_') for col in ds.columns]
         return ds
 
-    vix = get_dataset('CBOE/VIX','vix')
+    vix = get_dataset('CBOE/VIX','vix')[['vix_close']]
     vix_of_vix = get_dataset('CBOE/VVIX','vvix')
-    # libor_1wk = get_dataset('FRED/USD1WKD156N','libor_1wk')
-    # libor_1mt = get_dataset('FRED/USD1MTD156N','libor_1mt')
-    # libor_1yr = get_dataset('FRED/USD12MD156N','libor_1yr')
 
-    # fnc = vix.join([vix_of_vix,libor_1wk,libor_1mt,libor_1yr])
     fnc = vix.join([vix_of_vix])
-    fnc_columns = list(itertools.product(('fnc',),fnc.columns))
-    fnc.columns = pd.MultiIndex.from_tuples(fnc_columns)
     return fnc
 
 
-def in_newyork(date):
-    ny_tz = pytz.timezone('America/New_York')
-    op_time = dt.time(hour=9)
-    date_at_9am = dt.datetime.combine(date,op_time)
-    date_in_newyork = ny_tz.localize(date_at_9am)
-    return date_in_newyork
+def get_d2v(articles,dates):
 
+    def in_newyork(date):
+        ny_tz = pytz.timezone('America/New_York')
+        op_time = dt.time(hour=9)
+        date_at_9am = dt.datetime.combine(date,op_time)
+        date_in_newyork = ny_tz.localize(date_at_9am)
+        return date_in_newyork
 
-def aggregate_articles(articles,dates):
     dates = dates.sort_values(ascending=True)
     ny_dates = [in_newyork(date) for date in dates]
     articles = articles.sort_index(ascending=True)
@@ -98,32 +87,11 @@ def aggregate_articles(articles,dates):
     d2v = pd.DataFrame(d2v)
     d2v['date'] = dates
     d2v = d2v.set_index('date')
-
-    d2v_cols = [('d2v','d2v_'+str(i)) for i in range(1,p+1)]
-    d2v.columns = pd.MultiIndex.from_tuples(d2v_cols)
+    d2v.columns = ['d2v_'+str(i) for i in range(1,p+1)]
     return d2v
-
-
-def _get_market(beg_date,end_date):
-    st_format = '%Y-%m-%d'
-    filename = 'sp500/sp500_%s_%s.csv' % (beg_date.strftime(st_format),
-                                          end_date.strftime(st_format))
-    if not isfile(filename):
-        url = 'http://real-chart.finance.yahoo.com/table.csv?s=%%5EGSPC&a=%d&b=%d&c=%d&d=%d&e=%d&f=%d&g=d&ignore=.csv'
-        url = url % (beg_date.month-1,beg_date.day,beg_date.year,end_date.month-1,end_date.day,end_date.year)
-        csv = requests.get(url).text
-        with open(filename,'w') as csv_file:
-            csv_file.write(csv)
-
-    market = pd.read_csv(filename)
-    market = market.rename(columns={'Date':'date'})
-
-    ny_tz = pytz.timezone('America/New_York')
-    op_time = dt.time(hour=9)
-    market.date = market.date.apply(lambda d: ny_tz.localize(dt.datetime.combine(pd.to_datetime(d),op_time)))
-    market['r'] = (market['Close']-market['Open'])/market['Open']
-
-    return market[['date','r']]
+    # d2v_cols = [('d2v','d2v_'+str(i)) for i in range(1,p+1)]
+    # d2v.columns = pd.MultiIndex.from_tuples(d2v_cols)
+    # return d2v
 
 
 def get_articles():
@@ -137,46 +105,26 @@ def get_articles():
     return articles
 
 
+def build_dataset(market,fnc,d2v):
+    market_response = market[['r','price']]
+    market_response.columns = pd.MultiIndex.from_tuples([('r',None),('price',None)])
+
+    volume = market.volume
+    fnc = fnc.join(volume)
+    market_features = fnc.join(d2v)
+    cols_fnc = list(itertools.product(('fnc',),fnc.columns))
+    cols_d2v = list(itertools.product(('d2v',),d2v.columns))
+    cols = cols_fnc+cols_d2v
+    market_features.columns = pd.MultiIndex.from_tuples(cols)
+    ds = market_response.join(market_features)
+    return ds
+    
+
+
+
 def aggregate_data(data):
     return np.mean(data,axis=0)  # TODO try different methods here!
 
-
-def get_samples(articles=None,market=None,model=None):
-    articles = articles or get_articles()
-    market = market or get_market(start_date=min(articles.index),end_date=max(articles.index))
-    model = Doc2Vec.load('300model')
-
-    n,p = len(market),len(model.docvecs[0])
-    d2v = np.empty((n,p))
-
-    # articles = articles.sort_values(by='date',ascending=True)
-    articles = articles.sort_index(ascending=True)
-    market = market.sort_index(ascending=True)
-
-    ids = list()
-    it_art = articles.itertuples()
-    article = next(it_art)
-    for i,record in enumerate(market.itertuples()):
-        ids = list()
-        while article.Index < record.Index:
-            ids.append(str(article.id))
-            try:
-                article = next(it_art)
-            except StopIteration:
-                break
-        datum = aggregate_data(model.docvecs[ids])
-        d2v[i] = datum
-
-    d2v = pd.DataFrame(d2v)
-    samples = pd.concat([market,d2v],axis=1)
-
-    d2v_is = ['d2v_'+str(i) for i in range(1,p+1)]
-    d2v_cols = [('d2v',d2v_i) for d2v_i in d2v_is]
-    market_cols = [(col,) for col in market.columns]
-    samples_cols = pd.MultiIndex.from_tuples(market_cols + d2v_cols)
-
-    samples.columns = samples_cols
-    return samples
 
 
 def preprocess_samples(train,test):
@@ -268,3 +216,15 @@ def get_timeseries(samples,q):
     alg_value = rates_to_prices(alg_rs)[1:]
     market.alg_value = alg_value
     return market
+
+
+if (__name__ == '__main__'):
+    switch = False
+    if switch:
+        articles = get_articles()
+        start_date = min(articles.index)
+        end_date = max(articles.index)
+        market = get_market(start_date,end_date)  # Contains price, returns and volume
+        fnc = get_fnc(start_date,end_date)        # Contains various features (eg. vix)
+        d2v = get_d2v(articles,market.index)  # Aggregate articles based on market dates
+        
