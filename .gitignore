@@ -28,3 +28,4 @@ revue_litt.org
 *.bbl
 *.bcf
 /Article/nips2016/big_data_portfolio_optimization.blg
+.ipynb_checkpoints

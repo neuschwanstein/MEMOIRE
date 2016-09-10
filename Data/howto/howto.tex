@@ -1,0 +1,52 @@
+\documentclass{article}[10pt]
+
+\usepackage{listings}
+
+\title{The Guide on Using Market Side-Information}
+\author{Thierry \textsc{Bazier-Matte}\\HEC Montreal}
+
+\begin{document}
+\maketitle
+
+Let's follow through the algorithm. First off, we simply query off our database of all its
+articles. We make sure to properly sort them: 
+\begin{verbatim}
+articles = list(Articles(['id','date']))
+articles = Namedtuples(articles)
+articles = sorted(articles,key=lambda a: a.date)
+\end{verbatim}
+
+We must be very careful in how we aggregate the articles to run our algorithm. First off,
+we have two lists: the first one contains daily log returns at the New york stock
+exchange, and the other one a list of articles published throughout the day. The
+carefulness must be in that of causaulity which must not be present either in the test or
+training sets. So how should we model the behaviour of the response of the market to the
+financial information available throughout the day? If we did possess high frequency data,
+then each new article would be in itself a sample, and the next observed logreturn would
+be the corresponding response of the distribution. However, we are here dealing with
+fundamentally time dependant problem. The solution of the problem should actually be
+invariant to the time scale of the logreturns measures, and therefore should be able to
+scale to weekly or even monthly measures.
+
+A naive approach would simply to consider the global influence some news have on the
+following day. Therefore, if the market opens at 9AM in the morning, at this precise time
+we must be able to know exactly how much will be invested in the market, regardless of
+future events. In short, at a given date 
+
+What was actually done is slightly different. For each logreturn record, we know between
+which dates it occured.
+
+We then query Yahoo! Finance web API and return a special structure called \verb+Record+
+consisting of the following fields:
+\verb+odict_keys(['beg_date', 'end_date', 'logreturn'])+. We make sure to only query the
+date for which we know we have text information. 
+\begin{verbatim}
+sp500 = get_sp500_records(beg_date=articles[0].date,end_date=articles[-1].date)
+\end{verbatim}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

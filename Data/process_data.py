@@ -12,7 +12,7 @@ import model.utility as ut
 import model.problem as pr
 
 quandl.ApiConfig.api_key = 'TFPsUSNkbZiK8TgJJ_qa'
-day_shift = 14
+day_shift = 5
 
 
 def get_market(start_date,end_date):
@@ -26,7 +26,6 @@ def get_market(start_date,end_date):
     sp500.price = sp500.price/sp500.price.values[0]
     sp500['r'] = (sp500.close - sp500.open)/sp500.open
     sp500 = sp500[['volume','price','r']]
-
     return sp500
 
 
@@ -89,9 +88,6 @@ def get_d2v(articles,dates):
     d2v = d2v.set_index('date')
     d2v.columns = ['d2v_'+str(i) for i in range(1,p+1)]
     return d2v
-    # d2v_cols = [('d2v','d2v_'+str(i)) for i in range(1,p+1)]
-    # d2v.columns = pd.MultiIndex.from_tuples(d2v_cols)
-    # return d2v
 
 
 def get_articles():
@@ -103,6 +99,17 @@ def get_articles():
     articles.date = articles.date.apply(apply_utc)
     articles = articles.set_index('date').sort_index()
     return articles
+
+
+def add_timelag(ds,day_shift):
+
+    def process_shift(ds,i):
+        shift = ds.shift(i)
+        shift.columns = [col+'_minus_'+str(i) for col in shift.columns]
+        return shift
+
+    shifts = [process_shift(ds,i) for i in range(1,day_shift+1)]
+    return pd.concat(shifts,axis=1)
 
 
 def build_dataset(market,fnc,d2v):
@@ -118,13 +125,10 @@ def build_dataset(market,fnc,d2v):
     market_features.columns = pd.MultiIndex.from_tuples(cols)
     ds = market_response.join(market_features)
     return ds
-    
-
 
 
 def aggregate_data(data):
     return np.mean(data,axis=0)  # TODO try different methods here!
-
 
 
 def preprocess_samples(train,test):
