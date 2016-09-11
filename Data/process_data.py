@@ -29,7 +29,23 @@ def get_market(start_date,end_date):
     return sp500
 
 
-def get_fnc(start_date,end_date):
+def get_features(market):
+    market_response = market[['r','price']]
+    market_response.columns = pd.MultiIndex.from_tuples([('r',None),('price',None)])
+    quandl_features = get_quandl_features(min(market.index),max(market.index))
+    quandl_features = quandl_features.join(market.volume,how='outer')
+    # Only retain valid dates
+    quandl_features = market_response.join(quandl_features,how='left')[quandl_features.columns]
+    lagged_features = add_timelag(quandl_features,1)
+    cols = list(itertools.product(('X',),lagged_features.columns))
+    lagged_features.columns = pd.MultiIndex.from_tuples(cols)
+    result = market_response.join(lagged_features,how='left')
+    # Remove rows without information
+    result = result.dropna(axis=0,how='any')
+    return result
+
+
+def get_quandl_features(start_date,end_date):
     # Start again a bit early
     start_date = start_date + dt.timedelta(days=-day_shift)
 
@@ -105,26 +121,11 @@ def add_timelag(ds,day_shift):
 
     def process_shift(ds,i):
         shift = ds.shift(i)
-        shift.columns = [col+'_minus_'+str(i) for col in shift.columns]
+        shift.columns = [col+'_m_'+str(i) for col in shift.columns]
         return shift
 
     shifts = [process_shift(ds,i) for i in range(1,day_shift+1)]
     return pd.concat(shifts,axis=1)
-
-
-def build_dataset(market,fnc,d2v):
-    market_response = market[['r','price']]
-    market_response.columns = pd.MultiIndex.from_tuples([('r',None),('price',None)])
-
-    volume = market.volume
-    fnc = fnc.join(volume)
-    market_features = fnc.join(d2v)
-    cols_fnc = list(itertools.product(('fnc',),fnc.columns))
-    cols_d2v = list(itertools.product(('d2v',),d2v.columns))
-    cols = cols_fnc+cols_d2v
-    market_features.columns = pd.MultiIndex.from_tuples(cols)
-    ds = market_response.join(market_features)
-    return ds
 
 
 def aggregate_data(data):
@@ -229,6 +230,6 @@ if (__name__ == '__main__'):
         start_date = min(articles.index)
         end_date = max(articles.index)
         market = get_market(start_date,end_date)  # Contains price, returns and volume
-        fnc = get_fnc(start_date,end_date)        # Contains various features (eg. vix)
+        fnc = get_quandl_features(start_date,end_date)        # Contains various features (eg. vix)
         d2v = get_d2v(articles,market.index)  # Aggregate articles based on market dates
         
