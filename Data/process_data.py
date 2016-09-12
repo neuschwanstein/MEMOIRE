@@ -29,14 +29,14 @@ def get_market(start_date,end_date):
     return sp500
 
 
-def get_features(market):
+def get_samples(market):
     market_response = market[['r','price']]
     market_response.columns = pd.MultiIndex.from_tuples([('r',None),('price',None)])
     quandl_features = get_quandl_features(min(market.index),max(market.index))
     quandl_features = quandl_features.join(market.volume,how='outer')
     # Only retain valid dates
     quandl_features = market_response.join(quandl_features,how='left')[quandl_features.columns]
-    lagged_features = add_timelag(quandl_features,1)
+    lagged_features = add_timelag(quandl_features,3)
     cols = list(itertools.product(('X',),lagged_features.columns))
     lagged_features.columns = pd.MultiIndex.from_tuples(cols)
     result = market_response.join(lagged_features,how='left')
