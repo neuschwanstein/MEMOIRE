@@ -110,9 +110,10 @@ class LinearPlateauUtility(Utility):
         self.β = β
         self.x0 = x0
         self.k = 1
-        
+
     def __str__(self):
-        return 'u(r) = min(β*r,r,x0)'
+        s = '$u(r) = \min(r,%.2fr,%.2f)$' % (self.β,self.x0)
+        return s
 
     def cvx_util(self,r):
         return cvx.min_elemwise(r, self.β*r, self.β*self.x0)

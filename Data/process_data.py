@@ -1,3 +1,4 @@
+import re
 from math import isnan
 
 import datetime as dt
@@ -12,14 +13,9 @@ import quandl
 
 
 quandl.ApiConfig.api_key = 'TFPsUSNkbZiK8TgJJ_qa'
-day_shift = 5
 
 
 def get_market(start_date,end_date):
-    # Start a bit early
-    start_date = start_date + dt.timedelta(days=-day_shift)
-
-    # Get absolute prices
     sp500 = quandl.get('YAHOO/INDEX_GSPC',start_date=start_date,end_date=end_date)
     sp500.columns = [col_name.lower() for col_name in sp500.columns]
     sp500 = sp500.rename(columns={'adjusted close':'price'})
@@ -32,7 +28,7 @@ def get_market(start_date,end_date):
 def get_samples(market):
     market_response = market[['r','price']]
     market_response.columns = pd.MultiIndex.from_tuples([('r',None),('price',None)])
-    quandl_features = get_quandl_features(min(market.index),max(market.index))
+    quandl_features = get_quandl_features(market)
     quandl_features = quandl_features.join(market.volume,how='outer')
     # Only retain valid dates
     quandl_features = market_response.join(quandl_features,how='left')[quandl_features.columns]
@@ -45,36 +41,39 @@ def get_samples(market):
     return result
 
 
-def get_quandl_dataset(code,market,columns=None,buffer_days=None):
+def get_quandl_dataset(code,market,columns=None,buffer_days=10):
+    '''Queries a quandl database, with some buffer in order to introduce lag.'''
     start_date = market.index.min()
     end_date = market.index.max()
     if buffer_days is not None:
         start_date += dt.timedelta(days=-buffer_days)
 
-    dataset = quandl.get(code,start_date=start_date,end_date=end_date)
-    columns = dataset.columns if columns is None else columns
-    dataset = market.join(dataset,how='outer')[columns]
-    dataset = dataset.sort_index(ascending=True)
-    is_new = dataset.apply(lambda row: 0 if all(isnan(c) for c in row) else 1,axis=1)
-    dataset = dataset.fillna(method='pad')
-    dataset['is_new_'+code[:4]] = is_new
-    return dataset
+    ds = quandl.get(code,start_date=start_date,end_date=end_date)
+    ds.columns = [col.lower().replace(' ','_') for col in ds.columns]
+    columns = ds.columns if columns is None else columns
+    ds = market.join(ds,how='outer')[columns]
+    ds = ds.sort_index(ascending=True)
+
+    # Add new column to indicate if the feature is 'old' news or not.
+    # Not necessary if updated daily.
+    is_new_trivial = quandl.Dataset(code)['frequency'] == 'daily'
+    if not is_new_trivial:
+        is_new = ds.apply(lambda row: 0 if all(isnan(c) for c in row) else 1,axis=1)
+
+    ds = ds.fillna(method='pad')
+    if not is_new_trivial:
+        is_new_code = re.search('(?<=/).*',code).group(0).lower()
+        ds['is_new_'+is_new_code] = is_new
+    return ds
 
 
-def get_quandl_features(start_date,end_date):
-    # Start again a bit early
-    start_date = start_date + dt.timedelta(days=-day_shift)
-
-    def get_dataset(key,feature_name):
-        ds = quandl.get(key,start_date=start_date,end_date=end_date)
-        ds.columns = [col.lower().replace(' ','_') for col in ds.columns]
-        return ds
-
-    vix = get_dataset('CBOE/VIX','vix')[['vix_close']]
-    vix_of_vix = get_dataset('CBOE/VVIX','vvix')
-
-    fnc = vix.join([vix_of_vix])
-    return fnc
+def get_quandl_features(market):
+    '''Get features from quandl api and join them.'''
+    vix = get_quandl_dataset('CBOE/VIX',market,columns=['vix_close'])
+    vvix = get_quandl_dataset('CBOE/VVIX',market)
+    iiaa = get_quandl_dataset('AAII/AAII_SENTIMENT',market,columns=['bullish','neutral','bearish'])
+    features = vix.join([vvix,iiaa],how='outer')
+    return features
 
 
 def get_d2v(articles,dates):
