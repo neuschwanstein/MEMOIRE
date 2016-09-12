@@ -1,3 +1,5 @@
+from math import isnan
+
 import datetime as dt
 import itertools
 
@@ -8,8 +10,6 @@ import pandas as pd
 import pytz
 import quandl
 
-import model.utility as ut
-import model.problem as pr
 
 quandl.ApiConfig.api_key = 'TFPsUSNkbZiK8TgJJ_qa'
 day_shift = 5
@@ -43,6 +43,22 @@ def get_samples(market):
     # Remove rows without information
     result = result.dropna(axis=0,how='any')
     return result
+
+
+def get_quandl_dataset(code,market,columns=None,buffer_days=None):
+    start_date = market.index.min()
+    end_date = market.index.max()
+    if buffer_days is not None:
+        start_date += dt.timedelta(days=-buffer_days)
+
+    dataset = quandl.get(code,start_date=start_date,end_date=end_date)
+    columns = dataset.columns if columns is None else columns
+    dataset = market.join(dataset,how='outer')[columns]
+    dataset = dataset.sort_index(ascending=True)
+    is_new = dataset.apply(lambda row: 0 if all(isnan(c) for c in row) else 1,axis=1)
+    dataset = dataset.fillna(method='pad')
+    dataset['is_new_'+code[:4]] = is_new
+    return dataset
 
 
 def get_quandl_features(start_date,end_date):
@@ -143,86 +159,6 @@ def preprocess_samples(train,test):
     return train,test
 
 
-def extract_data(samples):
-    X = samples.d2v.values
-    r = samples.r.values.flatten()
-    return X,r
-
-
-def get_CE(train,test,λ,u):
-    train,test = preprocess_samples(train,test)
-    X_train,r_train = extract_data(train)
-    X_test,r_test = extract_data(test)
-
-    problem = get_solved_problem(X_train,r_train,λ,u)
-    insample_CE = problem.insample_CE()
-    outsample_CE = problem.outsample_CE(X_test,r_test)
-    return insample_CE,outsample_CE
-
-
-def get_solved_problem(X,r,λ,u):
-    problem = pr.Problem(X,r,λ,u)
-    problem.solve()
-    return problem
-
-
-def get_train_test(samples,shuffle=False):
-    if shuffle:
-        samples = samples.sample(frac=1)
-    train_sz = int(0.8*len(samples))
-    train,test = samples[:train_sz],samples[train_sz:]
-    return train,test
-
-
-def cross_validate(samples):
-    train,test = get_train_test(samples,shuffle=True)
-
-    β = 0.9
-    r_threshold = np.percentile(samples.r,95)
-    u = ut.LinearPlateauUtility(β,r_threshold)
-
-    results = [get_CE(train,test,λ,u) for λ in np.linspace(0,0.1,10)]
-    return results
-
-
-def prices_to_rates(ps):
-    rates = [(clos-opn)/opn for opn,clos in zip(ps[:-1],ps[1:])]
-    return rates
-
-
-def rates_to_prices(rs):
-    rs = [1]+list(rs)
-
-    def rate_to_price(opn,r):
-        return opn*(r+1)
-    prices = list(itertools.accumulate(rs,rate_to_price))
-    return prices
-
-
-def exp_rates_to_prices(rs):
-    rs = [1]+list(rs)
-    ps = list(itertools.accumulate(rs,lambda opn,clos: opn*np.exp(clos)))
-    return ps
-
-
-def exp_prices_to_rates(ps):
-    rates = [np.log(clos/opn) for opn,clos in zip(ps[:-1],ps[1:])]
-    return rates
-
-
-def get_timeseries(samples,q):
-    market = samples.sort_values(by='date',ascending=True)
-    rs = market.r.values.flatten()
-    market.market_value = rates_to_prices(rs)[1:]
-
-    d2v = market.d2v.values
-    alg_p = d2v@q
-    alg_rs = alg_p*rs
-    alg_value = rates_to_prices(alg_rs)[1:]
-    market.alg_value = alg_value
-    return market
-
-
 if (__name__ == '__main__'):
     switch = False
     if switch:
@@ -232,4 +168,3 @@ if (__name__ == '__main__'):
         market = get_market(start_date,end_date)  # Contains price, returns and volume
         fnc = get_quandl_features(start_date,end_date)        # Contains various features (eg. vix)
         d2v = get_d2v(articles,market.index)  # Aggregate articles based on market dates
-        
