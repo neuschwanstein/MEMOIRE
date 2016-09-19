@@ -172,16 +172,6 @@ def aggregate_data(data):
     return np.mean(data,axis=0)  # TODO try different methods here!
 
 
-def preprocess_samples(train,test):
-    train_d2v = train['d2v'].values
-    scaler = pp.StandardScaler().fit(train_d2v)
-    train_d2v = scaler.transform(train_d2v)
-    train['d2v'] = train_d2v
-    test['d2v'] = scaler.transform(test['d2v'].values)
-    train[('d2v','bias')] = np.ones(len(train))
-    test[('d2v','bias')] = np.ones(len(test))
-    return train,test
-
 
 if (__name__ == '__main__'):
     switch = False

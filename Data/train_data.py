@@ -19,8 +19,11 @@ def get_train_test(samples,shuffle=True):
     X_test = (X_test - X_mean)/X_std
     train.X = X_train
     test.X = X_test
-    train[('X','bias')] = np.ones(len(train))
-    test[('X','bias')] = np.ones(len(test))
+    b = 5
+    train[('X','bias')] = b*np.ones(len(train))
+    test[('X','bias')] = b*np.ones(len(test))
+    train = train.fillna(0)
+    test = test.fillna(0)
     return train,test
 
 
