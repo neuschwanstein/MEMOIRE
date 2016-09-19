@@ -26,7 +26,9 @@ def plot_cross_val(λs,CEs,u,log=True):
     plt.show()
 
 
-def test_price_series(X_test,r_test,q):
+def test_price_series(test,q):
+    X_test = test.X.values
+    r_test = test.r.values.flatten()
     r = r_test*(X_test@q)
     alg_price = np.cumprod(1+r)
     act_price = np.cumprod(1+r_test)

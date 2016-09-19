@@ -26,22 +26,24 @@ def get_market(start_date,end_date):
 
 
 def get_samples(market):
+    lag = 1
     market_response = market[['r','price']]
     market_response.columns = pd.MultiIndex.from_tuples([('r',None),('price',None)])
     quandl_features = get_quandl_features(market)
     quandl_features = quandl_features.join(market.volume,how='outer')
     # Only retain valid dates
     quandl_features = market_response.join(quandl_features,how='left')[quandl_features.columns]
-    lagged_features = add_timelag(quandl_features,3)
+    lagged_features = add_timelag(quandl_features,lag)
     cols = list(itertools.product(('X',),lagged_features.columns))
     lagged_features.columns = pd.MultiIndex.from_tuples(cols)
+    market_response = market_response[lag:]
     result = market_response.join(lagged_features,how='left')
     # Remove rows without information
-    result = result.dropna(axis=0,how='any')
+    # result = result.dropna(axis=0,how='any')
     return result
 
 
-def get_quandl_dataset(code,market,columns=None,buffer_days=10):
+def get_quandl_dataset(market,code,columns=None,buffer_days=10):
     '''Queries a quandl database, with some buffer in order to introduce lag.'''
     start_date = market.index.min()
     end_date = market.index.max()
@@ -49,9 +51,12 @@ def get_quandl_dataset(code,market,columns=None,buffer_days=10):
         start_date += dt.timedelta(days=-buffer_days)
 
     ds = quandl.get(code,start_date=start_date,end_date=end_date)
+    db_name = re.search('(?<=/).*',code).group(0).lower()
     ds.columns = [col.lower().replace(' ','_') for col in ds.columns]
     columns = ds.columns if columns is None else columns
-    ds = market.join(ds,how='outer')[columns]
+    ds = market[[]].join(ds,how='outer')[columns]
+    # ds = market[[]].join(ds,how='outer')
+    ds.columns = [db_name+'_'+col_name for col_name in ds.columns]
     ds = ds.sort_index(ascending=True)
 
     # Add new column to indicate if the feature is 'old' news or not.
@@ -62,17 +67,37 @@ def get_quandl_dataset(code,market,columns=None,buffer_days=10):
 
     ds = ds.fillna(method='pad')
     if not is_new_trivial:
-        is_new_code = re.search('(?<=/).*',code).group(0).lower()
-        ds['is_new_'+is_new_code] = is_new
+        ds[db_name+'_is_new'] = is_new
     return ds
 
 
 def get_quandl_features(market):
     '''Get features from quandl api and join them.'''
-    vix = get_quandl_dataset('CBOE/VIX',market,columns=['vix_close'])
-    vvix = get_quandl_dataset('CBOE/VVIX',market)
-    iiaa = get_quandl_dataset('AAII/AAII_SENTIMENT',market,columns=['bullish','neutral','bearish'])
-    features = vix.join([vvix,iiaa],how='outer')
+    datasets = [
+        ('CBOE/VIX',['vix_close']),
+        ('CBOE/VVIX',),
+        ('AAII/AAII_SENTIMENT',['bullish','neutral','bearish']),
+        # U.S. Weekly Leading Index
+        ('ECRI/USLEADING',),
+        # Housing Starts: Total: New Privately Owned Housing Units Started
+        ('FRED/HOUST',),
+        # 10-Year Treasury Constant Maturity Rate
+        ('FRED/DGS10',),
+        # Crude Oil Futures, Continuous Contract #1
+        ('CHRIS/CME_CL1',),
+        # Gold price
+        ('BUNDESBANK/BBK01_WT5511',),
+        # Non-Manufacturing Backlog of Orders Index
+        ('ISM/MAN_BACKLOG',['%_greater','%_same','%_less','net']),
+        # Euro Emerging Markets Corporate Bond Index (Yield)
+        ('ML/EEMCBI',),
+        # US Corporate Bonds Total Return Index
+        ('ML/TRI',),
+        # Stock Market Confidence Indices
+        ('YALE/US_CONF_INDEX_VAL_INDIV',['index_value'])
+    ]
+    queried_datasets = [get_quandl_dataset(market,*ds) for ds in datasets]
+    features = pd.concat(queried_datasets,axis=1,join='outer')
     return features
 
 
@@ -161,9 +186,11 @@ def preprocess_samples(train,test):
 if (__name__ == '__main__'):
     switch = False
     if switch:
-        articles = get_articles()
-        start_date = min(articles.index)
-        end_date = max(articles.index)
-        market = get_market(start_date,end_date)  # Contains price, returns and volume
-        fnc = get_quandl_features(start_date,end_date)        # Contains various features (eg. vix)
-        d2v = get_d2v(articles,market.index)  # Aggregate articles based on market dates
+        # articles = get_articles()
+        # start_date = min(articles.index)
+        # end_date = max(articles.index)
+        # d2v = get_d2v(articles,market.index)  # Aggregate articles based on market dates
+        start_date = dt.date(2005,1,1)
+        end_date = dt.date(2015,1,1)
+        market = get_market(start_date,end_date)
+        features = get_quandl_features(market)
