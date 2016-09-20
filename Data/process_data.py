@@ -183,4 +183,4 @@ if (__name__ == '__main__'):
         start_date = dt.date(2005,1,1)
         end_date = dt.date(2015,1,1)
         market = get_market(start_date,end_date)
-        features = get_quandl_features(market)
+        samples = get_samples(market)
