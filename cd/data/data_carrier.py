@@ -2,6 +2,7 @@ import datetime as dt
 import requests as rq
 from collections import namedtuple
 from multiprocessing import Pool
+from functools import partial
 
 from bs4 import BeautifulSoup as bs
 import pandas as pd
@@ -25,7 +26,8 @@ class Daterange(object):
             raise StopIteration()
 
 
-News = namedtuple('News','time content href')
+# News = namedtuple('News','time content href')
+News = namedtuple('News','time content')
 
 
 def get_url(date):
@@ -34,7 +36,7 @@ def get_url(date):
 
 
 def parse_website(date,**kwargs):
-    if 'verbose' in kwargs:
+    if 'verbose' in kwargs and kwargs['verbose']:
         print(date)
     url = get_url(date)
     r = rq.get(url)
@@ -48,19 +50,19 @@ def parse_website(date,**kwargs):
         for n in news_divs:
             try:
                 text = n.a.text
-                href = n.a['href']
+                # href = n.a['href']
                 time = n.text.replace(n.a.text,'').replace('\xa0','')
-                time = time[:-4]
-                am_or_pm = time[-2:]
-                time = time[:-3]
-                h = int(time[:2])
-                m = int(time[-2:])
+                time = time[:-4]  # Remove timezone (all set in NYC)
+                time,am_or_pm = time[:-2],time[-2:]
+                h,m = time[:2],time[3:]
+                h,m = int(h),int(m)
                 if am_or_pm == 'PM' and h is not 12:
                     h += 12
 
                 d = dt.datetime(year=date.year,month=date.month,day=date.day,
                                 hour=h,minute=m)
-                news = News(time=d,content=text,href=href)
+                # news = News(time=d,content=text,href=href)
+                news = News(time=d,content=text)
                 results.append(news)
             except:
                 continue
@@ -70,12 +72,19 @@ def parse_website(date,**kwargs):
 
 
 def get_news(start_date,end_date,**kwargs):
-    results = [parse_website(date,**kwargs) for date in Daterange(start_date,end_date)]
+    if 'parallel' in kwargs and kwargs['parallel']:
+        p = Pool(10)
+        results = p.map(partial(parse_website,**kwargs), Daterange(start_date,end_date))
+    else:
+        results = [parse_website(date,**kwargs) for date in Daterange(start_date,end_date)]
     results = pd.concat(results)
     return results
 
 
 if __name__ == '__main__':
-    start_date = dt.date(2007,1,1)
-    end_date = dt.date(2007,3,1)
-    results = get_news(start_date,end_date,verbose=True)
+    start_date = dt.date(2009,1,2)
+    end_date = dt.date(2010,12,31)
+    results = get_news(start_date,end_date,parallel=True,verbose=True)
+    filename = 'news_%s_%s.csv' % (start_date,end_date)
+    filename = 'dataset/' + filename
+    results.to_csv(filename,encoding='utf-8')
