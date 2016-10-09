@@ -3,8 +3,10 @@ import datetime as dt
 import numpy as np
 
 import process_data as pd
-import model.problem as pr
-import model.utility as ut
+import cd.model.problem as pr
+import cd.model.utility as ut
+# import model.problem as pr
+# import model.utility as ut
 
 
 def get_train_test(samples,shuffle=True):
@@ -29,16 +31,16 @@ def get_train_test(samples,shuffle=True):
     return train,test
 
 
-def get_optimal_decision(X,r,λ,u):
-    problem = pr.Problem(X,r,λ,u)
+def get_optimal_decision(X,r,comp,u):
+    problem = pr.Problem(X,r,comp,u)
     problem.solve()
     return problem
 
 
-def get_CE(train,test,λ,u):
+def get_CE(train,test,comp,u):
     X_train,r_train = train.X.values,train.r.values.flatten()
     X_test,r_test = test.X.values,test.r.values.flatten()
-    problem = pr.Problem(X_train,r_train,λ,u)
+    problem = pr.Problem(X_train,r_train,comp,u)
     problem.solve()
     insample_CE = problem.insample_CE()
     outsample_CE = problem.outsample_CE(X_test,r_test)
@@ -55,4 +57,5 @@ if (__name__ == '__main__'):
         train,test = get_train_test(samples)
 
         u = ut.LinearPlateauUtility(0.6,0.03)
-        λ = 1
+        comp = 1
+ 

@@ -3,7 +3,8 @@ import warnings
 import cvxpy as cvx
 import numpy as np
 
-import model.distrs as ds
+import cd.model.distrs as ds
+# import model.distrs as ds
 
 from .math_ops import *
 from .lipschitzexp import LipschitzExp

@@ -4,7 +4,8 @@ import cvxpy as cvx
 import numpy as np
 from numpy.linalg import norm
 
-from helper.stats import empirical_cdf
+from cd.helper.stats import empirical_cdf
+# from helper.stats import empirical_cdf
 
 from .utility import *
 from .math_ops import *
@@ -226,6 +227,7 @@ class Problem(BaseProblem):
 
         Args:
             q [optional]: decision vector q
+
         '''
         q = q or self.q
         n,X,r = self.n,self.X,self.r
@@ -254,7 +256,10 @@ class Problem(BaseProblem):
         q = cvx.Variable(self.p)
         objective = cvx.Minimize(total_cost(q))
         problem = cvx.Problem(objective)
-        problem.solve(solver=self.solver,verbose=self.verbose)
+        try:
+            problem.solve(solver=self.solver,verbose=self.verbose)
+        except cvx.SolverError:
+            problem.solve(solver=cvx.SCS,verbose=self.verbose)
 
         if problem.status == 'unbounded':
             raise Exception(problem.status)
@@ -262,7 +267,7 @@ class Problem(BaseProblem):
         self.q = q.value.A1
         return self.insample_cost()
 
-    def outsample_cost(self,X,R):
+    def outsample_cost(self,X,R,bias):
         """R_true(q_hat), where R_true is determined using (large) sample of features and
         returns. The value will be exact if X and r represent all possible outcomes of a
         discrete distribution.
@@ -274,12 +279,12 @@ class Problem(BaseProblem):
 
         """
         n,_ = X.shape
-        p = np.dot(X,self.q)
+        p = np.dot(X,self.q)+bias
         total_cost = 1/n * sum(self.cost(p,R))
         return total_cost
 
-    def outsample_CE(self,X,R):
-        return self.u.inverse(-self.outsample_cost(X,R))
+    def outsample_CE(self,X,R,bias=0):
+        return self.u.inverse(-self.outsample_cost(X,R,bias))
 
 
 class MaskedProblem(Problem):

@@ -4,7 +4,7 @@ from math import isnan
 import datetime as dt
 import itertools
 
-from sklearn import preprocessing as pp
+# from sklearn import preprocessing as pp
 from gensim.models.doc2vec import Doc2Vec
 import numpy as np
 import pandas as pd
@@ -172,15 +172,9 @@ def aggregate_data(data):
     return np.mean(data,axis=0)  # TODO try different methods here!
 
 
-
-if (__name__ == '__main__'):
-    switch = False
-    if switch:
-        # articles = get_articles()
-        # start_date = min(articles.index)
-        # end_date = max(articles.index)
-        # d2v = get_d2v(articles,market.index)  # Aggregate articles based on market dates
-        start_date = dt.date(2005,1,1)
-        end_date = dt.date(2015,1,1)
-        market = get_market(start_date,end_date)
-        samples = get_samples(market)
+if __name__ == '__main__':
+    start_date = dt.date(2005,1,1)
+    end_date = dt.date(2015,1,1)
+    market = get_market(start_date,end_date)
+    samples = get_samples(market)
+    print('Obtained %d samples.' % len(samples))

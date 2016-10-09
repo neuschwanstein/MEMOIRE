@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import model.distrs as ds
+import cd.model.distrs as ds
 
 class Function(object):
     def _derive(self,x):
