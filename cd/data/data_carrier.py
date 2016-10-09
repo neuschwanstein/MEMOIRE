@@ -82,9 +82,10 @@ def get_news(start_date,end_date,**kwargs):
 
 
 if __name__ == '__main__':
-    start_date = dt.date(2009,1,2)
-    end_date = dt.date(2010,12,31)
-    results = get_news(start_date,end_date,parallel=True,verbose=True)
-    filename = 'news_%s_%s.csv' % (start_date,end_date)
-    filename = 'dataset/' + filename
-    results.to_csv(filename,encoding='utf-8')
+    for y in range(2007,2016):
+        start_date = dt.date(y,1,1)
+        end_date = dt.date(y,12,31)
+        results = get_news(start_date,end_date,parallel=True,verbose=True)
+        filename = 'news_%s_%s.csv' % (start_date,end_date)
+        filename = 'dataset/' + filename
+        results.to_csv(filename,encoding='utf-8')
