@@ -74,9 +74,11 @@ def parse_website(date,**kwargs):
 def get_news(start_date,end_date,**kwargs):
     if 'parallel' in kwargs and kwargs['parallel']:
         p = Pool(10)
-        results = p.map(partial(parse_website,**kwargs), Daterange(start_date,end_date))
+        results = p.map(partial(parse_website,**kwargs),
+                        Daterange(start_date,end_date))
     else:
-        results = [parse_website(date,**kwargs) for date in Daterange(start_date,end_date)]
+        results = [parse_website(date,**kwargs)
+                   for date in Daterange(start_date,end_date)]
     results = pd.concat(results)
     return results
 
