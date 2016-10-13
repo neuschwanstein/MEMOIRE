@@ -9,8 +9,11 @@ Erick&Thierry alias
 *.upb
 *.dvi
 *.#
+*#
+.#*
 *.pyc
 *.npy
+*dataset/news*.csv
 *.org_archive
 _region_.tex
 *.pdf
@@ -29,3 +32,4 @@ revue_litt.org
 *.bcf
 /Article/nips2016/big_data_portfolio_optimization.blg
 .ipynb_checkpoints
+cd/data/dataset/GoogleNews-vectors-negative300.bin

@@ -1,7 +1,7 @@
 import datetime as dt
 import requests as rq
 from collections import namedtuple
-from multiprocessing import Pool
+from multiprocessing import Pool,cpu_count
 from functools import partial
 
 from bs4 import BeautifulSoup as bs
@@ -35,6 +35,10 @@ def get_url(date):
         date.strftime('%Y%m%d')
 
 
+def is_ascii(text):
+    return len(text) == len(text.encode())
+
+
 def parse_website(date,**kwargs):
     if 'verbose' in kwargs and kwargs['verbose']:
         print(date)
@@ -45,11 +49,15 @@ def parse_website(date,**kwargs):
         pass
     else:
         soup = bs(r.text,'html.parser')
-        news_divs = soup.find_all('div',{'class':'headlineMed'})
+        news_modules = soup.find_all('div',{'class':'module'})
+        # First is actual news, second videos
+        news_divs = news_modules[0].find_all('div',{'class':'headlineMed'})
         results = []
         for n in news_divs:
             try:
                 text = n.a.text
+                if not is_ascii(text):
+                    continue
                 # href = n.a['href']
                 time = n.text.replace(n.a.text,'').replace('\xa0','')
                 time = time[:-4]  # Remove timezone (all set in NYC)
@@ -73,7 +81,7 @@ def parse_website(date,**kwargs):
 
 def get_news(start_date,end_date,**kwargs):
     if 'parallel' in kwargs and kwargs['parallel']:
-        p = Pool(10)
+        p = Pool(cpu_count())
         results = p.map(partial(parse_website,**kwargs),
                         Daterange(start_date,end_date))
     else:
@@ -88,6 +96,6 @@ if __name__ == '__main__':
         start_date = dt.date(y,1,1)
         end_date = dt.date(y,12,31)
         results = get_news(start_date,end_date,parallel=True,verbose=True)
-        filename = 'news_%s_%s.csv' % (start_date,end_date)
+        filename = 'news%d.csv' % y
         filename = 'dataset/' + filename
         results.to_csv(filename,encoding='utf-8')

@@ -11,16 +11,20 @@ pattern_process = re.compile('[^a-zA-Z]+')
 
 class Documents(object):
 
-    def __init__(self,csv_files):
+    def __init__(self,csv_files,word2vec=False,doc2vec=False):
+        self.word2vec = word2vec
+        self.doc2vec = doc2vec
         self.csv_files = csv_files
         self.iter_csv_files = iter(csv_files)
         self.news = iter([])
 
-    @staticmethod
-    def _to_TaggedDocument(news):
-        words = news.content
+    def _to_TaggedDocument(self,news):
+        words = pre_process(news.content)
         tags = [news.Index]
-        return d2v.TaggedDocument(words=words,tags=tags)
+        if self.word2vec:
+            return words
+        else:
+            return d2v.TaggedDocument(words=words,tags=tags)
 
     def init_next_file(self):
         df = pd.read_csv(next(self.iter_csv_files))
@@ -41,12 +45,6 @@ class Documents(object):
                 raise e
 
 
-empty_chars = '( ) - \' \" .  : ! 0 1 2 3 4 5 6 7 8 9 %'.split()
-
-empty_chars = {c:' ' for c in empty_chars}
-translator = str.maketrans(empty_chars)
-
-
 def pre_process(s):
     ss = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
     return ss
@@ -57,8 +55,10 @@ def trim_rule(word,count,min_count):
 
 if __name__ == '__main__':
     # years = range(2007,2011)
-    years = [2013]
+    years = [2007]
     files = ['dataset/news_%d.csv' % y for y in years]
-    documents = Documents(files)
-    model = d2v.Doc2Vec(workers=cpu_count(),trim_rule=trim_rule,iter=5)
-    model.build_vocab(documents)
+    documents = Documents(files,doc2vec=True)
+    # model = d2v.Word2Vec(documents,workers=1)
+    model = d2v.Doc2Vec(documents,workers=12)
+    # model = d2v.Doc2Vec(workers=cpu_count(),trim_rule=trim_rule,iter=5)
+    # model.build_vocab(documents)

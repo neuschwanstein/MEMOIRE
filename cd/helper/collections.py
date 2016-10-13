@@ -1,6 +1,14 @@
 from collections import UserList
 
 
+def compose(fs):
+    f0 = fs[-1]
+    if len(fs) is 1:
+        return lambda x: f0(x)
+    else:
+        return lambda x: compose(fs[:-1])(f0(x))
+    
+
 class Namedtuples(UserList):
     def __init__(self,lst):
         super().__init__(lst)
@@ -37,5 +45,5 @@ class _namedtuples(UserList):
         return 1
 
 
-if (__name__ == '__main__'):
+if __name__ == '__main__':
     C = _namedtuples([])
