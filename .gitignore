@@ -33,3 +33,4 @@ revue_litt.org
 /Article/nips2016/big_data_portfolio_optimization.blg
 .ipynb_checkpoints
 cd/data/dataset/GoogleNews-vectors-negative300.bin
+cd/data/dataset/news2007.csv
