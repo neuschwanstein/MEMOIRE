@@ -9,7 +9,8 @@ import gensim.models.word2vec as w2v
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 pattern_process = re.compile('[^a-zA-Z]+')
 vec_length = 300
-gmodel = None
+if 'gmodel' not in locals():
+    gmodel = None
 
 
 def init_gmodel():
@@ -19,12 +20,13 @@ def init_gmodel():
             'dataset/GoogleNews-vectors-negative300.bin',binary=True)
 
 
-def pre_process(s):
+def to_list_of_words(s):
     ss = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
     return ss
 
 
-def mean_vector(lst):
+def mean(lst):
+    global gmodel
     def vector(s):
         try:
             return gmodel[s]
@@ -38,8 +40,19 @@ def remove_duplicates(ds):
     return ds[~dups]
 
 
-def process_vectors(vectors):
+def process_vectors(news):
+    # First clean up
+    vectors = news['content']
+    vectors = vectors[~vectors.isnull()]    
+    vectors = vectors.apply(to_list_of_words)
+    empty_vectors = vectors.apply(len) == 0
+    vectors = vectors[~empty_vectors]
     vectors = vectors[~vectors.isnull()]
+
+    # Mean of the words
+    vectors = vectors.apply(mean)
+
+    # Then convert it to proper dataset
     index = vectors.index
     vectors = np.vstack(vectors)
     vectors = pd.DataFrame(vectors)
@@ -54,8 +67,7 @@ def get_news(year):
     csv_file = 'dataset/news%d.csv' % year
     news = pd.read_csv(csv_file,parse_dates=['time'])
     news = remove_duplicates(news)
-    vectors = news['content'].apply(pre_process).apply(mean_vector)
-    vectors = process_vectors(vectors)
+    vectors = process_vectors(news)
     news = news.join(vectors,how='right')
     news = news.drop('content',axis=1)
     return news
