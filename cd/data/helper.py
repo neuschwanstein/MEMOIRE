@@ -66,8 +66,9 @@ def merge_news_with_returns(market,news):
     # news['temp'] = news.index.map(lambda d: d.date())
     # news['temp'] = pd.to_datetime(news['temp'])
     # news = pd.merge(left=news,right=market[['r']],how='left',left_on='temp',right_index=True)
-    news = pd.merge(left=news,right=market[['r']],how='left',left_index=True,right_index=True)
+    # news = pd.merge(left=news,right=market[['r']],how='left',left_index=True,right_index=True)
     # news = news.drop('temp',axis=1)
+    news = news.join(market['r'],how='left')
     return news
 
 

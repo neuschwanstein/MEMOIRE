@@ -22,6 +22,7 @@ def get_market(start_date,end_date):
     sp500.price = sp500.price/sp500.price.values[0]
     sp500['r'] = (sp500.close - sp500.open)/sp500.open
     sp500 = sp500[['volume','price','r']]
+    sp500.index.name = 'time'
     return sp500
 
 
