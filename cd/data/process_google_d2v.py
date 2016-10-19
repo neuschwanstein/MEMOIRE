@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import gensim.models.word2vec as w2v
 
-# Put this line in the'
+# Put this line in the toplevel
 logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 pattern_process = re.compile('[^a-zA-Z]+')
 vec_length = 300

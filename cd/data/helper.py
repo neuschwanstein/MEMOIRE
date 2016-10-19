@@ -1,4 +1,3 @@
-from collections import deque
 import datetime as dt
 
 import pandas as pd
@@ -51,3 +50,8 @@ def normalize_time(reference,dataset,half_days=True):
     # Update time column of the dataset with results
     dataset['time'] = collapsed_dates
     return dataset
+
+
+def merge_dataset_with_returns(market,dataset):
+    # Protip: the dataset must have been normalized using above method
+    merge left etc.
