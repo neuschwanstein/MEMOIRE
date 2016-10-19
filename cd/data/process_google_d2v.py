@@ -68,6 +68,7 @@ def to_csv(news,year):
 
 def get_news(year,try_cache=True):
     if try_cache:
+        # BAD!!! the two files don't even return the same object.
         try:
             csv_file = 'dataset/parsednews%d.csv' % year
             news = pd.read_csv(csv_file,parse_dates=['time'])
