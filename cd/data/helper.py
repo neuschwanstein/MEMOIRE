@@ -3,6 +3,8 @@ import datetime as dt
 import numpy as np
 import pandas as pd
 
+# Eventually all those methods should probably moved somewhere else.
+
 
 def normalize_time(reference,dataset):
     morning = dt.time(9,30)
@@ -77,3 +79,23 @@ def aggregate_returns(news):
     # news = news.groupby('time').aggregate(np.mean)
     news = news.groupby([news.index,news.during]).aggregate(np.mean)
     return news
+
+
+def get_during(news):
+    news = news.xs(True,level='during')
+    return news
+
+
+def get_X_r(news):
+    r = news.r.values
+    X = news.filter(regex='d2v_*').values
+    return X,r
+
+
+def vcorrcoef(X,y):
+    Xm = np.reshape(np.mean(X,axis=1),(X.shape[0],1))
+    ym = np.mean(y)
+    r_num = np.sum((X-Xm)*(y-ym),axis=1)
+    r_den = np.sqrt(np.sum((X-Xm)**2,axis=1)*np.sum((y-ym)**2))
+    r = r_num/r_den
+    return r

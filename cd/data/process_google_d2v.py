@@ -1,4 +1,3 @@
-import logging
 import re
 
 import numpy as np
@@ -6,7 +5,6 @@ import pandas as pd
 import gensim.models.word2vec as w2v
 
 # Put this line in the toplevel
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 pattern_process = re.compile('[^a-zA-Z]+')
 vec_length = 300
 if 'gmodel' not in locals():
@@ -27,6 +25,7 @@ def to_list_of_words(s):
 
 def mean(lst):
     global gmodel
+
     def vector(s):
         try:
             return gmodel[s]
@@ -43,7 +42,7 @@ def remove_duplicates(ds):
 def process_vectors(news):
     # First clean up
     vectors = news['content']
-    vectors = vectors[~vectors.isnull()]    
+    vectors = vectors[~vectors.isnull()]
     vectors = vectors.apply(to_list_of_words)
     empty_vectors = vectors.apply(len) == 0
     vectors = vectors[~empty_vectors]
@@ -62,7 +61,21 @@ def process_vectors(news):
     return vectors
 
 
-def get_news(year):
+def to_csv(news,year):
+    csv_file = 'dataset/parsednews%d.csv' % year
+    news.to_csv(csv_file)
+
+
+def get_news(year,try_cache=True):
+    if try_cache:
+        try:
+            csv_file = 'dataset/parsednews%d.csv' % year
+            news = pd.read_csv(csv_file,parse_dates=['time'])
+            news = news.set_index(['time','during'])
+            return news
+        except FileNotFoundError:
+            pass
+
     init_gmodel()
     csv_file = 'dataset/news%d.csv' % year
     news = pd.read_csv(csv_file,parse_dates=['time'])
