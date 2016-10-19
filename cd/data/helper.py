@@ -1,9 +1,10 @@
 import datetime as dt
 
+import numpy as np
 import pandas as pd
 
 
-def normalize_time(reference,dataset,half_days=True):
+def normalize_time(reference,dataset):
     morning = dt.time(9,30)
     noon = dt.time(12,0)
     afternoon = dt.time(16,0)
@@ -52,13 +53,21 @@ def normalize_time(reference,dataset,half_days=True):
 
     # Update time column of the dataset with results
     dataset['time'] = collapsed_times
+    dataset = dataset.set_index('time')
     return dataset
 
 
 def merge_news_with_returns(market,news):
     # Protip: the dataset must have been normalized using above method
-    news['temp'] = news['time'].apply(lambda d: d.date())
+    news['temp'] = news.index.map(lambda d: d.date())
     news['temp'] = pd.to_datetime(news['temp'])
     news = pd.merge(left=news,right=market[['r']],how='left',left_on='temp',right_index=True)
     news = news.drop('temp',axis=1)
+    return news
+
+ 
+def aggregate_returns(news):
+    # Perhaps this method needs more careful design.
+    # news = news.groupby('time').aggregate(np.mean)
+    news = news.groupby(news.index).aggregate(np.mean)
     return news
