@@ -2,6 +2,7 @@ import logging
 import datetime as dt
 
 import pandas as pd
+import numpy as np
 
 from cd.data.process_quandl import get_market
 from cd.data.process_google_d2v import get_news
@@ -30,7 +31,7 @@ if __name__ == '__main__':
             news = news.append(current,ignore_index=True)
         del current
 
-    news = he.normalize_time(market.index,news)
-    news = he.aggregate_returns(news)
-    total = he.merge_news_with_returns(market,news)
+    # news = he.normalize_time(market.index,news)
+    # news = he.aggregate_returns(news)
+    # total = he.merge_news_with_returns(market,news)
     
