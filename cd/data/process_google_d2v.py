@@ -66,17 +66,20 @@ def to_csv(news,year):
     news.to_csv(csv_file)
 
 
-def get_news(year,try_cache=True):
-    if try_cache:
-        # BAD!!! the two files don't even return the same object.
-        try:
-            csv_file = 'dataset/parsednews%d.csv' % year
-            news = pd.read_csv(csv_file,parse_dates=['time'])
-            news = news.set_index(['time','during'])
-            return news
-        except FileNotFoundError:
-            pass
+def get_parsed_news(year):
+    csv_file = 'dataset/parsednews%d.csv' % year
+    news = pd.read_csv(csv_file,parse_dates=['time'])
+    news = news.set_index(['time','during'])
+    return news
 
+
+def get_plain_news(year):
+    csv_file = 'dataset/news%d.csv' % year
+    news = pd.read_csv(csv_file,parse_dates=['time'])
+    return news
+
+
+def get_news(year):
     init_gmodel()
     csv_file = 'dataset/news%d.csv' % year
     news = pd.read_csv(csv_file,parse_dates=['time'])

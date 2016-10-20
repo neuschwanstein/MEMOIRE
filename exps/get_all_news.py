@@ -25,10 +25,12 @@ def vcorrcoef(X,y):
 # market = qu.get_market(dt.date(2006,10,1),dt.date(2016,2,10))
 
 if __name__ == '__main__':
-    years = range(2007,2016)
-    news = [pgd.get_news(y) for y in years]
-    news = pd.concat(news)
-    news = news[~news.index.duplicated(keep='last')]
+    if 'news' not in locals():
+        years = range(2007,2016)
+        news = [pgd.get_news(y) for y in years]
+        news = pd.concat(news)
+        news = news[~news.index.duplicated(keep='last')]
+        news = news.xs(True,level='during')
 
     r = news.r.values
     X = news.filter(regex='d2v_*').values
@@ -36,3 +38,17 @@ if __name__ == '__main__':
     # Normalize data
     r = (r - r.mean())/r.std()
     X = (X - X.mean(axis=0))/X.std(axis=0)
+
+    train_sz = 8/9 * len(X)     # Last year data
+    X,X_test = X[:train_sz],X[train_sz:]
+    r,r_test = r[:train_sz],r[train_sz:]
+
+    cors = vcorrcoef(X.T,r)
+    tops = np.argpartition(cors,-10)[-10:]
+
+    cors_test = vcorrcoef(X_test.T,r_test)
+    predicted_tops = cors_test[tops]
+    print('Done')
+
+    
+    
