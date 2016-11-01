@@ -1,0 +1,13 @@
+ - Universal portfolios
+ - Ben van Roy
+ - Dernier article du NIPS
+ - Articles de bousquet
+ - Articles de mikolov
+ - Articles de rudin
+ - Piger de Robust Portfolio Optimization
+ - Donc presenter les differents modeles et inserer le mien... Voir les slides.
+ - Comparer avec le mémoire /d'excellence/ de Tommy Thoamssin (voir sur le site de la
+   bibliothèque).
+ - Vérifier les articles de Devroye au sujet des erreurs hors échantillon. En fait, piger
+   allègrement dans la section /Previous work/ de l'article de Bousquet pour une revue de
+   littérature étoffée. 
