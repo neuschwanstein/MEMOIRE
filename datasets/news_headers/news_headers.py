@@ -1,3 +1,5 @@
+# Todo include an argparse implementation
+
 import datetime as dt
 import requests as rq
 from collections import namedtuple
