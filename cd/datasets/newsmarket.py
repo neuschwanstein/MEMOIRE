@@ -14,7 +14,7 @@ vec_length = 300
 if 'gmodel' not in locals():
     gmodel = None
 
-filename = os.path.join(os.path.dirname(__file__),'parsed_news/pnews%d.csv')
+filename = os.path.join(os.path.dirname(__file__),'newsmarket/newsmarket%d.csv')
 
 
 class NewsMarket(pd.DataFrame):
@@ -26,6 +26,9 @@ class NewsMarket(pd.DataFrame):
     @property
     def X(self):
         return self.filter(regex='d2v_*')
+
+    def during(self,bool):
+        return self.xs(bool,level='during')
 
 
 def init_gmodel():
