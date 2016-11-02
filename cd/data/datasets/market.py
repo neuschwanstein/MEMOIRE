@@ -27,6 +27,7 @@ def save(market,start_year,end_year):
 def load(start_year,end_year):
     try:
         market = pd.read_csv(filename % (start_year,end_year),parse_dates=['time'])
+        market = market.set_index('time')
     except (FileNotFoundError,OSError):
         market = make(start_year,end_year)
         save(market,start_year,end_year)

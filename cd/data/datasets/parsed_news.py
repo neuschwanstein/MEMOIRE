@@ -1,3 +1,4 @@
+import datetime as dt
 import os
 import re
 
@@ -5,13 +6,15 @@ import numpy as np
 import pandas as pd
 import gensim.models.word2vec as w2v
 
-from datasets import news as ns
+from cd.data.datasets import news as ns
+from cd.data.datasets import market as mkt
 
-# Put this line in the toplevel
 pattern_process = re.compile('[^a-zA-Z]+')
 vec_length = 300
 if 'gmodel' not in locals():
     gmodel = None
+
+filename = os.path.join(os.path.dirname(__file__),'parsed_news/pnews%d.csv')
 
 
 def init_gmodel():
@@ -65,28 +68,103 @@ def process_vectors(news):
     return vectors
 
 
+def collapse_time(reference,news):
+    morning = dt.time(9,30)
+    afternoon = dt.time(16,0)
+    morning_of = lambda d: dt.datetime.combine(d,morning)
+    afternoon_of = lambda d: dt.datetime.combine(d,afternoon)
+
+    if reference.min() > morning_of(news['time'].min()) or \
+       reference.max() < afternoon_of(news['time'].max()):
+        raise Exception('The reference series need to overlap the news time column')
+
+    reference = reference.sort_values()
+    reference = reference.map(pd.Timestamp.date)
+    news = news.sort_values('time')
+
+    reference = iter(reference)
+    events = iter(news['time'])
+
+    collapsed_times = []
+    during = []
+
+    # First seek when the actual reference date starts
+    event_time = next(events)
+    while True:
+        ref_date = next(reference)
+        if event_time < morning_of(ref_date):
+            collapsed_times.append(ref_date)
+            during.append(False)
+            break
+
+    # Then map to every event a corresponding reference date Rules:
+    # 1. If it happens during the trading session (9:30am to 4pm) then
+    # map it to the noon of the trading date.
+    # 2. If it happens after trading session, map it to the morning of the
+    # affected trading session (ie. the next morning)
+    for event_time in events:
+        if event_time < morning_of(ref_date):
+            collapsed_times.append(ref_date)
+            during.append(False)
+        elif event_time >= morning_of(ref_date) and event_time < afternoon_of(ref_date):
+            collapsed_times.append(ref_date)
+            during.append(True)
+        else:
+            while True:
+                next_ref_date = next(reference)
+                if event_time < morning_of(next_ref_date):
+                    collapsed_times.append(next_ref_date)
+                    during.append(False)
+                    break
+            ref_date = next_ref_date
+
+    # Update time column of the news with results
+    news['time'] = pd.to_datetime(collapsed_times)
+    news['during'] = during
+    news = news.set_index('time')
+    return news
+
+
 def make(year):
     init_gmodel()
+
+    # Load news and translate their content to vectorial representation
     news = ns.load(year)
     news = remove_duplicates(news)
     vectors = process_vectors(news)
     news = news.join(vectors,how='right')
     news = news.drop('content',axis=1)
+
+    # Collapse dates to either have them during the trading session or
+    # in the after hours.
+    market = mkt.load(year,year)
+    reference = market.index
+    news = collapse_time(reference,news)
+
+    # Aggregate (Mean) each trading and after hours sessions news vector representation
+    news = news.groupby([news.index,news.during]).aggregate(np.mean)
+
+    # Then add a return column
+    news = news.join(market['r'],how='left')
     return news
 
 
 def save(news,year):
-    filename = os.path.join(os.path.dirname(__file__),
-                            'parsed_news/pnews%d.csv' % year)
-    news.to_csv(filename,encoding='utf-8')
+    news.to_csv(filename % year,encoding='utf-8')
 
 
 def load(year):
-    filename = os.path.join(os.path.dirname(__file__),
-                            'parsed_news/pnews%d.csv' % year)
-    news = pd.read_csv(filename,parse_dates=['time'])
+    news = pd.read_csv(filename % year,parse_dates=['time'])
     news = news.set_index(['time','during'])
     return news
+
+
+def load_all():
+    years = range(2007,2016)
+    dataset = [load(y) for y in years]
+    dataset = pd.concat(dataset,axis=0)
+    dataset = dataset.drop_duplicates(keep='last')
+    return dataset
 
 
 def make_all():
@@ -94,6 +172,7 @@ def make_all():
     for year in range(2007,2016):
         pnews = make(year)
         save(pnews,year)
+
 
 if __name__ == '__main__':
     make_all()
