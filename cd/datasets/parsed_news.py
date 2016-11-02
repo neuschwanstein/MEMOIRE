@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import gensim.models.word2vec as w2v
 
-from cd.data.datasets import news as ns
-from cd.data.datasets import market as mkt
+import news as ns
+import market as mkt
 
 pattern_process = re.compile('[^a-zA-Z]+')
 vec_length = 300

@@ -11,3 +11,7 @@ content.
 
 Contains a binary file to be loaded using gensim word2vec that maps to every word a word
 vector. 
+
+* Parsed News
+
+Datasets giving the average news vector for each trading session and after hours sessions.
