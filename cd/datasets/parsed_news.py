@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import gensim.models.word2vec as w2v
 
-import news as ns
-import market as mkt
+from . import market as mkt
+from . import news as ns
 
 pattern_process = re.compile('[^a-zA-Z]+')
 vec_length = 300
@@ -15,6 +15,17 @@ if 'gmodel' not in locals():
     gmodel = None
 
 filename = os.path.join(os.path.dirname(__file__),'parsed_news/pnews%d.csv')
+
+
+class NewsMarket(pd.DataFrame):
+
+    @property
+    def _constructor(self):
+        return NewsMarket
+
+    @property
+    def X(self):
+        return self.filter(regex='d2v_*')
 
 
 def init_gmodel():
@@ -46,9 +57,9 @@ def remove_duplicates(ds):
     return ds[~dups]
 
 
-def process_vectors(news):
+def process_vectors(newsmarket):
     # First clean up
-    vectors = news['content']
+    vectors = newsmarket['content']
     vectors = vectors[~vectors.isnull()]
     vectors = vectors.apply(to_list_of_words)
     empty_vectors = vectors.apply(len) == 0
@@ -58,7 +69,7 @@ def process_vectors(news):
     # Mean of the words
     vectors = vectors.apply(mean)
 
-    # Then convert it to proper dataset
+    # Then convert it to proper newsmarket
     index = vectors.index
     vectors = np.vstack(vectors)
     vectors = pd.DataFrame(vectors)
@@ -68,22 +79,22 @@ def process_vectors(news):
     return vectors
 
 
-def collapse_time(reference,news):
+def collapse_time(reference,newsmarket):
     morning = dt.time(9,30)
     afternoon = dt.time(16,0)
     morning_of = lambda d: dt.datetime.combine(d,morning)
     afternoon_of = lambda d: dt.datetime.combine(d,afternoon)
 
-    if reference.min() > morning_of(news['time'].min()) or \
-       reference.max() < afternoon_of(news['time'].max()):
-        raise Exception('The reference series need to overlap the news time column')
+    if reference.min() > morning_of(newsmarket['time'].min()) or \
+       reference.max() < afternoon_of(newsmarket['time'].max()):
+        raise Exception('The reference series need to overlap the newsmarket time column')
 
     reference = reference.sort_values()
     reference = reference.map(pd.Timestamp.date)
-    news = news.sort_values('time')
+    newsmarket = newsmarket.sort_values('time')
 
     reference = iter(reference)
-    events = iter(news['time'])
+    events = iter(newsmarket['time'])
 
     collapsed_times = []
     during = []
@@ -118,53 +129,53 @@ def collapse_time(reference,news):
                     break
             ref_date = next_ref_date
 
-    # Update time column of the news with results
-    news['time'] = pd.to_datetime(collapsed_times)
-    news['during'] = during
-    news = news.set_index('time')
-    return news
+    # Update time column of the newsmarket with results
+    newsmarket['time'] = pd.to_datetime(collapsed_times)
+    newsmarket['during'] = during
+    newsmarket = newsmarket.set_index('time')
+    return newsmarket
 
 
 def make(year):
     init_gmodel()
 
-    # Load news and translate their content to vectorial representation
-    news = ns.load(year)
-    news = remove_duplicates(news)
-    vectors = process_vectors(news)
-    news = news.join(vectors,how='right')
-    news = news.drop('content',axis=1)
+    # Load newsmarket and translate their content to vectorial representation
+    newsmarket = ns.load(year)
+    newsmarket = remove_duplicates(newsmarket)
+    vectors = process_vectors(newsmarket)
+    newsmarket = newsmarket.join(vectors,how='right')
+    newsmarket = newsmarket.drop('content',axis=1)
 
     # Collapse dates to either have them during the trading session or
     # in the after hours.
     market = mkt.load(year,year)
     reference = market.index
-    news = collapse_time(reference,news)
+    newsmarket = collapse_time(reference,newsmarket)
 
-    # Aggregate (Mean) each trading and after hours sessions news vector representation
-    news = news.groupby([news.index,news.during]).aggregate(np.mean)
+    # Aggregate (Mean) each trading and after hours sessions newsmarket vector representation
+    newsmarket = newsmarket.groupby([newsmarket.index,newsmarket.during]).aggregate(np.mean)
 
     # Then add a return column
-    news = news.join(market['r'],how='left')
-    return news
+    newsmarket = newsmarket.join(market['r'],how='left')
+    return newsmarket
 
 
-def save(news,year):
-    news.to_csv(filename % year,encoding='utf-8')
+def save(newsmarket,year):
+    newsmarket.to_csv(filename % year,encoding='utf-8')
 
 
 def load(year):
-    news = pd.read_csv(filename % year,parse_dates=['time'])
-    news = news.set_index(['time','during'])
-    return news
+    newsmarket = pd.read_csv(filename % year,parse_dates=['time'])
+    newsmarket = newsmarket.set_index(['time','during'])
+    return NewsMarket(newsmarket)
 
 
 def load_all():
     years = range(2007,2016)
-    dataset = [load(y) for y in years]
-    dataset = pd.concat(dataset,axis=0)
-    dataset = dataset.drop_duplicates(keep='last')
-    return dataset
+    newsmarket = [load(y) for y in years]
+    newsmarket = pd.concat(newsmarket,axis=0)
+    newsmarket = newsmarket.drop_duplicates(keep='last')
+    return newsmarket
 
 
 def make_all():
