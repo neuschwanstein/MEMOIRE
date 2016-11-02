@@ -37,3 +37,4 @@ cd/data/dataset/GoogleNews-vectors-negative300.bin
 cd/data/dataset/news2007.csv
 *.csv
 datasets/google_w2v/
+cd/data/datasets/w2v/

@@ -12,7 +12,7 @@ import pytz
 import quandl
 
 
-quandl.ApiConfig.api_key = 'TFPsUSNkbZiK8TgJJ_qa'
+# quandl.ApiConfig.api_key = 'TFPsUSNkbZiK8TgJJ_qa'
 
 
 def get_market(start_date,end_date):

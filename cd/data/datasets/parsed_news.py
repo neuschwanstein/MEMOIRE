@@ -1,8 +1,11 @@
+import os
 import re
 
 import numpy as np
 import pandas as pd
 import gensim.models.word2vec as w2v
+
+from datasets import news as ns
 
 # Put this line in the toplevel
 pattern_process = re.compile('[^a-zA-Z]+')
@@ -14,8 +17,9 @@ if 'gmodel' not in locals():
 def init_gmodel():
     global gmodel
     if gmodel is None:
-        gmodel = w2v.Word2Vec.load_word2vec_format(
-            'dataset/GoogleNews-vectors-negative300.bin',binary=True)
+        filename = os.path.join(os.path.dirname(__file__),
+                                'w2v/GoogleNews-vectors-negative300.bin')
+        gmodel = w2v.Word2Vec.load_word2vec_format(filename,binary=True)
 
 
 def to_list_of_words(s):
@@ -61,30 +65,35 @@ def process_vectors(news):
     return vectors
 
 
-def to_csv(news,year):
-    csv_file = 'dataset/parsednews%d.csv' % year
-    news.to_csv(csv_file)
-
-
-def get_parsed_news(year):
-    csv_file = 'dataset/parsednews%d.csv' % year
-    news = pd.read_csv(csv_file,parse_dates=['time'])
-    news = news.set_index(['time','during'])
-    return news
-
-
-def get_plain_news(year):
-    csv_file = 'dataset/news%d.csv' % year
-    news = pd.read_csv(csv_file,parse_dates=['time'])
-    return news
-
-
-def get_news(year):
+def make(year):
     init_gmodel()
-    csv_file = 'dataset/news%d.csv' % year
-    news = pd.read_csv(csv_file,parse_dates=['time'])
+    news = ns.load(year)
     news = remove_duplicates(news)
     vectors = process_vectors(news)
     news = news.join(vectors,how='right')
     news = news.drop('content',axis=1)
     return news
+
+
+def save(news,year):
+    filename = os.path.join(os.path.dirname(__file__),
+                            'parsed_news/pnews%d.csv' % year)
+    news.to_csv(filename,encoding='utf-8')
+
+
+def load(year):
+    filename = os.path.join(os.path.dirname(__file__),
+                            'parsed_news/pnews%d.csv' % year)
+    news = pd.read_csv(filename,parse_dates=['time'])
+    news = news.set_index(['time','during'])
+    return news
+
+
+def make_all():
+    init_gmodel()
+    for year in range(2007,2016):
+        pnews = make(year)
+        save(pnews,year)
+
+if __name__ == '__main__':
+    make_all()

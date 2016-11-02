@@ -1,5 +1,4 @@
-# Todo include an argparse implementation
-
+import os
 import datetime as dt
 import requests as rq
 from collections import namedtuple
@@ -8,6 +7,10 @@ from functools import partial
 
 from bs4 import BeautifulSoup as bs
 import pandas as pd
+
+News = namedtuple('News','time content')
+
+filename = os.path.join(os.path.dirname(__file__),'news/news%d.csv')
 
 
 class Daterange(object):
@@ -26,10 +29,6 @@ class Daterange(object):
             return rez
         else:
             raise StopIteration()
-
-
-# News = namedtuple('News','time content href')
-News = namedtuple('News','time content')
 
 
 def get_url(date):
@@ -81,7 +80,10 @@ def parse_website(date,**kwargs):
         return results
 
 
-def get_news(start_date,end_date,**kwargs):
+def make(year,**kwargs):
+    start_date = dt.date(year,1,1)
+    end_date = dt.date(year,12,31)
+
     if 'parallel' in kwargs and kwargs['parallel']:
         p = Pool(cpu_count())
         results = p.map(partial(parse_website,**kwargs),
@@ -93,11 +95,20 @@ def get_news(start_date,end_date,**kwargs):
     return results
 
 
+def save(news,year):
+    news.to_csv(filename % year,encoding='utf-8')
+
+
+def load(year):
+    try:
+        news = pd.read_csv(filename % year,parse_dates=['time'])
+    except (FileNotFoundError,OSError):
+        news = make(year,parallel=True)
+        save(news,year)
+    return news
+
+
 if __name__ == '__main__':
-    for y in range(2007,2016):
-        start_date = dt.date(y,1,1)
-        end_date = dt.date(y,12,31)
-        results = get_news(start_date,end_date,parallel=True,verbose=True)
-        filename = 'news%d.csv' % y
-        filename = 'dataset/' + filename
-        results.to_csv(filename,encoding='utf-8')
+    for year in range(2007,2016):
+        news = make(year,parallel=True)
+        save(news,year)
