@@ -25,10 +25,26 @@ class NewsMarket(pd.DataFrame):
 
     @property
     def X(self):
-        return self.filter(regex='d2v_*')
+        return self.filter(regex='^d2v_')
 
     def during(self,bool):
         return self.xs(bool,level='during')
+
+    def __getitem__(self,key):
+        if key is 'X':
+            return self.X
+        else:
+            return super().__getitem__(key)
+
+    def __setitem__(self,att,val):
+        if att == 'X':
+            cols = self.columns[self.columns.str.contains('d2v_')]
+            try:
+                self.loc[:,cols] = val.values
+            except:
+                self.loc[:,cols] = val
+        else:
+            super().__setitem__(att,val)
 
 
 def init_gmodel():
