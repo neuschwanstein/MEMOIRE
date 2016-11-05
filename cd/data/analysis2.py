@@ -21,7 +21,7 @@ def add_bias(newsmarket,bias=1):
     return newsmarket
 
 
-def solve(train,u,λ):
+def solve(train,u,λ,**kwargs):
     n,p = train.X.shape
     q = cvx.Variable(p)
     r = train.r.values
@@ -32,13 +32,26 @@ def solve(train,u,λ):
         λ*cvx.norm(q)**2)
 
     problem = cvx.Problem(objective)
-    problem.solve(verbose=True)
+    problem.solve(**kwargs)
 
     q = q.value.A1
     return q
 
 
-def CE(train,q,u,λ):
-    X = train.X
-    r = train.r
+def CE(newsmarket,q,u,λ):
+    X = newsmarket.X
+    r = newsmarket.r
     return u.inverse(np.mean(u(r*(X@q))))
+
+
+def get_q_scale(newsmarket,u,n=100):
+    '''If under no regularization a covariate implies a very large decision in qᵢ, then we
+    want to make it easier for the regularized variable to also have a large value, thus
+    we decrease its value by its inverse mean size.
+
+    '''
+    qs = [solve(newsmarket.sample(100,replace=True)) for _ in range(n)]
+    qs = np.array(qs)
+    q_mean = np.mean(qs,axis=0)
+    result = 1/q_mean
+    return result
