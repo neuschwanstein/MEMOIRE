@@ -2,15 +2,26 @@
 during the trading session (marked as during(True)), that is if we train upon a test set
 of many years we can obtain a positive expected utility on the test set.
 
+Parameters:
+ - u = LinearPlateauUtility()
 '''
 
+import cvxpy as cvx
+
 from cd.datasets import newsmarket as mkt
-from 
+from cd.data import analysis2 as nly
+import cd.model.utility as ut
 
 if __name__ == '__main__':
     newsmarket = mkt.load_all()
+    newsmarket = nly.add_bias(newsmarket,0.1)
     newsmarket = newsmarket.during(True)
+    train,test = nly.split_and_normalize(newsmarket)
 
-    train_sz = int(0.8*len(newsmarket))
-    train,test = newsmarket[:train_sz],newsmarket[train_sz:]
-    
+    λ = 1e-4
+    u = ut.LinearPlateauUtility(0.1,0.08)
+
+    q = nly.solve(train,u,λ)
+
+    in_ce = nly.CE(train,q,u,λ)
+    out_ce = nly.CE(test,q,u,λ)

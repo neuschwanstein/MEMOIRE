@@ -72,6 +72,9 @@ class LinearUtility(Utility):
     def _derive(self,r):
         return (r<=0)*1 + (r>0)*self.β
 
+    def inverse(self,r):
+        return 1/self.β * r
+
 class RiskNeutralUtility(Utility):
     def __init__(self):
         self.k = 1
@@ -91,6 +94,9 @@ class RiskNeutralUtility(Utility):
             return np.ones_like(r)
         except:
             return 1
+
+    def inverse(self,r):
+        return r
 
 
 class LinearPlateauUtility(Utility):

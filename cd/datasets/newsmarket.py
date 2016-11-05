@@ -25,7 +25,7 @@ class NewsMarket(pd.DataFrame):
 
     @property
     def X(self):
-        return self.filter(regex='^d2v_')
+        return self.filter(regex='^d2v_|bias')
 
     def during(self,bool):
         return self.xs(bool,level='during')
@@ -36,15 +36,15 @@ class NewsMarket(pd.DataFrame):
         else:
             return super().__getitem__(key)
 
-    def __setitem__(self,att,val):
-        if att == 'X':
-            cols = self.columns[self.columns.str.contains('d2v_')]
+    def __setitem__(self,key,val):
+        if key is 'X':
+            cols = self.columns[self.columns.str.contains('d2v_|bias')]
             try:
                 self.loc[:,cols] = val.values
             except:
                 self.loc[:,cols] = val
         else:
-            super().__setitem__(att,val)
+            super().__setitem__(key,val)
 
 
 def init_gmodel():
