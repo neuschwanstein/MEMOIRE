@@ -55,6 +55,12 @@ def init_gmodel():
         gmodel = w2v.Word2Vec.load_word2vec_format(filename,binary=True)
 
 
+def delete_gmodel():
+    global gmodel
+    if gmodel is not None:
+        del gmodel
+
+
 def to_list_of_words(s):
     ss = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
     return ss
@@ -155,15 +161,22 @@ def collapse_time(reference,newsmarket):
     return newsmarket
 
 
-def make(year):
+def convert_full(year):
     init_gmodel()
 
-    # Load newsmarket and translate their content to vectorial representation
     newsmarket = ns.load(year)
     newsmarket = remove_duplicates(newsmarket)
     vectors = process_vectors(newsmarket)
     newsmarket = newsmarket.join(vectors,how='right')
     newsmarket = newsmarket.drop('content',axis=1)
+    return NewsMarket(newsmarket)
+
+
+def make(year):
+    init_gmodel()
+
+    # Load newsmarket and translate their content to vectorial representation
+    newsmarket = convert_full()
 
     # Collapse dates to either have them during the trading session or
     # in the after hours.

@@ -6,8 +6,6 @@ Parameters:
  - u = LinearPlateauUtility()
 '''
 
-import cvxpy as cvx
-
 from cd.datasets import newsmarket as mkt
 from cd.data import analysis2 as nly
 import cd.model.utility as ut
