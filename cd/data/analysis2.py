@@ -1,17 +1,18 @@
 import cvxpy as cvx
 import numpy as np
 
-from cd.datasets.newsmarket import NewsMarket
-
 
 class NewsMarketAnalyzer(object):
 
-    def __init__(self,newsmarket):
-        self.newsmarket = newsmarket
+    def __init__(self,newsmarket,shuffle=True):
+        if shuffle:
+            self.newsmarket = newsmarket.sample(len(newsmarket))
+        else:
+            self.newsmarket = newsmarket
 
         # Create train,test sets
-        sz = int(0.8*len(newsmarket))
-        train,test = newsmarket[:sz],newsmarket[sz:]
+        sz = int(0.8*len(self.newsmarket))
+        train,test = self.newsmarket[:sz],self.newsmarket[sz:]
 
         mean = train.X.mean(axis=0)
         std = train.X.std(axis=0)
@@ -46,7 +47,7 @@ class NewsMarketAnalyzer(object):
         self.q = q.value.A1
         return self.q
 
-    @classmethod
+    @staticmethod
     def CE(newsmarket,q,u):
         X = newsmarket.X
         r = newsmarket.r
@@ -57,14 +58,27 @@ class NewsMarketAnalyzer(object):
             q = self.q
         if u is None:
             u = self.u
-        return NewsMarketAnalyzer.CE(self.train,q,u)
+        return self.CE(self.train,q,u)
 
     def test_CE(self,q=None,u=None):
         if q is None:
             q = self.q
         if u is None:
             u = self.u
-        return NewsMarketAnalyzer.CE(self.test,q,u)
+        return self.CE(self.test,q,u)
+
+    def cross_val(self,λs,u=None):
+        if u is None:
+            u = self.u
+
+        res = []
+        for λ in λs:
+            q = self.solve(u,λ)
+            in_ce = self.train_CE(q,u)
+            out_ce = self.test_CE(q,u)
+            res.append((in_ce,out_ce))
+
+        return res
 
 
 # def get_q_scale(newsmarket,u,n=100):
