@@ -25,10 +25,15 @@ class NewsMarket(pd.DataFrame):
 
     @property
     def X(self):
-        return self.filter(regex='^d2v_|bias')
+        return self.filter(regex='^d2v_|f_')
 
     def during(self,bool):
         return self.xs(bool,level='during')
+
+    def add_bias(self,bias=1):
+        copy = self
+        copy['f_bias'] = bias*np.ones(shape=len(self))
+        return copy
 
     def __getitem__(self,key):
         if key is 'X':
@@ -38,7 +43,7 @@ class NewsMarket(pd.DataFrame):
 
     def __setitem__(self,key,val):
         if key is 'X':
-            cols = self.columns[self.columns.str.contains('d2v_|bias')]
+            cols = self.columns[self.columns.str.contains('d2v_|f_')]
             try:
                 self.loc[:,cols] = val.values
             except:
