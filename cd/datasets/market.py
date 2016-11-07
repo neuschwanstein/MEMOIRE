@@ -32,3 +32,31 @@ def load(start_year,end_year):
         market = make(start_year,end_year)
         save(market,start_year,end_year)
     return market
+
+
+def make_vol(r):
+    index = r.index.sort_values()
+    start_date = index.min()
+    end_date = index.max()
+    vol = quandl.get('CBOE/VIX',start_date=start_date,end_date=end_date)
+    vol = vol[['VIX High']]
+    vol.columns = ['f_vix']
+    vol = r[[]].join(vol,how='left')
+    return vol
+
+
+def save_vol(vol,start_year,end_year):
+    filename = os.path.join(os.path.dirname(__file__),'market/vol%d-%d.csv')
+    vol.to_csv(filename % (start_year,end_year),encoding='utf-8')
+
+
+def load_vol(start_year,end_year):
+    filename = os.path.join(os.path.dirname(__file__),'market/vol%d-%d.csv')
+    try:
+        vol = pd.read_csv(filename % (start_year,end_year),encoding='utf-8')
+        vol = vol.set_index('time')
+    except (FileNotFoundError,OSError):
+        r = load(start_year,end_year)
+        vol = make_vol(r)
+        save_vol(vol,start_year,end_year)
+    return vol
