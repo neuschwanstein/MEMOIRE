@@ -44,7 +44,10 @@ class NewsMarketAnalyzer(object):
         problem = cvx.Problem(objective)
         problem.solve(**kwargs)
 
-        self.q = q.value.A1
+        if p == 1:              # q is a scalar
+            self.q = np.array([q.value])
+        if p > 1:               # q is a vector
+            self.q = q.value.A1
         return self.q
 
     @staticmethod

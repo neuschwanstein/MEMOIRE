@@ -8,11 +8,11 @@ from cd.data.newsmarketanalyzer import NewsMarketAnalyzer as NMA
 
 import cd.model.utility as ut
 
+plt.rcParams['font.family'] = 'serif'
+
 if __name__ == '__main__':
     r = mkt.load(2007,2015)
-    r = r[['r']]
-    vol = mkt.load_vol(2007,2015)
-    newsmarket = r.join(vol,how='inner')
+    newsmarket = r[['r']]
     newsmarket = NM(newsmarket)
 
     analyzer = NMA(newsmarket,shuffle=False)
@@ -24,8 +24,8 @@ if __name__ == '__main__':
     λs = np.logspace(-5.5,-2,50)
 
     cvs = analyzer.cross_val(λs,u)
-    plt.plot(λs,cvs)
 
+    plt.plot(λs,cvs)
     plt.xscale('log')
     plt.axis(xmax=max(λs),xmin=min(λs))
     plt.xlabel('$\lambda$')
