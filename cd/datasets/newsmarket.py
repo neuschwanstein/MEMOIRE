@@ -30,11 +30,6 @@ class NewsMarket(pd.DataFrame):
     def during(self,bool):
         return self.xs(bool,level='during')
 
-    def add_bias(self,bias=1):
-        copy = self
-        copy['f_bias'] = bias*np.ones(shape=len(self))
-        return copy
-
     def __getitem__(self,key):
         if key is 'X':
             return self.X

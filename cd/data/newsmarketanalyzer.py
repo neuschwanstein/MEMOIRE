@@ -20,8 +20,8 @@ class NewsMarketAnalyzer(object):
         test['X'] = (test['X'] - mean)/std
 
         # add biases
-        train['f_bias'] = np.ones(shape=len(train))
-        test['f_bias'] = np.ones(shape=len(test))
+        train.insert(loc=len(train.columns),column='f_bias',value=1)
+        test.insert(loc=len(test.columns),column='f_bias',value=1)
 
         self.train = train
         self.test = test
