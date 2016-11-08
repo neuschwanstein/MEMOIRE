@@ -67,13 +67,13 @@ class NewsMarketAnalyzer(object):
             u = self.u
         return self.CE(self.test,q,u)
 
-    def cross_val(self,λs,u=None):
+    def cross_val(self,λs,u=None,**kwargs):
         if u is None:
             u = self.u
 
         res = []
         for λ in λs:
-            q = self.solve(u,λ)
+            q = self.solve(u,λ,**kwargs)
             in_ce = self.train_CE(q,u)
             out_ce = self.test_CE(q,u)
             res.append((in_ce,out_ce))

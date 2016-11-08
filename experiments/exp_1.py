@@ -1,25 +1,35 @@
-'''The point of this experiment is to try if we can pick any signal of news occuring
-during the trading session (marked as during(True)), that is if we train upon a test set
-of many years we can obtain a positive expected utility on the test set.
+import numpy as np
+import matplotlib.pyplot as plt
+import cvxpy as cvx
 
-Parameters:
- - u = LinearPlateauUtility()
-'''
+import cd.datasets.market as mkt
+from cd.datasets.newsmarket import NewsMarket as NM
+from cd.data.newsmarketanalyzer import NewsMarketAnalyzer as NMA
 
-from cd.datasets import newsmarket as mkt
-from cd.data import analysis2 as nly
 import cd.model.utility as ut
 
 if __name__ == '__main__':
-    newsmarket = mkt.load_all()
-    newsmarket = nly.add_bias(newsmarket,0.1)
-    newsmarket = newsmarket.during(True)
-    train,test = nly.split_and_normalize(newsmarket)
+    r = mkt.load(2007,2015)
+    r = r[['r']]
+    vol = mkt.load_vol(2007,2015)
+    newsmarket = r.join(vol,how='inner')
+    newsmarket = NM(newsmarket)
 
-    λ = 1e-4
-    u = ut.LinearPlateauUtility(0.1,0.08)
+    analyzer = NMA(newsmarket,shuffle=False)
 
-    q = nly.solve(train,u,λ)
+    # u = ut.LinearUtility(0.6)
+    u = ut.LinearPlateauUtility(1,0.8*max(newsmarket.r))
+    # u = ut.LinearPlateauUtility(0.8,0.8*max(newsmarket.r))
+    # λs = np.logspace(-3,-1,15)
+    λs = np.logspace(-5.5,-2,50)
 
-    in_ce = nly.CE(train,q,u,λ)
-    out_ce = nly.CE(test,q,u,λ)
+    cvs = analyzer.cross_val(λs,u)
+    plt.plot(λs,cvs)
+
+    plt.xscale('log')
+    plt.axis(xmax=max(λs),xmin=min(λs))
+    plt.xlabel('$\lambda$')
+    plt.ylabel('Returns (%)')
+    plt.legend(['In-sample CE','Out-sample CE'])
+    plt.title('Cross validation of CE\n%s' % str(u))
+    plt.show()
