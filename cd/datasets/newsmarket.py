@@ -25,7 +25,7 @@ class NewsMarket(pd.DataFrame):
 
     @property
     def X(self):
-        return self.filter(regex='^d2v_|f_')
+        return self.filter(regex='^f_')
 
     def during(self,bool):
         return self.xs(bool,level='during')
@@ -38,7 +38,7 @@ class NewsMarket(pd.DataFrame):
 
     def __setitem__(self,key,val):
         if key is 'X':
-            cols = self.columns[self.columns.str.contains('d2v_|f_')]
+            cols = self.columns[self.columns.str.contains('f_')]
             try:
                 self.loc[:,cols] = val.values
             except:
@@ -98,7 +98,7 @@ def process_vectors(newsmarket):
     index = vectors.index
     vectors = np.vstack(vectors)
     vectors = pd.DataFrame(vectors)
-    cols = ['d2v_%d' % i for i in range(1,vec_length+1)]
+    cols = ['f_d2v_%d' % i for i in range(1,vec_length+1)]
     vectors.columns = cols
     vectors.index = index
     return vectors

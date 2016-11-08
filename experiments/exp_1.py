@@ -3,19 +3,20 @@ import matplotlib.pyplot as plt
 import cvxpy as cvx
 
 import cd.datasets.market as mkt
-from cd.datasets.newsmarket import NewsMarket as NM
-from cd.data.newsmarketanalyzer import NewsMarketAnalyzer as NMA
+import cd.datasets.newsmarket as nm
+import cd.data.newsmarketanalyzer as nma
 
 import cd.model.utility as ut
+
 
 plt.rcParams['font.family'] = 'serif'
 
 if __name__ == '__main__':
     r = mkt.load(2007,2015)
     newsmarket = r[['r']]
-    newsmarket = NM(newsmarket)
+    newsmarket = nm.NewsMarket(newsmarket)
 
-    analyzer = NMA(newsmarket,shuffle=False)
+    analyzer = nma.NewsMarketAnalyzer(newsmarket,shuffle=False)
 
     # u = ut.LinearUtility(0.6)
     u = ut.LinearPlateauUtility(1,0.8*max(newsmarket.r))
