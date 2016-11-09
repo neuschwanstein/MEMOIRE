@@ -15,7 +15,6 @@ if 'gmodel' not in locals():
     gmodel = None
 
 news_filename = os.path.join(os.path.dirname(__file__),'news/news%d.csv')
-# raw_news_filename = os.path.join(os.path.dirname(__file__),'raw_news/raw_news%d.csv')
 
 
 def init_gmodel():
@@ -41,28 +40,6 @@ def mean(lst):
         except KeyError:
             return np.zeros(300)
     return np.mean([vector(s) for s in lst],axis=0)
-
-
-# def process_vectors(raw_news):
-#     # First clean up
-#     vectors = raw_news['content']
-#     vectors = vectors[~vectors.isnull()]
-#     vectors = vectors.apply(to_list_of_words)
-#     empty_vectors = vectors.apply(len) == 0
-#     vectors = vectors[~empty_vectors]
-#     vectors = vectors[~vectors.isnull()]
-
-#     # Mean of the words
-#     vectors = vectors.apply(mean)
-
-#     # Then convert it to proper news
-#     index = vectors.index
-#     vectors = np.vstack(vectors)
-#     vectors = pd.DataFrame(vectors)
-#     cols = ['f_d2v_%d' % i for i in range(1,vec_length+1)]
-#     vectors.columns = cols
-#     vectors.index = index
-#     return vectors
 
 
 def collapse_time(reference,newsmarket):
@@ -200,18 +177,22 @@ def save(newsmarket,year):
     newsmarket.to_csv(news_filename % year,encoding='utf-8')
 
 
-def load(year):
-    news = pd.read_csv(news_filename % year,parse_dates=['time'])
-    news = news.set_index(['time','during'])
+def load(*years):
+    try:
+        years = range(years[0],years[1]+1)
+    except IndexError:
+        years = [years[0]]
+
+    def load(year):
+        news = pd.read_csv(news_filename % year,parse_dates=['time'])
+        news = news.set_index(['time','during'])
+        return news
+
+    news = [load(y) for y in years]
+    news = pd.concat(news,axis=0)
+    news = news.drop_duplicates(keep='last')
+
     return news
-
-
-def load_all():
-    years = range(2007,2016)
-    newsmarket = [load(y) for y in years]
-    newsmarket = pd.concat(newsmarket,axis=0)
-    newsmarket = newsmarket.drop_duplicates(keep='last')
-    return newsmarket
 
 
 def make_all():
