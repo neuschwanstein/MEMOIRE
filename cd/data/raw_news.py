@@ -10,7 +10,7 @@ import pandas as pd
 
 News = namedtuple('News','time content')
 
-filename = os.path.join(os.path.dirname(__file__),'news/news%d.csv')
+filename = os.path.join(os.path.dirname(__file__),'raw_news/raw_news%d.csv')
 
 
 class Daterange(object):

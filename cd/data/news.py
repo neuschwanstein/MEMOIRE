@@ -7,63 +7,29 @@ import pandas as pd
 import gensim.models.word2vec as w2v
 
 from . import market as mkt
-from . import news as ns
+from . import raw_news as raw
 
 pattern_process = re.compile('[^a-zA-Z]+')
 vec_length = 300
 if 'gmodel' not in locals():
     gmodel = None
 
-filename = os.path.join(os.path.dirname(__file__),'newsmarket/newsmarket%d.csv')
-
-
-class NewsMarket(pd.DataFrame):
-
-    @property
-    def _constructor(self):
-        return NewsMarket
-
-    @property
-    def X(self):
-        return self.filter(regex='^f_')
-
-    def during(self,bool):
-        return self.xs(bool,level='during')
-
-    def __getitem__(self,key):
-        if key is 'X':
-            return self.X
-        else:
-            return super().__getitem__(key)
-
-    def __setitem__(self,key,val):
-        if key is 'X':
-            cols = self.columns[self.columns.str.contains('f_')]
-            try:
-                self.loc[:,cols] = val.values
-            except:
-                self.loc[:,cols] = val
-        else:
-            super().__setitem__(key,val)
+news_filename = os.path.join(os.path.dirname(__file__),'news/news%d.csv')
+# raw_news_filename = os.path.join(os.path.dirname(__file__),'raw_news/raw_news%d.csv')
 
 
 def init_gmodel():
     global gmodel
     if gmodel is None:
-        filename = os.path.join(os.path.dirname(__file__),
-                                'w2v/GoogleNews-vectors-negative300.bin')
-        gmodel = w2v.Word2Vec.load_word2vec_format(filename,binary=True)
+        w2v_filename = os.path.join(os.path.dirname(__file__),
+                                    'w2v/GoogleNews-vectors-negative300.bin')
+        gmodel = w2v.Word2Vec.load_word2vec_format(w2v_filename,binary=True)
 
 
 def delete_gmodel():
     global gmodel
     if gmodel is not None:
         del gmodel
-
-
-def to_list_of_words(s):
-    ss = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
-    return ss
 
 
 def mean(lst):
@@ -77,31 +43,26 @@ def mean(lst):
     return np.mean([vector(s) for s in lst],axis=0)
 
 
-def remove_duplicates(ds):
-    dups = ds.duplicated('content')
-    return ds[~dups]
+# def process_vectors(raw_news):
+#     # First clean up
+#     vectors = raw_news['content']
+#     vectors = vectors[~vectors.isnull()]
+#     vectors = vectors.apply(to_list_of_words)
+#     empty_vectors = vectors.apply(len) == 0
+#     vectors = vectors[~empty_vectors]
+#     vectors = vectors[~vectors.isnull()]
 
+#     # Mean of the words
+#     vectors = vectors.apply(mean)
 
-def process_vectors(newsmarket):
-    # First clean up
-    vectors = newsmarket['content']
-    vectors = vectors[~vectors.isnull()]
-    vectors = vectors.apply(to_list_of_words)
-    empty_vectors = vectors.apply(len) == 0
-    vectors = vectors[~empty_vectors]
-    vectors = vectors[~vectors.isnull()]
-
-    # Mean of the words
-    vectors = vectors.apply(mean)
-
-    # Then convert it to proper newsmarket
-    index = vectors.index
-    vectors = np.vstack(vectors)
-    vectors = pd.DataFrame(vectors)
-    cols = ['f_d2v_%d' % i for i in range(1,vec_length+1)]
-    vectors.columns = cols
-    vectors.index = index
-    return vectors
+#     # Then convert it to proper news
+#     index = vectors.index
+#     vectors = np.vstack(vectors)
+#     vectors = pd.DataFrame(vectors)
+#     cols = ['f_d2v_%d' % i for i in range(1,vec_length+1)]
+#     vectors.columns = cols
+#     vectors.index = index
+#     return vectors
 
 
 def collapse_time(reference,newsmarket):
@@ -161,45 +122,87 @@ def collapse_time(reference,newsmarket):
     return newsmarket
 
 
-def convert_full(year):
-    init_gmodel()
+def vector(s):
+    try:
+        return gmodel[s]
+    except KeyError:
+        return np.zeros(300)
 
-    newsmarket = ns.load(year)
-    newsmarket = remove_duplicates(newsmarket)
-    vectors = process_vectors(newsmarket)
-    newsmarket = newsmarket.join(vectors,how='right')
-    newsmarket = newsmarket.drop('content',axis=1)
-    return NewsMarket(newsmarket)
+
+def process_raw_news(s):
+    # First convert it to list of words
+    try:
+        s = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
+    except Exception as e:
+        print(s)
+        raise e
+
+    # Then each word is represented by its vector
+    s = [vector(w) for w in s]
+
+    # Finally return the mean of all vectors
+    s = np.mean(s,axis=0)
+    return s
+
+
+def preprocess_raw_news(raw_news):
+    raw_news = raw_news[~raw_news['content'].duplicated()]
+    raw_news = raw_news[~raw_news['content'].isnull()]
+    empty_content = raw_news['content'].apply(len) == 0
+    raw_news = raw_news.loc[~empty_content,:]
+    return raw_news
+
+
+def postprocess_news(news):
+    # Remove trivial results
+    content = news['content']
+    news = news[~content.isnull()]
+    news = news[~(content.apply(len) == 0)]
+
+    # Then convert it to a full fledged matrix
+    w2v = np.vstack(content)
+    w2v = pd.DataFrame(w2v)
+    cols = ['f_d2v_%d' % i for i in range(1,len(w2v.columns)+1)]
+    w2v.columns = cols
+    w2v.index = news.index
+
+    news = news.drop('content',axis=1)
+    news = pd.concat([news,w2v],axis=1)
+    # news = news.append(w2v,axis=1)
+    return news
 
 
 def make(year):
     init_gmodel()
 
-    # Load newsmarket and translate their content to vectorial representation
-    newsmarket = convert_full()
+    # Load raw news and translate their content to vectorial representation
+    raw_news = raw.load(year)
+    news = preprocess_raw_news(raw_news)
+    news['content'] = news['content'].apply(process_raw_news)
+    news = postprocess_news(news)
 
     # Collapse dates to either have them during the trading session or
     # in the after hours.
     market = mkt.load(year,year)
     reference = market.index
-    newsmarket = collapse_time(reference,newsmarket)
+    news = collapse_time(reference,news)
 
     # Aggregate (Mean) each trading and after hours sessions newsmarket vector representation
-    newsmarket = newsmarket.groupby([newsmarket.index,newsmarket.during]).aggregate(np.mean)
+    news = news.groupby([news.index,news.during]).aggregate(np.mean)
 
     # Then add a return column
-    newsmarket = newsmarket.join(market['r'],how='left')
-    return newsmarket
+    # newsmarket = newsmarket.join(market['r'],how='left')
+    return news
 
 
 def save(newsmarket,year):
-    newsmarket.to_csv(filename % year,encoding='utf-8')
+    newsmarket.to_csv(news_filename % year,encoding='utf-8')
 
 
 def load(year):
-    newsmarket = pd.read_csv(filename % year,parse_dates=['time'])
-    newsmarket = newsmarket.set_index(['time','during'])
-    return NewsMarket(newsmarket)
+    news = pd.read_csv(news_filename % year,parse_dates=['time'])
+    news = news.set_index(['time','during'])
+    return news
 
 
 def load_all():
