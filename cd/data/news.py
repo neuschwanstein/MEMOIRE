@@ -130,6 +130,7 @@ def vector(s):
 
 
 def process_raw_news(s):
+    hello = s
     # First convert it to list of words
     try:
         s = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
@@ -141,6 +142,8 @@ def process_raw_news(s):
     s = [vector(w) for w in s]
 
     # Finally return the mean of all vectors
+    if s == []:
+        return np.nan
     s = np.mean(s,axis=0)
     return s
 
@@ -155,12 +158,11 @@ def preprocess_raw_news(raw_news):
 
 def postprocess_news(news):
     # Remove trivial results
-    content = news['content']
-    news = news[~content.isnull()]
-    news = news[~(content.apply(len) == 0)]
+    news = news[~news['content'].isnull()]
+    news = news[~(news['content'].apply(len) == 0)]
 
     # Then convert it to a full fledged matrix
-    w2v = np.vstack(content)
+    w2v = np.vstack(news['content'])
     w2v = pd.DataFrame(w2v)
     cols = ['f_d2v_%d' % i for i in range(1,len(w2v.columns)+1)]
     w2v.columns = cols
@@ -168,7 +170,6 @@ def postprocess_news(news):
 
     news = news.drop('content',axis=1)
     news = pd.concat([news,w2v],axis=1)
-    # news = news.append(w2v,axis=1)
     return news
 
 
@@ -216,6 +217,7 @@ def load_all():
 def make_all():
     init_gmodel()
     for year in range(2007,2016):
+        print(year)
         pnews = make(year)
         save(pnews,year)
 
