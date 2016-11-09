@@ -1,6 +1,6 @@
 import pandas as pd
 
-from . import market,news
+from . import market,news as ns
 
 
 class NewsMarket(pd.DataFrame):
@@ -33,23 +33,19 @@ class NewsMarket(pd.DataFrame):
             super().__setitem__(key,val)
 
     @classmethod
-    def load(cls,years=[2007,2015],features=None):
-        try:
-            start_year = min(years)
-            end_year = max(years)
-        except:
-            start_year = years
-            end_year = years
-        years = (start_year,end_year)
-
-        newsmarket = market.load(*years)
+    def load(cls,*years,features=[]):
+        newsmarket = market.load(*years,what='r')
         newsmarket = newsmarket[['r']]
 
-        if 'vol' is in features:
-            vol = market.load_vol(*years)
+        if 'vol' in features:
+            vol = market.load(*years,what='vol')
             newsmarket = newsmarket.join(vol,how='inner')
 
-        if 'news' is in features:
-            news = news.load(
+        if 'news' in features:
+            news = ns.load(*years)
+            news = news.reset_index(level=1)
+            # newsmarket = newsmarket.join(news,how='inner')
+            newsmarket = newsmarket.merge(news,left_index=True,right_index=True)
+            newsmarket = newsmarket.set_index('during',append=True)
 
         return NewsMarket(newsmarket)

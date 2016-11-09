@@ -4,37 +4,29 @@ import os
 import quandl
 import pandas as pd
 
-filename = os.path.join(os.path.dirname(__file__),'market/market%d-%d.csv')
+filename = {
+    'r': os.path.join(os.path.dirname(__file__),'market/market%d.csv'),
+    'vol': os.path.join(os.path.dirname(__file__),'market/vol%d.csv')
+}
 
 
-def make(start_year,end_year):
-    start_date = dt.date(start_year-1,11,1)
-    end_date = dt.date(end_year+1,2,1)
+def make_r(year):
+    start_date = dt.date(year-1,11,1)
+    end_date = dt.date(year+1,2,1)
+
     market = quandl.get('YAHOO/INDEX_GSPC',start_date=start_date,end_date=end_date)
     market.columns = [col_name.lower() for col_name in market.columns]
     market = market.rename(columns={'adjusted close':'price'})
     market.price = market.price/market.price.values[0]
     market['r'] = (market.close - market.open)/market.open
-    market = market[['volume','price','r']]
+    market = market[['r']]
     market.index.name = 'time'
+
     return market
 
 
-def save(market,start_year,end_year):
-    market.to_csv(filename % (start_year,end_year),encoding='utf-8')
-
-
-def load(start_year,end_year):
-    try:
-        market = pd.read_csv(filename % (start_year,end_year),parse_dates=['time'])
-        market = market.set_index('time')
-    except (FileNotFoundError,OSError):
-        market = make(start_year,end_year)
-        save(market,start_year,end_year)
-    return market
-
-
-def make_vol(r):
+def make_vol(year):
+    r = make_r(year)
     index = r.index.sort_values()
     start_date = index.min()
     end_date = index.max()
@@ -42,21 +34,39 @@ def make_vol(r):
     vol = vol[['VIX High']]
     vol.columns = ['f_vix']
     vol = r[[]].join(vol,how='left')
+
     return vol
 
 
-def save_vol(vol,start_year,end_year):
-    filename = os.path.join(os.path.dirname(__file__),'market/vol%d-%d.csv')
-    vol.to_csv(filename % (start_year,end_year),encoding='utf-8')
+# There must be another way...
+def make(year,what):
+    if what is 'r':
+        return make_r(year)
+    elif what is 'vol':
+        return make_vol(year)
 
 
-def load_vol(start_year,end_year):
-    filename = os.path.join(os.path.dirname(__file__),'market/vol%d-%d.csv')
+def save(value,year,what):
+    value.to_csv(filename[what] % year,encoding='utf-8')
+
+
+def load(*years,what):
     try:
-        vol = pd.read_csv(filename % (start_year,end_year),encoding='utf-8')
-        vol = vol.set_index('time')
-    except (FileNotFoundError,OSError):
-        r = load(start_year,end_year)
-        vol = make_vol(r)
-        save_vol(vol,start_year,end_year)
-    return vol
+        years = range(years[0],years[1]+1)
+    except IndexError:
+        years = [years[0]]
+
+    def load(year):
+        try:
+            value = pd.read_csv(filename[what] % year,parse_dates=['time'])
+            value = value.set_index('time')
+        except OSError:
+            value = make(year,what)
+            save(value,year,what)
+        return value
+
+    values = [load(y) for y in years]
+    values = pd.concat(values,axis=0)
+    values = values.drop_duplicates()
+
+    return values

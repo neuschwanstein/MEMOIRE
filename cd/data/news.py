@@ -107,13 +107,8 @@ def vector(s):
 
 
 def process_raw_news(s):
-    hello = s
     # First convert it to list of words
-    try:
-        s = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
-    except Exception as e:
-        print(s)
-        raise e
+    s = [w.lower() for w in pattern_process.sub(' ',s).split() if len(w) > 1]
 
     # Then each word is represented by its vector
     s = [vector(w) for w in s]
@@ -161,7 +156,7 @@ def make(year):
 
     # Collapse dates to either have them during the trading session or
     # in the after hours.
-    market = mkt.load(year,year)
+    market = mkt.load(year,what='r')
     reference = market.index
     news = collapse_time(reference,news)
 
@@ -184,8 +179,12 @@ def load(*years):
         years = [years[0]]
 
     def load(year):
-        news = pd.read_csv(news_filename % year,parse_dates=['time'])
-        news = news.set_index(['time','during'])
+        try:
+            news = pd.read_csv(news_filename % year,parse_dates=['time'])
+            news = news.set_index(['time','during'])
+        except OSError:
+            news = make(year)
+            save(news,year)
         return news
 
     news = [load(y) for y in years]
