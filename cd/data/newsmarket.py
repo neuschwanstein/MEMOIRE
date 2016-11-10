@@ -54,15 +54,18 @@ class NewsMarket(pd.DataFrame):
 
 class NewsMarketAnalyzer(object):
 
-    def __init__(self,newsmarket,shuffle=True):
+    def __init__(self,newsmarket,shuffle=True,full=False,**kwargs):
         if shuffle:
             self.newsmarket = newsmarket.sample(len(newsmarket))
         else:
             self.newsmarket = newsmarket
 
         # Create train,test sets
-        sz = int(0.8*len(self.newsmarket))
-        train,test = self.newsmarket[:sz],self.newsmarket[sz:]
+        if not full:
+            sz = int(0.8*len(self.newsmarket))
+        else:
+            sz = len(self.newsmarket)
+        train,test = self.newsmarket[:sz].copy(),self.newsmarket[sz:].copy()
 
         mean = train.X.mean(axis=0)
         std = train.X.std(axis=0)
@@ -76,11 +79,12 @@ class NewsMarketAnalyzer(object):
         self.train = train
         self.test = test
 
-    def solve(self,u=None,λ=None,**kwargs):
-        if u is None:
-            u = self.u
-        if λ is None:
-            λ = self.λ
+        self.params = kwargs
+
+    def solve(self,verbose=False,solver=None,**kwargs):
+        params = {**self.params, **kwargs}
+        u = params['u']
+        λ = params['λ']
 
         n,p = self.train.X.shape
         q = cvx.Variable(p)
@@ -92,33 +96,32 @@ class NewsMarketAnalyzer(object):
             λ*cvx.norm(q)**2)
 
         problem = cvx.Problem(objective)
-        problem.solve(**kwargs)
+        problem.solve(solver=solver,verbose=verbose)
 
         if p == 1:              # q is a scalar
             self.q = np.array([q.value])
         if p > 1:               # q is a vector
             self.q = q.value.A1
+        self.params['q'] = self.q
         return self.q
 
-    @staticmethod
-    def CE(newsmarket,q,u):
+    def CE(self,newsmarket,**kwargs):
+        params = {**self.params, **kwargs}
+        u = params['u']
+        try:
+            q = params['q']
+        except KeyError:
+            q = self.solve(**params)
+
         X = newsmarket.X
         r = newsmarket.r
         return u.inverse(np.mean(u(r*(X@q))))
 
-    def train_CE(self,q=None,u=None):
-        if q is None:
-            q = self.q
-        if u is None:
-            u = self.u
-        return self.CE(self.train,q,u)
+    def train_CE(self,**kwargs):
+        return self.CE(self.train,**kwargs)
 
-    def test_CE(self,q=None,u=None):
-        if q is None:
-            q = self.q
-        if u is None:
-            u = self.u
-        return self.CE(self.test,q,u)
+    def test_CE(self,**kwargs):
+        return self.CE(self.test,**kwargs)
 
     def cross_val(self,λs,u=None,**kwargs):
         if u is None:
@@ -132,6 +135,7 @@ class NewsMarketAnalyzer(object):
             res.append((in_ce,out_ce))
 
         return res
+
 
     # def get_q_scale(newsmarket,u,n=100):
     #     '''If under no regularization a covariate implies a very large decision in qᵢ, then we
