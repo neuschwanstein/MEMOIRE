@@ -86,10 +86,15 @@ class NewsMarketAnalyzer(object):
         u = params['u']
         λ = params['λ']
 
-        n,p = self.train.X.shape
+        try:
+            train = params['train']
+        except KeyError:
+            train = self.train
+
+        n,p = train.X.shape
         q = cvx.Variable(p)
-        r = self.train.r.values
-        X = self.train.X.values
+        r = train.r.values
+        X = train.X.values
 
         objective = cvx.Maximize(
             1/n * cvx.sum_entries(u.cvx_util(cvx.mul_elemwise(r,X*q))) -
@@ -123,18 +128,33 @@ class NewsMarketAnalyzer(object):
     def test_CE(self,**kwargs):
         return self.CE(self.test,**kwargs)
 
-    def cross_val(self,λs,u=None,**kwargs):
-        if u is None:
-            u = self.u
+    def cross_val(self,λs,**kwargs):
+        params = {**self.params, **kwargs}
 
-        res = []
-        for λ in λs:
-            q = self.solve(u,λ,**kwargs)
-            in_ce = self.train_CE(q,u)
-            out_ce = self.test_CE(q,u)
-            res.append((in_ce,out_ce))
+        k_fold = 5
+        fold_length = len(self.train)//k_fold
 
-        return res
+        def max_λ(k):
+            first_set = self.train.iloc[:k*fold_length]
+            second_set = self.train.iloc[(k+1)*fold_length:]
+            train = pd.concat([first_set,second_set],axis=0)
+            test = self.train.iloc[k*fold_length:(k+1)*fold_length]
+
+            def out_ce(λ):
+                q = self.solve(train=train,λ=λ,**params)
+                params['q'] = q
+                out_ce = self.CE(test,**params)
+                return out_ce
+
+            out_ces = [out_ce(λ) for λ in λs]
+            max_i = np.argmax(out_ces)
+            max_λ = λs[max_i]
+            return max_λ
+
+        max_λs = [max_λ(k) for k in range(k_fold)]
+        optimal_λ = np.mean(max_λs)
+        return optimal_λ
+
 
 
     # def get_q_scale(newsmarket,u,n=100):
