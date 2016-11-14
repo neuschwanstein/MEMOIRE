@@ -141,7 +141,8 @@ class NewsMarketAnalyzer(object):
             test = self.train.iloc[k*fold_length:(k+1)*fold_length]
 
             def out_ce(λ):
-                q = self.solve(train=train,λ=λ,**params)
+                params['λ'] = λ
+                q = self.solve(train=train,**params)
                 params['q'] = q
                 out_ce = self.CE(test,**params)
                 return out_ce
@@ -153,8 +154,26 @@ class NewsMarketAnalyzer(object):
 
         max_λs = [max_λ(k) for k in range(k_fold)]
         optimal_λ = np.mean(max_λs)
+
+        self.params['λ'] = optimal_λ
         return optimal_λ
 
+    def helped_weights(self,**kwargs):
+        params = {**self.params, **kwargs}
+        params['λ'] = 0
+
+        def get_q(train_sample):
+            q = self.solve(train=train_sample,**params)
+            return q
+
+        qs = [get_q(self.train.sample(100)) for _ in range(100)]
+        qs = np.mean(qs,axis=0)
+        helped_weights = np.abs(1/qs)
+        return helped_weights
+
+    def update_weights(self,w,**kwargs):
+        self.train['X'] = w*self.train['X']
+        self.test['X'] = w*self.test['X']
 
 
     # def get_q_scale(newsmarket,u,n=100):
