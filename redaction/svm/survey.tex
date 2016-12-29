@@ -1,0 +1,49 @@
+\documentclass{article}
+\include{preamble}
+
+\title{SVM Formulation of the Portfolio Optimization Problem}
+\author{Thierry Bazier-Matte}
+
+\begin{document}
+\maketitle
+
+\section{Risk Neutral and Linearly Separable}
+
+
+Under an SVM formulation of our problem, we look for a decision $q$ such that $q^Tx$ is
+the same sign as its output. Under a classical SVM formulation, where the problem is one
+of classification, corresponding to a loss step function, the output is $y=\pm 1$.
+
+Let us suppose for now that returns $r_i$ are linearly separable. Then we can scale the
+decision $q$ to obtain $\min_S|q^Tx| = 1$, with $S$ the sample. Then, the distance of any
+feature point $x_0\in\real^p$ will be given by
+\[
+  \frac{|q^Tx_0|}{\|q\|_2}.
+\]
+Therefore the margin $\rho$ of the SVM will be given by
+\[
+  \rho = \frac{1}{\|q\|_2}.
+\]
+Geometrically, we wih to have a margin as large as possible or, equivalently, to minimize
+$\|q\|_2$, or more simply $\frac{1}{2}\|q\|^2_2$. 
+
+Under the classical formulation of the SVM, where $y_i=\pm1$, we wish to have $\sign
+q^Tx_i = \sign y_i$. This can also be expressed as
+\[
+  y_i\,q^Tx_i \geq 1,
+\]
+since $q^Tx_i\geq1$. Under the porfolio formulation, the output $y_i$ is actually the
+portfolio return $r_i\in\real$. We would again like to obtain $\sign r_i = \sign
+q^Tx_i$. Let us pretend for the moment that we are risk neutral and let's further suppose
+that there is no $j$ such that $r_j=0$. Let $\bar r = \min_S r_i$. Then using the
+transformation $\tilde r_i = r_i/\bar r$, we obtain $r_i \geq 1$. We therefore obtain the
+same formulation as with the SVM, that is,
+\begin{align*}
+  \minimizeEquationSt{\|q\|^2}{\tilde r_i\,q^Tx_i\geq 1}.
+\end{align*}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

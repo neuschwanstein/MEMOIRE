@@ -1,3 +1,4 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
 import cvxpy as cvx
@@ -12,7 +13,7 @@ nm.
 import cd.model.utility as ut
 
 
-plt.rcParams['font.family'] = 'serif'
+# plt.rcParams['font.family'] = 'serif'
 
 # if __name__ == '__main__':
 #     newsmarket = nm.load_all()

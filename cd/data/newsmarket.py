@@ -175,6 +175,11 @@ class NewsMarketAnalyzer(object):
         self.train['X'] = w*self.train['X']
         self.test['X'] = w*self.test['X']
 
+    def investment_decision(self,newsmarket,**kwargs):
+        params = {**self.params, **kwargs}
+        q = params['q']
+        investment_decision = newsmarket.X@q
+        return investment_decision
 
     # def get_q_scale(newsmarket,u,n=100):
     #     '''If under no regularization a covariate implies a very large decision in qᵢ, then we
