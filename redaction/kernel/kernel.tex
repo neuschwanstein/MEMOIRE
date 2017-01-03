@@ -1,0 +1,52 @@
+\documentclass{article}
+\include{preamble}
+
+\title{The Use of Kernels in the Portfolio Optimization Problem}
+\author{Thierry Bazier-Matte}
+
+\begin{document}
+\maketitle
+
+We recall that the basic problem on chosing a linear investment $q^\star\in\real^p$ based on $p$
+features can be described using the following formulation:
+\[
+  q^\star = \argmin_q\{ n^{-1} \sum_{i=1}^n u(r_i\,q^Tx_i) + \lambda\|q\|^2_2\}.
+\]
+
+Using kernel theory, we can extend this algorithm to include non-linear decisions. For
+example, consider the sigmoid kernel $K_\sigma$:
+\[
+  K_\sigma(q,x) = \frac{\exp(q^T x)}{1+\exp(q^Tx)}.
+\]
+Other kernels include \eg polynomial kernel or gaussian distance kernel. In any case, let
+$K$ be a positive definite symmetric (PDS) kernel. Then the associated non linear learning
+problem therefore becomes:
+\[
+  q^\star = \argmin_q\{ n^{-1}\sum_{i=1}^n u(r_i\,K(q,x_i)) + \lambda\|q\|^2_K\},
+\]
+with $\|\cdot\|_K$ the associated kernel space norm. 
+
+The problem of this representation is that the investment decision $q$ is confined within
+the kernel space, and previous guarantees offered for scalar investment $q^Tx_i$ might not
+hold. Therefore, we are interested in an intermediate representation using a feature
+mapping $\phi$ of the following form:
+\[
+  \phi(x) =
+  \begin{pmatrix}
+    K(x_1,x)\\
+    \vdots\\
+    K(x_n,x)
+  \end{pmatrix}
+\]
+
+Then, provided that $K$ is normalized, the representer theorem states that
+\[
+  q^\star = \argmin_q\{n^{-1}\sum_{i=1}^n u(r_i\,q^T\phi(x_i)) + \lambda\|q\|^2_2\}.
+\]
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

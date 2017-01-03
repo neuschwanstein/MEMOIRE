@@ -7,7 +7,7 @@
 \begin{document}
 \maketitle
 
-\section{Risk Neutral and Linearly Separable}
+\section{Linearly Separable and Step Utility Function}
 
 
 Under an SVM formulation of our problem, we look for a decision $q$ such that $q^Tx$ is
@@ -33,14 +33,66 @@ q^Tx_i = \sign y_i$. This can also be expressed as
   y_i\,q^Tx_i \geq 1,
 \]
 since $q^Tx_i\geq1$. Under the porfolio formulation, the output $y_i$ is actually the
-portfolio return $r_i\in\real$. We would again like to obtain $\sign r_i = \sign
-q^Tx_i$. Let us pretend for the moment that we are risk neutral and let's further suppose
-that there is no $j$ such that $r_j=0$. Let $\bar r = \min_S r_i$. Then using the
+portfolio return $r_i\in\real$. Let us pretend for the moment that we are endowed with a
+step utility function. In other words, we only care for the sign of our investment. Then
+we would again like to obtain $\sign r_i = \sign q^Tx_i$. Let us further suppose that
+there is no $j$ such that $r_j=0$. Let $\bar r = \min_S r_i$. Then using the
 transformation $\tilde r_i = r_i/\bar r$, we obtain $r_i \geq 1$. We therefore obtain the
 same formulation as with the SVM, that is,
 \begin{align*}
   \minimizeEquationSt{\|q\|^2}{\tilde r_i\,q^Tx_i\geq 1}.
 \end{align*}
+
+
+\section{Utility dependant case}
+
+Under the classical SVM formulation, when the set is not separable, we can add slack
+variables $\xi_i\geq 0$ to the margin so that
+\[
+  y_i\,q^Tx_i \geq 1 - \xi_i.
+\]
+The SVM formulation can therefore be expressed as
+\begin{align*}
+  \minimizeEquationSt{\|q\|^2+\lambda\|\xi\|^p}[y_i\,q^Tx_i\geq 1-\xi_i\\,\xi_i\geq 0],
+\end{align*}
+where $\mu$ is the trade off parameter between the slack and the margin width.
+
+Under the classical framework, $\xi_i$ is only some slack, and it loss function will
+typically be quadratic or linear (hinge loss). However, under the portfolio optimization
+framework, this slack $\xi_i$ actually means much more since we can encourage or
+discourage going in certain directions proportionally to the utility of the investor.
+
+Let us first suppose that we have no preference for positive returns, or simply that we
+have a flat utility for $r\geq 0$. Such an asumption corresponds to $\xi_i\geq 0$: as long
+as the returns $r_i\,q^Tx_i$ are deep enough out of the margin, we are satisfied. But we
+can now quantify how much dissatisfaction we retire from going toward the margin. We can
+impose a penalty $-u(\xi_i)$ on the slack on the whole domain. We can further drop the
+absence of preference on positive returns, by simply stating that we impose $-u(\xi_i)$ on
+the slack. This way, the utility perception of the investor is transposed in the SVM
+algorithm using the slacks:
+\begin{align*}
+  \minimizeEquationSt{\|q\|^2-\lambda\sum_{i=1}^nu(\xi_i)}{\tilde r_i\,q^Tx_i\geq 1 - \xi_i}
+\end{align*}
+The optimization problem remains convex, since $u$ is concave.
+
+Under such a formulation, we see how close have gotten to the original problem: compare
+this last expression with the following:
+\begin{align*}
+  \maximizeEquation{\frac{1}{n}\sum_{i=1}^nu(r_i\,q^Tx_i) - \lambda\|q\|^2}.
+\end{align*}
+It is pratically the same: we now see how close to an actual SVM we are. In wit, this
+means that are theoretical properties of SVMs also apply to our problem. \todo{Show formally.}
+
+Now what interpretation can be given to those two traded off terms? The first expression
+$\|q\|^2$ means how wide the margin will be, that is how probable it is that we actually
+have overall positive returns. It can also be meant to represent the complexity of the
+solution: a tighter margin will accomodate more outlier points, thus reducing their
+numbers and thus favouring a more complex solution, whereas a wider margin will be
+simpler, albeit with more outliers. The other expression $-\sum u(\xi_i)$ can be
+understood as the average of the utility for each observed return $r_i\,q^Tx_i$.
+
+
+
 \end{document}
 
 %%% Local Variables:
