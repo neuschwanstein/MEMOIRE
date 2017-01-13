@@ -1,5 +1,9 @@
 \documentclass{article}
 \include{preamble}
+\newcommand{\lag}{\mathscr{L}}
+\newcommand{\sumi}{\sum_{i=1}^n}
+\newcommand{\sumij}{\sum_{i,j=1}^n}
+\renewcommand{\dd}{\nabla}
 
 \title{The Use of Kernels in the Portfolio Optimization Problem}
 \author{Thierry Bazier-Matte}
@@ -7,42 +11,169 @@
 \begin{document}
 \maketitle
 
-We recall that the basic problem on chosing a linear investment $q^\star\in\real^p$ based on $p$
-features can be described using the following formulation:
-\[
-  q^\star = \argmin_q\{ n^{-1} \sum_{i=1}^n u(r_i\,q^Tx_i) + \lambda\|q\|^2_2\}.
-\]
+\section{Introduction}
 
-Using kernel theory, we can extend this algorithm to include non-linear decisions. For
-example, consider the sigmoid kernel $K_\sigma$:
-\[
-  K_\sigma(q,x) = \frac{\exp(q^T x)}{1+\exp(q^Tx)}.
-\]
-Other kernels include \eg polynomial kernel or gaussian distance kernel. In any case, let
-$K$ be a positive definite symmetric (PDS) kernel. Then the associated non linear learning
-problem therefore becomes:
-\[
-  q^\star = \argmin_q\{ n^{-1}\sum_{i=1}^n u(r_i\,K(q,x_i)) + \lambda\|q\|^2_K\},
-\]
-with $\|\cdot\|_K$ the associated kernel space norm. 
 
-The problem of this representation is that the investment decision $q$ is confined within
-the kernel space, and previous guarantees offered for scalar investment $q^Tx_i$ might not
-hold. Therefore, we are interested in an intermediate representation using a feature
-mapping $\phi$ of the following form:
+We recall that the basic problem of chosing a linear investment decision
+$q^\star\in\real^p$ based on $p$ features can be described using the following
+formulation:
+\begin{equation}
+  \label{primal}
+  q^\star = \argmax_q\{ n^{-1} \sum_{i=1}^n u(r_i\,q^Tx_i) - \lambda\|q\|^2_2\}.
+\end{equation}
+
+However, this solution has the disadvantage of being linear in the feature
+space. Therefore, unless `good' and `bad' investments (as perceived by the investor) can
+be neatly separated by halfspaces in the feature space, which is unlikely, the decision is
+at risk of incurring poor performance.
+
+Using kernel methods we can resolve this problem by augmenting the feature space using a
+mapping $\phi:\real^p\to\mathscr{H}$ where $\mathscr{H}$ is expected to be of higher
+dimension than $p$ (possibly of an infinite dimension). \todo{explain polynomial
+  kernels as a concrete example}. In this new space, a new linear decision can be found
+which, when mapped back to $\real^p$, is nonlinear. 
+
+However, optimizing the problem \eqref{primal} in such a space can quickly become hard as
+$\binom{p+2}{2}$ grows quite fast for a quadratic kernel. In what follows, we will see
+that we can solve the problem in dual space where only the inner product of observations
+$\langle \phi(x_i),\phi(x_j)\rangle$ in $\mathscr{H}$ will be needed.
+
+
+\section{Dual formulation}
+We start with the following problem:
+\begin{equation*}
+  \minimizeEquation{-\sum_{i=1}^nu(r_i\,q^Tx_i) + n\lambda\|q\|^2}.
+\end{equation*}
+Or if we introduce the slack variable $\xi$, we obtain
+\begin{align*}
+  \minimizeEquationSt{-\sum_{i=1}^nu(\xi_i)+n\lambda\|q\|^2}[\xi_i=r_i\,q^Tx_i].
+\end{align*}
+The lagrangian $\lag$ for this problem is then defined for
+$\xi,q\in\real^p$ and $\alpha\in\real^n$ as:
+\begin{equation}
+  \label{lag}
+  \lag = -\sumi u(\xi_i)+\sumi \alpha_i(\xi_i-r_i\,q^Tx_i)+n\lambda \|q\|^2.
+\end{equation}
+KKT conditions apply \todo{explain and understand why...}. We must first have
+$\dd_q\lag=0$ and $\dd_{\xi_i}\lag=0$. These two conditions yield:
+\begin{equation}
+  \label{kkt1}
+  q = \frac{1}{2n\lambda}\sumi \alpha_ir_ix_i
+\end{equation}
+and
+\begin{equation}
+  \label{kkt2}
+  \alpha_i = u'(\xi_i).
+\end{equation}
+Now, denote $u^*$ the convex conjugate of $u$. Then, by standard properties of the
+conjugate function [Boyd p.~95] and from \eqref{kkt2}, we obtain
+\begin{equation}
+  \label{ustar}
+  u^*(\alpha_i) = \xi_iu'(\xi_i) - u(\xi_i) = \xi_i\alpha_i - u(\xi_i).
+\end{equation}
+Therefore, using \eqref{ustar} and \eqref{kkt1} to eliminate successively $\xi$ and $q$
+from \eqref{lag}, we find
+\begin{align}
+  \lag &= \sumi(u^*(\alpha_i)-\xi_i\alpha_i) + \sumi \xi_i\alpha_i 
+         - \sumi r_i\,q^Tx_i + n\lambda\|q\|^2 \nonumber\\
+       &= \sumi u^*(\alpha_i)
+         - \frac{1}{2n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j
+         + \frac{1}{4n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j \nonumber\\
+       &=  \sumi u^*(\alpha_i)
+         - \frac{1}{4n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j\nonumber\\
+       &= \sumi u^*(\alpha_i) - \mu(\alpha \circ r)^TK(\alpha \circ r),\label{gen}
+\end{align}
+with $\mu$ the new regularization parameter and $\circ$ the Hadamard (component-wise)
+product and $K$ is the matrix of inner products in $\mathscr{H}$.
+
+The new optimization problem becomes
+\begin{align*}
+  \maximizeEquation{\sumi u^*(\alpha_i) - \mu(\alpha\circ r)^TK(\alpha\circ r)}
+\end{align*}
+over $\alpha\in\real^n$.
+
+Once a solution $\alpha^\star$ for the dual problem has been found, then the investment
+decision based on a set of features $x_0$ can be expressed as follows:
+\begin{align*}
+  p &= q^Tx_0\\
+    &= \sumi\alpha_ir_iK(x_i,x_0)\\
+    &= (\alpha \circ r)^T\phi(x_0),
+\end{align*}
+where
 \[
   \phi(x) =
   \begin{pmatrix}
-    K(x_1,x)\\
+    K(x_i,x)\\
     \vdots\\
     K(x_n,x)
-  \end{pmatrix}
+  \end{pmatrix}.
 \]
 
-Then, provided that $K$ is normalized, the representer theorem states that
+
+\subsection{Exponential utility}
+Consider for instance $u(r) = e^{\beta r}$.
+The expression \eqref{gen} for $\lag$ can be simplified if we consider an exponential
+utility of the form $u(r) = -\exp(-\beta r)$. Then we have $w(r) = \exp(-\beta r)$ which
+in turn gives $w'(r) = -\beta\exp(-\beta r)$, so that $v(r) =
+-\log(-r/\beta)$. Therefore
 \[
-  q^\star = \argmin_q\{n^{-1}\sum_{i=1}^n u(r_i\,q^T\phi(x_i)) + \lambda\|q\|^2_2\}.
+  w(v(-\alpha_i)) = \left(\frac{\alpha_i}{\beta}\right)^\beta
 \]
+and
+\[
+  \alpha_iv(-\alpha_i) = -\alpha_i\log(\alpha_i/\beta).
+\]
+In what follows we let $\beta=1$ for simplicity. $\lag$ becomes
+\begin{align*}
+  \lag &= \sumi\alpha_i(1-\log \alpha_i) - \frac{1}{4\mu}\sumij
+         \alpha_i\alpha_jr_ir_jx_i^Tx_j.\\
+       &= \alpha^T(1-\log\alpha) - \tilde\lambda(\alpha\circ r)^TK(\alpha \circ r)
+\end{align*}
+using a new regularization parameter $\tilde\lambda$ and $K$ the Gram matrix of inner
+products.
+
+The prescribed investment scalar based on feature $x_0$ is given by:
+where $\phi(x)_i = K(x_i,x)$. \todo{introduce representer theorem?}.
+
+\subsection{Risk neutral utility}
+
+The expression of \eqref{gen} is further simplified if we instead consider a risk neutral
+utility $u(r) = r$. \todo{Degenerate case? We have $\alpha=1$ from \eqref{kkt2}}.
+
+
+% \section{Old}
+
+
+% Using kernel theory, we can extend this algorithm to include non-linear decisions. For
+% example, consider the sigmoid kernel $K_\sigma$:
+% \[
+%   K_\sigma(q,x) = \frac{\exp(q^T x)}{1+\exp(q^Tx)}.
+% \]
+% Other kernels include \eg polynomial kernel or gaussian distance kernel. In any case, let
+% $K$ be a positive definite symmetric (PDS) kernel. Then the associated non linear learning
+% problem therefore becomes:
+% \[
+%   q^\star = \argmin_q\{ n^{-1}\sum_{i=1}^n u(r_i\,K(q,x_i)) + \lambda\|q\|^2_K\},
+% \]
+% with $\|\cdot\|_K$ the associated kernel space norm. 
+
+% The problem of this representation is that the investment decision $q$ is confined within
+% the kernel space, and previous guarantees offered for scalar investment $q^Tx_i$ might not
+% hold. Therefore, we are interested in an intermediate representation using a feature
+% mapping $\phi$ of the following form:
+% \[
+%   \phi(x) =
+%   \begin{pmatrix}
+%     K(x_1,x)\\
+%     \vdots\\
+%     K(x_n,x)
+%   \end{pmatrix}
+% \]
+
+% Then, provided that $K$ is normalized, the representer theorem states that
+% \[
+%   q^\star = \argmin_q\{n^{-1}\sum_{i=1}^n u(r_i\,q^T\phi(x_i)) + \lambda\|q\|^2_2\}.
+% \]
 
 \end{document}
 

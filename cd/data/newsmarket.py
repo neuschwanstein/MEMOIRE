@@ -91,10 +91,15 @@ class NewsMarketAnalyzer(object):
         except KeyError:
             train = self.train
 
-        n,p = train.X.shape
-        q = cvx.Variable(p)
         r = train.r.values
-        X = train.X.values
+        try:
+            K = params['kernel']
+            X = K(train.X,train.X)
+        except KeyError:
+            X = train.X.values
+
+        n,p = X.shape
+        q = cvx.Variable(p)
 
         objective = cvx.Maximize(
             1/n * cvx.sum_entries(u.cvx_util(cvx.mul_elemwise(r,X*q))) -
@@ -118,8 +123,12 @@ class NewsMarketAnalyzer(object):
         except KeyError:
             q = self.solve(**params)
 
-        X = newsmarket.X
         r = newsmarket.r
+        try:
+            K = params['kernel']
+            X = K(newsmarket.X,self.train.X)
+        except KeyError:
+            X = newsmarket.X
         return u.inverse(np.mean(u(r*(X@q))))
 
     def train_CE(self,**kwargs):

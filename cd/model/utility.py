@@ -53,6 +53,7 @@ class LipschitzExpUtility(Utility):
     def γ(self):
         return np.exp(-self.β * self.r0)
 
+
 class LinearUtility(Utility):
     def __init__(self,β):
         self.β = β
@@ -74,6 +75,7 @@ class LinearUtility(Utility):
 
     def inverse(self,r):
         return 1/self.β * r
+
 
 class RiskNeutralUtility(Utility):
     def __init__(self):
