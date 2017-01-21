@@ -12,19 +12,23 @@
 \begin{document}
 \maketitle
 
+
+\section{Original Problem}
+
+
 Let us consider the following problem, optimized over $q\in\real^p$:
 \begin{equation}
   \label{primal}
-  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) - n\lambda\|q\|^2},
+  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) + n\lambda\|q\|^2},
 \end{equation}
 where $\ell=-u$. Alternatively, this problem can be respecified using slack vector
 $\xi\in\real^n$ as
 \begin{align}
-  \minimizeEquationSt{\label{primal2}\sumi \ell(\xi_i) - n\lambda\|q\|^2}[\label{affineconstraints}\xi_i = r_i\,q^Tx_i.] 
+  \minimizeEquationSt{\label{primal2}\sumi \ell(\xi_i) + n\lambda\|q\|^2}[\label{affineconstraints}\xi_i = r_i\,q^Tx_i.] 
 \end{align}
 Let $\alpha\in\real^n$. The Lagrangian of \eqref{primal2} can be written as
 \begin{equation}
-  \lag(q,\xi,\alpha) = \sumi \ell(\xi_i) - n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i - \xi_i).
+  \lag(q,\xi,\alpha) = \sumi \ell(\xi_i) + n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i - \xi_i).
 \end{equation}
 Because the objective \eqref{primal2} is convex and the constraints
 \eqref{affineconstraints} are affine in $q$ and $\xi$, Slater's theorem states that the
@@ -36,207 +40,286 @@ to maximizing the Lagrange dual function $g$ over $\alpha$:
 Now, note that
 \begin{align}
   g(\alpha)
-  &= \inf_{q,\xi} \sumi \ell(\xi_i) - n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i -
-    \xi_i)\\
-  &= \inf_\xi\left\{\sumi \ell(\xi_i) - \alpha^T\xi\right\} + \inf_q\left\{\sumi \alpha_ir_iq^Tx_i -
+  &= \inf_{q,\xi} \left\{\sumi \ell(\xi_i) + n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i -
+    \xi_i)\right\}\\
+  &= \inf_\xi\left\{\sumi \ell(\xi_i) - \alpha^T\xi\right\} + \inf_q\left\{\sumi \alpha_ir_iq^Tx_i +
     n\lambda\|q\|^2\right\}\\
-  & = -\sup_\xi\left\{a^T\xi - \sumi \ell(\xi_i)\right\} + \inf_q\left\{\sumi \alpha_ir_iq^Tx_i -
+  & = -\sup_\xi\left\{a^T\xi - \sumi \ell(\xi_i)\right\} + \inf_q\left\{\sumi \alpha_ir_iq^Tx_i +
     n\lambda\|q\|^2\right\}\\
-  & = -\sumi \ell^*(\alpha_i) + \inf_q\left\{\sumi \alpha_ir_iq^Tx_i -
-    n\lambda\|q\|^2\right\}.\label{deriv1} 
+  & = -\sumi \ell^*(\alpha_i) + \inf_q\left\{\sumi \alpha_ir_iq^Tx_i +n\lambda\|q\|^2\right\}.\label{deriv1} 
 \end{align}
-Where $\ell^*$ is the convex conjugate of the loss function. Note that the identity
+Where $\ell^*$ is the convex conjugate of the loss function and is defined by
 \begin{equation}
+  \ell(\alpha_i) = \sup_{\xi_i}\left\{\alpha_i\xi_i - \ell(\xi_i)\right\}.
+\end{equation}
+Note that the identity
+\begin{equation}
+  \label{lemma1}
   f(\xi_1,\dots,\xi_n) = \sumi \ell(\xi_i) \Longrightarrow f^*(\xi_1,\dots,\xi_n) = \sumi \ell^*(\xi_i)
 \end{equation}
 was used. Consider now the second part of \eqref{deriv1}. Since
 the expression is differentiable, we can analytically solve for $q$:
 \begin{equation}
-  \nabla_q \left\{\sumi \alpha_ir_iq^Tx_i -n\lambda\|q\|^2\right\} = 0
+  \nabla_q \left\{\sumi \alpha_ir_iq^Tx_i + n\lambda\|q\|^2\right\} = 0
 \end{equation}
 implies that
 \begin{equation}
- q = \frac{1}{2n\lambda}\sumi \alpha_ir_ix_i \label{qdef}
+ q = -\frac{1}{2n\lambda}\sumi \alpha_ir_ix_i \label{qdef}
 \end{equation}
 at the infimum.
 
 Using \eqref{qdef}, we can eliminate $q$ from \eqref{deriv1}, so that
 \begin{align}
-  g(\alpha) &= -\sumi \ell^*(\alpha_i) + \frac{1}{2n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j - \frac{1}{4n\lambda}
+  g(\alpha) &= -\sumi \ell^*(\alpha_i) - \frac{1}{2n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j + \frac{1}{4n\lambda}
          \sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j\\
-       &= -\sumi \ell^*(\alpha_i) + \frac{1}{4n\lambda}(\alpha \circ r)^TK(\alpha \circ r). 
+       &= -\sumi \ell^*(\alpha_i) - \frac{1}{4n\lambda}(\alpha \circ r)^TK(\alpha \circ r). 
 \end{align}
 Therefore, in its dual form, the problem \eqref{primal} is equivalent to solving
 \begin{equation}
-  \maximizeEquation{-\sumi \ell^*(\alpha_i) + \frac{1}{4n\lambda}(\alpha \circ r)^TK(\alpha \circ r).}
+  \minimizeEquation{\sumi \ell^*(\alpha_i) + \frac{1}{4n\lambda}(\alpha \circ r)^TK(\alpha \circ r).}
 \end{equation}
 
 \section{Alternate problem}
 
-We now consider a new problem, slightly different from \eqref{primal}.
-
-\section{Old}
-
-
-We recall that the basic problem of chosing a linear investment decision
-$q^\star\in\real^p$ based on $p$ features can be described using the following
-formulation:
+We now consider a new problem, slightly different from \eqref{primal} where a
+regularization based on the sum of the square of the investment sizes $q^Tx_i$ is applied:
 \begin{equation}
-  q^\star = \argmax_q\{ n^{-1} \sum_{i=1}^n u(r_i\,q^Tx_i) - \lambda\|q\|^2_2\}.
+  \label{primal2000}
+  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) + \gamma\sumi(q^Tx_i)^2 + n\lambda\|q\|^2}.
 \end{equation}
-
-However, this solution has the disadvantage of being linear in the feature
-space. Therefore, unless `good' and `bad' investments (as perceived by the investor) can
-be neatly separated by halfspaces in the feature space, which is unlikely, the decision is
-at risk of incurring poor performance.
-
-Using kernel methods we can resolve this problem by augmenting the feature space using a
-mapping $\phi:\real^p\to\mathscr{H}$ where $\mathscr{H}$ is expected to be of higher
-dimension than $p$ (possibly of an infinite dimension). \todo{explain polynomial
-  kernels as a concrete example}. In this new space, a new linear decision can be found
-which, when mapped back to $\real^p$, is nonlinear. 
-
-However, optimizing the problem \eqref{primal} in such a space can quickly become hard as
-$\binom{p+2}{2}$ grows quite fast for a quadratic kernel. In what follows, we will see
-that we can solve the problem in dual space where only the inner product of observations
-$\langle \phi(x_i),\phi(x_j)\rangle$ in $\mathscr{H}$ will be needed.
-
-
-\section{Dual formulation}
-We start with the following problem:
-\begin{equation*}
-  \minimizeEquation{-\sum_{i=1}^nu(r_i\,q^Tx_i) + n\lambda\|q\|^2}.
-\end{equation*}
-Or if we introduce the slack variable $\xi$, we obtain
-\begin{align*}
-  \minimizeEquationSt{-\sum_{i=1}^nu(\xi_i)+n\lambda\|q\|^2}[\xi_i=r_i\,q^Tx_i].
-\end{align*}
-The lagrangian $\lag$ for this problem is then defined for
-$\xi,q\in\real^p$ and $\alpha\in\real^n$ as:
-\begin{equation}
-  \label{lag}
-  \lag = -\sumi u(\xi_i)+\sumi \alpha_i(\xi_i-r_i\,q^Tx_i)+n\lambda \|q\|^2.
-\end{equation}
-KKT conditions apply \todo{explain and understand why...}. We must first have
-$\dd_q\lag=0$ and $\dd_{\xi_i}\lag=0$. These two conditions yield:
-\begin{equation}
-  \label{kkt1}
-  q = \frac{1}{2n\lambda}\sumi \alpha_ir_ix_i
-\end{equation}
-and
-\begin{equation}
-  \label{kkt2}
-  \alpha_i = u'(\xi_i).
-\end{equation}
-Now, denote $u^*$ the convex conjugate of $u$. Then, by standard properties of the
-conjugate function [Boyd p.~95] and from \eqref{kkt2}, we obtain
-\begin{equation}
-  \label{ustar}
-  u^*(\alpha_i) = \xi_iu'(\xi_i) - u(\xi_i) = \xi_i\alpha_i - u(\xi_i).
-\end{equation}
-Therefore, using \eqref{ustar} and \eqref{kkt1} to eliminate successively $\xi$ and $q$
-from \eqref{lag}, we find
+Again, this problem can be respecified using slack vector $\xi \in \real^n$ as
 \begin{align}
-  \lag &= \sumi(u^*(\alpha_i)-\xi_i\alpha_i) + \sumi \xi_i\alpha_i 
-         - \sumi r_i\,q^Tx_i + n\lambda\|q\|^2 \nonumber\\
-       &= \sumi u^*(\alpha_i)
-         - \frac{1}{2n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j
-         + \frac{1}{4n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j \nonumber\\
-       &=  \sumi u^*(\alpha_i)
-         - \frac{1}{4n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j\nonumber\\
-       &= \sumi u^*(\alpha_i) - \mu(\alpha \circ r)^TK(\alpha \circ r),\label{gen}
+  \minimizeEquationSt{\label{primal2001}\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 + n\lambda\|q\|^2}[\label{constraints2}\xi_i = r_i\,q^Tx_i].
 \end{align}
-with $\mu$ the new regularization parameter and $\circ$ the Hadamard (component-wise)
-product and $K$ is the matrix of inner products in $\mathscr{H}$.
+The constraints \eqref{constraints2} are again affine, so that Slater's theorem apply.
 
-The new optimization problem becomes
-\begin{align*}
-  \maximizeEquation{\sumi u^*(\alpha_i) - \mu(\alpha\circ r)^TK(\alpha\circ r)}
-\end{align*}
-over $\alpha\in\real^n$.
+The lagrangian of \eqref{primal2001} is
+\begin{equation}
+  \lag(q,\xi,\alpha) = \sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 + n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i - \xi_i),
+\end{equation}
+and we seek its infimum over $(q,\xi)$.
+\begin{align}
+  &\inf_{q,\xi} \left\{\sumi \ell(\xi_i) + \gamma\sumi (\xi_i/r_i)^2 + n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i -
+    \xi_i)\right\}\\
+  &\quad =\inf_\xi\left\{\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 - \alpha^T\xi\right\} + \inf_q\left\{\sumi
+    \alpha_ir_iq^Tx_i - n\lambda\|q\|^2\right\}\\
+  &\quad = - \sup_\xi\left\{a^T\xi - \left(\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2\right)\right\}
+    - \frac{1}{4n\lambda} (\alpha \circ r)^TK(\alpha \circ r)\label{this}.
+\end{align}
 
-Once a solution $\alpha^\star$ for the dual problem has been found, then the investment
-decision based on a set of features $x_0$ can be expressed as follows:
-\begin{align*}
-  p &= q^Tx_0\\
-    &= \sumi\alpha_ir_iK(x_i,x_0)\\
-    &= (\alpha \circ r)^T\phi(x_0),
-\end{align*}
-where
-\[
-  \phi(x) =
-  \begin{pmatrix}
-    K(x_i,x)\\
-    \vdots\\
-    K(x_n,x)
-  \end{pmatrix}.
-\]
+Let $f_i(\xi_i) := h_1(\xi_i)+ h_2(\xi_i) = \ell(\xi_i) + \gamma(\xi_i/r_i)^2$. Then, using \eqref{lemma1},
+the first expression of \eqref{this} can be restated as
+\begin{equation}
+  \label{firstconj}
+  -\sup_\xi\left\{\alpha^T \xi - \sumi f_i(\xi_i)\right\} = -\sumi f_i^*(\alpha_i).
+\end{equation}
+Let us introduce another identity:
+\begin{equation}
+  \label{lemma2}
+  (h_1+h_2)^*(\alpha_i) = \inf_{\alpha_i'+\alpha_i''=\alpha_i} \{h_1^*(\alpha_i') + h_2^*(\alpha_i'')\}.
+\end{equation}
+Using \eqref{lemma2}, \eqref{firstconj} can be written as
+\begin{align}
+  -\sumi f_i^*(\alpha_i) &= -\sumi (h_1+h_2)^*(\xi_i)\\
+                    &= -\sumi \inf_{\alpha_i'+\alpha_i''=\alpha_i} \{h_1^*(\alpha_i') + h_2^*(\alpha_i'')\}.
+\end{align}
+The first conjugate function $h_1^*$ is simply $\ell^*$. The second conjugate function can be
+derived analytically:
+\begin{align}
+  h_2^*(\alpha_i'') &= \sup_{\xi_i}\,\{\alpha_i''\xi_i - h_2(\xi_i)\}\\
+               &= \sup_{\xi_i}\,\{\alpha_i''\xi_i - \gamma(\xi_i/r_i)^2\}\label{lastsup}.
+\end{align}
+The supremum occurs when
+\begin{equation}
+  \label{supconj}
+  \xi_i = \frac{r_i^2}{2\gamma}\alpha_i''.
+\end{equation}
+Therefore, \eqref{lastsup} simplifies to
+\begin{equation}
+  h_2^*(\alpha_i'') = \frac{r_i^2}{4\gamma}(\alpha_i'')^2.
+\end{equation}
+
+Putting it all back together, the dual of \eqref{primal2000} is
+\begin{equation}
+  -\sumi \inf_{\alpha_i'+\alpha_i''=\alpha_i}\,\left\{\ell^*(\alpha_i') + \frac{r_i^2}{4\gamma}(\alpha_i'')^2\right\}  - \frac{1}{4n\lambda} (\alpha \circ r)^TK(\alpha \circ r),
+\end{equation}
+which is equivalent to
+\begin{equation}
+  -\sumi \ell^*(\alpha_i) - \frac{1}{4\gamma}\sumi (r_i\,\beta_i)^2 - \frac{1}{4n\lambda}(r \circ (\alpha+\beta))^TK(r \circ (\alpha+\beta)),
+\end{equation}
+with new optimization variables $\alpha=\alpha',\beta=\alpha''\in\real^n$. The dual optimization problem is
+therefore
+\begin{equation}
+  \minimizeEquation{\sumi \ell^*(\alpha_i) + \frac{1}{4\gamma}\|r\circ\beta\|^2 + \frac{1}{4n\lambda}(r \circ (\alpha+\beta))^TK(r \circ (\alpha+\beta))}.
+\end{equation}
+% The second expression is the same as in \eqref{deriv1}
 
 
-\subsection{Exponential utility}
-Consider for instance $u(r) = e^{\beta r}$.
-The expression \eqref{gen} for $\lag$ can be simplified if we consider an exponential
-utility of the form $u(r) = -\exp(-\beta r)$. Then we have $w(r) = \exp(-\beta r)$ which
-in turn gives $w'(r) = -\beta\exp(-\beta r)$, so that $v(r) =
--\log(-r/\beta)$. Therefore
-\[
-  w(v(-\alpha_i)) = \left(\frac{\alpha_i}{\beta}\right)^\beta
-\]
-and
-\[
-  \alpha_iv(-\alpha_i) = -\alpha_i\log(\alpha_i/\beta).
-\]
-In what follows we let $\beta=1$ for simplicity. $\lag$ becomes
-\begin{align*}
-  \lag &= \sumi\alpha_i(1-\log \alpha_i) - \frac{1}{4\mu}\sumij
-         \alpha_i\alpha_jr_ir_jx_i^Tx_j.\\
-       &= \alpha^T(1-\log\alpha) - \tilde\lambda(\alpha\circ r)^TK(\alpha \circ r)
-\end{align*}
-using a new regularization parameter $\tilde\lambda$ and $K$ the Gram matrix of inner
-products.
 
-The prescribed investment scalar based on feature $x_0$ is given by:
-where $\phi(x)_i = K(x_i,x)$. \todo{introduce representer theorem?}.
-
-\subsection{Risk neutral utility}
-
-The expression of \eqref{gen} is further simplified if we instead consider a risk neutral
-utility $u(r) = r$. \todo{Degenerate case? We have $\alpha=1$ from \eqref{kkt2}}.
 
 
 % \section{Old}
 
 
-% Using kernel theory, we can extend this algorithm to include non-linear decisions. For
-% example, consider the sigmoid kernel $K_\sigma$:
-% \[
-%   K_\sigma(q,x) = \frac{\exp(q^T x)}{1+\exp(q^Tx)}.
-% \]
-% Other kernels include \eg polynomial kernel or gaussian distance kernel. In any case, let
-% $K$ be a positive definite symmetric (PDS) kernel. Then the associated non linear learning
-% problem therefore becomes:
-% \[
-%   q^\star = \argmin_q\{ n^{-1}\sum_{i=1}^n u(r_i\,K(q,x_i)) + \lambda\|q\|^2_K\},
-% \]
-% with $\|\cdot\|_K$ the associated kernel space norm. 
+% We recall that the basic problem of chosing a linear investment decision
+% $q^\star\in\real^p$ based on $p$ features can be described using the following
+% formulation:
+% \begin{equation}
+%   q^\star = \argmax_q\{ n^{-1} \sum_{i=1}^n u(r_i\,q^Tx_i) - \lambda\|q\|^2_2\}.
+% \end{equation}
 
-% The problem of this representation is that the investment decision $q$ is confined within
-% the kernel space, and previous guarantees offered for scalar investment $q^Tx_i$ might not
-% hold. Therefore, we are interested in an intermediate representation using a feature
-% mapping $\phi$ of the following form:
+% However, this solution has the disadvantage of being linear in the feature
+% space. Therefore, unless `good' and `bad' investments (as perceived by the investor) can
+% be neatly separated by halfspaces in the feature space, which is unlikely, the decision is
+% at risk of incurring poor performance.
+
+% Using kernel methods we can resolve this problem by augmenting the feature space using a
+% mapping $\phi:\real^p\to\mathscr{H}$ where $\mathscr{H}$ is expected to be of higher
+% dimension than $p$ (possibly of an infinite dimension). \todo{explain polynomial
+%   kernels as a concrete example}. In this new space, a new linear decision can be found
+% which, when mapped back to $\real^p$, is nonlinear. 
+
+% However, optimizing the problem \eqref{primal} in such a space can quickly become hard as
+% $\binom{p+2}{2}$ grows quite fast for a quadratic kernel. In what follows, we will see
+% that we can solve the problem in dual space where only the inner product of observations
+% $\langle \phi(x_i),\phi(x_j)\rangle$ in $\mathscr{H}$ will be needed.
+
+
+% \section{Dual formulation}
+% We start with the following problem:
+% \begin{equation*}
+%   \minimizeEquation{-\sum_{i=1}^nu(r_i\,q^Tx_i) + n\lambda\|q\|^2}.
+% \end{equation*}
+% Or if we introduce the slack variable $\xi$, we obtain
+% \begin{align*}
+%   \minimizeEquationSt{-\sum_{i=1}^nu(\xi_i)+n\lambda\|q\|^2}[\xi_i=r_i\,q^Tx_i].
+% \end{align*}
+% The lagrangian $\lag$ for this problem is then defined for
+% $\xi,q\in\real^p$ and $\alpha\in\real^n$ as:
+% \begin{equation}
+%   \label{lag}
+%   \lag = -\sumi u(\xi_i)+\sumi \alpha_i(\xi_i-r_i\,q^Tx_i)+n\lambda \|q\|^2.
+% \end{equation}
+% KKT conditions apply \todo{explain and understand why...}. We must first have
+% $\dd_q\lag=0$ and $\dd_{\xi_i}\lag=0$. These two conditions yield:
+% \begin{equation}
+%   \label{kkt1}
+%   q = \frac{1}{2n\lambda}\sumi \alpha_ir_ix_i
+% \end{equation}
+% and
+% \begin{equation}
+%   \label{kkt2}
+%   \alpha_i = u'(\xi_i).
+% \end{equation}
+% Now, denote $u^*$ the convex conjugate of $u$. Then, by standard properties of the
+% conjugate function [Boyd p.~95] and from \eqref{kkt2}, we obtain
+% \begin{equation}
+%   \label{ustar}
+%   u^*(\alpha_i) = \xi_iu'(\xi_i) - u(\xi_i) = \xi_i\alpha_i - u(\xi_i).
+% \end{equation}
+% Therefore, using \eqref{ustar} and \eqref{kkt1} to eliminate successively $\xi$ and $q$
+% from \eqref{lag}, we find
+% \begin{align}
+%   \lag &= \sumi(u^*(\alpha_i)-\xi_i\alpha_i) + \sumi \xi_i\alpha_i 
+%          - \sumi r_i\,q^Tx_i + n\lambda\|q\|^2 \nonumber\\
+%        &= \sumi u^*(\alpha_i)
+%          - \frac{1}{2n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j
+%          + \frac{1}{4n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j \nonumber\\
+%        &=  \sumi u^*(\alpha_i)
+%          - \frac{1}{4n\lambda}\sumij \alpha_i\alpha_jr_ir_jx_i^Tx_j\nonumber\\
+%        &= \sumi u^*(\alpha_i) - \mu(\alpha \circ r)^TK(\alpha \circ r),\label{gen}
+% \end{align}
+% with $\mu$ the new regularization parameter and $\circ$ the Hadamard (component-wise)
+% product and $K$ is the matrix of inner products in $\mathscr{H}$.
+
+% The new optimization problem becomes
+% \begin{align*}
+%   \maximizeEquation{\sumi u^*(\alpha_i) - \mu(\alpha\circ r)^TK(\alpha\circ r)}
+% \end{align*}
+% over $\alpha\in\real^n$.
+
+% Once a solution $\alpha^\star$ for the dual problem has been found, then the investment
+% decision based on a set of features $x_0$ can be expressed as follows:
+% \begin{align*}
+%   p &= q^Tx_0\\
+%     &= \sumi\alpha_ir_iK(x_i,x_0)\\
+%     &= (\alpha \circ r)^T\phi(x_0),
+% \end{align*}
+% where
 % \[
 %   \phi(x) =
 %   \begin{pmatrix}
-%     K(x_1,x)\\
+%     K(x_i,x)\\
 %     \vdots\\
 %     K(x_n,x)
-%   \end{pmatrix}
+%   \end{pmatrix}.
 % \]
 
-% Then, provided that $K$ is normalized, the representer theorem states that
+
+% \subsection{Exponential utility}
+% Consider for instance $u(r) = e^{\beta r}$.
+% The expression \eqref{gen} for $\lag$ can be simplified if we consider an exponential
+% utility of the form $u(r) = -\exp(-\beta r)$. Then we have $w(r) = \exp(-\beta r)$ which
+% in turn gives $w'(r) = -\beta\exp(-\beta r)$, so that $v(r) =
+% -\log(-r/\beta)$. Therefore
 % \[
-%   q^\star = \argmin_q\{n^{-1}\sum_{i=1}^n u(r_i\,q^T\phi(x_i)) + \lambda\|q\|^2_2\}.
+%   w(v(-\alpha_i)) = \left(\frac{\alpha_i}{\beta}\right)^\beta
 % \]
+% and
+% \[
+%   \alpha_iv(-\alpha_i) = -\alpha_i\log(\alpha_i/\beta).
+% \]
+% In what follows we let $\beta=1$ for simplicity. $\lag$ becomes
+% \begin{align*}
+%   \lag &= \sumi\alpha_i(1-\log \alpha_i) - \frac{1}{4\mu}\sumij
+%          \alpha_i\alpha_jr_ir_jx_i^Tx_j.\\
+%        &= \alpha^T(1-\log\alpha) - \tilde\lambda(\alpha\circ r)^TK(\alpha \circ r)
+% \end{align*}
+% using a new regularization parameter $\tilde\lambda$ and $K$ the Gram matrix of inner
+% products.
+
+% The prescribed investment scalar based on feature $x_0$ is given by:
+% where $\phi(x)_i = K(x_i,x)$. \todo{introduce representer theorem?}.
+
+% \subsection{Risk neutral utility}
+
+% The expression of \eqref{gen} is further simplified if we instead consider a risk neutral
+% utility $u(r) = r$. \todo{Degenerate case? We have $\alpha=1$ from \eqref{kkt2}}.
+
+
+% % \section{Old}
+
+
+% % Using kernel theory, we can extend this algorithm to include non-linear decisions. For
+% % example, consider the sigmoid kernel $K_\sigma$:
+% % \[
+% %   K_\sigma(q,x) = \frac{\exp(q^T x)}{1+\exp(q^Tx)}.
+% % \]
+% % Other kernels include \eg polynomial kernel or gaussian distance kernel. In any case, let
+% % $K$ be a positive definite symmetric (PDS) kernel. Then the associated non linear learning
+% % problem therefore becomes:
+% % \[
+% %   q^\star = \argmin_q\{ n^{-1}\sum_{i=1}^n u(r_i\,K(q,x_i)) + \lambda\|q\|^2_K\},
+% % \]
+% % with $\|\cdot\|_K$ the associated kernel space norm. 
+
+% % The problem of this representation is that the investment decision $q$ is confined within
+% % the kernel space, and previous guarantees offered for scalar investment $q^Tx_i$ might not
+% % hold. Therefore, we are interested in an intermediate representation using a feature
+% % mapping $\phi$ of the following form:
+% % \[
+% %   \phi(x) =
+% %   \begin{pmatrix}
+% %     K(x_1,x)\\
+% %     \vdots\\
+% %     K(x_n,x)
+% %   \end{pmatrix}
+% % \]
+
+% % Then, provided that $K$ is normalized, the representer theorem states that
+% % \[
+% %   q^\star = \argmin_q\{n^{-1}\sum_{i=1}^n u(r_i\,q^T\phi(x_i)) + \lambda\|q\|^2_2\}.
+% % \]
 
 \end{document}
 
