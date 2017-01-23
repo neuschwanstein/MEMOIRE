@@ -76,8 +76,21 @@ Using \eqref{qdef}, we can eliminate $q$ from \eqref{deriv1}, so that
 \end{align}
 Therefore, in its dual form, the problem \eqref{primal} is equivalent to solving
 \begin{equation}
+  \label{dual}
   \minimizeEquation{\sumi \ell^*(\alpha_i) + \frac{1}{4n\lambda}(\alpha \circ r)^TK(\alpha \circ r).}
 \end{equation}
+
+\subsection{Prescribed investment}
+
+In its original form, given a feature vector $\tilde x$, the algorithm \eqref{primal}
+suggests an investment size of $p_0=q^T\tilde x$, where $q$ is the trained value obtained by
+optimizing \eqref{primal}. In the dual formulation \eqref{dual}, with optimal value
+$\alpha$, we have from \eqref{qdef}:
+\begin{align}
+  p_0 &= q^Tx_0\\
+      &= - \frac{1}{2n\lambda}\sumi \alpha_ir_ix_i^Tx_0.
+\end{align}
+\todo{Insert kernel formulation with vector $\phi$.}
 
 \section{Alternate problem}
 
@@ -152,6 +165,11 @@ therefore
 \begin{equation}
   \minimizeEquation{\sumi \ell^*(\alpha_i) + \frac{1}{4\gamma}\|r\circ\beta\|^2 + \frac{1}{4n\lambda}(r \circ (\alpha+\beta))^TK(r \circ (\alpha+\beta))}.
 \end{equation}
+
+
+\subsection{Prescribed investment}
+\todo{}
+
 % The second expression is the same as in \eqref{deriv1}
 
 
