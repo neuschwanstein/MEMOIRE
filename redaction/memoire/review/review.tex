@@ -1,0 +1,93 @@
+\section{Revue de littérature du portefeuille}
+
+
+Dans ce document, nous allons tenter de classifier et de répertorier la plupart des
+méthodes ayant rapport, de près ou de loin, à l'intersection des méthodes statistiques
+avancées et de l'apprentissage machine avec la théorie du portefeuille, en présentant pour
+chacune d'elle leurs avantages et leurs inconvénients.
+
+\subsection{Théorie classique du portefeuille}
+
+Une revue de littérature sur la théorie du portefeuille serait fondamentalement incomplète
+sans l'article fondateur de Markowitz, publié en 1952 \cite{markowitz1952portfolio}.
+
+Nous allons montrer que le cadre théorique développé par Markowitz peut être considéré
+comme un cas particulier de notre algorithme, pour autant qu'on considère un portefeuille
+à un seul actif.
+
+Soit $w\in\real^k$ le vecteur représentant la répartition du portefeuille de Markowitz à
+$k$ actifs à optimiser. Alors un investisseur \textit{markowitzien} souhaite résoudre le
+problème suivant:
+\begin{align*}
+  \minimizeEquationSt{w^T\Sigma w}[w^T\mu = \mu_0],
+\end{align*}
+où $\Sigma\in\real^{k\times k}$ est la covariance du rendement des actifs et
+$\mu\in\real^k$ le vecteur d'espérance.  \todo{Montrer formellement.} Par la théorie de
+l'optimisation convexe, il existe une constante $\gamma$ telle que le problème énoncé est
+équivalent à
+\begin{equation*}
+  \minimizeEquation{w^T\Sigma w + \gamma\,w^T\mu}.
+\end{equation*}
+
+Considérons à présent notre problème initial théorique, sans régularisation, lorsqu'un
+investisseur est doté d'une utilité quadratique $u(r) = -1 + r -r^2/2$. Bien qu'une telle
+utilité soit d'un usage limité en pratique puisqu'elle cherche à décourager tout autant
+les rendements faibles que les rendements importants, il n'empêche que $u$ est une
+fonction concave et qu'elle se prête donc tout à fait correctement à notre cadre
+théorique. Notons toutefois que cette utilité peut aussi être interprétée comme étant les
+deux premiers degrés d'une utilité exponentielle
+$u(r) = -\exp(-r) = 1 + r - r^2/2 + \cdots$ \todo{Insérer un graphique?}. On cherche alors à
+résoudre le problème suivant:
+\begin{equation*}
+  \maximizeEquation{\E u(R\cdot q^TX)}.
+\end{equation*}
+Or, 
+\begin{equation*}
+  \E u(R\cdot q^TX) = -1 + \E(R\cdot q^TX) - \tfrac{1}{2}\E(R\cdot q^TX)^2.
+\end{equation*}
+Supposons à présent que les facteurs considérés dans le programme d'optimi\-sation ne soit
+uniquement formés que d'un terme constant de biais. Dans un tel cas, $X$ est une variable
+aléatoire constante qui retourne toujours 1; $q^TX = q\in\real$ peut dès lors être
+interprété comme l'allocation qu'on désire porter au portefeuille considéré. Le problème
+devient alors simplement:
+\begin{equation*}
+  \maximizeEquation{q^T\E R - \tfrac{1}{2}q^2\E R^2}.
+\end{equation*}
+On sait qu'un programme d'optimisation est invariant à l'ajout de constante. Or, puisque
+$\Var R = \E  R^2 - (\E R)^2$ et en posant $\mu = \E R$, on obtient alors
+\begin{equation*}
+  \maximizeEquation{q^T\mu - \tfrac{1}{2}
+\end{equation*}
+
+
+
+\subsection{Théorie de portefeuille régularisé}
+
+\cite{ban2016machine}
+
+\subsection{Fama and French}
+
+\cite{fama1993common}
+
+\subsection{Portefeuille universel}
+
+Voir \cite{cover1991universal,hazan2015online}.
+
+\subsection{Articles du NIPS}
+
+\subsection{Papiers de Ben Van Roy}
+
+\subsection{Notre problème par rapport à ces deux disciplines}
+
+
+
+
+
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:
