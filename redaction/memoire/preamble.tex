@@ -1,10 +1,11 @@
 % \usepackage{nips_2016}
 
-% \usepackage{times}
+\usepackage{times}
 \usepackage{amsmath}
 % %\usepackage{pdfcomment}
 \usepackage{amsthm,amsfonts}
 \usepackage{graphicx}
+\usepackage{mathtools}
 % \usepackage{geometry}
 % \usepackage{subcaption}
 \usepackage{bm}
@@ -37,7 +38,7 @@
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\tr}{tr}
-\DeclareMathOperator{\Var}{Var}
+% \DeclareMathOperator{\Var}{Var}
 \DeclareMathOperator{\CE}{CE}
 \DeclareMathOperator{\Cov}{Cov}
 \DeclareMathOperator{\sign}{sign}
@@ -82,8 +83,9 @@
 % \newcommand{\dd}{\partial}
 \newcommand{\E}{\bm E}
 % \newcommand{\E}{E}
-% \newcommand{\EU}{\bm{EU}}
-\newcommand{\EU}{EU}
+\newcommand{\EU}{\bm{EU}}
+% \newcommand{\EU}{EU}
+\newcommand{\Var}{\bm V}
 \newcommand{\pp}{\bm P} 
 % \newcommand{\pp}{P}
 % \newcommand{\CE}{\bm{CE}}
@@ -99,15 +101,16 @@
 \newcommand{\starsection}{\vspace{1em}\begin{center}$\star\quad\star\quad\star$\end{center}\vspace{1em}}
 
 % http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
-\NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{,}}O{}}
-{\text{minimize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}}
+\NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{;}}O{}}
+{\begin{array}{rl}\mbox{minimiser} & #1\\\mbox{tel que} \ProcessList{#2}{\stCommand}\end{array}}
+% {\text{minimiser} & \quad #1\\ \text{tel que} \ProcessList{#2}{\stCommand}}
 \NewDocumentCommand{\maximizeEquationSt}{m >{\SplitList{,}}O{}}
-{\text{maximize} & \quad #1\\ \text{subject to} \ProcessList{#2}{\stCommand}}
+{\text{maximiser} & \quad #1\\ \text{tel que} \ProcessList{#2}{\stCommand}}
 \NewDocumentCommand{\stCommand}{m}
-{& \quad #1}
+{& #1}
 
-\newcommand{\minimizeEquation}[1]{\text{minimize} \quad {#1}}
-\newcommand{\maximizeEquation}[1]{\text{maximize} \quad {#1}}
+\newcommand{\minimizeEquation}[1]{\begin{array}{ll}\mbox{minimiser} & {#1}\end{array}}
+\newcommand{\maximizeEquation}[1]{\begin{array}{ll}\mbox{maximiser} & {#1}\end{array}}
 
 \newcommand{\comment}[1]{\textbf{[#1]}}
 \newcommand{\Erick}[1]{\textbf{[Erick says: #1]}}
