@@ -1,39 +1,23 @@
-\documentclass{article}
-\include{preamble}
-\newcommand{\lag}{\mathscr{L}}
-\newcommand{\sumi}{\sum_{i=1}^n}
-\newcommand{\sumij}{\sum_{i,j=1}^n}
-\renewcommand{\dd}{\nabla}
-\allowdisplaybreaks
-
-\title{The Use of Kernels in the Portfolio Optimization Problem}
-\author{Thierry Bazier-Matte}
-
-\begin{document}
-\maketitle
-
-
 \section{Original Problem}
 
-
-Let us consider the following problem, optimized over $q\in\real^p$:
+Let us consider the following problem, optimized over $q \in \Re^p$:
 \begin{equation}
   \label{primal}
-  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) + n\lambda\|q\|^2},
+  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) + n\lambda\|q\|^2,}
 \end{equation}
 where $\ell=-u$. Alternatively, this problem can be respecified using slack vector
-$\xi\in\real^n$ as
-\begin{align}
-  \minimizeEquationSt{\label{primal2}\sumi \ell(\xi_i) + n\lambda\|q\|^2}[\label{affineconstraints}\xi_i = r_i\,q^Tx_i.] 
-\end{align}
+$\xi \in \Re^n$ as
+\begin{equation}
+  \minimizeEquationSt{\label{primal2}\sumi \ell(\xi_i) + n\lambda\|q\|^2}[\xi_i = r_i\,q^Tx_i.] 
+\end{equation}
 Let $\alpha\in\real^n$. The Lagrangian of \eqref{primal2} can be written as
 \begin{equation}
   \lag(q,\xi,\alpha) = \sumi \ell(\xi_i) + n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i - \xi_i).
 \end{equation}
-Because the objective \eqref{primal2} is convex and the constraints
-\eqref{affineconstraints} are affine in $q$ and $\xi$, Slater's theorem states that the
-duality gap of the problem is zero. In other words, solving \eqref{primal} is equivalent
-to maximizing the Lagrange dual function $g$ over $\alpha$:
+Because the objective \eqref{primal2} is convex and its constraints are affine in $q$ and
+$\xi$, Slater's theorem states that the duality gap of the problem is zero. In other words,
+solving \eqref{primal} is equivalent to maximizing the Lagrange dual function $g$ over
+$\alpha$:
 \begin{equation}
   \maximizeEquation{g(\alpha) = \inf_{q,\xi} \lag(q,\xi,\alpha).}
 \end{equation}
@@ -92,19 +76,20 @@ $\alpha$, we have from \eqref{qdef}:
 \end{align}
 \todo{Insert kernel formulation with vector $\phi$.}
 
+
 \section{Alternate problem}
 
 We now consider a new problem, slightly different from \eqref{primal} where a
 regularization based on the sum of the square of the investment sizes $q^Tx_i$ is applied:
 \begin{equation}
   \label{primal2000}
-  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) + \gamma\sumi(q^Tx_i)^2 + n\lambda\|q\|^2}.
+  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) + \gamma\sumi(q^Tx_i)^2 + n\lambda\|q\|^2.}
 \end{equation}
-Again, this problem can be respecified using slack vector $\xi \in \real^n$ as
+Again, this problem can be respecified using slack vector $\xi \in \Re^n$ as
 \begin{align}
-  \minimizeEquationSt{\label{primal2001}\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 + n\lambda\|q\|^2}[\label{constraints2}\xi_i = r_i\,q^Tx_i].
+  \minimizeEquationSt{\label{primal2001}\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 + n\lambda\|q\|^2}[\xi_i = r_i\,q^Tx_i.]
 \end{align}
-The constraints \eqref{constraints2} are again affine, so that Slater's theorem apply.
+The constraints in \eqref{primal2001} are again affine, so that Slater's theorem apply.
 
 The lagrangian of \eqref{primal2001} is
 \begin{equation}
@@ -160,7 +145,7 @@ which is equivalent to
 \begin{equation}
   -\sumi \ell^*(\alpha_i) - \frac{1}{4\gamma}\sumi (r_i\,\beta_i)^2 - \frac{1}{4n\lambda}(r \circ (\alpha+\beta))^TK(r \circ (\alpha+\beta)),
 \end{equation}
-with new optimization variables $\alpha=\alpha',\beta=\alpha''\in\real^n$. The dual optimization problem is
+with new optimization variables $\alpha=\alpha',\beta=\alpha'' \in \Re^n$. The dual optimization problem is
 therefore
 \begin{equation}
   \minimizeEquation{\sumi \ell^*(\alpha_i) + \frac{1}{4\gamma}\|r\circ\beta\|^2 + \frac{1}{4n\lambda}(r \circ (\alpha+\beta))^TK(r \circ (\alpha+\beta))}.
@@ -180,7 +165,7 @@ therefore
 
 
 % We recall that the basic problem of chosing a linear investment decision
-% $q^\star\in\real^p$ based on $p$ features can be described using the following
+% $q^\star \in \Re^p$ based on $p$ features can be described using the following
 % formulation:
 % \begin{equation}
 %   q^\star = \argmax_q\{ n^{-1} \sum_{i=1}^n u(r_i\,q^Tx_i) - \lambda\|q\|^2_2\}.
@@ -213,7 +198,7 @@ therefore
 %   \minimizeEquationSt{-\sum_{i=1}^nu(\xi_i)+n\lambda\|q\|^2}[\xi_i=r_i\,q^Tx_i].
 % \end{align*}
 % The lagrangian $\lag$ for this problem is then defined for
-% $\xi,q\in\real^p$ and $\alpha\in\real^n$ as:
+% $\xi,q \in \Re^p$ and $\alpha \in \Re^n$ as:
 % \begin{equation}
 %   \label{lag}
 %   \lag = -\sumi u(\xi_i)+\sumi \alpha_i(\xi_i-r_i\,q^Tx_i)+n\lambda \|q\|^2.
@@ -254,7 +239,7 @@ therefore
 % \begin{align*}
 %   \maximizeEquation{\sumi u^*(\alpha_i) - \mu(\alpha\circ r)^TK(\alpha\circ r)}
 % \end{align*}
-% over $\alpha\in\real^n$.
+% over $\alpha \in \Re^n$.
 
 % Once a solution $\alpha^\star$ for the dual problem has been found, then the investment
 % decision based on a set of features $x_0$ can be expressed as follows:
@@ -339,9 +324,7 @@ therefore
 % %   q^\star = \argmin_q\{n^{-1}\sum_{i=1}^n u(r_i\,q^T\phi(x_i)) + \lambda\|q\|^2_2\}.
 % % \]
 
-\end{document}
-
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: t
+%%% TeX-master: "main_kernel"
 %%% End:

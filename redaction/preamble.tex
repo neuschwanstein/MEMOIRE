@@ -2,49 +2,44 @@
 
 \usepackage{times}
 \usepackage{amsmath}
-% %\usepackage{pdfcomment}
 \usepackage{amsthm,amsfonts}
 \usepackage{graphicx}
 \usepackage{mathtools}
-% \usepackage{geometry}
-% \usepackage{subcaption}
 \usepackage{bm}
-% \usepackage{hyperref}
-% \usepackage[retainorgcmds]{IEEEtrantools}
 \usepackage{xparse}
-% \usepackage{mathtools}
-% \usepackage{color}
-% \usepackage{marginnote}
-% \usepackage{booktabs}
 \usepackage[utf8]{inputenc}
 \usepackage{mathrsfs}
 \usepackage{eufrak}
-% \usepackage{enumitem}
-
-%\usepackage{biblatex}
-%\addbibresource{bibliography.bib}
-
-\setlength{\parindent}{0em}
-\setlength{\parskip}{0.8em}
+\usepackage{parskip}
+\usepackage{hyperref}
 
 \allowdisplaybreaks
+
+
+% KERNEL
+\newcommand{\lag}{\mathscr{L}}
+\newcommand{\sumij}{\sum_{i,j=1}^n}
+
+% À classer.
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\maximize}{maximize}
 \DeclareMathOperator*{\minimize}{minimize}
-\DeclareMathOperator{\st}{s.t.}
 \DeclareMathOperator{\epi}{epi}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\tr}{tr}
-% \DeclareMathOperator{\Var}{Var}
-\DeclareMathOperator{\CE}{CE}
-\DeclareMathOperator{\Cov}{Cov}
+
 \DeclareMathOperator{\sign}{sign}
 \DeclareMathOperator{\Pdim}{Pdim}
-% \DeclareMathOperator{\E}{E}
 
+\DeclareMathOperator{\E}{\bm E}
+\DeclareMathOperator{\Var}{\bm{Var}}
+\DeclareMathOperator{\CE}{CE}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\EU}{\bm{EU}}
+\DeclareMathOperator{\pp}{\bm P} 
 % \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 \newcommand{\ie}{\textit{i.e.}}
@@ -62,9 +57,7 @@
 \newcommand{\Y}{\mathcal{Y}}
 \newcommand{\R}{\mathcal{R}}
 
-\newcommand{\sumi}{\sum_{i=1}^n}
 
-\newcommand{\exc}{\mathscr{E}}
 \renewcommand{\O}[1]{O\left(#1\right)}
 
 \newcommand{\rad}{\hat{\mathfrak{R}}}
@@ -80,13 +73,9 @@
 % \newcommand{\xMax}{X_{\max}}
 \newcommand{\xMax}{\xi}
 \newcommand{\grad}{\nabla}
+\newcommand{\sumi}{\sum_{i=1}^n}
 % \newcommand{\dd}{\partial}
-\newcommand{\E}{\bm E}
-% \newcommand{\E}{E}
-\newcommand{\EU}{\bm{EU}}
-% \newcommand{\EU}{EU}
-\newcommand{\Var}{\bm V}
-\newcommand{\pp}{\bm P} 
+
 % \newcommand{\pp}{P}
 % \newcommand{\CE}{\bm{CE}}
 \newcommand\subsetsim{\mathrel{%
@@ -102,15 +91,17 @@
 
 % http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
 \NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{;}}O{}}
-{\begin{array}{rl}\mbox{minimiser} & #1\\\mbox{tel que} \ProcessList{#2}{\stCommand}\end{array}}
-% {\text{minimiser} & \quad #1\\ \text{tel que} \ProcessList{#2}{\stCommand}}
-\NewDocumentCommand{\maximizeEquationSt}{m >{\SplitList{,}}O{}}
-{\text{maximiser} & \quad #1\\ \text{tel que} \ProcessList{#2}{\stCommand}}
-\NewDocumentCommand{\stCommand}{m}
-{& #1}
+{\begin{array}{rl}\mbox{minimiser} & \displaystyle{#1}\\\mbox{tel que}
+    \ProcessList{#2}{\stCommand}\end{array}}
 
-\newcommand{\minimizeEquation}[1]{\begin{array}{ll}\mbox{minimiser} & {#1}\end{array}}
-\newcommand{\maximizeEquation}[1]{\begin{array}{ll}\mbox{maximiser} & {#1}\end{array}}
+\NewDocumentCommand{\maximizeEquationSt}{m >{\SplitList{;}}O{}}
+{\begin{array}{rl}\mbox{maximiser} & \displaystyle{#1}\\\mbox{tel que}
+    \ProcessList{#2}{\stCommand}\end{array}}
+
+\NewDocumentCommand{\stCommand}{m}{& #1}
+
+\newcommand{\minimizeEquation}[1]{\begin{array}{ll}\mbox{minimiser} & \displaystyle{#1}\end{array}}
+\newcommand{\maximizeEquation}[1]{\begin{array}{ll}\mbox{maximiser} & \displaystyle{#1}\end{array}}
 
 \newcommand{\comment}[1]{\textbf{[#1]}}
 \newcommand{\Erick}[1]{\textbf{[Erick says: #1]}}
