@@ -1,6 +1,55 @@
 \section{Introduction}
 
-\subsection{Définition du problème}
+\subsection{Exposition du problème et hypothèses}
+
+Ce mémoire vise à établir clairement et rigoureusement comment un investisseur
+\textit{averse au risque} disposant \textit{d'information complémentaire} au
+\textit{marché} peut utiliser cette information pour accroître son \textit{utilité
+  espérée} ou, de façon équivalente, son \textit{rendement équivalent certain}.
+
+\paragraph{Modélisation du marché}
+
+Nous entendrons ici par \textit{marché} n'importe quel type d'actif financier ou
+spéculatif dans lequel on peut investir une partie de sa fortune dans l'espoir de la voir
+fructifier au cours d'une période de temps arbitraire. Ainsi, tout au long de l'exposé
+théorique qui suivra, il peut être pertinent d'avoir en tête les rendements quotidiens
+issus des grands indices boursiers (par exemple les 500 plus grandes capitalisations
+américaines). Cependant, le traitement qui sera développé pourrait tout aussi bien
+s'appliquer à une action cotée en bourse dont on considère les rendements mensuels.\nec
+Mathématiquement, l'idée de marché peut ainsi être réduite à celle d'une variable
+aléatoire $R(t)$ décrivant l'évolution du rendement de l'actif en question.
+
+Relativement à l'idée de marché, nous ferons également l'hypothèse que l'univers a une
+influence sur ces rendements. Il serait par exemple raisonnable de croire que le prix du
+pétrole a une influence sur l'évolution du rendement du marché américain. De la même
+façon, l'annonce d'un scandale aura a son tour des répercussions sur la valeur du titre de
+la compagnie dont il est l'objet. En outre, il a été montré par Fama et French que le
+rendement d'une action pouvait s'expliquer comme une combinaison de quelques facteurs
+fondamentaux (la taille de l'entreprise, le risque de marché et le ratio cours/valeur). On
+peut alors considérer un vecteur d'information $\vec X(t)$ dont chaque composante
+représente une information particulière, par exemple l'absence ou la présence d'un certain
+type de scandale, un ratio comptable, le prix d'un certain actif financier\reph. 
+
+D'un point de vue probabiliste, on peut alors décrire le rendement du marché à $t$ comme
+étant une variable aléatoire influencée par l'ensemble des réalisations du vecteur
+d'infor\-mation antérieures à $t$. Mathématiquement, on peut considérer le marché $M$
+comme un étant processus stochastique multivarié ayant à l'une de ses marges le rendement
+$R(t)$ et à l'autre l'ensemble d'information $\{\vec X(\tau) \mid \tau < t\}$.
+
+
+
+
+\subsubsection{Hypothèses}
+
+Le cadre théorique de ce travail imposera un certain nombre de restrictions afin d'en
+dériver des résultats probants.
+
+\paragraph{Stationarité}
+Nous assumerons que la distribution de marché est \textit{stationnaire}. Entre autres
+choses, cela nous permettra de supposer que toute observation mercantile est
+\textit{identiquement et indépendamment distribué}\cit. Une telle hypothèse est en
+pratique fort contraignante, puisqu'elle exclut d'emblée toute notion temporelle, pourtant
+intuitivement importante pour un acteur du marché financier. 
 
 
 Ce mémoire vise à établir clairement et rigoureusement de quelle façon l'apprentissage
@@ -38,6 +87,10 @@ Mathématiquement on a donc le problème fondamental suivant:
 
 \subsection{Hypothèses restrictives}
 
+\subsection{Interprétations}
+
+
+
 
 
 \subsection{Raffinements et hypothèses supplémentaires}
@@ -48,6 +101,11 @@ peut se réexprimer comme
 \begin{equation}
   \maximizeEquation{n^{-1}\sumi u(r_i\,q(x_i)).}
 \end{equation}
+
+
+\subsection{Objectifs}
+
+
 
 
 
