@@ -1,0 +1,57 @@
+\section{Introduction}
+
+\subsection{Définition du problème}
+
+
+Ce mémoire vise à établir clairement et rigoureusement de quelle façon l'apprentissage
+machine et la théorie de la statistique moderne permettent à un investisseur doté d'une
+grande quantité d'information relative au marché (information que nous appelerons sans
+discrimination \textit{facteurs de marché}, \textit{caractéristiques de marché},
+... \cit).
+
+Mathématiquement, on peut représenter cette situation en modélisant le \textit{marché}
+comme étant une distribution statistique à haute dimension, ayant sur une marge une
+variable aléatoire de rendement $R \in \R \subseteq \Re$, et ayant $p$ autres marges décrivant
+l'information complémentaire $(X_1,\dots,X_m) \in \X \subseteq \Re^m$. La distribution complète de
+marché $M \in \R \times \X$ est alors décrite par
+\begin{equation}
+  M = (R,X_1,\dots,X_m).
+\end{equation}
+Notons que la dépendance entre ces coordonnées marginales est inconnue.
+
+On a d'autre part l'aspect d'aversion au risque qui est modélisé par une fonction
+d'utilité $u:\R\to\U$, où $\R \subseteq \Re$ est le domaine (fermé ou non) des rendements considérés
+et $\U \subseteq \Re$ celui des \textit{utilités}.
+
+Bien qu'en pratique il soit plus facile de travailler sur des fonctions possédant des
+valeurs dans $\U$, en pratique cet espace est adimensionel\cit, de sorte que nos résultats
+seront présentés dans l'espace des rendements $\R$.
+
+Donnés ces éléments de base, le but de ce mémoire sera alors de déterminer une fonction de
+décision d'investissement $q: \X \to \P$ maximisant l'utilité espérée de l'investissement. 
+
+Mathématiquement on a donc le problème fondamental suivant:
+\begin{equation}
+  \maximizeEquation{\E u(R \cdot q(X)).}
+\end{equation}
+\todo{Expliquer.}
+
+\subsection{Hypothèses restrictives}
+
+
+
+\subsection{Raffinements et hypothèses supplémentaires}
+
+
+Formulé de façon statistique, lorsqu'on dispose de $n$ observations de $M$, le problème
+peut se réexprimer comme
+\begin{equation}
+  \maximizeEquation{n^{-1}\sumi u(r_i\,q(x_i)).}
+\end{equation}
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main_intro"
+%%% End:

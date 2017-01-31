@@ -1,0 +1,17 @@
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}D\IeC {\'e}finition du probl\IeC {\`e}me}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Hypoth\IeC {\`e}ses restrictives}{2}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Raffinements et hypoth\IeC {\`e}ses suppl\IeC {\'e}mentaires}{2}{subsection.1.3}
+\contentsline {section}{\numberline {2}Revue de litt\IeC {\'e}rature du portefeuille}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}Th\IeC {\'e}orie classique du portefeuille}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Portefeuille universel}{4}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Th\IeC {\'e}orie de portefeuille r\IeC {\'e}gularis\IeC {\'e}}{4}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Fama and French}{4}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Articles du NIPS}{4}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}Papiers de Ben Van Roy}{4}{subsection.2.6}
+\contentsline {subsection}{\numberline {2.7}Papiers d'Elad Hazan}{4}{subsection.2.7}
+\contentsline {subsection}{\numberline {2.8}Notre probl\IeC {\`e}me par rapport \IeC {\`a} ces deux disciplines}{4}{subsection.2.8}
+\contentsline {section}{\numberline {3}Original Problem}{5}{section.3}
+\contentsline {subsection}{\numberline {3.1}Prescribed investment}{6}{subsection.3.1}
+\contentsline {section}{\numberline {4}Alternate problem}{6}{section.4}
+\contentsline {subsection}{\numberline {4.1}Prescribed investment}{8}{subsection.4.1}

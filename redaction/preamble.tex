@@ -24,8 +24,8 @@
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\maximize}{maximize}
-\DeclareMathOperator*{\minimize}{minimize}
+\DeclareMathOperator*{\maximize}{maximiser}
+\DeclareMathOperator*{\minimize}{minimiser}
 \DeclareMathOperator{\epi}{epi}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\dom}{dom}
@@ -34,7 +34,7 @@
 \DeclareMathOperator{\sign}{sign}
 \DeclareMathOperator{\Pdim}{Pdim}
 
-\DeclareMathOperator{\E}{\bm E}
+\newcommand{\E}{\bm E}
 \DeclareMathOperator{\Var}{\bm{Var}}
 \DeclareMathOperator{\CE}{CE}
 \DeclareMathOperator{\Cov}{Cov}
@@ -53,9 +53,10 @@
 \newcommand{\qsl}{q^\star_\lambda}
 \newcommand{\qh}{\hat q}
 
-\newcommand{\X}{\mathcal{X}}
-\newcommand{\Y}{\mathcal{Y}}
-\newcommand{\R}{\mathcal{R}}
+\newcommand{\X}{\bm{X}}
+\newcommand{\R}{\bm{R}}
+\newcommand{\U}{\bm{U}}
+\renewcommand{\P}{\bm{P}}
 
 
 \renewcommand{\O}[1]{O\left(#1\right)}
@@ -91,22 +92,23 @@
 
 % http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
 \NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{;}}O{}}
-{\begin{array}{rl}\mbox{minimiser} & \displaystyle{#1}\\\mbox{tel que}
+{\begin{array}{rl}\minimize & \displaystyle{#1}\\\mbox{tel que}
     \ProcessList{#2}{\stCommand}\end{array}}
 
 \NewDocumentCommand{\maximizeEquationSt}{m >{\SplitList{;}}O{}}
-{\begin{array}{rl}\mbox{maximiser} & \displaystyle{#1}\\\mbox{tel que}
+{\begin{array}{rl}\minimize & \displaystyle{#1}\\\mbox{tel que}
     \ProcessList{#2}{\stCommand}\end{array}}
 
 \NewDocumentCommand{\stCommand}{m}{& #1}
 
-\newcommand{\minimizeEquation}[1]{\begin{array}{ll}\mbox{minimiser} & \displaystyle{#1}\end{array}}
-\newcommand{\maximizeEquation}[1]{\begin{array}{ll}\mbox{maximiser} & \displaystyle{#1}\end{array}}
+\newcommand{\minimizeEquation}[1]{\begin{array}{ll}\minimize & \displaystyle{#1}\end{array}}
+\newcommand{\maximizeEquation}[1]{\begin{array}{ll}\maximize & \displaystyle{#1}\end{array}}
 
 \newcommand{\comment}[1]{\textbf{[#1]}}
 \newcommand{\Erick}[1]{\textbf{[Erick says: #1]}}
 \newcommand{\Thierry}[1]{\textbf{[Thierry says: #1]}}
 \newcommand{\todo}[1]{\textbf{[Todo: #1]}}
+\newcommand{\cit}{\textsuperscript{[Citation needed]}}
 
 \theoremstyle{plain}
 \newtheorem{prop}{Proposition}

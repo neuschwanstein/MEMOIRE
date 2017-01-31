@@ -1,0 +1,102 @@
+\section{Revue de littérature du portefeuille}
+
+
+Dans ce document, nous allons tenter de classifier et de répertorier la plupart des
+méthodes ayant rapport, de près ou de loin, à l'intersection des méthodes statistiques
+avancées et de l'apprentissage machine avec la théorie du portefeuille, en présentant pour
+chacune d'elle leurs avantages et leurs inconvénients.
+
+\subsection{Théorie classique du portefeuille}
+
+Une revue de littérature sur la théorie du portefeuille serait fondamentalement incomplète
+sans l'article fondateur de Markowitz, publié en 1952 \cite{markowitz1952portfolio}.
+
+Nous allons montrer que le cadre théorique développé par Markowitz peut être considéré
+comme un cas particulier de notre algorithme, pour autant que l'on considère un portefeuille
+à un seul actif.
+
+Soit $w\in\real^k$ le vecteur représentant la répartition du portefeuille de Markowitz à
+$k$ actifs à optimiser. Alors un investisseur \textit{markowitzien} souhaite résoudre le
+problème suivant:
+\begin{equation}
+  \minimizeEquationSt{w^T\Sigma w}[\mu^Tw = \mu_0,]
+\end{equation}
+où $\Sigma\in\real^{k\times k}$ est la covariance du rendement des actifs et
+$\mu\in\real^k$ le vecteur d'espérance.  \todo{Montrer formellement.} Par la théorie de
+l'optimisation convexe, il existe une constante $\gamma\in\real$ telle que le problème énoncé est
+équivalent à
+\begin{equation}
+  \maximizeEquation{\mu^Tw + \gamma\,w^T\Sigma w.}
+\end{equation}
+Dans le cas où on considère un portefeuille à un seul actif, alors ce problème se réduit
+alors à
+\begin{equation}
+  \label{markov}
+  \maximizeEquation{\mu q - \gamma\sigma^2 q^2,}
+\end{equation}
+où on a posé $\mu \coloneqq \E R$ et $\sigma^2 \coloneqq \Var R$.
+
+Supposons qu'un investisseur soit doté d'une utilité quadratique paramétrée par
+\begin{equation}
+  \label{quadu}
+  u(r) = r - \frac{\gamma}{\sigma^2+\mu^2}\sigma^2r^2,
+\end{equation}
+et que l'information factorielle intégrée à l'algorithme ne consiste uniquement qu'en les
+rendements eux mêmes; autrement dit, le vecteur d'information $X$ se réduirait tout
+simplement à un terme constant fixé à 1, \ie, $X\sim 1$. \todo{expliquer}. 
+
+Avec une utilité \eqref{quadu} et l'absence d'information supplémentaire, l'objectif de
+\eqref{probva} devient aussitôt
+\begin{equation}
+  \label{euquad}
+  \EU(qR) = q \E R - \frac{\gamma}{\sigma^2+\mu^2}\sigma^2 q^2\E R^2.
+\end{equation}
+Or, puisque $\Var R = \E  R^2 - (\E R)^2$, on a que $\E R^2 = \sigma^2 + \mu^2$, ce qui entraîne
+donc que \eqref{quadu} s'exprime par
+\begin{equation}
+  \maximizeEquation{\EU(qR) = \mu q - \gamma\sigma^2 q^2,}
+\end{equation}
+ce qui est tout à fait identique à \eqref{markov}.
+
+Nous suggérons au lecteur intéressé par l'équivalence des diverses formulations
+d'optimi\-sation de portefeuille dans un univers de Markowitz \cite{bodnar2013equivalence}
+et \cite{markowitz2014mean}, tous deux publiés à l'occasion du soixantième anniversaire de
+\cite{markowitz1952portfolio}.
+
+\subsection{Portefeuille universel}
+
+Ce mémoire sera également consacré aux garanties statistiques de performance des
+estimateurs $q^\star$.
+
+Bien que le modèle soit différent et de nature itérative, le \textit{portefeuille
+  universel} de \cite{cover1991universal} est à notre connaissance un des premiers modèles
+de gestion de portefeuille à exploiter une distribution arbitraire tout en proposant des
+garanties statistiques de convergence. 
+
+Voir \cite{cover1991universal,hazan2015online}.
+
+
+\subsection{Théorie de portefeuille régularisé}
+
+\cite{ban2016machine}
+
+\subsection{Fama and French}
+
+\cite{fama1993common}
+
+
+\subsection{Articles du NIPS}
+
+\subsection{Papiers de Ben Van Roy}
+
+\subsection{Papiers d'Elad Hazan}
+
+\subsection{Notre problème par rapport à ces deux disciplines}
+
+
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main_review"
+%%% End:
