@@ -1,4 +1,4 @@
-\section{Revue de littérature du portefeuille}
+\section{Optimisation moderne de portefeuille}
 
 
 Dans ce document, nous allons tenter de classifier et de répertorier la plupart des
@@ -15,16 +15,15 @@ Nous allons montrer que le cadre théorique développé par Markowitz peut être
 comme un cas particulier de notre algorithme, pour autant que l'on considère un portefeuille
 à un seul actif.
 
-Soit $w\in\real^k$ le vecteur représentant la répartition du portefeuille de Markowitz à
+Soit $w \in \Re^k$ le vecteur représentant la répartition du portefeuille de Markowitz à
 $k$ actifs à optimiser. Alors un investisseur \textit{markowitzien} souhaite résoudre le
 problème suivant:
 \begin{equation}
   \minimizeEquationSt{w^T\Sigma w}[\mu^Tw = \mu_0,]
 \end{equation}
-où $\Sigma\in\real^{k\times k}$ est la covariance du rendement des actifs et
-$\mu\in\real^k$ le vecteur d'espérance.  \todo{Montrer formellement.} Par la théorie de
-l'optimisation convexe, il existe une constante $\gamma\in\real$ telle que le problème énoncé est
-équivalent à
+où $\Sigma \in \Re^{k \times k}$ est la covariance du rendement des actifs et $\mu \in \Re^k$ le vecteur
+d'espérance.  \todo{Montrer formellement.} Par la théorie de l'optimisation convexe, il
+existe une constante $\gamma\in\Re$ telle que le problème énoncé est équivalent à
 \begin{equation}
   \maximizeEquation{\mu^Tw + \gamma\,w^T\Sigma w.}
 \end{equation}
@@ -63,7 +62,7 @@ d'optimi\-sation de portefeuille dans un univers de Markowitz \cite{bodnar2013eq
 et \cite{markowitz2014mean}, tous deux publiés à l'occasion du soixantième anniversaire de
 \cite{markowitz1952portfolio}.
 
-\subsection{Portefeuille universel}
+\subsection{Portefeuille universel / Papiers d'Elad Hazan}
 
 Ce mémoire sera également consacré aux garanties statistiques de performance des
 estimateurs $q^\star$.
@@ -71,7 +70,7 @@ estimateurs $q^\star$.
 Bien que le modèle soit différent et de nature itérative, le \textit{portefeuille
   universel} de \cite{cover1991universal} est à notre connaissance un des premiers modèles
 de gestion de portefeuille à exploiter une distribution arbitraire tout en proposant des
-garanties statistiques de convergence. 
+garanties statistiques de convergence.
 
 Voir \cite{cover1991universal,hazan2015online}.
 
@@ -80,7 +79,7 @@ Voir \cite{cover1991universal,hazan2015online}.
 
 \cite{ban2016machine}
 
-\subsection{Fama and French}
+\subsection{Fama and French et suivants?}
 
 \cite{fama1993common}
 
@@ -89,9 +88,7 @@ Voir \cite{cover1991universal,hazan2015online}.
 
 \subsection{Papiers de Ben Van Roy}
 
-\subsection{Papiers d'Elad Hazan}
-
-\subsection{Notre problème par rapport à ces deux disciplines}
+\subsection{Conclusions: Notre problème par rapport à ces deux disciplines}
 
 
 
