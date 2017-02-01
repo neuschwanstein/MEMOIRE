@@ -29,58 +29,52 @@ fondamentaux (la taille de l'entreprise, le risque de marché et le ratio cours/
 peut alors considérer un vecteur d'information $\vec X(t) = (X_1(t), X_2(t), \dots)$ dont
 chaque composante représente une information particulière, par exemple l'absence ou la
 présence d'un certain type de scandale, un ratio comptable, le prix d'un certain actif
-financier\reph.
-
-D'un point de vue probabiliste, on peut alors décrire le rendement du marché à $t$ comme
-étant une variable aléatoire influencée par l'ensemble des réalisations du vecteur
-d'infor\-mation antérieures à $t$. Mathématiquement, on peut considérer le marché $M$
-comme un étant processus stochastique multivarié ayant à l'une de ses marges le rendement
-$R(t)$ et à l'autre l'ensemble d'information $\{\vec X(\tau) \mid \tau < t\}$. \todo{Rendre plus
-  clair mathématiquement ou en français plus juste?} 
-
-
-\paragraph{Discrétisation et échantillonage}
-
-Afin de permettre un traitement un peu plus simple, nous allons discrétiser dans le temps
-le processus $M(t)$
+financier\reph. D'un point de vue probabiliste, on dira donc qu'il existe une forme de
+dépendance entre $R(t)$ et $\{\vec X(\tau) \mid \tau < t\}$ l'ensemble des évènements antérieurs à
+$t$. Le processus joint de ces deux évènements sera désormais défini comme \textit{la
+  distribution totale de marché}, ou simplement le marché.
 
 
 \paragraph{Stationarité}
 
 Bien qu'un tel modèle permette de représenter de façon très générale l'évolution d'un
 marché, nous formulerons l'hypothèse supplémentaire selon laquelle le marché est un
-processus \textit{stationnaire}. 
+processus \textit{stationnaire}. Ceci permet notamment d'évacuer la notion temporelle afin
+de ne représenter qu'une distribution de causes (l'information $X$) et d'effet
+(l'observation des rendements $R$). Cette hypothèse est assez contraignante. Elle suppose
+d'une part que les réalisations passées n'ont aucun effet sur les réalisations futures
+(indépendance) et d'autre part que la distribution de marché est figée dans le temps, ce
+qui implique notamment l'absence de probabilité de faillite. Elle implique aussi que le
+marché ne peut être vu comme un environnement adversariel qui réagirait par exemple aux
+décisions d'un investisseur. Ceci vient notamment mettre en cause la théorie des marchés
+efficients selon laquelle une brèche dans l'absence d'arbitrage serait immédiatement
+colmatée par des spéculateurs (effet d'autorégulation). Nous aurons toutefois l'occasion
+de revenir plus en détail sur les liens à faire entre cet exposé et l'efficience des
+marché.
 
+\paragraph{Approche mathématique et statistique}
 
-
-\subsubsection{Hypothèses}
-
-Le cadre théorique de ce travail imposera un certain nombre de restrictions afin d'en
-dériver des résultats probants.
-
-\paragraph{Stationarité}
-Nous assumerons que la distribution de marché est \textit{stationnaire}. Entre autres
-choses, cela nous permettra de supposer que toute observation mercantile est
-\textit{identiquement et indépendamment distribué}\cit. Une telle hypothèse est en
-pratique fort contraignante, puisqu'elle exclut d'emblée toute notion temporelle, pourtant
-intuitivement importante pour un acteur du marché financier.
-
-
-Ce mémoire vise à établir clairement et rigoureusement de quelle façon l'apprentissage
-machine et la théorie de la statistique moderne permettent à un investisseur doté d'une
-grande quantité d'information relative au marché (information que nous appelerons sans
-discrimination \textit{facteurs de marché}, \textit{caractéristiques de marché},
-... \cit).
-
-Mathématiquement, on peut représenter cette situation en modélisant le \textit{marché}
-comme étant une distribution statistique à haute dimension, ayant sur une marge une
-variable aléatoire de rendement $R \in \R \subseteq \Re$, et ayant $p$ autres marges décrivant
-l'information complémentaire $(X_1,\dots,X_m) \in \X \subseteq \Re^m$. La distribution complète de
-marché $M \in \R \times \X$ est alors décrite par
+Dans ce qui suit, nous noterons par $M$ la distribution de marché. Le vecteur aléatoire
+d'information sera par ailleurs formé de $m$ composantes; pour l'instant, aucune hypothèse
+par rapport à la dépendance des composantes de $X$ ne sera formulée. À ce point-ci, on a
+donc le modèle de marché suivant:
 \begin{equation}
-  M = (R,X_1,\dots,X_m).
+  M = (R,X_1, \ldots, X_m).
 \end{equation}
-Notons que la dépendance entre ces coordonnées marginales est inconnue.
+
+On fera également l'hypothèse qu'on possède un ensemble de $n$ éléments échantillonés à
+partir de $M$, de sorte que:
+\begin{equation}
+  \{r_i, x_{i1}, \ldots, x_{im}\}_{i=1}^n \sim M
+\end{equation}
+représente notre ensemble d'échantillonage. Le domaine des rendements possibles de $R$
+sera noté $\R \subseteq \Re$ et celui du vecteur d'information $X$ sera noté
+$\X \subseteq \Re^m$. Le vecteur d'observations de rendement sera noté $r \in \Re^n$ et la matrice
+d'information par $X \in \Re^{n \times m}$.
+
+
+
+\subsection{Modélisation de la préférence}
 
 On a d'autre part l'aspect d'aversion au risque qui est modélisé par une fonction
 d'utilité $u:\R\to\U$, où $\R \subseteq \Re$ est le domaine (fermé ou non) des rendements considérés
@@ -97,10 +91,8 @@ Mathématiquement on a donc le problème fondamental suivant:
 \begin{equation}
   \maximizeEquation{\E u(R \cdot q(X)).}
 \end{equation}
-\todo{Expliquer.}
 
 
-\subsection{Modélisation de la préférence}
 \todo{Discuter du rôle de $u$, de l'objectif à minimiser et discussion sur la
   régularisation}
 
