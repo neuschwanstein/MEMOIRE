@@ -104,23 +104,24 @@ $M$ dont on peut se servir pour approximer le problème (SAA, voir Shapiro\cit):
 \end{equation}
 mais encore ici le problème est mal spécifié, puisqu'aucune contrainte n'a été posée sur
 l'espace $\Q$. Par exemple, il suffirait de prendre pour $q$ un dictionnaire associant à
-$x_i$ la valeur $\alpha r_i$, où $\alpha > 0$, pour avoir une valeur d'utilité arbitrairement grande
-à mesure que $\alpha \to \infty$.
+$x_i$ la valeur $\alpha\,r_i$, où $\alpha > 0$, et à toute autre valeur de $x$ une valeur nulle pour
+avoir une valeur d'utilité arbitrairement grande à mesure que $\alpha \to \infty$.
 
 
 \paragraph{Risque in-échantillon et hors échantillon}
 
-Un autre problème avec une telle fonction $q$ est qu'elle se généralise très mal. En effet
+ une telle fonction $q$ est qu'elle se généralise très mal. En effet
 pour toute observation $x$ qui ne figurerait dans l'ensemble d'entraînement, $q$
 prescrirait alors un investissement nul. Il y a alors une énorme différence entre
 l'utilité observée au sein de notre échantillon et l'utilité hors échantillon.
 
 Donnée une fonction de décision $q \in \Q$ et un échantillon de $M$, on définit le
-\textit{risque in-échantillon} par
+\textit{risque in-échantillon} ou \textit{risque empirique} par
 \begin{equation}
   \hat R(q) = n^{-1}\sumi \ell(r_i\,q(x_i)),
 \end{equation}
-où $\ell = -u$. De la même façon, on définit le \textit{risque hors-échantillon} par
+où $\ell = -u$. De la même façon, on définit le \textit{risque hors-échantillon} ou
+\textit{erreur de généralisation} par
 \begin{equation}
   R(q) = \E \ell(R \cdot q(X)).
 \end{equation}
@@ -139,7 +140,7 @@ complexité de la fonction de décision $q$ (rasoir d'Occam). Ainsi, on étudier
 profondeur le choix d'une fonctionelle $R : Q \to \Re$ permettant de quantifier la complexité
 de $q$. L'objectif serait alors
 \begin{equation}
-  \maximizeEquation{n^{-1} \sumi u(r_i\, q(x_i)) - R(q).}
+  \maximizeEquation[q \in \Q]{n^{-1} \sumi u(r_i\, q(x_i)) - R(q).}
 \end{equation}
 Par exemple, comme les mesures sur $x$ peuvent comporter de l'incertitude ou du bruit, il
 serait souhaitable que la décision $q(x_1)$ soit proche de $q(x_2)$, si $x_1$ et $x_2$
@@ -147,35 +148,38 @@ sont eux même proches dans l'espace $\X$. Si $R$ encodait une telle préférenc
 fonction discontinue comme le dictionnaire présenté plus haut sera alors hautement
 défavorisée, et une fonction plus lisse y serait préférée.
 
-En pratique, ce mémoire ne considérera que des espaces $\Q$ tels que $\Q$ est un espace de
-Hilbert. Un des avantages des espaces de Hilbert, c'est qu'ils induisent
-naturellement une notion de norme $\|\cdot\|_H$, qu'on peut intuitivement relié au concept de
-complexité. Nous nous intéresserons notamment à $R_1(q) = \|q\|_H$ ainsi qu'à
-$R_2(q) = \|q\|_H^2$.
+\todo{Introduire la validation croisée ainsi que le paramètre $\lambda$ dans l'objectif.}
 
-La forme la plus simple, qui sera étudiée en détail, est lorsqu'on contraint $q$ à
-appartenir à l'espace des 1-forme sur $\X$ (autrement dit, $q$ peut être conçu comme un
-vecteur ligne agissant sur $x$ par produit interne). On aurait alors $R(q) =
-\|q\|^2$. Nous allons également considérer certaines régularisations induites par des
-2-formes définies positives $\Sigma \in S_+$, où $R(q) = \|q\|^2_\Sigma = q^T \Sigma q$.
 
-Il y a en fait deux solutions à ce problème. En premier lieu, on peut par exemple
-contraindre $q$ à l'espace des 1-forme linéaire. Le problème devient alors:
+
+\paragraph{Espaces de décision}
+
+En pratique, ce mémoire ne considérera que des espaces de Hilbert pour $\Q$. Un des
+avantages des espaces de Hilbert, c'est qu'ils induisent naturellement une notion de norme
+$\|\cdot\|_H$, qu'on peut intuitivement relié au concept de complexité. Nous nous
+intéresserons donc aux propriétés induites par $R(q) = \|q\|_H^2 = \langle q, q \rangle$. Il y a
+aussi moyen, sous des conditions assez techniques (théorème de la représentation) de
+généraliser la norme $L_2$ de $q$ à une norme $L_p$ général. En particulier, nous verrons
+qu'une régularisation donnée par norme $L_1$ induit certaines propriétés d'éparsité dans
+la solution.
+
+
+\paragraph{Décisions linéaires}
+
+De façon générale, la forme de décision la plus simple est celle qui combine linéairement
+les $p$ observations de $x \in \X \subseteq \Re^p$; autrement dit lorsque qu'on contraint
+$\Q = \X^*$, \ie, à l'espace dual de $\X$. En langage plus clair, à toute fonction
+$q \in \Q$ il existe un vecteur de dimension $p$ tel que la décision dérivée de
+l'observation $x$ sera donnée par $q(x) = \langle q, x \rangle = q^Tx$.
+
+La régularisation $L_2$ de $q$ devient alors tout simplement $R(q) = q^Tq = \|q\|^2$ et la
+fonction optimale de décision $q^\star$ sera alors déterminée en résolvant le problème
+d'optimisation suivant:
 \begin{equation}
-  \maximizeEquation{n^{-1} \sumi u(r_i\,q^Tx_i),}
+  \maximizeEquation[q \in \Re^p]{n^{-1}\sumi u(r_i\,q^Tx_i) - \lambda \|q\|^2.}
 \end{equation}
-mais encore là, il est possible de trouver un $q$ permettant à l'expression de
-diverger. Cependant, cette contrainte à l'avantage de permettre d'effectuer de rendre
-mathématiquement possible l'optimisation puisqu'on travaille alors dans un espace de
-dimension finie ($m$).
-
-Cette forme peut cependant être assez restrictive, puisqu'elle ne permet qu'un choix
-linéaire de fonction de décision.
 
 
-
-\todo{Discuter du rôle de $u$, de l'objectif à minimiser et discussion sur la
-  régularisation}
 
 \subsection{Dimensionalité de l'information}
 
