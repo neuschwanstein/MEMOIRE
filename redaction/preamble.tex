@@ -56,6 +56,7 @@
 \newcommand{\X}{\bm{X}}
 \newcommand{\R}{\bm{R}}
 \newcommand{\U}{\bm{U}}
+\newcommand{\Q}{\bm Q}
 \renewcommand{\P}{\bm{P}}
 
 
@@ -101,8 +102,20 @@
 
 \NewDocumentCommand{\stCommand}{m}{& #1}
 
-\newcommand{\minimizeEquation}[1]{\begin{array}{ll}\minimize & \displaystyle{#1}\end{array}}
-\newcommand{\maximizeEquation}[1]{\begin{array}{ll}\maximize & \displaystyle{#1}\end{array}}
+% \newcommand{\minimizeEquation}[1]{\begin{array}{ll}\minimize & \displaystyle{#1}\end{array}}
+% \newcommand{\maximizeEquation}[1]{\begin{array}{ll}\maximize & \displaystyle{#1}\end{array}}
+
+\newcommand{\minimizeEquation}[2][]{%
+  \begin{array}{ll}
+    \displaystyle{\minimize_{#1}} & \displaystyle{#2}
+  \end{array}
+}
+
+\newcommand{\maximizeEquation}[2][]{%
+  \displaystyle{\begin{array}{ll}
+    \displaystyle{\maximize_{#1}} & \displaystyle{#2}
+  \end{array}}
+}
 
 \newcommand{\comment}[1]{\textbf{[#1]}}
 \newcommand{\Erick}[1]{\textbf{[Erick says: #1]}}
