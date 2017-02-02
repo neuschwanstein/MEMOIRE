@@ -3,6 +3,8 @@ Erick&Thierry alias
 .DS_Store
 *.*~
 *.aux
+*.toc
+*.blg
 *.log
 *.out
 *.upa
@@ -17,7 +19,6 @@ Erick&Thierry alias
 *dataset
 *.org_archive
 _region_.tex
-*.pdf
 abstract_ecole.org
 revue_litt.org
 *.nb
@@ -37,3 +38,7 @@ cd/data/dataset/GoogleNews-vectors-negative300.bin
 cd/data/dataset/news2007.csv
 *.csv
 cd/datasets/w2v
+*.h5
+*.idea/
+*.vscode/
+*/auto/*
