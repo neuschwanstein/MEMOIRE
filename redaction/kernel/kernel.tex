@@ -1,4 +1,59 @@
-\section{Décisions non linéaires}
+\section{Introduction aux fonctions de décisions non linéaires}
+
+\subsection{Introduction}
+
+Soit $\kappa: \X \times \X \to \Re$ un noyau semi-défini positif, $\H$ l'espace de Hilbert à noyau
+reproduisant induit par $\kappa$ et $K \in \Re^{n \times n}$ la matrice associée à l'ensemble
+d'échantillonage $S_n \sim M^n$. Le problème d'optimisation de portefeuille régularisé
+s'exprime alors par
+\begin{equation}
+  \label{k:basic}
+  \maximizeEquation[q \in \H]{n^{-1}\sumi u(r_i\,q(x_i)) - \lambda\|q\|^2_{\H}.}
+\end{equation}
+
+Tel que mentionné, la dimension de $\H$ est possiblement infinie, ce qui rend
+numériquement impossible la recherche d'une solution $q^\star$. Toutefois, le théorème de la
+représentation permet de rendre le problème résoluble. 
+
+\begin{thm*}
+  Toute solution $q^\star$ de \eqref{k:basic} repose dans le sous-espace vectoriel engendré
+  par l'ensemble des $n$ fonctions $\{\phi_i\}$, où $\phi_i = \kappa(x_i,\cdot)$. Numériquement, il
+  existe un vecteur $\alpha^\star \in \Re^n$ tel que,
+  \begin{equation}
+    q^\star = \sumi \alpha^\star_i \phi_i = (\alpha^\star)^T\phi.
+  \end{equation}
+\end{thm*}
+\begin{proof}
+  Voir \cite{mohri2012foundations}, Théorème 5.4 pour une démonstration tenant compte d'un
+  objectif régularisé général. La démonstration est dûe à \cite{kimeldorf1971some}.
+\end{proof}
+
+Le théorème de la représentation permet donc de chercher une solution dans un espace à $n$
+dimensions, plutôt que la dimension possiblement infinie de $\H$. En effet, puisque
+\begin{equation}
+  q^\star = \sumi \alpha_i \phi_i,
+\end{equation}
+où $\alpha \in \Re^n$ \todo{Espace cotangant???}, on peut donc restreindre le domaine
+d'optimisation à $\Re^n$. L'objectif de \eqref{k:basic} devient alors
+\begin{equation}
+  n^{-1}\sumi u(r_i \textstyle \sumj \alpha_j \phi_j(x_i)) - \lambda \langle q,q \rangle_{\H}. 
+\end{equation}
+Le premier terme se réexprime comme
+\begin{equation}
+  n^{-1} \sumi u(r_i\,\alpha^T\phi(x_i)),
+\end{equation}
+alors qu'en employant les propriétés de linéarité du produit intérieur, on transforme le
+second terme par
+\begin{align}
+  \langle q,q \rangle^2_{\H} &= \sumi \sumj \alpha_i \alpha_j \langle \phi_i,\phi_j \rangle_{\H}\\
+                 &= \sumi \sumj \alpha_i \alpha_j \kappa(x_i,x_j)\\
+                 &= \alpha^T K \alpha.
+\end{align}
+De sorte que le problème général \eqref{k:basic} peut se reformuler par
+\begin{equation}
+  \boxed{\maximizeEquation[\alpha \in \Re^n]{n^{-1}\sumi u(r_i \alpha^T \phi(x_i)) - \lambda\,\alpha^TK\alpha}}\quad.
+\end{equation}
+
 
 \subsection{Dualité}
 

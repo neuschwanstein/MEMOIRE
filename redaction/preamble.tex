@@ -1,5 +1,5 @@
 % \usepackage{nips_2016}
-
+\usepackage[french]{babel}
 \usepackage{times}
 \usepackage{amsmath}
 \usepackage{amsthm,amsfonts}
@@ -12,6 +12,7 @@
 \usepackage{eufrak}
 \usepackage{parskip}
 \usepackage{hyperref}
+\usepackage{booktabs}
 
 \allowdisplaybreaks
 
@@ -38,9 +39,14 @@
 \DeclareMathOperator{\Var}{\bm{Var}}
 \DeclareMathOperator{\CE}{CE}
 \DeclareMathOperator{\Cov}{Cov}
-\DeclareMathOperator{\EU}{\bm{EU}}
+\newcommand{\EU}{\bm{EU}}
+\newcommand{\hEU}{\widehat\EU}
+\newcommand{\hEN}{\widehat{\bm{E1}}}
 \newcommand{\pp}{\bm P} 
 % \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand{\qu}{\hat q_u}
+\newcommand{\qn}{\hat{q}_1}
 
 \newcommand{\ie}{\textit{i.e.}}
 \newcommand{\eg}{\textit{e.g.~}}
@@ -57,9 +63,15 @@
 \newcommand{\R}{\bm{R}}
 \newcommand{\U}{\bm{U}}
 \newcommand{\Q}{\bm Q}
+\newcommand{\M}{\bm M}
+\renewcommand{\S}{\mathcal S}
+\renewcommand{\H}{\bm H}
 \renewcommand{\P}{\bm{P}}
+\newcommand{\alg}{\mathcal{Q}}
+\newcommand{\au}{\mathcal{U}}
 
-
+% \newcommand{\nq}[1]{\|#1\|_{\Q}}
+\newcommand{\nq}[1]{\|#1\|}
 \renewcommand{\O}[1]{O\left(#1\right)}
 
 \newcommand{\rad}{\hat{\mathfrak{R}}}
@@ -76,6 +88,8 @@
 \newcommand{\xMax}{\xi}
 \newcommand{\grad}{\nabla}
 \newcommand{\sumi}{\sum_{i=1}^n}
+\newcommand{\sumj}{\sum_{j=1}^n}
+\newcommand{\rmax}{\bar r}
 % \newcommand{\dd}{\partial}
 
 % \newcommand{\pp}{P}
@@ -128,16 +142,17 @@
 
 \theoremstyle{plain}
 \newtheorem{prop}{Proposition}
-\newtheorem{thm}{Theorem}
+\newtheorem{thm}{Théorème}
 \newtheorem{coro}{Corollary}
-\newtheorem*{thm*}{Theorem}
+\newtheorem*{thm*}{Théorème}
 \newtheorem{claim}{Claim}
 \newtheorem{lemma}{Lemma}
 \newtheorem*{lemma*}{Lemma}
-\newtheorem{assumption}{Assumption}
+\newtheorem{assumption}{Hypothèse}
+\renewcommand*{\proofname}{Démonstration}
 
 \theoremstyle{definition}
-\newtheorem*{definition}{Definition}
+\newtheorem*{deff}{Définition}
 \newtheorem*{rem}{Remark}
 \newtheorem*{ex}{Example}
 
