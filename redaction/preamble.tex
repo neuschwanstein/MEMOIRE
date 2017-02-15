@@ -25,8 +25,8 @@
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\maximize}{maximiser}
-\DeclareMathOperator*{\minimize}{minimiser}
+\DeclareMathOperator*{\maximize}{\mbox{maximiser}}
+\DeclareMathOperator*{\minimize}{\mbox{minimiser}}
 \DeclareMathOperator{\epi}{epi}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\dom}{dom}
@@ -36,21 +36,27 @@
 \DeclareMathOperator{\Pdim}{Pdim}
 
 \newcommand{\E}{\bm E}
-\DeclareMathOperator{\Var}{\bm{Var}}
-\DeclareMathOperator{\CE}{CE}
-\DeclareMathOperator{\Cov}{Cov}
-\newcommand{\EU}{\bm{EU}}
+% \newcommand{\CE}{\bm{CE}}
+\newcommand{\CE}{\mbox{\textbf{\textit{CE}}}}
+\newcommand{\hCE}{\widehat\CE}
+% \newcommand{\EU}{\bm{EU}}
+\newcommand{\EU}{\textbf{\textit{EU}}}
 \newcommand{\hEU}{\widehat\EU}
-\newcommand{\hEN}{\widehat{\bm{E1}}}
-\newcommand{\pp}{\bm P} 
+% \newcommand{\hEN}{\widehat{\bm{E1}}}
+\newcommand{\hEN}{\widehat{\mbox{\textbf{\textit{E1}}}}}
+\newcommand{\pp}{\bm P}
+% \newcommand{\Var}{\bm{Var}}
+\newcommand{\Var}{\mbox{\textbf{\textit{Var}}}}
+\newcommand{\Cov}{\mbox{\textbf{\textit{Cov}}}}
+% \newcommand{\Cov}{\bm{Cov}}
 % \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 \newcommand{\qu}{\hat q_u}
 \newcommand{\qn}{\hat{q}_1}
 
 \newcommand{\ie}{\textit{i.e.}}
-\newcommand{\eg}{\textit{e.g.~}}
-\newcommand{\iid}{i.i.d.~}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\iid}{i.i.d.}
 
 \newcommand{\ts}{\textsuperscript}
 \newcommand{\figref}[1]{Fig.~\ref{#1}}
@@ -69,10 +75,11 @@
 \renewcommand{\P}{\bm{P}}
 \newcommand{\alg}{\mathcal{Q}}
 \newcommand{\au}{\mathcal{U}}
+\renewcommand{\O}{\mathcal{O}}
 
 % \newcommand{\nq}[1]{\|#1\|_{\Q}}
 \newcommand{\nq}[1]{\|#1\|}
-\renewcommand{\O}[1]{O\left(#1\right)}
+% \renewcommand{\O}[1]{O\left(#1\right)}
 
 \newcommand{\rad}{\hat{\mathfrak{R}}}
 \newcommand{\iso}{\simeq}
@@ -88,8 +95,9 @@
 \newcommand{\xMax}{\xi}
 \newcommand{\grad}{\nabla}
 \newcommand{\sumi}{\sum_{i=1}^n}
-\newcommand{\sumj}{\sum_{j=1}^n}
+\newcommand{\sumj}{\sum_{j=1}^p}
 \newcommand{\rmax}{\bar r}
+\newcommand{\qsh}{q^\star_\lambda}
 % \newcommand{\dd}{\partial}
 
 % \newcommand{\pp}{P}
@@ -147,7 +155,6 @@
 \newtheorem*{thm*}{Théorème}
 \newtheorem{claim}{Claim}
 \newtheorem{lemma}{Lemma}
-\newtheorem*{lemma*}{Lemma}
 \newtheorem{assumption}{Hypothèse}
 \renewcommand*{\proofname}{Démonstration}
 
@@ -155,8 +162,38 @@
 \newtheorem*{deff}{Définition}
 \newtheorem*{rem}{Remark}
 \newtheorem*{ex}{Example}
+\newtheorem{lemme}{Lemme}
 
+
+% \begingroup
+%     \makeatletter
+%     \@for\theoremstyle:=definition,remark,plain\do{%
+%         \expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{%
+%             \addtolength\thm@preskip\parskip
+%             }%
+%         }
+% \endgroup
 %% http://tex.stackexchange.com/a/43971/4233
+% \makeatletter
+% \def\th@plain{%
+%   \thm@notefont{}% same as heading font
+%   \itshape % body font
+% }
+% \def\th@definition{%
+%   \thm@notefont{}% same as heading font
+%   \normalfont % body font
+% }
+% \makeatother
+
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=0.35cm
+  \thm@postskip=\thm@preskip % or whatever, if you don't want them to be equal
+}
+  \makeatother
+
+
+\usepackage{amsthm}
 \makeatletter
 \def\th@plain{%
   \thm@notefont{}% same as heading font
