@@ -1,12 +1,9 @@
-import random as rm
-import multiprocessing
-
 import numpy as np
-import scipy as sp
 import scipy.special
 import scipy.stats
 
-from .distrs import *
+from .distrs import Distribution,DiscreteDistribution,Var,Std
+
 
 class Copula(object):
     def __init__(self,p=None):
@@ -54,22 +51,19 @@ class GaussianCopula(Copula):
 
 
 class Market(object):
-    def __init__(self,Xs,R,cop):
+    def __init__(self,Xs,R,cop,**kwargs):
         self.R = R
         self.Xs = Xs
-        self.p = len(Xs) + 1 # +1: bias feature
+        self.bias = 0 if 'bias' not in kwargs else int(kwargs['bias'])
+        self.p = len(Xs) + self.bias
         self.cop = cop
-
-        # X,r = self.sample(100000)
-        # self.X_max = np.percentile(np.linalg.norm(X,axis=1),98) # Not quite...
-        # self.r_bar = np.max(np.abs([np.percentile(r,2),np.percentile(r,98)]))
 
     def feature_correlation(self,i):
         '''Returns empirical correlation of returns with feature i'''
         X,r = self.sample(100000)
         corr_mat = np.corrcoef(X[:,i],r)
         return corr_mat[0,1]
-        
+
     def sample(self,n):
         '''Returns X,r tuple sampled from market distribution.'''
         distrs = tuple(self.Xs) + (self.R,)
@@ -77,9 +71,14 @@ class Market(object):
         sample = np.array([d.inverse(us) for d,us in zip(distrs,unif_sample.T)]).T
         X = sample[:,0:-1]
         r = sample[:,-1]
-        bias = np.ones(n)
-        X = np.c_[bias,X]
+        if self.bias:
+            bias = np.ones(n)
+            X = np.c_[bias,X]
         return X,r
+
+    def sample_t(self,n):
+        X,r = self.sample(n)
+        return X*r[:,None]
 
 
 class GaussianMarket(Market):
@@ -87,7 +86,7 @@ class GaussianMarket(Market):
     stems from a gaussian copula. It is assumed that features are jointly
     independant. Features and return distributions must be provided from the user.
     '''
-    def __init__(self,Xs,R,corr_vector=None):
+    def __init__(self,Xs,R,**kwargs):
         '''Instantiates the market distribution using user supplied distributions. if no
         correlation vector is present, then Corr(Xᵢ,R) = Corr(Xⱼ,R) = (1-ε)/p.
 
@@ -97,22 +96,33 @@ class GaussianMarket(Market):
             corr_vector [optional]: Vector [Corr(Xᵢ,R)]
         '''
         p = len(Xs)
-        if corr_vector is not None:
-            if len(corr_vector) is not p:
-                raise ValueError('Invalid correlation vector. Must have one entry for each feature.')
-            if sum(corr_vector) >= 1.0:
-                raise ValueError('Must have elements summing to less than 1.')
-            v = np.append(corr_vector,1)
+        if 'sigma' in kwargs:
+            Σ = kwargs['sigma']
         else:
-            ε = 0.001
-            α = (1-ε)/p                     # Information from every feature
-            v = [α]*p + [1]
-        Σ = np.empty((p+1,p+1))
-        Σ[:-1,:-1] = np.eye(p)
-        Σ[-1,:] = v
-        Σ[:,-1] = v
+            if 'corr_vector' in kwargs:
+                # Independent features with provided correlation with R
+                corr_vector = kwargs['corr_vector']
+            else:
+                # Independent features with 1/sqrt(p) influence on R
+                corr_vector = 0.95/np.sqrt(p) * np.ones(p)
+            Σ = np.eye(p+1,p+1)
+            Σ[:-1,-1] = corr_vector
+            Σ[-1,:-1] = corr_vector
+
+        self.Σ = Σ
+        self.corr_vector = corr_vector
         cop = GaussianCopula(Σ)
-        super().__init__(Xs,R,cop)
+        super().__init__(Xs,R,cop,**kwargs)
+
+    def feature_correlation(self,i):
+        return self.corr_vector[i]
+
+    def qstar(self,lamb):
+        q = np.empty(self.p)
+        stdr = Std(self.R)
+        for i,X in enumerate(self.Xs):
+            q[i] = self.corr_vector[i]*stdr*Std(X)
+        return 1/(2*lamb) * q
 
 
 class MarketDiscreteDistribution(DiscreteDistribution):

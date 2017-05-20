@@ -1,0 +1,60 @@
+\section{Ajout d'information}
+
+Cette section cherche à déterminer de quelle façon se comporte les erreurs de
+généralisation et de sous-optimalité lorsque $p$ et $n$ augmentent.
+
+On rappelle tout d'abord que dans un contexte risque neutre, on a l'identité suivante
+\begin{equation}
+  \lambda\ket\qsl =
+  \begin{pmatrix}
+    \rho_1\sqrt{\Var\ket{T_1}}\\
+    \vdots\\
+    \rho_p\sqrt{\Var\ket{T_j}}
+  \end{pmatrix}
+\end{equation}
+et que de plus, par propriété de la corrélation,
+\begin{equation}
+  \|\rho\|\leq 1.
+\end{equation}
+On supposera de plus que $\|T_j\| \leq \nu_j$, ce qui entraîne également que $\Var\ket{T_j} \leq
+\nu_j^2$. Ainsi,
+\begin{equation}
+  \|\qsl\|^2 = \frac{1}{\lambda^2}\sumj \rho_j^2\,\Var\ket{T_j} \leq \frac{p\|\rho\|^2\|\nu\|^2_\infty}{\lambda^2}
+\end{equation}
+ou encore
+\begin{equation}
+  \|\rho\|^2 \geq \frac{\lambda^2\|\qsl\|^2}{p\|\nu\|^2_\infty}.
+\end{equation}
+
+Or, si on considère l'ajout d'information de manière à obtenir une nouvelle décision
+optimale $\ket\tqsl$ dans un espace à $\tilde p = p + p^+$ dimensions, il faut réaliser
+que la corrélation \textit{totale} ne peut pas changer, c'est-à-dire que l'information
+déjà obtenue ne peut être dupliquée. Autrement dit, en posant $\tilde\rho = \rho + \rho^+$,
+\begin{equation}
+  \|\rho^+\|^2 \leq 1 - \|\rho\|^2.
+\end{equation}
+Donc,
+\begin{align}
+  \|\tqsl\|^2 - \|\qsl\|^2 &= \frac{1}{\lambda^2}\sum_{j=1}^{\tilde p}\rho_j^2\,\Var\ket{T_j} -
+                             \frac{1}{\lambda^2}\sum_{j=1}^{p}\rho_j^2\,\Var\ket{T_j}\\
+                           &= \frac{1}{\lambda^2}\sum_{j=p+1}^{\tilde p}\rho_j^2\,\Var\ket{T_j}\\
+                           &\leq \frac{p^+\|\nu^+\|^2_\infty }{\lambda^2}\|\rho^+\|^2\\
+                           &\leq \frac{p^+\|\nu^+\|^2_\infty }{\lambda^2}(1-\|\rho\|^2)\\
+                           &\leq \frac{p^+\|\nu^+\|^2_\infty}{\lambda^2}\left(1-\frac{\lambda^2\|\qsl\|^2}{p\|\nu\|^2_\infty}\right)\\
+                           &\leq \frac{p^+\|\nu^+\|^2_\infty}{\lambda^2}- \frac{p^+}{p}\frac{\|\nu^+\|^2_\infty}{\|\nu\|^2_\infty}\|\qsl\|^2
+\end{align}
+Ce qui entraîne
+\begin{align}
+  \|\tqsl\|^2 &\leq \frac{p^+\|\nu^+\|^2_\infty}{\lambda^2} + \left(1-\frac{p^+}{p}\frac{\|\nu^+\|^2_\infty}{\|\nu\|^2_\infty}\right)\|\qsl\|^2.
+\end{align}
+
+Par exemple, si on suppose $M$ formée de variables d'information bornées par 1 (pour que
+$\|\nu\|_\infty = 1$) alors en ajoutant une seule variable d'information ($p^+=1$), on aura
+\begin{equation}
+  \|\tqsl\|^2 \leq \frac{1}{\lambda^2}+\frac{p-1}{p}\|\qsl\|^2.
+\end{equation}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main_info"
+%%% End:

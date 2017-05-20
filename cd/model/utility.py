@@ -1,16 +1,22 @@
-import warnings
-
 import cvxpy as cvx
 import numpy as np
 
 import cd.model.distrs as ds
 # import model.distrs as ds
 
-from .math_ops import *
+
+from .math_ops import Function
 from .lipschitzexp import LipschitzExp
 
+
 class Utility(Function):
-    pass
+
+    def inverse(self,r):
+        raise NotImplementedError
+
+    def subinverse(self,r):
+        raise NotImplementedError
+
 
 class ExpUtility(Utility):
     def __init__(self,β):
@@ -29,25 +35,31 @@ class ExpUtility(Utility):
 
     def cvx_util(self,r):
         β = self.β
-        exp = cvx.exp
-        return 1/β * (1 - exp(-β*r))
+        return 1/β * (1 - cvx.exp(-β*r))
 
     def _derive(self,r):
-        return np.exp(-β*r)
+        return np.exp(-self.β*r)
+
 
 class LipschitzExpUtility(Utility):
-    def __init__(self,β,r0):
+    def __init__(self,β):
         self.β = β
-        self.r0 = r0
         self.k = 1
 
     def _call(self,r):
-        β,r0 = self.β,self.r0
-        exp = np.exp
-        return (r >= r0)* (1/β * (1 - exp(-β*r))) + (r<r0) * (r*exp(-β*r0) + 1/β*(1-(1+β*r0)*exp(-β*r0)))
+        b = self.β
+        return np.where(r<=0,r,b*(1-np.exp(-r/b)))
+
+    def inverse(self,r):
+        b = self.β
+        return np.where(r<=0,r,-b*np.log(1-r/b))
+
+    def subinverse(self,r):
+        return np.where(r<=0,1,np.exp(r/self.β))
+        # return np.where(r<=0,1,self.β/(self.β - r))
 
     def cvx_util(self,r):
-        return LipschitzExp(r,self.β,self.r0)
+        return LipschitzExp(r,self.β)
 
     @property
     def γ(self):
@@ -100,6 +112,9 @@ class RiskNeutralUtility(Utility):
     def inverse(self,r):
         return r
 
+    def subinverse(self,r):
+        return 1
+
 
 class LinearPlateauUtility(Utility):
     '''Piecewise linear utility such that ∂u(x) = 1 for x ∈ (-∞,0), ∂u(x) = β for x ∈ [0,x0]
@@ -150,7 +165,7 @@ class LinearPlateauUtility(Utility):
     def _derive(self,r):
         r = np.array(r)
         return (r<=0)*1 + (r>0)*(r<=self.x0)*self.β + (r>self.x0)*0
-    
+
     @property
     def γ(self):
         return self.β

@@ -1,0 +1,79 @@
+
+
+\subsection{Alternate problem}
+
+We now consider a new problem, slightly different from \eqref{primal} where a
+regularization based on the sum of the square of the investment sizes $q^Tx_i$ is applied:
+\begin{equation}
+  \label{primal2000}
+  \minimizeEquation{\sumi \ell(r_i\,q^Tx_i) + \gamma\sumi(q^Tx_i)^2 + n\lambda\|q\|^2.}
+\end{equation}
+Again, this problem can be respecified using slack vector $\xi \in \Re^n$ as
+\begin{align}
+  \minimizeEquationSt{\label{primal2001}\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 + n\lambda\|q\|^2}[\xi_i = r_i\,q^Tx_i.]
+\end{align}
+The constraints in \eqref{primal2001} are again affine, so that Slater's theorem apply.
+
+The lagrangian of \eqref{primal2001} is
+\begin{equation}
+  \lag(q,\xi,\alpha) = \sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 + n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i - \xi_i),
+\end{equation}
+and we seek its infimum over $(q,\xi)$.
+\begin{align}
+  &\inf_{q,\xi} \left\{\sumi \ell(\xi_i) + \gamma\sumi (\xi_i/r_i)^2 + n\lambda\|q\|^2 + \sumi \alpha_i(r_iq^Tx_i -
+    \xi_i)\right\}\\
+  &\quad =\inf_\xi\left\{\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2 - \alpha^T\xi\right\} + \inf_q\left\{\sumi
+    \alpha_ir_iq^Tx_i - n\lambda\|q\|^2\right\}\\
+  &\quad = - \sup_\xi\left\{a^T\xi - \left(\sumi \ell(\xi_i) + \gamma\sumi(\xi_i/r_i)^2\right)\right\}
+    - \frac{1}{4n\lambda} (\alpha \circ r)^TK(\alpha \circ r)\label{this}.
+\end{align}
+
+Let $f_i(\xi_i) := h_1(\xi_i)+ h_2(\xi_i) = \ell(\xi_i) + \gamma(\xi_i/r_i)^2$. Then, using \eqref{lemma1},
+the first expression of \eqref{this} can be restated as
+\begin{equation}
+  \label{firstconj}
+  -\sup_\xi\left\{\alpha^T \xi - \sumi f_i(\xi_i)\right\} = -\sumi f_i^*(\alpha_i).
+\end{equation}
+Let us introduce another identity:
+\begin{equation}
+  \label{lemma2}
+  (h_1+h_2)^*(\alpha_i) = \inf_{\alpha_i'+\alpha_i''=\alpha_i} \{h_1^*(\alpha_i') + h_2^*(\alpha_i'')\}.
+\end{equation}
+Using \eqref{lemma2}, \eqref{firstconj} can be written as
+\begin{align}
+  -\sumi f_i^*(\alpha_i) &= -\sumi (h_1+h_2)^*(\xi_i)\\
+                    &= -\sumi \inf_{\alpha_i'+\alpha_i''=\alpha_i} \{h_1^*(\alpha_i') + h_2^*(\alpha_i'')\}.
+\end{align}
+The first conjugate function $h_1^*$ is simply $\ell^*$. The second conjugate function can be
+derived analytically:
+\begin{align}
+  h_2^*(\alpha_i'') &= \sup_{\xi_i}\,\{\alpha_i''\xi_i - h_2(\xi_i)\}\\
+               &= \sup_{\xi_i}\,\{\alpha_i''\xi_i - \gamma(\xi_i/r_i)^2\}\label{lastsup}.
+\end{align}
+The supremum occurs when
+\begin{equation}
+  \label{supconj}
+  \xi_i = \frac{r_i^2}{2\gamma}\alpha_i''.
+\end{equation}
+Therefore, \eqref{lastsup} simplifies to
+\begin{equation}
+  h_2^*(\alpha_i'') = \frac{r_i^2}{4\gamma}(\alpha_i'')^2.
+\end{equation}
+
+Putting it all back together, the dual of \eqref{primal2000} is
+\begin{equation}
+  -\sumi \inf_{\alpha_i'+\alpha_i''=\alpha_i}\,\left\{\ell^*(\alpha_i') + \frac{r_i^2}{4\gamma}(\alpha_i'')^2\right\}  - \frac{1}{4n\lambda} (\alpha \circ r)^TK(\alpha \circ r),
+\end{equation}
+which is equivalent to
+\begin{equation}
+  -\sumi \ell^*(\alpha_i) - \frac{1}{4\gamma}\sumi (r_i\,\beta_i)^2 - \frac{1}{4n\lambda}(r \circ (\alpha+\beta))^TK(r \circ (\alpha+\beta)),
+\end{equation}
+with new optimization variables $\alpha=\alpha',\beta=\alpha'' \in \Re^n$. The dual optimization problem is
+therefore
+\begin{equation}
+  \minimizeEquation{\sumi \ell^*(\alpha_i) + \frac{1}{4\gamma}\|r\circ\beta\|^2 + \frac{1}{4n\lambda}(r \circ (\alpha+\beta))^TK(r \circ (\alpha+\beta)).}
+\end{equation}
+
+
+\paragraph{Prescribed investment}
+\todo{}

@@ -1,0 +1,259 @@
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[greek,french]{babel}
+\usepackage{textgreek}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amsthm,amsfonts}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{xparse}
+\usepackage{mathrsfs}
+\usepackage{eufrak}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{newfloat}
+\usepackage{etoolbox}
+\usepackage{braket}
+\usepackage{xspace}
+\usepackage{kbordermatrix}
+\renewcommand{\kbldelim}{(}
+\renewcommand{\kbrdelim}{)}
+\allowdisplaybreaks
+
+
+% \DeclareFloatingEnvironment[
+%     fileext=los,
+%     listname=List of Schemes,
+%     name=Exemple,
+%     placement=tbhp,
+%     within=section,
+%     ]{numex}
+
+% \setcounter{tocdepth}{4}
+    
+\usepackage[font={small}]{caption}
+\captionsetup{width=0.9\textwidth}
+% \newcommand{\ccaption}[2][]{\caption{\textsc{#1.}~p#2}}
+
+\newcounter{numex}[section]
+\newenvironment{numex}[2][]
+{
+  \bigskip\refstepcounter{numex}Exemple~\thenumex.~\textsc{#2}~--
+}{}
+    
+\newcommand\figref[1]{Fig.~\ref{#1} (p.~\pageref{#1})}
+\newcommand\lemref[1]{Lemme \ref{#1}}
+
+
+% KERNEL
+\newcommand{\lag}{\mathscr{L}}
+\newcommand{\sumij}{\sum_{i,j=1}^n}
+
+% À classer.
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\maximize}{\mbox{maximiser}}
+\DeclareMathOperator*{\minimize}{\mbox{minimiser}}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\tr}{tr}
+
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Pdim}{Pdim}
+
+\DeclareMathOperator{\E}{\mbox{\textbf{\textit{E}}}}
+\DeclareMathOperator{\CE}{\mbox{\textbf{\textit{CE}}}}
+\DeclareMathOperator{\nCE}{\mbox{\textit{CE}}}
+\DeclareMathOperator{\hCE}{\widehat\CE}
+\DeclareMathOperator{\nhCE}{\widehat\nCE}
+\DeclareMathOperator{\nEU}{\mbox{\textit{EU}}}
+\DeclareMathOperator{\EU}{\mbox{\textbf{\textit{EU}}}}
+\DeclareMathOperator{\hEU}{\widehat\EU}
+\DeclareMathOperator{\nhEU}{\widehat\nEU}
+% \newcommand{\hEN}{\widehat{\bm{E1}}}
+\DeclareMathOperator{\EN}{\mbox{\textbf{\textit{E1}}}}
+\DeclareMathOperator{\hEN}{\widehat\EN}
+\DeclareMathOperator{\hE}{\hat\E}
+\DeclareMathOperator{\pp}{\bm P}
+% \newcommand{\Var}{\bm{Var}}
+\DeclareMathOperator{\Var}{\mbox{\textbf{\textit{Var}}}}
+\DeclareMathOperator{\Cov}{\mbox{\textbf{\textit{Cov}}}}
+\DeclareMathOperator{\Corr}{\mbox{\textbf{\textit{Corr}}}}
+\newcommand{\rn}{\mbox{\textbf{\textit{1}}}}
+\DeclarePairedDelimiter\inp{\langle}{\rangle}
+\newcommand{\coloneq}{\coloneqq}
+% \newcommand{\Cov}{\bm{Cov}}
+% \DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand{\LEU}{\mbox{\textit{LEU}}}
+
+\newcommand{\qu}{\hat q_u}
+\newcommand{\qn}{\hat{q}_1}
+
+\newcommand{\ie}{\textit{i.e.}}
+\newcommand{\eg}{\textit{e.g.}}
+\newcommand{\iid}{i.i.d.}
+
+\newcommand{\ts}{\textsuperscript}
+% \renewcommand{\figref}[1]{Fig.~\ref{#1}}
+
+\newcommand{\qs}{q^\star}
+\newcommand{\qsl}{q^\star_\lambda}
+\newcommand{\tqsl}{\tilde q^\star_\lambda}
+\newcommand{\qh}{\hat q}
+
+\newcommand{\X}{\bm{X}}
+\newcommand{\R}{\bm{R}}
+\newcommand{\Ut}{\bm{U}}
+\newcommand{\Q}{\bm Q}
+\newcommand{\T}{\bm T}
+\newcommand{\M}{\bm M}
+\renewcommand{\S}{\mathcal S}
+\renewcommand{\H}{\bm H}
+\renewcommand{\P}{\bm{P}}
+\newcommand{\alg}{\mathcal{Q}}
+\newcommand{\au}{\mathcal{U}}
+\newcommand{\bigO}{\mathcal O}
+
+
+% \newcommand{\nq}[1]{\|#1\|_{\Q}}
+\newcommand{\nq}[1]{\|#1\|}
+% \renewcommand{\O}[1]{O\left(#1\right)}
+
+\newcommand{\rad}{\hat{\mathfrak{R}}}
+\newcommand{\radd}{\mathcal{R}}
+\newcommand{\iso}{\simeq}
+\newcommand{\dd}{\partial}
+\newcommand{\real}{\mathscr{R}}
+\renewcommand{\Re}{\real}
+\newcommand{\normal}{\mathscr{N}}
+\newcommand{\trueRisk}{R_{\mathrm{true}}}
+\newcommand{\uInv}{u^{-1}}
+\newcommand{\qHat}{{\hat q}}
+% \newcommand{\xMax}{X_{\max}}
+\newcommand{\xMax}{\xi}
+\newcommand{\grad}{\nabla}
+\newcommand{\sumi}{\sum_{i=1}^n}
+\newcommand{\sumjn}{\sum_{j=1}^n}
+\newcommand{\sumj}{\sum_{j=1}^p}
+\newcommand{\sumjt}{\sum_{j=1}^{\tilde p}}
+\newcommand{\rmax}{\bar r}
+\newcommand{\qsh}{q^\star_\lambda}
+% \newcommand{\dd}{\partial}
+
+% \newcommand{\pp}{P}
+% \newcommand{\CE}{\bm{CE}}
+\newcommand\subsetsim{\mathrel{%
+  \ooalign{\raise0.2ex\hbox{$\subset$}\cr\hidewidth\raise-0.8ex\hbox{\scalebox{0.9}{$\sim$}}\hidewidth\cr}}}
+
+\def\rcurs{{\mbox{$\resizebox{.09in}{.08in}{\includegraphics[trim= 1em 0 14em
+        0,clip]{ScriptR}}$}}}
+\newcommand{\rf}{\rcurs_f}
+
+\renewcommand{\rf}{r_0}
+
+\newcommand{\starsection}{\vspace{1em}\begin{center}$\star\quad\star\quad\star$\end{center}\vspace{1em}}
+
+% http://tex.stackexchange.com/questions/111551/recursive-multiple-subscript-and-superscript-with-xparse
+\NewDocumentCommand{\minimizeEquationSt}{m >{\SplitList{;}}O{}}
+{\begin{array}{rl}\minimize & \displaystyle{#1}\\\mbox{tel que}
+    \ProcessList{#2}{\stCommand}\end{array}}
+
+\NewDocumentCommand{\maximizeEquationSt}{m >{\SplitList{;}}O{}}
+{\begin{array}{rl}\minimize & \displaystyle{#1}\\\mbox{tel que}
+    \ProcessList{#2}{\stCommand}\end{array}}
+
+\NewDocumentCommand{\stCommand}{m}{& #1}
+
+% \newcommand{\minimizeEquation}[1]{\begin{array}{ll}\minimize & \displaystyle{#1}\end{array}}
+% \newcommand{\maximizeEquation}[1]{\begin{array}{ll}\maximize & \displaystyle{#1}\end{array}}
+
+\newcommand{\minimizeEquation}[2][]{%
+  \begin{array}{ll}
+    \displaystyle{\minimize_{#1}} & \displaystyle{#2}
+  \end{array}
+}
+
+\newcommand{\maximizeEquation}[2][]{%
+  \displaystyle{\begin{array}{ll}
+    \displaystyle{\maximize_{#1}} & \displaystyle{#2}
+  \end{array}}
+}
+
+\newcommand{\comment}[1]{\textbf{[#1]}}
+\newcommand{\Erick}[1]{\textbf{[Erick says: #1]}}
+\newcommand{\Thierry}[1]{\textbf{[Thierry says: #1]}}
+\newcommand{\todo}[1]{\textbf{[Todo:} #1\textbf{]}}
+
+\newcommand{\cit}{\textit{[Citation needed]}}
+\newcommand{\reph}[1]{#1\textsuperscript{[Rephrase]}}
+\newcommand{\nec}{\textsuperscript{[Nécessaire?]}}
+
+\theoremstyle{plain}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Théorème}
+\newtheorem{coro}{Corollary}
+\newtheorem*{thm*}{Théorème}
+\newtheorem{claim}{Claim}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Hypothèse}
+\renewcommand*{\proofname}{Démonstration}
+
+\theoremstyle{definition}
+\newtheorem*{deff}{Définition}
+\newtheorem*{ex}{Example}
+\newtheorem{lemme}{Lemme}
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remarque}
+
+% \begingroup
+%     \makeatletter
+%     \@for\theoremstyle:=definition,remark,plain\do{%
+%         \expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{%
+%             \addtolength\thm@preskip\parskip
+%             }%
+%         }
+% \endgroup
+%% http://tex.stackexchange.com/a/43971/4233
+% \makeatletter
+% \def\th@plain{%
+%   \thm@notefont{}% same as heading font
+%   \itshape % body font
+% }
+% \def\th@definition{%
+%   \thm@notefont{}% same as heading font
+%   \normalfont % body font
+% }
+% \makeatother
+
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=0.35cm
+  \thm@postskip=\thm@preskip % or whatever, if you don't want them to be equal
+}
+  \makeatother
+
+
+\usepackage{amsthm}
+\makeatletter
+\def\th@plain{%
+  \thm@notefont{}% same as heading font
+  \itshape % body font
+}
+\def\th@definition{%
+  \thm@notefont{}% same as heading font
+  \normalfont % body font
+}
+\makeatother
+
+
+% http://tex.stackexchange.com/questions/57284/pdf-contains-incorrect-bookmark-hierarchy
+\usepackage[unicode]{hyperref}

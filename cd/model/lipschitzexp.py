@@ -1,6 +1,5 @@
 import numpy as np
 
-import cvxpy.utilities as u
 import cvxpy.lin_ops.lin_utils as lu
 from cvxpy.expressions.constants.parameter import Parameter
 from cvxpy.atoms.elementwise.elementwise import Elementwise
@@ -8,79 +7,82 @@ from cvxpy.atoms.elementwise.exp import exp
 
 
 class LipschitzExp(Elementwise):
-    def __init__(self,x,β=1,x0=0):
-        self.β = self.cast_to_const(β)
-        self.x0 = self.cast_to_const(x0)
-        super().__init__(x)
+    def __init__(self,x,beta=1):
+        self.beta = self.cast_to_const(beta)
+        super(LipschitzExp, self).__init__(x)
 
     @Elementwise.numpy_numeric
     def numeric(self,values):
-        β = self.β.value
-        x0 = self.x0.value
+        b = self.beta.value
         x = values[0]
-        exp = np.exp
-        return (x >= x0)* (1/β * (1 - np.exp(-β*x))) + \
-               (x < x0) * (x*np.exp(-β*x0) + 1/β*(1-(1+β*x0)*np.exp(-β*x0)))
+        return np.where(x<=0,x,b*(1-np.exp(-x/b)))
 
     def sign_from_args(self):
-        return u.Sign.UNKNOWN
+        # return u.Sign.UNKNOWN
+        return (False,False)
 
-    def func_curvature(self):
-        return u.Curvature.CONCAVE
+    def is_atom_convex(self):
+        return False
 
-    def monotonicity(self):
-        return [u.monotonicity.DECREASING]
+    def is_atom_concave(self):
+        return True
+
+    def is_incr(self,idx):
+        return True
+
+    def is_decr(self,idx):
+        return False
 
     def get_data(self):
-        return [self.β,self.x0]
+        return [self.beta]
 
     def validate_arguments(self):
-        '''Check that β>0.'''
-        if not (self.β.is_positive() and
-                self.β.is_constant() and self.β.is_scalar() and
-                self.x0.is_constant() and self.x0.is_scalar()):
-            raise ValueError('β must be a non-negative scalar constant, and x0 must a constant scalar.')
+        '''Check that beta>0.'''
+        if not (self.beta.is_positive() and
+                self.beta.is_constant() and
+                self.beta.is_scalar()):
+            raise ValueError('beta must be a non-negative scalar constant')
+
+    def _grad(self,values):
+        rows = self.args[0].size[0]*self.args[0].size[1]
+        cols = self.size[0]*self.size[1]
+        x = values[0]
+        grad_vals = np.where(x<0,1,np.exp(-x/self.beta.value))
+        return [LipschitzExp.elemwise_grad_to_diag(grad_vals,rows,cols)]
 
     @staticmethod
     def graph_implementation(arg_objs,size,data=None):
+        beta = data[0]
         x = arg_objs[0]
-        β,x0 = data[0],data[1]
-        β_val,x0_val = β.value,x0.value
 
-        if isinstance(β,Parameter):
-            β = lu.create_param(β,(1,1))
-        else:
-            β = lu.create_const(β.value,(1,1))
-        if isinstance(x0,Parameter):
-            x0 = lu.create_param(x0,(1,1))
-        else:
-            x0 = lu.create_const(x0.value,(1,1))
+        v = lu.create_var(size)
+        w = lu.create_var(size)
 
-        ξ,ψ = lu.create_var(size),lu.create_var(size)
-        one = lu.create_const(1,(1,1))
-        one_over_β = lu.create_const(1/β_val,(1,1))
-        k = np.exp(-β_val*x0_val)
-        k = lu.create_const(k,(1,1))
+        if isinstance(beta, Parameter):
+            beta = lu.create_param(beta,(1,1))
+        else:                   # Beta is constant
+            beta = lu.create_const(beta.value,(1,1))
 
-        # 1/β * (1 - exp(-β*(ξ+x0)))
-        ξ_plus_x0 = lu.sum_expr([ξ,x0])
-        minus_β_times_ξ_plus_x0  = lu.neg_expr(lu.mul_expr(β,ξ_plus_x0,size))
-        exp_ξ,constr_exp = exp.graph_implementation([minus_β_times_ξ_plus_x0],size)
-        minus_exp_minus_etc = lu.neg_expr(exp_ξ)
-        left_branch = lu.mul_expr(one_over_β, lu.sum_expr([one,minus_exp_minus_etc]),size)
+        exppart,cexp = exp.graph_implementation(
+            [lu.neg_expr(lu.div_expr(w,beta))],
+            size)
 
-        # ψ*exp(-β*r0)
-        right_branch = lu.mul_expr(k,ψ,size)
+        # negexp = lu.sum_expr(
+        #     [lu.create_const(1,(1,1)),
+        #      lu.neg_expr(exppart)])
+        negexp = lu.neg_expr(exppart)
 
-        obj = lu.sum_expr([left_branch,right_branch])
+        negexp = lu.mul_elemwise(beta,negexp)
 
-        #x-x0 == ξ + ψ, ξ >= 0, ψ <= 0
-        zero = lu.create_const(0,(1,1))
-        zero = lu.promote(zero,size)
-        constraints = constr_exp
-        x0 = lu.promote(x0,size)
-        constraints.append(lu.create_eq(x,lu.sum_expr([x0,ξ,ψ])))
-        constraints.append(lu.create_geq(ξ,zero))
-        constraints.append(lu.create_leq(ψ,zero))
+        obj = lu.sum_expr([v,negexp])
+        # print(obj)
 
-        return (obj, constraints)
+        c1 = lu.create_leq(v)
+        c2 = lu.create_geq(w)
+        c3 = lu.create_eq(x,lu.sum_expr([v,w]))
+        constraints = cexp
+        constraints.append(c1)
+        constraints.append(c2)
+        constraints.append(c3)
+
+        return (obj,constraints)

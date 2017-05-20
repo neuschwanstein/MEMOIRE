@@ -1,0 +1,209 @@
+\section{Optimisation moderne de portefeuille}
+\label{sec:portopt}
+
+L'objet de cette section est de présenter une brève introduction à quelques textes
+fondamentaux à l'intersection des mathématiques statistiques et de la gestion financière
+de portefeuille.
+
+Dans tous les cas, le problème fondamental reste essentiellement le même: un investisseur
+est doté d'une certaine fonction d'utilité $g$ (implicite ou non) qui dépend d'une
+décision $q$ ayant un effet linéaire sur le rendement aléatoire $R$. D'autre part,
+l'investisseur cherche à réduire le risque du portefeuille estimé à travers la norme
+$\|q\|^2$ (où $\|\cdot\|$ est à préciser).
+
+% L'étude scientifique de l'optimisation de portefeuille a d'abod été théorisée à partir des
+% années 1950 par Harry Markowitz. Si le modèle utilisé par Morkowitz est à bien des égards
+% trop simples pour une application robuste, il a le mérite d'être,  
+
+% Dans ce document, nous allons tenter de classifier et de répertorier la plupart des
+% méthodes ayant rapport, de près ou de loin, à l'intersection des méthodes statistiques
+% avancées et de l'apprentissage machine avec la théorie du portefeuille, en présentant pour
+% chacune d'elle leurs avantages et leurs inconvénients.
+
+\subsection{Approche statistique}
+
+Une revue de littérature sur la théorie du portefeuille serait fondamentalement incomplète
+sans l'article fondateur de Markowitz, publié en 1952 \cite{markowitz1952portfolio}. Le
+cadre théorique développé par Markowitz peut être considéré comme un cas particulier de
+notre algorithme, pour autant que l'on considère un portefeuille à un seul actif.
+
+Soit un portefeuille à $k$ actifs d'espérance de rendement $\mu\in\Re^k$ et de covariance
+$\Sigma \in \Re^{k\times k}$. Si $q \in \Re^k$ représente la répartition du portefeuille à optimiser, alors
+un investisseur \textit{markowitzien} souhaite
+\begin{equation}
+  \label{rev:marko}
+  \maximizeEquation[q]{\mu^Tq - \gamma\,q^T\Sigma q.}
+\end{equation}
+Littéralement, il cherche à maximiser le rendement espéré du portefeuille pondéré (premier
+terme) tout en minimisant, pour un certain niveau de risque $\gamma>0$, sa covariance
+totale. En ne considérant qu'un seul actif dont la variance de rendement est notée $\sigma^2$,
+le problème devient alors
+\begin{equation}
+  \maximizeEquation[q]{\mu^Tq - \gamma\,\sigma^2 q^2.}
+\end{equation}
+En recalibrant le terme de régularisation pour tenir compte de la variance $\sigma^2$, le
+problème devient identique à au problème \cit\ avec décision linéaire sur une utilité
+neutre au risque et une seule variable de marché constante à 1 (terme de biais).
+
+Le problème de Markowitz à un actif peut aussi être considéré comme une maximisation
+d'utilité sans régularisation. En effet, en définissant
+\begin{equation}
+  u(r) = r - \frac{\gamma}{\sigma^2+\mu^2}\sigma^2r^2,
+\end{equation}
+on obtient
+\begin{equation}
+  \EU(q\,R) = q \E R - \frac{\gamma}{\sigma^2+\mu^2}\sigma^2 q^2\E R^2,
+\end{equation}
+et donc, puisque $\sigma^2 + \mu^2 = \E R^2$, le problème de Markowitz s'exprime aussi comme un
+problème d'utilité espérée:
+\begin{equation}
+  \maximizeEquation[q]{\EU(qR).}
+\end{equation}
+
+Nous suggérons au lecteur intéressé par l'équivalence des diverses formulations
+d'optimisation de portefeuille dans un univers de Markowitz \cite{bodnar2013equivalence}
+et \cite{markowitz2014mean}, tous deux publiés à l'occasion du soixantième anniversaire de
+\cite{markowitz1952portfolio}.
+
+
+Dans la même veine, l'article \cite{brandt2009parametric} considère l'optimisation d'un
+portefeuille à $k$ actifs disposant de $p$ variables de marché. Avec
+$X_t \in \Re^{k \times p}$ une matrice aléatoire représentant la réalisation au temps $t$ des
+diverses variables de marché, la composition $w_t \in \Re^k$ du portefeuille sera donnée par
+\begin{equation}
+  w_t = \bar w_t + X_t q.
+\end{equation}
+La décision $q \in \Re^p$ agit donc linéairement sur les variables de marché et globalement
+sur tous les actifs. Le terme de biais $\bar w_t$ représente dans l'article original une
+composition de référence, par exemple un index lorsqu'il est question de gestion active de
+fonds. L'objectif de l'investisseur sera alors de
+\begin{equation}
+  \maximizeEquation{\E_t u(w_t^Tr_t),}
+\end{equation}
+autrement dit de choisir une décision $q$ permettant de
+\begin{equation}
+  \maximizeEquation[q \in \Re^p]{\E_t u(\bar w_t^Tr_t + r_t^TX_tq).}
+\end{equation}
+On obtient donc un objectif très proche de ce qui est proposé dans ce mémoire. Cependant,
+l'absence de régularisation dans le vecteur de décision ne permet pas de fournir à
+l'investisseur des garanties sur la performance du portefeuille. Pire, sous certaines
+formes d'utilité (par exemple risque neutre), il est évident que la solution de l'objectif
+peut avoir une amplitude non bornée!
+
+Néanmoins, une telle approche demeure simple à implémenter, laisse une grande liberté dans
+la forme paramétrique de l'utilité et évite d'avoir à calculer les deux premiers moments
+statistiques d'un univers à $k$ actifs.
+
+\subsection{Approche régularisée}
+
+D'une certaine façon, ces travaux approchent le problème de gestion de portefeuille un peu
+trop brusquement en ne laissant pas suffisament de place aux garanties
+statistiques. Autrement dit, ils présentent tous un risque de généralisation
+élevé. Comme la méthode proposée par ce mémoire, d'autres travaux ont aussi cherché à
+étudier l'importance de la régularisation des décisions dans la gestion de portefeuille.
+
+Par exemple \cite{olivares2015robust} étudie l'idée selon laquelle les coûts de
+transaction inhérents à la gestion de portefeuille peuvent être modélisés comme une
+régularisation dans l'objectif de maximisation de rendement -- minimisation de variance. Le
+problème de Markowitz \eqref{rev:marko} devient alors
+\begin{equation}
+  \maximizeEquation[q]{\mu^Tq - \gamma\,q^T\Sigma q - \kappa\|\Lambda(q-q_0)\|_p^p,}
+\end{equation}
+le troisième terme représentant les coûts de transaction comme la $p$-norme du
+rebalancement du portefeuille linéarisé par un opérateur symétrique
+$\Lambda \in \Re^{k \times k}$ et paramétré par un scalaire $\kappa$. Bien que la régularisation soit ici
+appliquée au vecteur de poids et non à une décision linéaire sur des observations, les
+auteurs parviennent empiriquement à la même conclusion, c'est-à-dire que les résultats
+hors échantillons sont mieux contrôlés. Intuitivement, un tel résultat s'explique par le
+fait qu'un gestionnaire de portefeuille soumis à des contraintes de coûts de transaction
+évitera une politique d'investissement trop ambitieuse.
+
+Cependant, l'argument demeure empirique et ne bénéficie donc pas comme ici de véritables
+garanties théoriques sur les performances hors échantillon. En outre, le modèle suggéré
+reste essentiellement markowitzien et se limite donc à maximiser une utilité quadratique,
+alors que notre modèle permet d'optimiser sur une fonction d'utilité de forme arbitraire.
+
+Plus récemment, \cite{ban2016machine} explore l'importance de la régularisation dans une
+gestion de portefeuille où le risque est représenté par une fonction
+$\mathcal{R}:\Re^k \to \Re$ agissant sur le vecteur de poids $q \in \Re^k$. Le risque est laissé à
+la discrétion de l'investisseur, mais pourrait être représenté par exemple par
+$\mathcal{R}(q) = q^T\Sigma q$ la norme de la covariance ou par sa valeur à risque
+conditionelle $\mathcal{R}(q) = \mathrm{CVar}(q)$.\footnote{La valeur à risque
+  conditionelle paramétrée par $\beta\in(0,1)$ d'une variable aléatoire $R$ (en l'occurence le
+  rendement pondéré par $q$) est une mesure de l'étalement dans les régions défavorables à
+  l'investisseur et est donné par $\E (R \mid R \leq \text{$\beta$\ieme quantile de
+    $R$})$.} L'argument offert est essentiellement le même que celui présenté à la section
+\ref{intro:risk}: si on sait que le problème empirique
+\begin{equation}
+  \maximizeEquation[q]{\hat \mu^Tq - \lambda_0\widehat{\mathcal{R}}(q)}
+\end{equation}
+converge asymptotiquement vers la solution optimale, l'absence de régularisation implique
+l'absence de garantie sur la qualité des résultats lorsque l'optimisation a lieu sur un
+nombre de points finis. La régularisation est alors exprimée comme la \textit{variance
+  empirique du risque}, \ie\ l'objectif devient
+\begin{equation}
+  \maximizeEquation[q]{\hat \mu^Tq - \lambda_0\widehat{\mathcal{R}}(q) - \lambda_1\Var(\widehat{\mathcal{R}}(q)).}
+\end{equation}
+Dans ces conditions, les auteurs démontrent que le risque encouru par la décision
+empirique régularisée $\qh$ converge elle aussi vers le risque optimal. Cependant, aucune
+borne finie n'est donnée, contrairement à ce qui est proposé dans ce mémoire.
+
+Plus près de l'objectif de ce mémoire, \cite{rudin2014big} a le mérite d'appliquer
+plusieurs théorèmes issus de l'apprentissage statistique dans un contexte de
+gestion. L'idée est en fait de coupler le problème classique du vendeur de
+journaux\footnote{Le problème du vendeur de journaux (ou \textsl{newsvendor problem})
+  cherche à minimiser les coûts de gestion d'inventaire
+  $c(p,D) = \alpha_1(D-p)^+ + \alpha_2(p-D)^+$ où $p$ est la quantité de journaux à commander,
+  $D \in \Re$ la demande aléatoire et $\alpha_1,\alpha_2 \in \Re_+$ sont respectivement les coûts liés à la
+  rupture de stock et au maintien des invendus. Sous sa forme classique, le problème
+  revient aussi à une estimation de quantile. Voir par exemple \cite{shapiro2009lectures}
+  pour une introduction au problème du vendeur de journaux dans un contexte d'optimisation
+  stochastique.} à une situation ou la décision est prise à partir d'un grand nombre de
+variables $X \in \Re^p$ liées au problème. Sous un noyau linéaire, l'objectif est alors de
+déterminer $q$ de façon à
+\begin{equation}
+  \minimizeEquation[q]{\E c(q^TX,D).}
+\end{equation}
+où $c:\Re\times\bm{D}\to\Re$ est la fonction du coût correspondant à l'achat de $q^Tx$ journaux si
+une demande aléatoire $D \in \bm{D} \subseteq \Re$ a lieu. La convexité de $c$ permet alors d'obtenir
+des garanties hors échantillon lorsqu'un terme de régularisation quadratique est ajouté à
+l'objectif:
+\begin{equation}
+  \minimizeEquation[q]{\E c(q^TX,D) + \lambda\|q\|^2.}
+\end{equation}
+De plus, ce papier cherche également à établir le rôle de la dimension $p$ de $X$ dans la
+qualité des résultats. Ainsi, à bien des égards, son objectif est très semblable au nôtre.
+
+Tous les travaux présentés jusqu'à présent font l'hypothèse que les variables aléatoires
+d'intérêt (rendement et variables de marché) sont stationnaires dans le temps. À
+l'inverse, \cite{cover1991universal} considère un univers ou les rendements sont
+distribués selon un processus arbitraire et possiblement adversariel. L'idée est alors de
+minimiser le \textit{regret} encouru par une décision scalaire d'investissement
+$q_t \in \Re$, où le regret est calculé comme étant la fortune finale obtenue en appliquant
+une décision $q_t$ par rapport à la fortune finale qui aurait été obtenue en
+appliquant une politique optimale constante $q^\star$. Autrement dit,
+\begin{equation}
+  \text{Regret}(T) \coloneqq \max_{q^\star}\sum_{t=1}^T \log(q^\star\,r_t) - \sum_{t=1}^T \log(q_t\,r_t).
+\end{equation}
+En choisissant $q_t$ à partir d'une descente de gradient (voir par exemple
+\cite{hazan2015online} pour un contexte plus général d'apprentissage en ligne) on peut
+alors garantir un regret dont la progression du regret est $\bigO(\sqrt{T})$. Un
+tel algorithme induisant un regret sous linéaire, \ie\ dominé par $\bigO(T)$, est appelé
+\textit{portefeuille universel}.
+
+\subsection{Conclusion}
+
+
+En conclusion, la nature générale de notre modèle (impliquée par la forme arbitraire de la
+fonction d'utilité) permet donc de le positionner comme une version flexible des travaux
+présentés ici. Plusieurs avantages sont ainsi regroupés: le terme de risque arbitaire, la
+stabilité des résultats consolidée par la présence de régularisation et l'admission de
+variables de marché quelconques. Cependant, notre algorithme a le désavantage de ne
+considérer un portefeuille qu'à un seul actif, contrairement à ce qui ce fait généralement
+en gestion classique de portefeuille.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "memoire"
+%%% End:

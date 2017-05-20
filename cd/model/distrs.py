@@ -1,9 +1,6 @@
-import random as rm
-import warnings
-
 import numpy as np
 import scipy as sp
-import scipy.special
+
 
 def E(d):
     try:
@@ -12,17 +9,20 @@ def E(d):
         print('Object {} is not a distribution.'.format(d))
         raise e
 
+
 def Var(d):
     try:
         return d.var()
     except AttributeError as e:
         print('Object {} is not a distribution.'.format(d))
 
+
 def Std(d):
     try:
         return np.sqrt(d.var())
     except AttributeError as e:
         print('Object {} is not a distribution.'.format(d))
+
 
 def RandomSample(X,n):
     try:
@@ -103,6 +103,7 @@ class PowerRandomVariable(UnknownDistribution):
         else:
             return self
 
+
 class SumRandomVariable(UnknownDistribution):
     def __init__(self,Xs):
         self.Xs = Xs
@@ -160,8 +161,8 @@ class DiscreteDistribution(Distribution):
         res = np.zeros_like(p)
         ks = np.linspace(0,1,self.n+1)
         for t,beg,end in zip(self.points,ks[:-1],ks[1:]):
-            res  = res + (p>=beg)*(p<end)*t
-        return res            
+            res = res + (p>=beg)*(p<end)*t
+        return res
 
     @property
     def min(self):
@@ -201,7 +202,7 @@ class UniformDistribution(Distribution):
 
     def __str__(self):
         return 'Unif(%2.2f,%2.2f)' % (self.a,self.b)
-        
+
     def __neg__(self):
         return UniformDistribution(-self.b,-self.a)
 
@@ -245,7 +246,7 @@ class NormalDistribution(Distribution):
 
     def var(self):
         return self.σ**2
-    
+
     def inverse(self,p):
         self._inverse_check(p)
         p = np.array(p)
@@ -264,7 +265,7 @@ class StudentTDistribution(Distribution):
         self.σ = σ
 
     def __str__(self):
-        if self.μ is not 0 and self.σ is not 1: 
+        if self.μ is not 0 and self.σ is not 1:
             return '%2.2f + %2.2f*Student(ν=%2.2f)' % (self.μ,self.σ,self.ν)
         elif self.μ is 0 and self.σ is not 1:
             return '%2.2f*Student(ν=%2.2f)' % (self.σ,self.ν)
