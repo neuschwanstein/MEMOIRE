@@ -29,7 +29,7 @@
 \begin{proof}
   Si on considère un déplacement de décision $\qh_1 + \Delta q$, alors par linéarité le premier
   terme de l'objectif devient $\hEN(\qh_1+\Delta q) = \hEN(\qh_1) + \hEN(\Delta q)$ et le terme de
-  régularisation devient 
+  régularisation devient
   \begin{equation}
     -\lambda/2\|\qh_1 + \Delta q\|^2 = -\lambda/2\|\qh_1\|^2 - \lambda\braket{\qh_1|\Delta q} - \lambda/2\|\Delta q\|^2.
   \end{equation}
@@ -52,6 +52,13 @@
     \frac{\lambda}{2}\|\qh - q\|^2 \leq \hEU_\lambda(\qh) - \hEU_\lambda(q).
   \end{equation}
 \end{lemme}
+
+\begin{rem}
+  Naturellement, ce résultat s'applique aussi à l'opérateur d'utilité espérée hors
+  échantillon hors échantillon $\EU_\lambda$ autour de $\qsl$, où
+  $\qsl = \argmax_q\EU_\lambda(q)$. La démonstration demeure en effet identique dans les deux
+  cas.
+\end{rem}
 
 
 
@@ -229,6 +236,24 @@
   Consulter \cite{mohri2012foundations} ou \cite{boucheron2013concentration}.
 \end{proof}
 
+\begin{lemme}[Inégalité de Shalev-Schwartz]
+  \label{lem:ss}
+  La forte concavité de $\EU_\lambda$ (voir Lemme \ref{lem:conv}) fait en sorte que pour toute
+  solution $\qh = \alg(\S_n)$, la sous optimalité dans l'objectif sera bornée avec
+  probabilité d'au moins $1-\delta$ par
+  \begin{equation}
+    \EU_\lambda(\qh^\star_\lambda) - \EU_\lambda(\qh) \leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n}
+  \end{equation}
+  où $\qh^\star_\lambda$ est la solution de
+  \begin{equation}
+    \maximizeEquation[q \in \Q]{\EU_\lambda(q).}
+  \end{equation}
+\end{lemme}
+
+\begin{proof}
+  Voir le résultat principal de \cite{sridharan2009fast}.
+\end{proof}
+
 
 \begin{lemme}[Borne sur l'équivalent certain]
   \label{lem:ce}
@@ -257,7 +282,7 @@
 \end{lemme}
 
 
-\subsection{Théorèmes 1 et 2}
+\subsection{Erreur de généralisation}
 
 \paragraph{Théorème 1.} On rappelle qu'on veut démontrer que pour tout ensemble
 d'entraînement, avec probabilité $1-\delta$, 
@@ -325,7 +350,7 @@ d'entraînement, avec probabilité $1-\delta$,
 
   \todo{Mais},
   \begin{equation}
-    \hat\zeta(\S_n) \leq \frac{2\gamma\rmax^2\xi^2}{\lambda n}
+    \E\hat\zeta(\S_n) \leq \frac{2\gamma\rmax^2\xi^2}{\lambda n}
   \end{equation}
   et donc,
   \begin{equation}
@@ -335,6 +360,61 @@ d'entraînement, avec probabilité $1-\delta$,
 \end{proof}
 ce qui correspond au résultat annoncé.
 
+\paragraph{Théorème 2.}
+
+Le Lemme \ref{lem:ce} permet alors directement d'inverser le domaine des résultats afin de
+l'exprimer en rendement et non pas en unités \textit{d'util}.
+
+
+\subsection{Théorèmes de sous optimalité}
+
+De l'inégalité de Shalev-Schwartz (Lemme \ref{lem:ss}), on sait qu'avec une probabilité
+d'au moins $1-\delta$, avec $0<\delta<1$, l'évènement suivant aura lieu:
+\begin{equation}
+  \EU_\lambda(\qsl) - \EU_\lambda(\qh) \leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n}.
+\end{equation}
+Donc de façon équivalente, on aura également
+\begin{align}
+  \EU(\qsl) - \EU(\qh) &\leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} + \frac{\lambda}{2}\|\qsl\|^2 -
+                         \frac{\lambda}{2}\|\qh\|^2\\
+                       &= \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} + \frac{\lambda}{2}\langle\qsl - \qh |
+                         \qsl + \qh\rangle\\
+                       &\leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} +
+                         \frac{\lambda}{2}\|\qsl - \qh\|\|\qsl + \qh\|\\
+                       &\leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} + \frac{\lambda}{2}\|\qsl -
+                         \qh\|\big(\|\qsl\| + \|\qh\|\big).
+\end{align}
+Cette expression peut être bornée par des constantes si on considère d'abord le Lemme
+\ref{lem:dl} duquel on sait que $\|\qh\|$ et $\|\qsl\|$ sont bornés par
+$\rmax\xi/\lambda$. D'autre part, en combinant la propriété de forte convexité de
+$\EU_\lambda$ (Lemme \ref{lem:conv}) et l'inégalité de Shalev Schartz, on aura, toujours avec le
+même $\delta$,
+\begin{equation}
+  \frac{\lambda}{2}\|\qh - \qsl\|^2 \leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n},
+\end{equation}
+ou encore
+\begin{equation}
+  \|\qh - \qsl\| \leq \frac{4\gamma\xi}{\lambda}\sqrt\frac{32+\log(1/\delta)}{n}.
+\end{equation}
+
+Ainsi, en simplifiant, 
+\begin{equation}
+  \label{arg1}
+  \EU(\qsl) - \EU(\qh) \leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} +
+  \frac{4\gamma\rmax\xi^2}{\lambda}\sqrt\frac{32+\log(1/\delta)}{n}.
+\end{equation}
+Mais d'autre part, par définition de $\qsl$, $\EU_\lambda(\qs) \leq \EU_\lambda(\qsl)$, \ie,
+\begin{align}
+  \label{arg2}
+  \EU(\qs) - \EU(\qsl) &\leq \frac{\lambda}{2}\|\qs\|^2 - \frac{\lambda}{2}\|\qsl\|^2 \leq \frac{\lambda}{2}\|\qs\|^2
+\end{align}
+Et donc en combinant les inégalités \eqref{arg1} et \eqref{arg2}:
+\begin{equation}
+  \EU(\qs) - \EU(\qh) \leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} +
+  \frac{4\gamma\rmax\xi^2}{\lambda}\sqrt\frac{32+\log(1/\delta)}{n} + \frac{\lambda}{2}\|\qs\|^2,
+\end{equation}
+ce qui correspond bien au résultat annoncé. De plus, le Lemme \ref{lem:ce} permet une fois
+de plus d'exprimer ce résultat en terme d'équivalent certain.
 
 
 

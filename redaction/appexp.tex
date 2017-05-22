@@ -119,32 +119,6 @@
 % \end{numex}
 
 
-\begin{lemme}
-L'erreur de généralisation du problème averse au risque est bornée par celle du problème
-neutre au risque:
-\begin{equation}
-  \hEU(\qu) - \EU(\qu) \leq \gamma(\hEN(\qn) - \EN(\qn)).
-\end{equation}
-\end{lemme}
-\begin{proof}
-  Puisque $u$ est monotone, on peut tout d'abord noter que pour tout $r+\Delta \in \R$, on a
-  l'inégalité $u(r+\Delta) \leq u(r) + \Delta \partial u(r)$. Ainsi, pour deux variables aléatoires $R_1,R_2 \in
-  \R$, en posant $\Delta = R_1-R_2$, on a nécessairement
-  \begin{equation}
-    u(R_1) - u(R_2) \leq \partial u(R_2) (R_1 -R_2) \leq \gamma(R_1 - R_2),
-  \end{equation}
-  par définition du coefficient Lipschitz. On tire donc
-  \begin{equation}
-    \E u(R_1) - \E u(R_2) \leq \gamma(\E R_1 - \E R_2). 
-  \end{equation}
-  En appliquant cette inégalité aux opérateurs $\hEU$ et $\EU$ on obtient alors
-  \begin{align}
-    \hEU(\qu) - \EU(\qu) &\leq \gamma(\hEN(\qu) - \EN(\qu))\\
-                         &= \gamma\lambda(\braket{\qh_1|\qu} - \braket{\qsl|\qu}).
-  \end{align}
-  Mais par le \lemref{lem:rn}, $\braket{\qh_1|\qu} \geq 0$ et $\|\qu\| \leq 2\|\qh_1\|$. 
-\end{proof}
-
 
 
 %%% Local Variables:

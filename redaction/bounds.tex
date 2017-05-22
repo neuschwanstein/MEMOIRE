@@ -1,25 +1,25 @@
 \section{Garanties statistiques}
 \label{sec:bound}
 
-La section précédente été dédiée à l'approche algorithmique du problème: comment, donnés
-un ensemble d'entraînement et un espace de décision $\Q$, une fonction de décision
-$\hat q:\X \to \Re$ permettant de prescrire un investissment pouvait être déterminée. Cette
-section sera consacrée aux garanties statistiques de cette solution. Dans un premier
-temps, une étude de la stabilité de l'algorithme d'optimisation permettra de dériver une
-borne de généralisation sur la performance hors-échantillon (Section \ref{b:gen}). Par la
-suite, le problème sera approché d'un point probabiliste (en terme de variables
-aléatoires) afin de comparer les performances de la décision optimale d'investissement sur
-$M$ par rapport à la décision empirique (Section \ref{b:sopt}). Enfin, la Section
-\ref{b:dim} portera sur l'influence de la dimensionalité de l'espace $\Q$ sur la qualité
-des bornes alors obtenues, et don
+La section précédente était dédiée à l'approche algorithmique du problème: comment, donnés
+un ensemble d'entraînement et un espace de décision $\Q$ induit par un noyau $\kappa$, une
+fonction de décision $\hat q:\X \to \Re$ permettant de prescrire un investissment pouvait être
+déterminée. Cette section sera consacrée aux garanties statistiques de cette
+décision $\qh$. Dans un premier temps, une étude de la stabilité de l'algorithme d'optimisation
+permettra de dériver une borne de généralisation sur la performance hors-échantillon
+(Section \ref{b:gen}). Par la suite, le problème sera approché d'un point probabiliste (en
+terme de variables aléatoires) afin de comparer les performances de la décision optimale
+d'investissement sur $M$ par rapport à la décision empirique (Section
+\ref{b:sopt}). Enfin, la Section \ref{b:dim} portera sur l'influence de la dimensionalité
+de l'espace $\Q$ sur la qualité des bornes alors obtenues. 
 
-Les bornes qui seront dérivées n'auront de signification qu'en terme d'\textit{util},
-c'est à dire la dimension de $u(r)$ pour un certain rendement. Comme cette notion n'a en
-soi aucune signification tangible, un théorème sera finalement introduit afin d'obtenir
-pour chacune des bornes une version sous forme de rendement équivalent.
+Dans un premier temps, ces bornes seront données en terme d'utilité espérée
+$\nEU$. Cependant, comme discuté en introduction, l'utilité étant adimensionelle, un
+théorème sera énoncé afin de pouvoir exprimer les garanties de performance en terme de
+rendement ou \textit{d'équivalent certain} $\nCE = u^{-1}(\nEU)$. 
 
 
-\paragraph{Hypothèses et discussion}
+\subsection{Hypothèses et discussion}
 
 Certaines hypothèses devront d'abord être formulées afin d'être en mesure d'obtenir des
 résultats pertinents: ce sera en fait le prix à payer pour l'absence de contraintes sur la
@@ -65,11 +65,9 @@ ces résultats. En outre, une utilité qui serait définie par morceaux linéair
 parfaitement acceptable. 
 
 
-\subsection{Bornes de généralisation}
+\subsection{Garantie de généralisation}
 \label{b:gen}
 
-
-\paragraph{Exposition du problème}
 
 Soit $\Q$ un espace de décision induit par un noyau $\kappa : \X \times \X \to \Re$ et soit un ensemble
 d'entraînement $\S_n = \{(x_i,r_i)\}_{i=1}^n \sim M^n$ échantilloné à partir de la
@@ -77,170 +75,52 @@ distribution de marché. Alors on peut définir \textit{l'algorithme de décisio
 $\alg:\M^n \to \Q$ par
 \begin{equation}
   \label{b:basic}
-  \alg(\S_n) = \argmax_{q \in \Q} \left\{\hEU(\S_n,q) - \lambda\nq{q}^2\right\}
+  \alg(\S_n) = \argmax_{q \in \Q} \hEU_\lambda(\S_n,q)
 \end{equation}
 où
 \begin{equation}
-  \hEU(\S_n,q) \coloneqq n^{-1}\sumi u(r_i\,q(x_i)).
+  \hEU_\lambda(\S_n,q) \coloneq \hEU(\S_n,q) - \frac{\lambda}{2}\|q\|^2
 \end{equation}
-La question qui se pose naturellement est de savoir dans quelle mesure une fonction de
-décision $\hat q = \alg(\S_n)$ est capable d'offrir à un investisseur une utilité espérée
-comparable à celle qu'il aurait observée au sein de l'ensemble d'entraînement. Il serait
-aussi souhaitable qu'une telle garantie soit indépendante de l'ensemble d'entraînement
-$\S_n$. Autrement dit, on cherche à déterminer pour tout échantillon $\S_n$ une borne
-probabiliste $\hat\Omega_u(\delta,n,\ldots)$ s'appliquant avec probabilité d'au moins
-$1-\delta$ sur l'erreur de généralisation de $\hat q = \alg(\S_n)$:
+et
 \begin{equation}
-  \hat\zeta_u(\S_n) \leq \hat\Omega_u(\delta,n,\ldots),
+  \hEU(\S_n,q) \coloneq n^{-1}\sumi u(r_i\,q(x_i)).
 \end{equation}
-où
-\begin{equation}
-  \label{b:zeta}
-  \hat\zeta_u(\S_n) \coloneqq \hEU(\S_n,\alg(\S_n)) - \EU(\alg(\S_n))
-\end{equation}
-représente l'erreur de généralisation et
-\begin{equation}
-  \EU(q) \coloneq \E u(R\cdot q(X))
-\end{equation}
-l'utilité espérée \textit{hors échantillon} d'une politique d'investissement $q$.
 
-Bien que ces résultats soient intéressants d'un point de vue théorique, on veut d'un point
-de vue pratique pouvoir offrir le même genre de garanties $\hat\Omega_r(\delta,n,\ldots)$ à un
-gestionnaire de portefeuille sur son rendement équivalent hors échantillon par rapport au
-rendement équivalent en échantillon:
+On peut alors définir l'erreur de généralisation $\hat\zeta$ de l'ensemble d'entraînement par
 \begin{equation}
-  \CE(\alg(\S_n)) \geq \hCE(\S_n,\alg(\S_n)) - \hat\Omega_r(\delta,n,\ldots),
+  \hat\zeta(\S_n) \coloneq \hEU(\S_n,\alg(\S_n)) - \EU(\alg(\S_n)).
 \end{equation}
-où
-\begin{equation}
-  \CE(q) \coloneq u^{-1}(\EU(q))
-\end{equation}
-indique le rendement équivalent espéré hors échantillon et
-\begin{equation}
-  \hCE(\S_n,q) \coloneq u^{-1}(\hEU(\S_n,q))
-\end{equation}
-le rendement équivalent en échantillon $\S_n$ suivant une politique $q$. 
-
-\paragraph{Intuition et éléments de preuve}
-
-En fait, la motivation derrière ces hypothèses est la suivante: combinées à l'élément de
-régularisation, elles parviennent d'une part à borner la perte que peut entraîner la prise
-de décision dans le pire cas et d'autre part à borner la différence entre deux fonctions
-de décision entraînées sur des ensembles à peu près identiques.
+Ainsi, plus l'erreur de généralisation $\hat\zeta$ est élevée, plus l'investisseur sera déçu
+par l'utilité espérée de la fonction de décision $\qh$ par rapport à ce qu'il aura observé
+en échantillon. Le théorème suivant établi la différence maximale de ces deux mesures de
+performance:
 
 \begin{thm}[Borne sur l'erreur de généralisation (util)]
-  L'erreur de généralisation sur $\qh$ est bornée par
+  Avec probabilité d'au moins $1-\delta$, 
   \begin{equation}
-  \label{b:borneu1}
-  \hEU(\S_n,\alg(\S_n)) - \EU(\alg(\S_n)) \leq \hat \Omega_u,
-\end{equation}
-où
-\begin{equation}
-  \label{b:borneu2}
-  \hat\Omega_u = \frac{\rmax^2\xi^2}{2\lambda}\left(\frac{\gamma^2}{n} + (2\gamma^2+\gamma+1)\sqrt{\frac{\log(1/\delta)}{2n}}\right).
-\end{equation}
+    \hat\zeta(\S_n) \leq \frac{2\gamma\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
+      1)\rmax^2\xi^2}{\lambda}\sqrt{\frac{\log(1/\delta)}{2n}}.
+  \end{equation}
 \end{thm}
 
-Considérons deux ensembles d'entraînement: $\S_n \sim M^n$ et $\S'_n$, où $\S'_n$ ne diffère
-de $\S_n$ que par un seul point (par exemple le $j$-ème point serait rééchantilloné de la
-distribution de marché $M$). De l'algorithme $\alg$ on dérivera alors deux décisions:
-$\hat q$ et $\hat q'$. Pour $n$ suffisament grand, on peut alors s'attendre à ce que
-l'utilité dérivée de ces deux décisions soit relativement proche, et ce, pour toute
-observation. On aurait alors une borne $\beta(n)$ telle que pour tout $(x,r) \sim M$,
+Tel que discuté, un investisseur sera avant tout concerné par l'erreur de généralisation
+hors échantillon exprimée en \textit{équivalent certain:}
 \begin{equation}
-  |u(r\,\hat q(x)) - u(r\,\hat q'(x))| \leq \beta.
+  \hat\zeta_e(\S_n) \coloneq \hCE(\S_n,\alg(\S_n)) - \CE(\alg(\S_n))
 \end{equation}
-C'est ce qu'on appelle dans la littérature la \textit{stabilité algorithmique}. La plupart
-des algorithmes régularisés classiques disposent par ailleurs d'une telle stabilité. En
-particulier, le terme de régularisation $\lambda \nq{q}^2$, combiné à la continuité Lipschitz de
-$u$ font en sorte que $\beta = \O(n^{-1})$. Par le Lemme \ref{lem:stab}, p.~\pageref{lem:stab}
-(une application directe du théorème de Bousquet), on obtient effectivement
-\begin{equation}
-  \beta \leq \frac{\gamma^2\rmax^2\xi^2}{2\lambda n}.
-\end{equation}
+où $\hCE = u^{-1} \circ \hEU$ et $\CE = u^{-1} \circ \EU$. Le Théorème 2 fournit alors à
+l'investisseur la déviation maximale que peut subir l'équivalent certain hors échantillon
+par rapport au rendement équivalent en échantillon.
 
-Dotée de cette stabilité de $\alg$, la différence dans l'erreur de
-généralisation de $\S_n$ et $\S_n'$ peut alors être bornée:
-\begin{align}
-  |\hat\zeta(\S_n) - \hat\zeta(\S_n')| &= |\EU(\hat q) - \EU(\hat q') + \hEU(\S_n,\hat q) - \hEU(\S_n',\hat q')|\\
-                               &\leq |\EU(\hat q) - \EU(\hat q')| + |\hEU(\S_n,\hat q) -
-                                 \hEU(\S_n',\hat q')|. \label{b:p1}                         
-\end{align}
-Or, par le théorème de Jensen appliqué à la fonction valeur absolue, on obtient du premier
-terme que
-\begin{align}
-  |\EU(\hat q) - \EU(\hat q')| &= |\E(u(R \cdot \hat q(X)) - u(R \cdot \hat q'(X)))|\\
-                               & \leq \E(|u(R\cdot \hat q(X)) - u(R \cdot \hat q'(X)|)\\
-                               & \leq \beta,
-\end{align}
-par définiton de la stabilité. Quant au deuxième terme de \eqref{b:p1} on peut le borner
-de la même façon:
-\begin{align}
-  &|\hEU(\S_n,\hat q) - \hEU(\S_n',\hat q')|\\
-  &\qquad = n^{-1}\left|\sumi \mathbb{I}_{i\neq j}u(r_i\,\hat q(x_i)) + u(r_j\,\hat q(x_j)) - \sumi
-    \mathbb{I}_{i\neq j}u(r_i\,\hat q'(x_i)) - u(r_j'\,\hat q'(x_j'))\right|\\
-  &\qquad \leq n^{-1}\left(| u(r_j\,\hat q(x_j) - u(r_j'\,\hat q'(x_j'))| +\sumi \mathbb{I}_{i\neq
-    j}\big|u(r_i\,\hat q(x_i)) - u(r_i\,\hat q'(x_i))\big|\right)\\
-  &\qquad \leq n^{-1}\left(| u(r_j\,\hat q(x_j) - u(r_j'\,\hat q'(x_j'))| + (n-1)\beta\right).
-\end{align}
-Considérons le premier terme. Par le Lemme \ref{lem:bqhat}, p.~\pageref{lem:bqhat}, on
-sait que $\hat q(x) \leq (2\lambda)^{-1}\rmax\xi^2$ et que $|R|\leq\rmax$. On peut donc borner cette
-différence par la différence dans l'utilité dérivée par la meilleure décision
-d'investissement sur le meilleur rendement et sur le pire rendement. Par hypothèse
-Lipschitz et de sur-gradient de 1 à $r=0$, on sait que pour $r>0, u(r)<r$ et que pour
-$r<0$, $\gamma r \leq u(r)$. On peut donc conclure que
-\begin{align}
-  |u(r_j\,\hat q(x_j) - u(r_j'\,\hat q'(x_j')| &\leq u((2\lambda)^{-1}\rmax^2\xi^2) -
-                                                 u(-(2\lambda)^{-1}\rmax^2\xi^2)\\
-  & \leq (2\lambda)^{-1}(\gamma+1)\rmax^2\xi^2.
-\end{align}
-Ce qui entraîne donc que
-\begin{align}
-  |\hEU(\S_n,\hat q) - \hEU(\S_n',\hat q')| &\leq \frac{\gamma+1}{2\lambda n}\rmax^2\xi^2 +
-                                              \frac{n-1}{n}\beta\\
-                                            &\leq \beta + \frac{\gamma+1}{2\lambda n}\rmax^2\xi^2,
-\end{align}
-d'où, après quelques simplifications algébriques, on peut enfin tirer que
-\begin{equation}
-  |\hat\zeta(\S_n) - \hat\zeta(S'_n)| \leq \beta(2\gamma^2 + \gamma + 1).
-\end{equation}
-Ainsi la différence dans l'erreur de généralisation est de convergence $\O(n^{-1})$. À ce
-stade, la démonstration est presque complète, puisqu'en appliquant l'inégalité de
-concentration de McDiarmid, on obtient que pour tout $\S_n$,
-\begin{equation}
-  \pp\{\hat\zeta(\S_n) \geq \epsilon + \E_{\S_n}\hat\zeta(\S_n)\} \leq \exp\left(-\frac{2\epsilon^2}{n\beta^2(2\gamma^2+\gamma+1)^2}\right),
-\end{equation}
-ce qui revient à dire qu'avec probabilité $1-\delta$:
-\begin{equation}
-  \hat\zeta(\S_n) < \E_{\S_n}\hat\zeta(\S_n) + \frac{\sqrt{n}\beta(2\gamma^2+\gamma+1)\log(1/\delta)}{2}.
-\end{equation}
-Or, $\E_{\S_n}\hat\zeta(\S_n) \leq \beta$ (voir \cite{mohri2012foundations} pour une preuve technique
-mais complète), d'où on a finalement la borne recherchée.
-% \begin{equation}
-%   \label{b:borneu1}
-%   \hEU(\S_n,\alg(\S_n)) - \EU(\alg(\S_n)) \leq \hat \Omega_u,
-% \end{equation}
-% où
-% \begin{equation}
-%   \label{b:borneu2}
-%   \hat\Omega_u = \frac{\rmax^2\xi^2}{2\lambda}\left(\frac{\gamma^2}{n} + (2\gamma^2+\gamma+1)\sqrt{\frac{\log(1/\delta)}{2n}}\right).
-% \end{equation}
+\begin{thm}[Borne sur l'erreur de généralisation (rendement)]
+  Avec probabilité d'au moins $1-\delta$,
+  \begin{equation}
+    \hat\zeta_e(\S_n) \leq \frac{1}{\partial u(\nhCE)}\left( \frac{2\gamma\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
+        1)\rmax^2\xi^2}{\lambda}\sqrt{\frac{\log(1/\delta)}{2n}}\right) 
+  \end{equation}
+  où $\nhCE = \hCE(\S_n,\alg(\S_n))$. 
+\end{thm}
 
-
-\paragraph{Équivalent certain}
-
-À ce point-ci, il ne reste plus qu'à inverser le domaine de cette garantie pour l'exprimer
-en unités de rendements. En effet, si à partir d'un échantillon d'entraînement on a pu
-calculer un rendement équivalent $\nhCE = u^{-1}(\nhEU)$, en utilisant le résultat du
-Lemme \ref{lem:ce}, p.~\pageref{lem:ce}, un investisseur aura un rendement équivalent hors
-échantillon $\nCE$ tel que
-\begin{equation}
-  \nCE \geq \nhCE - \O(1/(\lambda\sqrt{n})).
-\end{equation}
-De façon explicite:
-\begin{equation}
-  \nCE \geq \nhCE - \partial u^{-1}(\nhCE)\cdot \frac{\rmax^2\xi^2}{2\lambda}\left(\frac{\gamma^2}{n} + (2\gamma^2+\gamma+1)\sqrt{\frac{\log(1/\delta)}{2n}}\right).
-\end{equation}
 Cette borne permet ainsi d'appréhender dans quelle mesure un large échantillonage est
 nécessaire pour obtenir un degré de confiance élevé. On notera l'influence de plusieurs
 facteurs sur la qualité de la borne (la discussion sur l'influence du terme $\rmax^2\xi^2$
@@ -503,42 +383,6 @@ il devient plus juste d'indiquer
 \begin{equation}
   \Omega = \O(p^k/\lambda\sqrt{n}).
 \end{equation}
-
-
-\paragraph{Introduction au cas linéaire}
-
-\todo{Ne pas lire cette section!!}
-Pour le moment, nous allons considérer le cas plus simple où $\Q = \X^*$, c'est à dire que
-le problème revient simplement à 
-\begin{equation}
-  \maximizeEquation[q \in \Re^p]{n^{-1}\sumi r_i\,q^Tx_i - \lambda\|q\|^2.}
-\end{equation}
-Pour simplifier la présentation, une utilité neutre au risque sera considérée comme cas
-limite au problème plus général (voir lemme de borne\cit).
-
-D'un point de vue probabiliste, on peut définir $\qsh$ comme la solution de
-\begin{equation}
-  \maximizeEquation[q \in \Re^p]{\E(R\,X^Tq) - \lambda\|q\|^2,}
-\end{equation}
-d'où on tire
-\begin{equation}
-  q^\star_\lambda = \frac{1}{2\lambda}\Cov(R,X),
-\end{equation}
-puisque les deux variables sont centrées. On retrouve alors l'inégalité montrée en lemme
-\cit (nécessaire??)
-Considérons maintenant $P$ le rendement aléatoire obtenu en utilisant la décision $\qsh$:
-\begin{equation}
-  P = \frac{1}{2\lambda}R\,X^T\Cov(R,X).
-\end{equation}
-On a alors $\E P = 1/2\lambda\,\Cov^2(R,X)$.
-
-Puisque toutes nos variables sont centrées et réduites,
-\begin{equation}
-  \Cov(R,X) = \sumj\E R\,X_j.
-\end{equation}
-
-En supposant que notre problème est pleinement déterminé en supposant l'existance d'une
-matrice $A$ telle que $R = AX$
 
 
 \subsection{Note bibliographique}
