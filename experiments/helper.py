@@ -26,6 +26,16 @@ def conv(n,p):
     return insample,outsample
 
 
+def solve_k(K,r,u,lamb=1):
+    n = len(r)
+    a = cvx.Variable(n)
+    obj = 1/n * cvx.sum_entries(u.cvx_util((K@r)*a)) - lamb/2 * cvx.quad_form(a,K)
+    prob = cvx.Problem(cvx.Maximize(obj))
+
+    prob.solve()
+    return a.value.A1
+
+
 def solve(ts,u=RiskNeutralUtility(),lamb=1):
     if len(ts.shape) == 3:
         m,n,p = ts.shape

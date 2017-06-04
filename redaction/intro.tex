@@ -1,98 +1,95 @@
 \section{Introduction}
 \label{sec:intro}
 
+\epigraph{For five years, Li's formula, known as a Gaussian copula function, looked like
+  an unambiguously positive breakthrough, a piece of financial technology that allowed
+  hugely complex risks to be modeled with more ease and accuracy than ever before. [...]
+  Then the model fell apart.}{\textit{Wired Magazine -- Recipe for Disaster: The Formula
+    That Killed Wall Street}}
+
+
 \subsection{Avant propos}
 
-% On peut distinguer les mathématiques financières en deux classe : le côté vente et le côté
-% achat. Le côté vente cherche à déterminer le juste prix d'un instrument lui permettant de
-% répliquer les profits et pertes découlant de la vente de cet instrument. Le côté achat
-% cherche à établir un portefeuille spéculatif dont l'objectif est de maximiser le rendement
-% et d'en diminuer le risque.
+Il est maintenant indiscutable que l'intersection des statistiques et de l'informatique
+jouent un rôle fondamental dans la gestion de portefeuille. Ainsi, le \textsl{Wall Street
+  Journal}, dans une série consacrée au rôle croissant de l'investissement algorithmique,
+déclare que
+\begin{displayquote}
+  En utilisant des ordinateurs surpuissants pour construire des modèles abscons, ces
+  \textit{traders} quantitatifs sont en mesure d'analyser une quantité de données beaucoup
+  plus vaste que ce qu'un homme ne pourrait jamais assimiler. Ils siphonnent et classent
+  des trillions de gigaoctets de données. Et maintenant, on les entraîne à apprendre de
+  leurs succès et de leurs erreurs. [...] Ces \textit{quants} [lire: algorithmes
+  d'investissement] sont devenus si puissants qu'ils contrôlent maintenant environ un
+  tiers des échanges sur les marchés boursiers américains.\footnote{Wall Street
+    Journal. 21 mai 2017. \textit{Meet the New Kings of Wall Street -- How machines and
+      their masters are rewiring the investment world}. Disponible à {\scriptsize
+      \url{https://www.wsj.com/articles/the-quants-meet-the-new-kings-of-wall-street-1495389163}}.}
+\end{displayquote}
+Et pour cause: jamais la puissance de calcul n'a été si impressionnante, ni l'accès à
+l'information si peu chère. Construire un modèle d'investissement devient presqu'un jeu
+d'enfant, qu'on peut implémenter à peu de frais. Et puis il n'y a qu'à constater que les
+plus grands fonds de couverture américains sponsorisent massivement des conférences en
+apprentissage machine\footnote{Par exemple : {\scriptsize
+    \url{https://nips.cc/Conferences/2016/Sponsors}}}.
 
-% Historiquement, le côté vente a été propulsé par la mise en place de modèles mathématiques
-% reposant sur deux hypothèses : l'absence d'arbitrage et le processus stochastique
-% modélisant les rendements du sous jacent à l'instrument. Si une de ces deux hypothèses
-% s'avère fausse, alors le prix qui aura été déterminé sera à son tour inexact et le vendeur
-% sera susceptible de 
+Mais alors que chaque fond privé peut y aller de sa propre stratégie, ce ne sont pas là
+des modèles universels qui garantissent des revenus sans ne prendre aucun risque. Ou si
+c'est le cas, il y a alors une brèche dans l'hypothèse d'absence d'arbitrage qui devra
+nécessairement être colmatée par des fonds rivaux. Quoi qu'il en soit, ces
+\textit{algorithmes d'investissement} peuvent faire des erreurs et sont forcément exposés
+à toute sorte de risques.
 
-% L'objet de ce mémoire est l'étude d'une nouvelle 
+La contribution de ce mémoire est de présenter un \textit{algorithme d'investissement}
+robuste et souple permettant, non pas de garantir des rendements, mais bien de garantir
+une intervalle de rendements possibles, tout en tenant compte des préférences de risque
+d'un investisseur. \textit{Grosso modo} donc, ce mémoire propose une décision
+d'investissement obtenue par \textit{entraînement} sur des observations du marché qui
+permet par la suite de suggérer dans quelle proportion un portefeuille devrait être
+consacré à un certain titre risqué.
 
-% Essentiellement, un investisseur n'a qu'un seul objectif: maximiser ses rendements et
-% diminuer ses risques. Par exemple, une institution pourrait être tentée d'investir une
-% partie de sa richesse dans l'achat ou la vente à découvert de droits de propriétés (ou
-% actions) d'une firme. La décision prise se fera par exemple suite à une analyse
-% fondamentale (comptable) qui déterminera la valeur intrinsèque de l'action. Si l'analyste
-% juge que la valeur intrinsèque est inférieure au prix affiché sur les marchés boursiers,
-% alors achat il y aura. Par contre, une telle analyse ne tient pas forcément compte des
-% risques associés à la décision
+Cette section fera office d'introduction aux hypothèses qui seront faites et aux questions
+qu'on cherchera à résoudre ici. Par la suite, la Section \ref{sec:review} présentera une
+revue de littérature consacrée à la gestion de portefeuille statistique et mûe par les
+données. Puis, la Section \ref{sec:kernel} présentera en détails l'algorithme permettant
+de choisir une fonction de décision et les choix qui doivent être posés afin d'obtenir un
+modèle satisfaisant. La Section \ref{sec:bound} fera une analyse détaillée des garanties
+qu'offrent alors une telle fonction de décision. Ces garanties seront finalement éprouvées
+dans un cadre expérimental à la Section \ref{sec:emp}. Enfin, la Section
+\ref{sec:conclusion} sera l'occasion de conclure et d'offrir des idées de travaux
+supplémentaires permettant d'étoffer le modèle.
 
-% Dans les années 1990, le monde de la finance à vu apparaître une nouvelle façon de faire,
-% inédite jusqu'alors. En posant deux hypothèses, une institution était soudainement en
-% mesure de déterminer la valeur exact d'une option sur un titre financier et d'autre part
-% de déterminer un mécanisme de couverture permettant de répliquer les profits et pertes de
-% la vente de cette option. Des institutions ont ainsi pu réaliser d'énormes profits  titre.  tout en s'assurant une couverture sur
-% les profits et pertes de ce sous-jacent.
-
-% L'objet de ce mémoire est d'introduire un algorithme de gestion de portefeuille à un actif
-% inspiré des méthodes d'apprentissage machine modernes. Plusieurs caractéristiques viennent
-% distinguer cet algorithme des méthodes classiques d'optimisation de portefeuille: en
-% premier lieu, on fera l'hypothèse d'une \textit{loi de marché} probabiliste et multivariée
-% dont les réalisations représentent 
-
-% Les \textit{mathématiques financières} telles qu'elles sont professées de nos jours
-% reposent sur le simple principe d'absence d'arbitrage. Ainsi, une institution financière
-% peut, à l'aide d'arguments issus du calcul stochastique, \textit{tarifer} une option
-% vendue à un client en s'assurant d'autre part une \textit{couverture de risque} qui
-% balance les profits et pertes. Ainsi, en vendant une option un peu plus chère que son prix
-% mathématique cette institution peut elle garantir un revenu sans risque. Une hypothèse
-% doit alors cependant être posée, celle de la distribution du processus stochastique
-% modélisant les rendements du sous-jacent de l'option.
-
-% Ce mémoire aborde les choses différement. Un modèle sera proposé
-
-Ce mémoire aborde les choses différement. Il n'est plus question de \textit{tarifer} un
-instrument financier par hypothèse d'absence d'arbitrage, mais plutôt de déterminer dans
-quelle mesure un investissement devrait être considéré en supposant la présence
-d'arbitrage dans le marché. La différence est ici 
-
-D'autre part, la théorie moderne de portefeuille, introduite par Markowitz, 
-
-\todo{Discuter du rôle croissant que jouent l'informatique et les statistiques dans la
-  construction de portefeuille. Contraster avec les math. stochastiques. Citer Simons et
-  cet article de Quandl selon lequel data is the new shit.}
 
 
 \subsection{Exposition du problème et hypothèses}
 
 Ce mémoire vise donc à établir clairement et rigoureusement comment un investisseur averse
 au risque disposant \textit{d'information complémentaire} au \textit{marché} peut utiliser
-cette information pour accroître son \textit{utilité espérée} ou, de façon équivalente,
-son \textit{rendement équivalent certain}.
-
-\subsubsection{Modélisation du marché}
+cette information pour accroître son \textit{utilité espérée}, qu'on peut traduire par son
+\textit{rendement équivalent certain}.
 
 Nous entendrons ici par \textit{marché} n'importe quel type d'actif financier ou
-spéculatif dans lequel on peut investir une partie de sa fortune dans l'espoir de la voir
-fructifier au cours d'une période de temps arbitraire. Ainsi, tout au long de l'exposé
-théorique qui suivra, il peut être pertinent d'avoir en tête les rendements quotidiens
-issus des grands indices boursiers (par exemple les 500 plus grandes capitalisations
-américaines). Cependant, le traitement qui sera développé pourrait tout aussi bien
-s'appliquer à une action cotée en bourse dont on considère les rendements mensuels.
-Mathématiquement, l'idée de marché peut ainsi être réduite à celle d'une variable
-aléatoire $R(t)$ décrivant l'évolution du rendement de l'actif en question.
+spéculatif dans lequel un investisseur peut investir une partie de sa fortune dans
+l'espoir de la voir fructifier au cours d'une période de temps arbitraire. Ainsi, tout au
+long de l'exposé théorique qui suivra, il peut être pertinent d'avoir en tête les
+rendements quotidiens issus des grands indices boursiers (par exemple les 500 plus grandes
+capitalisations américaines). Cependant, le traitement qui sera développé pourrait tout
+aussi bien s'appliquer à une action cotée en bourse dont on considère les rendements
+mensuels.  Mathématiquement, l'idée de marché peut ainsi être réduite à celle d'un
+processus aléatoire $R(t)$ décrivant l'évolution du rendement de l'actif en question.
 
 Relativement à l'idée de marché, nous ferons également l'hypothèse que l'univers a une
-influence sur ces rendements. Il serait par exemple raisonnable de croire que le prix du
-pétrole a une influence sur l'évolution du rendement du marché américain. De la même
-façon, l'annonce d'un scandale aura à son tour des répercussions sur la valeur du titre de
-la compagnie dont il est l'objet. En outre, il a été montré par Fama et French que le
-rendement d'une action pouvait s'expliquer comme une combinaison de quelques facteurs
-fondamentaux (la taille de l'entreprise, le risque de marché et le ratio cours/valeur). On
-peut alors considérer un vecteur d'information $\vec X(t) = (X_1(t), X_2(t), \dots)$ dont
-chaque composante représente une information particulière qu'on appelera \textit{variable
-  de marché}. En outre, comme pour le rendement $R(t)$, $\vec X(t)$ peut être également
-conçu comme une variable aléatoire multidimensionelle. D'un point de vue probabiliste, il
-est donc naturel de considérer la loi jointe entre les rendements $R(t)$ d'une part et
+influence sur les réalisation de ces rendements. Il serait par exemple raisonnable de
+croire que le cours du pétrole ou certains facteurs économiques viennent affecter les
+aléas boursiers d'une compagnie aérienne. De la même façon, l'annonce d'un scandale aura à
+son tour des répercussions sur la valeur du titre de la compagnie dont il est l'objet. En
+outre, il a été montré par Fama et French (voir \cite{fama1996multifactor}) que le
+rendement d'une action pouvait s'expliquer comme une combinaison linéaire de quelques
+facteurs fondamentaux (la taille de l'entreprise, le risque de marché et le ratio
+cours/valeur). On peut alors considérer un vecteur aléatoire d'information
+$\vec X(t) = (X_1(t), X_2(t), \dots)$ dont chaque composante représente une information
+particulière qu'on appelera \textit{variable de marché}. D'un point de vue probabiliste,
+il est donc naturel de considérer la loi jointe entre les rendements $R(t)$ d'une part et
 $\{\vec X(\tau) \mid \tau < t\}$ l'ensemble des réalisation des évènements antérieurs à
 $t$ d'autre part. Le processus joint de ces deux évènements sera désormais défini comme
 \textit{la loi de marché}, ou simplement le marché et sera noté $M(t)$.
@@ -121,10 +118,10 @@ Dans ce qui suit, nous supposerons que le vecteur d'information $X$ est formé d
 variables aléatoires réelles $(X_1,\ldots,X_p)$ et est supporté par un domaine
 $\X \subseteq \Re^p$. Les réalisations de $X$ seront notées $x \sim X$. La variable de rendement
 aléatoire $R$ sera supportée par $\R \subseteq \Re$ et une réalisation particulière sera notée
-$r_i \sim R$.  La loi de marché sera donc supporté par $\M\coloneqq \R \times \X$ et pourra être
+$r \sim R$.  La loi de marché sera ainsi supportée par $\M \coloneq \R \times \X$ et pourra être
 exprimée par
 \begin{equation}
-  M = (R,X_1, \ldots, X_m).
+  M = (R,X_1, \ldots, X_p).
 \end{equation}
 
 On fera également l'hypothèse qu'on possède un jeu de données $\S_n \sim M^n$ formé de $n$
@@ -132,214 +129,218 @@ réalisations de $M$. Ce jeu de données, aussi appelé \textit{ensemble d'entra
 sera composé d'une matrice d'information $\Xi \sim X^n$ telle que
 $\Xi \in \X^n \subseteq \Re^{p \times n}$ et d'un vecteur de rendement $r \sim R^n$ tel que $r \in \R^n \subseteq \Re^n$.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{../experiments/fig/pres/pres1_fr.pdf}
+  \caption[Ensemble d'entraînement fictif]{Ensemble d'entraînement fictif sur deux
+    variables de marché : le taux de chômage et le prix du pétrole. La taille des points
+    est proportionelle à l'intensité des rendements. Cet ensemble est formé des treize
+    observations suivantes:\\\\\centerline{ $\Xi = \begin{pmatrix*}[r]
+        -1.5 & -1.5 \\
+        -1.0  & -0.5 \\
+        -0.6 & -1.3 \\
+        1.6 & -1.0  \\
+        -0.8 &  1.0  \\
+        -1.6 & -0.1 \\
+        0.5 &  0.4 \\
+        1.1 &  1.7 \\
+        1.8 &  1.0  \\
+        0.6 &  1.25\\
+        0.2 & -0.8 \\
+        0.9 & -1.4 \\
+        -1.4 &  1.5 \\
+    \end{pmatrix*},\qquad r = \begin{pmatrix*}[r]
+      2.  \\  1.  \\  1.3 \\  0.3 \\  0.2 \\  1.  \\ -1.  \\ -1.3 \\ -0.8 \\
+       -2.  \\ -0.2 \\ -0.25\\ -0.5
+     \end{pmatrix*}.$} }
+  \label{fig_pres1}
+\end{figure}
 
-\subsubsection{Décision d'investissement}
+La Figure \ref{fig_pres1} présente une illustration graphique d'un ensemble d'entraînement
+fictif qui serait formé de deux variables de marché : le taux de chômage et le prix du
+pétrole, et comment celles-ci viendraient influencer les rendements d'une compagnie
+aérienne. On y constate que lorsque ces deux variables sont à la hausse, les rendements de
+la compagnie chutent, et inversement lorsque les deux variables sont à la baisse. Par
+contre, dans la situation où une des deux variable augmente et que l'autre diminue, le
+résultat est moins évident.
 
-Un investisseur souhaitant investir dans le marché pourrait donc procéder de la façon
-suivante. Dans un premier temps, il prend connaissance des réalisation des diverses
-variables de marché $x \sim X$. À partir de cette information, il décide d'investir une
-fraction $q(x)$ de sa fortune dans le marché. Puis, le marché réalise un rendement
-$r \sim R$. L'investisseur a ainsi réalisé un rendement $r\,q(x)$. \textit{A priori,}
-l'investisseur peut donc espérer réaliser un rendement égal à $\E_MR\cdot q(X)$.
 
-L'investisseur peut cependant disposer d'une \textit{aversion au risque} qui lui fait
-préférer des rendements plus modestes mais sûrs à des rendements en moyenne plus élevés,
-mais affichant une variance élevée. On supposera donc que l'investisseur est doté d'une
-\textit{fonction d'utilité} $u:\R\to\Ut$ dont le rôle est d'attribuer une valeur numérique
-exprimant la satisfaction d'un investisseur à l'égard d'un certain rendement $r \in \R$.
+\subsection{Décision d'investissement et risque de généralisation}
+
+Selon le modèle ici proposé, un investisseur souhaitant investir dans le marché
+procéderait de la façon suivante. Dans un premier temps, il prend connaissance des
+réalisation des diverses variables de marché $x \sim X$. À partir de cette information, il
+décide d'investir une fraction $q(x)$ de sa fortune dans le marché. Puis, le marché
+annonce un rendement $r \sim R$. L'investisseur a ainsi réalisé un rendement
+$r\,q(x)$. \textit{A priori,} l'investisseur peut donc espérer réaliser un rendement égal
+à $\E_MR\cdot q(X)$.
+
+Le problème qui se pose d'emblée est alors de déterminer comment choisir cette
+\textit{fonction de décision} $q:\X \to \Re$.
+
+Avant d'aborder ce problème, il faut comprendre que l'investisseur peut disposer d'une
+\textit{aversion au risque} qui lui fait préférer des rendements plus modestes mais sûrs à
+des rendements en moyenne plus élevés, mais affichant un étalement plus important. Cette
+préférence sera modélisée à l'aide d'une \textit{fonction d'utilité} $u:\R\to\Ut$ dont le
+rôle est d'attribuer une valeur numérique exprimant la satisfaction d'un investisseur à
+l'égard d'un certain rendement $r \in \R$.
 
 En elle même, une utilité de $u(r)$ n'a aucune signification et c'est à l'investisseur de
-déterminer une échelle (exprimée en \textit{utils}). Par exemple, s'il est averse au
-risque, il pourrait accorder à un rendement de -2\% une satisfaction de -10 utils et à un
+déterminer une échelle exprimée en \textit{utils}. Par exemple, s'il est averse au risque,
+il pourrait accorder à un rendement de -2\% une satisfaction de -10 utils et à un
 rendement de 10\% une satisfaction que de 2 utils. De façon absolument équivalente, son
 utilité pourrait être calibrée de façon à avoir $u(-2\%) = -1$ et $u(10\%) =
-0.2$. L'utilité est donc une notion foncièrement affine (deux fonctions d'utilité $u$ et
-$u'$ sont équivalentes si $u'(r) = ku(r) + b$).
+0.2$. L'utilité est donc une notion foncièrement affine et adimensionelle (deux fonctions
+d'utilité $u$ et $u'$ sont équivalentes si $u'(r) = ku(r) + b$ pour deux constante $k$ et
+$b$). En faisant l'hypothèse que $u$ est bijective entre $\R$ et $\Ut$, on peut faire
+correspondre à toute valeur d'utilité un et une seule valeur de rendement, et vice versa.
 
-Doté d'une telle fonction, on supposera alors que l'objectif de l'investisseur sera de
-\textit{maximiser son utilité espérée}. Autrement dit, sa fonction de décision $q$
-devrait être choisie de façon à
+Pourvu d'une telle fonction, on supposera alors que l'objectif de l'investisseur sera de
+\textit{maximiser son utilité espérée}. Autrement dit, sa fonction de décision $q$ devrait
+être choisie de façon à
 \begin{equation}
   \label{in:maxeu}
-  \maximizeEquation{\EU(q) \coloneqq \E_M u(R\cdot q(X)).}
+  \maximizeEquation{\EU(q) \coloneq \E_M u(R\cdot q(X)).}
 \end{equation}
-En faisant l'hypothèse qu'à toute valeur d'utilité $\upsilon \in \Ut$ il n'existe qu'un et un seul
-rendement $r \in \R$ tel que $u(r) = \upsilon$, et vice versa, un investisseur disposant d'une
-fonction de décision $q$ peut alors espérer réaliser un \textit{rendement équivalent} de
-$u^{-1}(\EU(q))$, où $u^{-1}$ est la fonction \textit{d'utilité inverse}.
+L'investisseur peut alors espérer réaliser un \textit{rendement équivalent} ou
+\textit{équivalent certain} de $u^{-1}(\EU(q))$, où $u^{-1}:\Ut \to \Re$ est la fonction
+\textit{d'utilité inverse}.
 
 Par contre, étant donné que la forme précise de $M$ n'est pas connue, le problème
 \eqref{in:maxeu} ne peut pas être résolu. Il peut néanmoins être approximé en utilisant un
-ensemble d'entraînement $\S_n = \{(r_1,x_i),\ldots,(r_n,x_n)\}$ constitué de $n$ observations
-du marché. L'investisseur cherchera alors à \textit{maximiser son utilité espérée en
-  échantillon}:
+ensemble d'entraînement $\S_n = \{(r_1,x_1),\ldots,(r_n,x_n)\}$ constitué de $n$
+observations du marché. L'investisseur cherchera alors à \textit{maximiser son utilité
+  espérée en échantillon}:
 \begin{equation}
   \maximizeEquation{\hEU(q) \coloneqq n^{-1} \sumi u(r_i\,q(x_i)).}
 \end{equation}
-En notant $q^\star = \argmax\EU(q)$ la \textit{décision optimale hors échantillon} et
+La justification théorique d'une telle approximation est la suivante. En notant
+$q^\star = \argmax\EU(q)$ la \textit{décision optimale hors échantillon} et
 $\qh = \argmax\hEU(q)$ la \textit{décision optimale en échantillon}, l'investisseur
 s'assure alors que $\qh \leadsto q^\star$, à mesure que l'investisseur recueille de nouvelles
 observations sur le marché \cite{shapiro2009lectures}.
 
-\subsubsection{Risques de généralisation}
-\label{intro:risk}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{../experiments/fig/pres/pres2_fr.pdf}
+  \caption[Décision ``dictionnaire'']{Fonction de décision ``dictionnaire''. À tout
+    rendement positif on associe un investissement postif $q(x)=+\alpha$ et vice versa. On
+    obtient ainsi une utilité espérée en échantillon arbitrairement élevée. Par contre une
+    telle fonction offre un énorme risque de généralisation puisqu'aucune décision n'est
+    prescrite à l'extérieur de l'ensemble $\cup_{i=1}^n\{x_i\}$ des points déjà observés. Si
+    $\X$ est dense dans $\Re^2$, alors $q(X)=0$ presque surement. }
+  \label{fig_pres2}
+\end{figure}
 
 L'ennui avec la décision optimale en échantillon, c'est qu'elle souffre d'un important
 \textit{risque de généralisation} $\hat\zeta$ défini par
 \begin{equation}
-  \hat\zeta = \hEU(\qh) - \EU(\qh).
+  \hat\zeta \coloneq \hEU(\qh) - \EU(\qh).
 \end{equation}
-Autrement dit, $\qh$ peut mener à un utilité espérée hors échantillon beaucoup plus faible
-qu'anticipé par l'utilité en échantillon.
+Autrement dit, $\qh$ peut mener à une utilité espérée hors échantillon beaucoup plus
+faible qu'anticipé par l'utilité moyenne en échantillon.
 
-Considérons par exemple la situation illustrée à la Figure \ref{fig_demo1} où à partir
-d'un ensemble d'entraînement $\S_n$ on peut construire une fonction de décision
-``dictionnaire'' dont l'utilité espérée en échantillon et le risque de généralisation sont
-arbitrairement élevés. Pour ce faire, supposons d'abord que l'utilité de l'investisseur ne
-soit pas bornée et qu'elle soit calibrée de façon à ce que $u(r) \geq 0$ si $r \geq 0$ et
-$u(r) < 0$ si $r < 0$. Il suffit alors de définir $q$ par
+Considérons par exemple la situation illustrée à la Figure \ref{fig_pres2}. Il suffirait
+simplement de définir une fonction $q:\X\to\Re$ préconisant un investissement positif aux
+réalisations déjà observés dont le rendement a été positif et un investissement positif
+dans le cas contraire. Autrement dit, en posant $\alpha>0$, cette décision serait construite de
+la façon suivante:
 \begin{equation}
   q(x) =
   \begin{cases}
-     \alpha & \exists\,x_i \in S_n: [x_i == x \wedge r_i \geq 0]\\
-    -\alpha & \exists\,x_i \in S_n: [x_i == x \wedge r_i < 0]\\
+     \alpha & \exists\,x_i \in \S_n: [x_i == x \wedge r_i \geq 0]\\
+    -\alpha & \exists\,x_i \in \S_n: [x_i == x \wedge r_i < 0]\\
      0 & x \notin \S_n
   \end{cases}.
 \end{equation}
-Chacun des $n$ termes $u(r_i\,q(x_i))$ de l'utilité espéré en échantillon est alors
-positif et puisque $u$ est monotone, $\hEU(q) \to \infty$ lorsque $\alpha\to\infty$.
-
-Par contre, si $\X$ le support de $X$ est dense dans $\Re^p$, alors l'utilité hors
-échantillon sera simplement $\EU(q) = u(0)$. Le risque de généralisation $\hat\zeta$ de
-$q$ est alors arbitrairement grand.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{../experiments/fig/demo_1.pdf}
-  \caption[Décision dictionnaire]{Illustration d'une fonction de décision ``dictionnaire''
-    dont le risque de généralisation est arbitrairement élevé. Le marché est ici constitué
-    de deux variables $X_1$ et $X_2$ (l'abscisse et l'ordonnée des deux figures). Le
-    panneau a) présente un ensemble d'entraînement $\S_n$ $(n=150)$ où le gradient de
-    couleur indique l'intensité du rendement associé à chaque observation. Le panneau b)
-    présente la fonction de décision ``dictionnaire'' construite à partir de
-    $\S_n$. L'investissement préconisé par $q$ suite à une observation $x\in\X$ sera nul si
-    $x$ ne figure pas dans l'ensemble d'entraînement, mais sera positif ($+\alpha$) si son
-    rendement associé est positif et négatif ($-\alpha$) dans le cas contraire. L'utilité
-    espérée en échantillon $\hEU(q)$ est arbitrairement élevée à mesure que
-    $\alpha\to\infty$, mais si $\X$ est dense dans $\Re^2$, alors $\EU(q) = u(0)$. Le risque de
-    généralisation de la décision $q$ est donc à son tour arbitrairement élevé.}
-  \label{fig_demo1}
-\end{figure}
+Or, si l'utilité de l'investisseur n'est pas bornée, une telle fonction de décision aura
+nécessairement une utilité moyenne en échantillon arbitrairement élevée à mesure que
+$\alpha$ est grand. Par contre, si $\X$ le support de $X$ est dense dans $\Re^p$, alors l'utilité
+hors échantillon sera simplement $\EU(q) = u(0)$. Le risque de généralisation $\hat\zeta$ de
+$q$ est ainsi arbitrairement grand.
 
 On peut alors faire appel au principe du \textit{rasoir d'Occam} pour éviter que des
-fonctions de décision comme celle-ci ne soient favorisées. Ce principe suggère en effet
-qu'une hypothèse trop complexe devrait être découragée au profit d'une hypothèse plus
-simple (voir \cite{vapnik1998statistical} pour une discussion approfondie). Intuitivement,
-si $\mathscr{C}(q) \in \Re$ permettait de mesurer la complexité d'une fonction de décision
-$q$, on pourrait \textit{régulariser} l'objectif pour que l'investisseur cherche plutôt à
+fonctions de décision comme celle-ci ne soient favorisées. \textit{Ceteris paribus,} ce
+principe suggère en effet qu'une hypothèse trop complexe devrait être découragée au profit
+d'une hypothèse plus simple (voir \cite{vapnik1998statistical} pour une discussion
+approfondie). Intuitivement, si $\mathscr{C}(q) \in \Re$ permet de mesurer la complexité
+d'une fonction de décision $q$, on pourrait \textit{régulariser} l'objectif pour que
+l'investisseur cherche plutôt à
 \begin{equation}
   \maximizeEquation{\hEU(q) - \lambda\mathscr{C}(q).}
 \end{equation}
 Différentes valeurs de $\lambda$ favorisent alors des solutions plus ou moins complexes. En
-utilisant une technique de \textit{validation croisée}, il y a alors moyen de déterminer
-le niveau de complexité permettant de minimiser le risque de généralisation.
+utilisant une technique de \textit{validation croisée} (voir par exemple
+\cite{bishop2006pattern}), il y a alors moyen de déterminer le niveau de complexité
+permettant de minimiser le risque de généralisation.
 
-On verra en outre aux Sections \ref{sec:algap} et \ref{sec:bound} qu'il existe pour
-certaines classes de fonctions de décision une mesure de complexité particulière qui
-permet d'établir des garanties statistiques sur le risque de généralisation. 
+\subsection{Espaces de décision et décisions linéaires}
 
-\paragraph{Risque in-échantillon et hors échantillon}
-
- une telle fonction $q$ est qu'elle se généralise très mal. En effet
-pour toute observation $x$ qui ne figurerait dans l'ensemble d'entraînement, $q$
-prescrirait alors un investissement nul. Il y a alors une énorme différence entre
-l'utilité observée au sein de notre échantillon et l'utilité hors échantillon.
-
-Donnée une fonction de décision $q \in \Q$ et un échantillon de $M$, on définit le
-\textit{risque in-échantillon} ou \textit{risque empirique} par
+Ce mémoire étudiera les décisions d'investissement obtenues à partir de produit
+scalaire. Le cas le plus simple est celui à partir d'une observation $x$ et d'un vecteur
+de décision $q$, le scalaire d'investissement est donné par $q^Tx$. Le problème de
+maximisation d'utilité espérée est alors donné par
 \begin{equation}
-  \hat R(q) = n^{-1}\sumi \ell(r_i\,q(x_i)),
+  \label{intro:he}
+  \maximizeEquation[q \in \Re^p]{n^{-1}\sumi u(r_i\,q^Tx_i) - \frac{\lambda}{2}\|q\|^2,}
 \end{equation}
-où $\ell = -u$. De la même façon, on définit le \textit{risque hors-échantillon} ou
-\textit{erreur de généralisation} par
+c'est-à-dire que la \textit{norme} du vecteur de décision $q$ représente la complexité
+qu'on lui associe. On comprend alors le rôle que joue alors le facteur de régularisation
+$\lambda$. Plus ce facteur est faible et plus la norme de $q$ peut être élevée. Or, comme le
+scalaire d'investissement $q^Tx = \|q\|\|x\|\cos\theta$ est directement proportionnel à cette
+norme, un facteur de régularisation faible entraînera intuitivement des décisions
+d'investissement plus importantes.
+
+Un tel espace de décision est cependant inutilement rigide puisque toute solution ne
+pourra qu'être linéaire en $\X$, \ie\ $q(0) = 0$. Cette restriction peut être facilement
+levée en considérant plutôt des décisions \textit{affines}; il suffit pour ce faire
+d'ajouter un terme de ``biais'', \ie\ de déplacement constant au problème d'optimisation:
 \begin{equation}
-  R(q) = \E \ell(R \cdot q(X)).
+  \maximizeEquation[b \in \Re, q \in \Re^p]{n^{-1}\sumi u(r_i\,(b + q^Tx_i)) - \frac{\lambda}{2}\|q\|^2.}
 \end{equation}
-On peut souhaiter d'une bonne fonction de décision qu'elle performe bien hors échantillon,
-aussi la quantité $R(q) - \hat R(q)$ sera-t-elle primordiale et beaucoup d'attention lui
-sera consacrée dans les prochaines sections. Notons que le risque hors-échantillon étant
-théoriquement impossible à calculer, en pratique on segmentera l'ensemble d'échantillonage
-en deux parties, l'une dédiée à l'apprentissage, l'autre à évaluer la performance hors
-échantillon.
+On peut aussi tout simplement ajouter une nouvelle variable de marché
+$X_{p+1} \sim \delta(1)$ (loi de Dirac constante à $1$), qui permet d'optimiser $q$ directement
+sur un espace à $p+1$ dimension.
 
+Finalement, on remarquera que si la fonction $u$ est concave, la présence du terme de
+régularisation quadratique fait en sorte que la solution est unique. De plus, le problème
+est alors convexe et peut ainsi être résolu numériquement par un solveur standard (par
+exemple \cite{cvx,gb08}).
 
-\paragraph{Régularisation}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{../experiments/fig/pres/pres3_fr.pdf}
+  \caption[Décision linéaire]{Trois courbes d'investissement (-100\%, 0\%,
+    +100\%) de la solution linéaire optimale $\qh$ obtenue avec une fonction d'utilité
+    $u(r) = -e^{-r}+1$ et un facteur de régularisation $\lambda = 0.3$. La géométrie rigide
+    imposée par la forme linéaire de $\qh$ entraîne que certaines observations dont le
+    rendement est négatif se voient attribuer un investissement positif.}
+  \label{fig_pres3}
+\end{figure}
 
-Afin de contrecarrer le risque hors échantillon, la solution est en fait de pénaliser la
-complexité de la fonction de décision $q$ (rasoir d'Occam). Ainsi, on étudiera en
-profondeur le choix d'une fonctionelle $R : Q \to \Re$ permettant de quantifier la complexité
-de $q$. L'objectif serait alors
-\begin{equation}
-  \maximizeEquation[q \in \Q]{n^{-1} \sumi u(r_i\, q(x_i)) - R(q).}
-\end{equation}
-Par exemple, comme les mesures sur $x$ peuvent comporter de l'incertitude ou du bruit, il
-serait souhaitable que la décision $q(x_1)$ soit proche de $q(x_2)$, si $x_1$ et $x_2$
-sont eux même proches dans l'espace $\X$. Si $R$ encodait une telle préférence, ne
-fonction discontinue comme le dictionnaire présenté plus haut sera alors hautement
-défavorisée, et une fonction plus lisse y serait préférée.
+À des fins d'illustration, la Figure \ref{fig_pres3} présente trois courbes
+d'investissement (-100\%, 0\%, +100\%) de la solution optimale $\qh$ obtenues à partir de
+l'ensemble d'entraînement de la Figure \ref{fig_pres1}. La géométrie rigide imposée par la
+forme linéaire de $\qh$ entraîne que certaines observations dont le rendement est négatif
+se voient attribuer un investissement positif. On verra à la Section \ref{sec:kernel}
+comment régler ce problème. 
 
-\todo{Introduire la validation croisée ainsi que le paramètre $\lambda$ dans l'objectif.}
+% On peut de plus interpréter ce problème sous une forme géométrique, tel que présenté à la
+% Figure \ref{fig_linker}. En effet, chaque vecteur $x_i$ de l'ensemble d'entraînement
+% $\S_n$ peut être mis en relation avec son rendement $r_i$. Le rôle du vecteur de décision
+% optimal $\qh$ est alors de ``séparer'' l'espace $\X$ en deux demi-plans.
 
+% \subsubsection{Erreur de sous optimalité}
 
+% Un autre point important à considérer est celui du \textit{risque de sous optimalité} $\zeta$
+% défini par
+% \begin{equation}
+%   \zeta \coloneq \EU(q) - \nEU^*
+% \end{equation}
+% où $\nEU^\star$ est \textit{l'utilité espérée optimale}, c'est à dire ce qu'un investisseur
+% peut espérer obtenir de mieux 
 
-\paragraph{Espaces de décision}
-
-En pratique, ce mémoire ne considérera que des espaces de Hilbert pour $\Q$. Un des
-avantages des espaces de Hilbert, c'est qu'ils induisent naturellement une notion de norme
-$\|\cdot\|_H$, qu'on peut intuitivement relié au concept de complexité. Nous nous
-intéresserons donc aux propriétés induites par $R(q) = \|q\|_H^2 = \langle q, q \rangle$. Il y a
-aussi moyen, sous des conditions assez techniques (théorème de la représentation) de
-généraliser la norme $L_2$ de $q$ à une norme $L_p$ général. En particulier, nous verrons
-qu'une régularisation donnée par norme $L_1$ induit certaines propriétés d'éparsité dans
-la solution.
-
-
-\paragraph{Décisions linéaires}
-
-De façon générale, la forme de décision la plus simple est celle qui combine linéairement
-les $p$ observations de $x \in \X \subseteq \Re^p$; autrement dit lorsque qu'on contraint
-$\Q = \X^*$, \ie, à l'espace dual de $\X$. En langage plus clair, à toute fonction
-$q \in \Q$ il existe un vecteur de dimension $p$ tel que la décision dérivée de
-l'observation $x$ sera donnée par $q(x) = \langle q, x \rangle = q^Tx$.
-
-La régularisation $L_2$ de $q$ devient alors tout simplement $R(q) = q^Tq = \|q\|^2$ et la
-fonction optimale de décision $q^\star$ sera alors déterminée en résolvant le problème
-d'optimisation suivant:
-\begin{equation}
-  \maximizeEquation[q \in \Re^p]{n^{-1}\sumi u(r_i\,q^Tx_i) - \lambda \|q\|^2.}
-\end{equation}
-
-
-
-\subsection{Dimensionalité de l'information}
-
-\todo{Discussion du phénomène big data, de l'importance de $p$}
-
-
-
-\subsection{Risque et garanties statistiques sur la décision}
-\todo{Discussion sur les méthodes de risques hors échantillon, complexité de
-  l'échantillonage, mesure Rademacher, distance par rapport à la ``meilleure'' décision}
-
-
-
-\subsection{Interprétations}
-
-\paragraph{Interprétation géométrique dans l'espace $X$}
-
-\paragraph{Interprétation statistique (avec matrix covariance)}
-
-\par\paragraph{Autre?}
 
 
 

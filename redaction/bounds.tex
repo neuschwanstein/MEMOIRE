@@ -1,6 +1,11 @@
 \section{Garanties statistiques}
 \label{sec:bound}
 
+\epigraph{Et nous avons aussi des Maisons consacrées aux Erreurs des Sens [...] Ce sont là, ô
+  mon fils, les richesses de la Maison de Salomon.}{Francis Bacon\\\textsc{New Atlantis}}
+
+
+
 La section précédente était dédiée à l'approche algorithmique du problème: comment, donnés
 un ensemble d'entraînement et un espace de décision $\Q$ induit par un noyau $\kappa$, une
 fonction de décision $\hat q:\X \to \Re$ permettant de prescrire un investissment pouvait être
@@ -96,6 +101,7 @@ en échantillon. Le théorème suivant établi la différence maximale de ces de
 performance:
 
 \begin{thm}[Borne sur l'erreur de généralisation (util)]
+  \label{thm1}
   Avec probabilité d'au moins $1-\delta$, 
   \begin{equation}
     \hat\zeta(\S_n) \leq \frac{2\gamma\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
@@ -113,6 +119,7 @@ l'investisseur la déviation maximale que peut subir l'équivalent certain hors 
 par rapport au rendement équivalent en échantillon.
 
 \begin{thm}[Borne sur l'erreur de généralisation (rendement)]
+  \label{thm2}
   Avec probabilité d'au moins $1-\delta$,
   \begin{equation}
     \hat\zeta_e(\S_n) \leq \frac{1}{\partial u(\nhCE)}\left( \frac{2\gamma\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
@@ -152,8 +159,9 @@ convergence de $\O(1/\sqrt{n})$ n'a finalement rien de surprenant.\todo{Plus de
 \subsection{Bornes de sous optimalité}
 \label{b:sopt}
 
+\subsubsection{Hypothèses supplémentaires}
 
-\paragraph{Introduction et hypothèses supplémentaires}
+
 
 Jusqu'ici, les efforts théoriques ont été déployés pour déterminer comment se comportait
 la fonction de décision $\hat q = \alg(\S_n)$ dans un univers probabiliste par rapport à
@@ -161,23 +169,25 @@ l'univers statistique dans lequel elle avait été construite. Notre attention v
 se tourner vers la performance de $\hat q$ dans l'univers probabiliste par rapport à la
 meilleure décision disponible, c'est à dire la solution $q^\star$ de 
 \begin{equation}
-  \maximizeEquation[q \in \Q]{\E\,u(R \cdot q(X)).}
+  \maximizeEquation[q \in \Q]{\EU(q)}
 \end{equation}
-
-Il convient cependant de réaliser que l'existence d'une borne sur $q^\star$ n'est pas
-assurée. En effet, supposons d'une part que l'on dispose d'une utilité neutre au risque
-$\rn$, telle que $\rn(r) = r$, et d'autre part que $\E R=0$. Soit $\alpha>0$. On pourrait alors
-définir la fonction suivante:
+où
 \begin{equation}
-  q = \alpha\E(R\,\kappa(X,\cdot))
+  \EU(q) \coloneq \E u(R\,q(X)).
+\end{equation}
+Il convient cependant de réaliser que l'existence d'une décision optimale $q^\star$ finie
+n'est pas assurée. En effet, supposons d'une part que l'on dispose d'une utilité neutre au
+risque $\rn$, telle que $\rn(r) = r$, et d'autre part que $\E R=0$. Soit $\alpha>0$. On
+pourrait alors définir la fonction suivante:
+\begin{equation}
+  q = \alpha\E(R|X\rangle)
 \end{equation}
 On aurait alors, du fait de la linéarité du produit scalaire,
 \begin{align}
-  \EN(q) &= \E(R\,q(X))\\
-         & =\E(R\inp{q,\kappa(X,\cdot)})\\
-         & =\E\inp{q,R\,\kappa(X,\cdot)}\\
-         & =\inp{q,\E(R\,\kappa(X,\cdot))}\\
-         &= \alpha\nq{q}^2 \geq 0.
+  \EN(q) & = \E(R\,q(X))\\
+         & = \E\langle q|(R|X)\rangle\\
+         & = \langle q|\E(R|X\rangle)\rangle\\
+         & = \alpha\|q\|^2 \geq 0.
 \end{align}
 On peut alors obtenir une utilité espérée non bornée à mesure que $\alpha\to\infty$. Par ailleurs,
 ainsi défini, $q$ représente effectivement la covariance entre $R$ et la projection de $X$
@@ -189,13 +199,16 @@ est neutre.
 Pour empêcher une telle situation d'exister on introduit l'hypothèse suivante. Elle exclut
 toute forme d'utilité à pente constante pour $r \geq r_0$, notamment l'utilité risque neutre.
 \begin{assumption}
-  L'utilité croît sous-linéairement, ie. $u(r) = o(r)$\footnote{Mathématiquement, on exige
-    donc que $u(r)/r \to 0$.}. 
+  L'utilité croît sous-linéairement, ie. $u(r) = o(r)$.\footnote{Mathématiquement, on exige
+    donc que $u(r)/r \to 0$.} 
 \end{assumption}
 
 Une autre hypothèse est maintenant nécessaire pour s'assurer que $\qs$ soit borné:
 l'absence d'arbitrage. D'un point de vue strictement financier, cela fait certainement du
-sens en vertu de l'efficience des marchés, version semi-forte\cit. D'un point de vue
+sens en vertu de l'efficience des marchés, version semi-forte (voir
+\cite{fama1970efficient}). Cette hypothèse précise en effet qu'un investisseur doté de
+toute l'information publique disponible au sujet d'un titre risqué devrait pas pouvoir
+être en mesure de ``battre'' le marché sans prendre de risque. D'un point de vue
 théorique, ceci exige en fait qu'il n'y ait pas de région dans $\X$ telle que tous les
 rendements s'y produisant soient nécessairement positifs ou négatifs.\todo{Inserer
   image}. Ainsi, même en ayant une conaissance parfaite du monde, il subsistera toujours
@@ -213,95 +226,90 @@ un terme de bruit rendant incertains la réalisation des rendements.
 
 \paragraph{Décision optimale finie}
 
-  On veut montrer que $\nq{q^\star}$ est borné. Pour ce faire, on va tout d'abord décomposer
-  $q = s\theta$, où on pose $\nq{\theta}=1$ et $s>0$; ainsi on peut poser notre problème
-  d'optimisation comme la recherche d'une `direction' $\theta$ et d'une magnitude $s$ dans
-  $\Q$. De plus, puisque $\nq{q} = s$, il suffit de montrer que $s^\star$ est borné.
+On veut montrer que $\nq{q^\star}$ est borné. Pour ce faire, on va tout d'abord décomposer
+$q = s\theta$, où on pose $\nq{\theta}=1$ et $s>0$; ainsi on peut poser notre problème
+d'optimisation comme la recherche d'une `direction' $\theta$ et d'une magnitude $s$ dans
+$\Q$. De plus, puisque $\nq{q} = s$, il suffit de montrer que $s^\star$ est borné.
 
-  Notons d'abord que l'hypothèse \ref{hyp:arb} entraîne en particulier qu'il existe
-  $\delta > 0$ et $\varrho \geq 0$ tels que
-  \begin{equation}
-    \pp\{R\cdot \theta(X) \leq -\delta\} > \varrho
-  \end{equation}
-  pour tout $\theta \in \Q$ tel que $\nq{\theta} = 1$. Définissons maintenant une variable aléatoire à
-  deux états: $B = -\delta$ avec probabilité $\varrho$ et $B = \rmax\xi$ avec probabilité
-  $1-\varrho$. Puisque $R\cdot \theta(X) \leq \rmax\xi$, on a alors que, pour tout $r \in \R$,
-  \begin{equation}
-    \pp\{B\geq r\} \geq \pp\{R\cdot \theta(X)\geq r\}
-  \end{equation}
-  \todo{voir figure a produire.}
-
-  Puisque par hypothèse $u$ est concave et puisque que $B$ domine stochastiquement
-  $R\cdot \theta(X)$, on a nécessairement que $\E u(sB) \geq \E u(R\cdot s\theta(X))$, pour tout
-  $s > 0$. Or, par hypothèse de sous-linéarité on obtient que
-  \begin{align}
-    \lim_{s\to\infty}\E u(R\cdot s\theta(X)) &\leq \lim_{s\to\infty}u(sB)\\
-                             & = \lim_{s\to\infty}(\varrho u(-s\delta) + (1-\varrho)u(s\rmax\xi))\\
-                             & \leq\lim_{s\to\infty}-\varrho s \delta + (1-\varrho)o(s) = -\infty,
-  \end{align}
-  ce qui démontre bien que $s$ est borné.
-
-\paragraph{Dérivation de la borne}
-
-On cherchera donc à établir une borne $\Omega_u$ sur \textit{l'erreur de sous-optimalité} de
-$\hat q \sim \alg(M^n)$:
+Notons d'abord que l'hypothèse \ref{hyp:arb} entraîne en particulier qu'il existe
+$\delta > 0$ et $\varrho \geq 0$ tels que
 \begin{equation}
-  \EU(\qh) \geq \EU(\qs) - \Omega_u.
+  \pp\{R\cdot \theta(X) \leq -\delta\} > \varrho
 \end{equation}
+pour tout $\theta \in \Q$ tel que $\nq{\theta} = 1$. Définissons maintenant une variable aléatoire à
+deux états: $B = -\delta$ avec probabilité $\varrho$ et $B = \rmax\xi$ avec probabilité
+$1-\varrho$. Puisque $R\cdot \theta(X) \leq \rmax\xi$, on a alors que, pour tout $r \in \R$,
+\begin{equation}
+  \pp\{B\geq r\} \geq \pp\{R\cdot \theta(X)\geq r\}
+\end{equation}
+\todo{voir figure a produire.}
 
-Pour ce faire, on utilisera le résultat suivant, montré par \cit Shalev. En posant
-\begin{equation}
-  \omega = \frac{4\gamma^2\xi^2(32 + \log(1/\delta))}{\lambda n},
-\end{equation}
-on obtient qu'avec probabilité $1-\delta$, 
-\begin{equation}
-\lambda\nq{\qh-\qsl}^2 \leq \EU_\lambda(\qsl)- \EU_\lambda(\qh) \leq \omega.
-\end{equation}
-De la deuxième inégalité, on obtient alors que
+Puisque par hypothèse $u$ est concave et puisque que $B$ domine stochastiquement
+$R\cdot \theta(X)$, on a nécessairement que $\E u(sB) \geq \E u(R\cdot s\theta(X))$, pour tout
+$s > 0$. Or, par hypothèse de sous-linéarité on obtient que
 \begin{align}
-  \EU(\qh) - \EU(\qsl) & \geq -\omega + \lambda\nq{\qh}^2  -\lambda\nq{\qsl}^2\\
-                       & \geq -\omega -2\lambda\nq{\qh}\nq{\qsl-\qh} - \lambda\nq{\qsl-\qh}^2.
+  \lim_{s\to\infty}\E u(R\cdot s\theta(X)) &\leq \lim_{s\to\infty}u(sB)\\
+                           & = \lim_{s\to\infty}(\varrho u(-s\delta) + (1-\varrho)u(s\rmax\xi))\\
+                           & \leq\lim_{s\to\infty}-\varrho s \delta + (1-\varrho)o(s) = -\infty,
 \end{align}
-Or, pour un même $\delta$, le résultat de Shalev\cit implique que $\nq{\qsl-\qh} \leq
-\sqrt{\omega/\lambda}$. De plus, par le lemme \ref{lem:bqhat}, p.~\pageref{lem:bqhat}, $\nq{\qh}\leq
-\rmax\xi/(2\lambda)$, d'où on obtient
-\begin{equation}
-  \EU(\qh) - \EU(\qsl) \geq -2\omega -\rmax\xi\sqrt{\frac{\omega}{\lambda}}.
-\end{equation}
-Enfin, puisque par définition de $\qsl$, $\EU(\qsl) - \lambda\nq{\qsl}^2 \geq \EU(\qs) -
-\lambda\nq{\qs}^2$, on trouve alors que
-\begin{equation}
-  \EU(\qsl) - \EU(\qs) \geq \lambda\nq{\qsl}^2 - \lambda\nq{\qs}^2 \geq -\lambda\nq{\qs}^2,
-\end{equation}
-ce qui donne finalement
-\begin{align}
-  \EU(\qh) &= \EU(\qs) + \EU(\qh) - \EU(\qsl) + \EU(\qsl) - \EU(\qs)\\
-           & \geq \EU(\qs) - 2\omega - \rmax\xi\sqrt{\omega/\lambda} - \lambda\nq{\qs}^2.
-\end{align}
+ce qui démontre bien que $s$ est borné.
 
-\paragraph{Équivalent certain et analyse}
+\subsubsection{Garanties de sous optimalité}
 
-À partir du résultat obtenu au dernier paragraphe, on peut à nouveau inverser le domaine
-de garantie afin de l'exprimer en rendement équivalent. En définissant $\nCE$ l'équivalent
-certain hors échantillon suivant la politique $\qh$ et $\nCE^\star$ l'équivalent certain
-optimal compte tenu de l'utilité donnée, l'application directe du Lemme \ref{lem:ce},
-permet de garantir une performance de l'ordre de
+Soit \textit{l'erreur de sous optimalité en util} $\zeta(\S_n)$ définie par
 \begin{equation}
-  \nCE \geq \nCE^\star - \O(1/(\lambda\sqrt{n})).
+  \zeta(\S_n) \coloneq \EU(\alg(\S_n)) - \EU(\qs)
 \end{equation}
-Plus précisément, avec probabilité $1-\delta$, 
+et \textit{l'erreur de sous optimalité en rendement} $\zeta_e(\S_n)$ définie par
 \begin{equation}
-  \nCE \geq \nCE^\star - \partial u^{-1}(\nCE) \cdot \left(\lambda\nq{\qs}^2 + \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{n\lambda} + \frac{2\gamma\rmax\xi^2}{\lambda}\sqrt{\frac{32+\log(1/\delta)}{n}}\right)
+  \zeta_e(\S_n) = \CE(\alg(\S_n)) - \CE(\qs).
 \end{equation}
+Ces deux notions d'erreur indiquent alors, en terme d'util ou de rendement, à quel point
+la performance hors échantillon est éloignée de la performance suivant la politique
+optimale $\qs$. Les deux théorèmes suivant précisent comment se comportent ces deux
+erreurs.
+\begin{thm}[Erreur de sous optimalité (util)]
+  \label{thm3}
+  Avec probabilité d'au moins $1-\delta$, l'erreur de sous optimalité en util est bornée par
+  \begin{equation}
+    \zeta(\S_n) \leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} +
+    \frac{4\gamma\rmax\xi^2}{\lambda}\sqrt\frac{32+\log(1/\delta)}{n} + \frac{\lambda}{2}\|\qs\|^2 
+  \end{equation}
+\end{thm}
+
+\begin{thm}[Erreur de sous optimalité (équivalent certain)]
+  \label{thm4}
+  Avec probabilité d'au moins $1-\delta$, l'erreur de sous optimalité exprimée en équivalent
+  certain est bornée par
+  \begin{equation}
+    \zeta_e(\S_n) \leq \frac{1}{\partial u(\nCE)}\left( \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} +
+      \frac{4\gamma\rmax\xi^2}{\lambda}\sqrt\frac{32+\log(1/\delta)}{n} + \frac{\lambda}{2}\|\qs\|^2 \right),
+  \end{equation}
+où $\nCE = \CE(\alg(\S_n))$ représente l'équivalent certain de la politique $\qh =
+\alg(\S_n)$ hors échantillon. À défaut de la connaître, on lui substituera son
+approximiation $\nhCE(\S_n,\alg(\S_n))$. 
+\end{thm}
+
 
 Les bornes de sous-optimalité convergent ainsi environ à la même vitesse que celle de
-sous-optimalité, c'est-à-dire dans un régime de $\O(1/\sqrt{n})$. Bien sûr, une différence
-majeure est la présence de $\nq{\qs}$ qui est a priori impossible à déterminer, dans la
-mesure où aucune hypothèse n'est faite sur la distribution de $M$. On constate d'ailleurs
-sans surprise qu'une faible valeur de régularisation permet au résultat algorithmique de
-se raprocher du résultat optimal, bien que les autres termes de la borne aient un effet
-inverse. Par ailleurs, le sur-gradient inverse de $u$ à $\nCE$ ne peut lui non plus être
-déterminé précisément, aussi pour estimer la borne on lui substituera $\partial u^{-1}(\nhCE)$. 
+généralisation, c'est-à-dire dans un régime de $\bigO(1/\sqrt{n})$. Bien sûr, une
+différence majeure est la présence de $\nq{\qs}$ qui est a priori impossible à déterminer,
+dans la mesure où aucune hypothèse n'est faite sur la distribution de $M$. On constate
+d'ailleurs sans surprise qu'une faible valeur de régularisation permet au résultat
+algorithmique de se raprocher du résultat optimal, bien que les autres termes de la borne
+aient un effet inverse. Par ailleurs, le sur-gradient inverse de $u$ à $\nCE$ ne peut lui
+non plus être déterminé précisément, aussi pour estimer la borne on lui substituera
+$\partial u^{-1}(\nhCE)$.
+
+En fait, ces bornes de sous optimalité établissent rigoureusement de quelle façon la
+régularisation devrait être décrue afin de s'assurer de converger vers la solution
+optimale tout en contrôlant l'erreur de généralisation. Par exemple, en choisissant un
+facteur de régularisation $\lambda = \bigO(n^{-1/4})$, toute chose étant égale par ailleurs, on
+s'assure une convergence vers une sous optimalité nulle à un rythme
+$\bigO(n^{-1/4})$. Cependant, alors que l'erreur de généralisation est normalement de
+$\bigO(n^{-1/2})$ lorsque $\lambda$ est constant, l'erreur de généralisation ne décroit alors
+plus qu'à un rythme $\bigO(n^{-1/4})$. La Section \ref{sec:emp} sera l'occasion de mesurer
+en pratique la validité de ces ordres de convergence. 
 
 
 
@@ -311,92 +319,118 @@ déterminé précisément, aussi pour estimer la borne on lui substituera $\part
 
 Toutes les bornes considérées jusqu'à présent ont été dérivées sans faire apparaître
 explicitement la relation qui les lient avec avec la dimension $p$ de l'espace $\Q$;
-autrement dit, on a implicitement considéré que $p=o(n)$. Or, si à première vue l'erreur
-de généralisation et de sous-optimalité du problème de portefeuille se comportent comme
-$\O(1/(\lambda \sqrt{n}))$, dans un contexte ou $p$ est comparable à $n$, on souhaite comprendre
-comment l'ajout d'information dans $\Q$ peut venir affecter ces bornes.
+autrement dit, on a implicitement considéré que cette dimension était
+constante. Cependant, à mesure qu'on ajoute de nouvelles variables de marché, on s'expose
+en fait à un risque de généralisation et de sous optimalité plus grand puisque $\Q$
+dispose alors de degrés de liberté supplémentaires.
 
+La première chose à prendre en considération est l'effet du noyau $\kappa$ ou de la projection
+$\phi:\X\to\phi(\X)$ sur la dimension de $\Q$ lorsqu'on ajoute à $\X$ de nouvelles variables de
+marché. Dans le cas le plus simple où $\Q = \X$, alors nécessairement la dimension des
+deux espaces concordent:
+\begin{equation}
+  \operatorname{dim}(\Q) = p.
+\end{equation}
+Par contre, si on considère par exemple un noyau polynômiale de degré 2 tel que
+$\kappa(x_i,x_j) = (x_i^Tx_i)^2$, alors si $\X \subseteq \Re^p$, on aura
+$\operatorname{dim}(\Q) = (p+1)(p+2)/2$. En fait, (voir \cite{mohri2012foundations} ou
+\cite{bishop2006pattern}), si $p$ est la dimension de $\X$ et qu'un noyau polynômial de
+degré $k$ est utilisé, alors
+\begin{equation}
+  \operatorname{dim}(\Q) = \binom{p+k}{k} = \frac{1}{k!}\prod_{j=1}^k(p+j) = \bigO(n^k).
+\end{equation}
 
+En fait, l'influence de la dimension $\Q$ se traduit théoriquement par le facteur $\xi^2$
+présent dans les bornes de généralisation et de sous optimalité présentées aux Théorèmes
+\ref{thm1}, \ref{thm2}, \ref{thm3} et \ref{thm4}. En effet, on a fait l'hypothèse que
+cette variable $\xi$ représente la norme maximale d'une variable de marché $\phi(x)$, \ie
+$\kappa(x,x) \leq \xi^2$. Dans le cas d<un noyau linéaire, cette variable correspondalors la norme
+maximale du vecteur d'information $\|X\|$. On comprend alors qu'ajouter une variable
+d'information viendra immédiatement modifier cette borne $\xi^2$.
 
-\paragraph{Discussion sur la première hypothèse}
+Supposons par exemple que $X = (X_1,\ldots,X_j)$ et que $\|X\|^2\leq\xi^2$. Alors nécessairement,
+ajouter une variable $X_{j+1}$ telle que $|X_{j+1}|\leq\nu$ fera en sorte que le nouveau
+vecteur d'information $\tilde X \in \Re^{p+1}$ sera tel que $\|\tilde X\|^2 \leq \xi^2 + \nu^2$. 
+Si on avait plutôt employé un noyau polynômial de degré $k$, alors on se serait passé de
+$\xi^{2k}$ à $(\xi^2+2)^k$. Par contre, les noyaux affines de forme $\kappa(x_i,x_j) = \kappa(\|x_i -
+x_j\|)$ auront nécessairement un facteur $\xi^2$ constant puisque $\kappa(x,x) = \kappa(0)$ peu
+importe la dimension initiale de $\X$.
 
+On comprend cependant de cette discussion que dans le cas où $\kappa$ n'impose aucune borne
+naturelle au produit scalaire des transformations $\phi$, il est nécessaire de prendre les
+mesures nécessaires pour faire respecter la contrainte $\kappa(x,x)\leq\xi^2$. Mais il y a en fait
+plusieurs façons de parvenir à cette contrainte. Pour ce faire, nous allons considérer à
+des fins de simplification uniquement le cas linéaire où $\kappa(x_i,x_j) = x_i^Tx_j$.
 
-Revenons dans un premier temps sur la première hypothèse qu'on a employé allègrement dans
-nos résultats; celle-ci stipule que $\kappa(x,x) \leq \xi^2$. Pour les espaces de décision affines,
-par exemple ceux engendrés par les noyaux de la forme $\kappa(x_1,x_2) = f(\|x_1-x_2\|)$, cette
-propriété est naturellement observée puisqu'alors $\kappa(x,x) = f(0)$, peu importe la taille
-de $\X$. Pour d'autres types de noyaux, par exemple les décisions linéaires
-$\kappa(x_1,x_2) = x_1^Tx_2$, il devient alors nécessaire de borner le support de $X$ pour
-respecter la condition. Deux approches peuvent alors être employées : soit chaque variable
-d'information est bornée individuellement, soit on borne simplement $\kappa(X,X)$ par une borne
-probabiliste.
+Dans un tel cas, il suffit simplement de borner l'amplitude de chaque variable de marché
+$X_j$ par un scalaire $\nu_j$, de façon à avoir
+\begin{equation}
+  \kappa(X,X) = \sum_{j=1}^p X_j^2 \leq \|\nu\|^2.
+\end{equation}
+Pour ce faire, on peut supposer que les variables sont déjà bornées naturellement :
+plusieurs indicateurs financiers sont effectivement déjà bornés avec un haut degré de
+confiance. On peut également \textit{saturer} les variables de marché par une certaine
+borne $\nu_j$. Par exemple, une variable de marché $X_j$ dont l'amplitude est incertaine
+pourrait être remplacé par la variable $\tilde X_j$ par
+\begin{equation}
+  \tilde X_j = \begin{cases}
+    |X_j| \leq \nu_j & X_j\\
+    |X_j| \geq \nu_j & \operatorname{sgn}(X_j)\nu_j,
+  \end{cases}
+\end{equation}
+quitte à introduire une nouvelle variable de marché indiquant si $\tilde X_j$ est saturé
+ou non.
 
-Le premier cas se prête bien à la situation où on dispose d'une bonne compréhension des
-variables d'information et de leur distribution. Par exemple, $X_j$ peut naturellement
-et/ou raisonnablement reposer sur un support fini; pour d'autres types de distributions,
-par exemple les variables normales et sous-normales (dominées stochastiquement par une
-variable normale), on peut borner avec un haut degré de confiance la déviation de leur
-espérance. Les cas problématiques seront plutôt présentés par des variables $X_j$
-présentants des moments supérieurs élevés. En pratique, on pourra alors soit
-\textit{saturer} l'information par une borne arbitraire, \ie\ en posant
-$\tilde X_j = X_j(\nu_j/|X_j|)$, puis en ajoutant une nouvelle dimension d'information
-vrai/faux indiquant si la borne a été atteinte, ou simplement décider de l'incorporer
-telle qu'elle, mais en n'ayant alors aucune garantie sur les performances hors
-échantillon. Pour un noyau linéaire, si chaque variable $|X_j| \leq \nu_j$, alors par le
-théorème de Pythagore on a simplement que $\|X\|^2 \leq \|\nu\|^2 = \xi^2$. On remarquera alors
-que $\xi^2 = \O(p)$. Pour les noyaux polynomiaux d'ordre $k$, ce serait plutôt
-$\xi^2 = \O(p^k)$.
-
-Penchons-nous un moment sur le cas linéaire. La situation où $X$ dispose d'une borne
-explicite sur son support peut en fait être relaxée, moyennant que chacune des composantes
-soient indépendantes l'une à l'autre et que leur carré soient de forme
-sous-exponentielle\footnote{Voir Boucheron et/ou Wainwright et/ou définir
-  brièvement}. Sous sa forme généralisée, l'inégalité de Bernstein implique qu'avec haute
-probabilité,
+Il y a aussi une autre façon de parvenir à une borne sur $\|X\|^2$. Par exemple, si les
+variables de marché $X_j$ sont indépendantes l'une à l'autre et $X_j^2$ a une distribution
+sous exponentielle, l'inégalité de Bernstein implique qu'avec haute probabilité,
 \begin{equation}
   \pp\{|\|X\|^2 - \E\|X\|^2| \geq t\} \leq \exp\left(\frac{t^2}{\O(p)}\right).
 \end{equation}
-Autrement dit, à mesure que $p$ est grand, la norme $\|X\|^2$ sera concentrée autour de
-son espérance. Si $\E X_j=0$, alors $\|X\|^2 \approx \E\|X\|^2 = \sumj \Var X_j = \O(p)$, et on
-aura donc une borne $\xi^2 = \O(p)$, mais nettement plus forte que celle considérée au
-dernier paragraphe, puisque les bornes deviennent alors inutiles. De plus, l'ajout d'une
-seule dimension d'information vient automatiquement rendre inexacte la borne statique
-$\xi^2$. 
+Autrement dit, à mesure que $p$ est grand, la norme $\|X\|^2$ sera fortement concentrée
+autour de son espérance. En supposant que chaque variable est standardisée, alors
+$\E\|X\|^2 = \sum_{j=1}^pX_j^2 = p$, puisque les composantes $X_j$ sont
+indépendantes. Ainsi, $\xi^2 = p$ avec haute probabilité.
 
-Dans un contexte où $p$ est de l'ordre de $n$, les bornes dérivées aux deux dernières
-sous-sections peuvent donc se révéler trompeuses, puisqu'elles suggèrent à un potentiel
-investisseur des garanties ne dépendant que de $n$. En particulier, puisque toutes nos
-bornes sont en fait de la forme $\Omega = \O(\xi^2/\lambda\sqrt{n})$, il serait plus exact de postuler
-l'existence d'une variable $\xi^2$ telle que les bornes se comportent en fait selon la
-dynamique
-\begin{equation}
-  \Omega = \O(p/\lambda\sqrt{n}).
-\end{equation}
-En particulier, dans des régimes où $\sqrt{n}=\O(p)$, il devient impossible d'avoir des
-bornes convergeant vers 0, celles-ci restant en fait stationnaires. En outre, si
-$\sqrt{n}=o(p)$, par exemple si $p=\O(n)$, alors une divergence devient assurée.
+Un tel constat se fait également lorsque $\|X\|^2$ est borné par $\|\nu\|^2$. En effet,
+$\|\nu\|^2$ sera de l'ordre $\bigO(p)$ puisqu'on fait alors une somme de $p$ termes.
 
+
+En fait, le point à retenir est que $\xi^2 = \bigO(p)$ dans un contexte d'hypothèses assez
+faibles sur la loi de marché. C'est à dire que les bornes dérivées aux Théorèmes
+\ref{thm1}, \ref{thm2}, \ref{thm3} et \ref{thm4}, qu'on croyait
+$\bigO(n^{-1/2})$ sont en fait $\bigO(pn^{-1/2})$. Ces bornes exposent donc un
+danger potentiel à un investisseur. Par exemple, dans un régime qu'on pourrait qualifier
+de \textit{big data} où $p=\bigO(n)$, les bornes sur l'erreur de généralisation et de sous
+optimalité seraient en fait \textit{divergentes!} à un rythme $\bigO(n^{1/2})$. Il faut en
+fait imposer un rythme $p = \omega(n^{1/2})$ pour s'assurer d'une convergence vers une erreur
+nulle.
+
+Nous verrons cependant à la Section \ref{sec:emp} le comportement de l'erreur empirique
+par rapport à ces ordres de grandeur asymptotiques. En particulier, il faut bien
+comprendre que ces garanties forment une \textit{borne supérieure} impliquant \textit{qu'au plus}
+l'erreur croît à un rythme $\bigO(p)$. 
 Cependant, cette discussion n'est valide que dans le cas particulier des noyaux
 linéaires. Les noyaux gaussiens conservent quant à eux une indépendance par rapport à la
 dimensionalité, alors que les noyaux polynomiaux l'exacerbent; pour un noyau de degré $k$
 il devient plus juste d'indiquer
 \begin{equation}
-  \Omega = \O(p^k/\lambda\sqrt{n}).
+  \Omega = \bigO(p^k/\lambda\sqrt{n}).
 \end{equation}
 
 
-\subsection{Note bibliographique}
+% \subsection{Note bibliographique}
 
-La théorie de la stabilité algorithmique remonte en fait aux années 70 avec les travaux de
-Luc Devroye appliqués à l'algorithme des $k$ plus proches voisins\cit. Jusqu'alors, les
-bornes de généralisation étaient présentées pour toute décision $q \in \Q$ (ie
-Vapnik). Bousquet\cit a été le premier a présenter des résultats dans des espaces de
-Hilbert à noyau reproduisant. La démonstration est fortement inspirée de l'excellente
-référence \cite{mohri2012foundations}. La démonstration de la borne sur la décision bornée
-est un résultat inédit, dûe à Delage dans le cas linéaire. On doit également à Rudin
-l'idée de la dimensionalité sur la qualité des garanties, et plus généralement l'idée
-d'employer une fonction de perte pour parvenir à autre chose qu'une question de
-régression/classification comme c'est souvent le cas.
+% La théorie de la stabilité algorithmique remonte en fait aux années 70 avec les travaux de
+% Luc Devroye appliqués à l'algorithme des $k$ plus proches voisins\cit. Jusqu'alors, les
+% bornes de généralisation étaient présentées pour toute décision $q \in \Q$ (ie
+% Vapnik). Bousquet\cit a été le premier a présenter des résultats dans des espaces de
+% Hilbert à noyau reproduisant. La démonstration est fortement inspirée de l'excellente
+% référence \cite{mohri2012foundations}. La démonstration de la borne sur la décision bornée
+% est un résultat inédit, dûe à Delage dans le cas linéaire. On doit également à Rudin
+% l'idée de la dimensionalité sur la qualité des garanties, et plus généralement l'idée
+% d'employer une fonction de perte pour parvenir à autre chose qu'une question de
+% régression/classification comme c'est souvent le cas.
 
 
 
