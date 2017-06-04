@@ -1,9 +1,60 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-SVM multiclasse
 
-Time series et learning
+En conclusion, nous jugeons que l'algorithme d'investissement présenté dans ce mémoire est
+d'un grand intérêt et ce, pour plusieurs raisons.
+
+En premier lieu, il permet de représenter naturellement le niveau de risque auquel un
+investisseur est prêt à s'exposer grâce à la maximisation de la fonction d'utilité. Cet
+algorithme permet de plus de traiter de façon relativement simple toutes sortes de
+variables de marché que l'investisseur pourrait estimer intéressantes. Par apprentissage,
+on s'attend alors à ce que l'algorithme décide de lui même sur quelles variables de marché
+devraient reposer les décisions d'investissement. De plus, la méthode de noyaux permet de
+rendre compte de situations complexes non linéaires dans la relation entre ces variables
+de marché et le rendement aléatoire.
+
+Finalement, les garanties statistiques sur l'erreur de généralisation de l'équivalent
+certain, au delà de l'aspect purement numérique, et d'ailleurs souvent extrêmement
+relâchée, offrent néanmoins une bonne idée de leur comportement en fonction de la taille
+de l'échantillon employé et du nombre de variables de marché considérées. En particulier,
+nous avons tenté de mettre en lumière comment l'interaction entre ces deux quantités peut
+donner lieu à des situations périlleuses. Nous avons également établi rigoureusement un
+intervalle de vitesse dans lequel un investisseur peut chercher à réduire son erreur de
+sous optimalité, tout en maintenant de garanties hors échantillon.
+
+D'un point de vue théorique aussi, ce mémoire a cherché à illustrer comment la gestion de
+portefeuille peut donner lieu à une autre forme d'optimisation où la fonction objectif
+n'est pas une régression aux moindres carrés sur certains paramètres d'un modèle donné,
+mais bien la fonction utilité elle même. À notre avis, il s'agit là d'une différence
+profonde de ce qui est typiquement observé en statistiques ou dans des problèmes
+d'inférence classiques.
+
+Cependant, ces résultats se font faits au prix de plusieurs hypothèses, certaines assez
+contraignantes. On peut penser à la stationarité de la loi de marché. Bien que ce soit une
+hypothèse couramment faite dans un contexte théorique, elle n'en demeure pas moins
+problématique aussitôt qu'on cherchera à appliquer les idées présentées dans ce mémoire
+dans un contexte appliqué. Les idées assez proposées dans
+\cite{kuznetsov2017generalization} nous semblent de cette façon dignes d'intérêt,
+puisqu'elles offrent le même genre de garantie de généralisation à des processus mélangés
+\textsl{(mixing processes)} non stationnaires. Il s'agit en fait de limiter la façon dont
+la loi de $M_t$ peut changer au cours d'un intervalle de temps $\delta$ donné.
+
+Mais au delà de ces considérations théoriques, notre algorithme souffre évidemment du fait
+qu'il ne considère que les portefeuilles dotés d'un seul actif. On peut néanmoins
+généraliser assez facilement la fonction objectif à un portefeuille à $k$ actifs dans le
+cas d'une décision matricielle $Q$:
+\begin{equation}
+  \maximizeEquation[Q \in \Re^{k \times p}]{n^{-1}\sumi u(r_i^TQ x_i) - \frac{\lambda}{2}\|Q\|^2_F.}
+\end{equation}
+Par contre, il n'est pas clair quel rôle le nombre d'actifs $k$ viendrait jouer dans
+l'erreur de généralisation. Ceci étant dit, il y a probablement moyen de s'inspirer des
+SVM multiclasses qui disposent justement de telles garanties. On peut noter au passage que
+ces garanties se dégradent généralement selon $\bigO(k^2)$ où $k$ représente le nombre de
+classes possibles. Il est donc possible qu'un tel portefeuille multi-actifs soit exposé au
+même type de risque de généralisation. 
+
+
 
 %%% Local Variables:
 %%% mode: latex

@@ -26,13 +26,12 @@ rendement ou \textit{d'équivalent certain} $\nCE = u^{-1}(\nEU)$.
 
 \subsection{Hypothèses et discussion}
 
-Certaines hypothèses devront d'abord être formulées afin d'être en mesure d'obtenir des
-résultats pertinents: ce sera en fait le prix à payer pour l'absence de contraintes sur la
-forme de la loi de marché $M$.
+Certaines bornes devront d'abord être posées afin d'être en mesure d'obtenir des résultats
+finis: ce sera en fait le prix à payer pour l'absence de contraintes sur la forme de la
+loi de marché $M$, notamment sur l'amplitude de ses moments. 
 
 \begin{assumption}
-  L'amplitude de similarité d'une observation est bornée: pour tout $x \in \X$,
-  $\kappa(x,x) \leq \xi^2$.
+  La norme d'une observation est bornée: pour tout $x \in \X$, $\kappa(x,x) \leq \xi^2$.
 \end{assumption}
 \begin{assumption}
   Le rendement aléatoire est borné: $|R| \leq \rmax$.
@@ -40,7 +39,7 @@ forme de la loi de marché $M$.
 \begin{assumption}
   \label{hyp:lip}
   Un investisseur est doté d'une fonction d'utilité $u$ concave, monotone et standardisée,
-  c'est-à-dire que $u(0) = 0$ et $\partial u(0) \ni 1$\footnote{Ici, $\partial u(r)$ signifie l'ensemble
+  c'est-à-dire que $u(0) = 0$ et $1 \in \partial u(0)$\footnote{Ici, $\partial u(r)$ signifie l'ensemble
     des sur-gradients de $u$. Dans le cas dérivable, cela revient à la notion de
     dérivée. Dans le cas simplement continu, $\partial u(r)$ est l'ensemble des fonctions affines
     ``touchant'' à $u(r)$ et supérieures à $u(r)$ pour tout $r$ du domaine).}. De plus,
@@ -91,20 +90,21 @@ et
   \hEU(\S_n,q) \coloneq n^{-1}\sumi u(r_i\,q(x_i)).
 \end{equation}
 
-On peut alors définir l'erreur de généralisation $\hat\zeta$ de l'ensemble d'entraînement par
+L'erreur de généralisation $\hat\zeta:\M^n \to \Re$ de cet ensemble d'entraînement est alors définie
+par
 \begin{equation}
   \hat\zeta(\S_n) \coloneq \hEU(\S_n,\alg(\S_n)) - \EU(\alg(\S_n)).
 \end{equation}
 Ainsi, plus l'erreur de généralisation $\hat\zeta$ est élevée, plus l'investisseur sera déçu
 par l'utilité espérée de la fonction de décision $\qh$ par rapport à ce qu'il aura observé
-en échantillon. Le théorème suivant établi la différence maximale de ces deux mesures de
-performance:
+en échantillon. Le théorème suivant établit de façon probabiliste la différence maximale
+de ces deux mesures de performance:
 
 \begin{thm}[Borne sur l'erreur de généralisation (util)]
   \label{thm1}
   Avec probabilité d'au moins $1-\delta$, 
   \begin{equation}
-    \hat\zeta(\S_n) \leq \frac{2\gamma\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
+    \hat\zeta(\S_n) \leq \frac{2\gamma^2\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
       1)\rmax^2\xi^2}{\lambda}\sqrt{\frac{\log(1/\delta)}{2n}}.
   \end{equation}
 \end{thm}
@@ -114,24 +114,25 @@ hors échantillon exprimée en \textit{équivalent certain:}
 \begin{equation}
   \hat\zeta_e(\S_n) \coloneq \hCE(\S_n,\alg(\S_n)) - \CE(\alg(\S_n))
 \end{equation}
-où $\hCE = u^{-1} \circ \hEU$ et $\CE = u^{-1} \circ \EU$. Le Théorème 2 fournit alors à
-l'investisseur la déviation maximale que peut subir l'équivalent certain hors échantillon
-par rapport au rendement équivalent en échantillon.
+où $\hCE = u^{-1} \circ \hEU$ et $\CE = u^{-1} \circ \EU$ dénotent l'équivalent certain en et hors
+échantillon. Le Théorème 2 fournit alors à l'investisseur la déviation maximale que peut
+subir l'équivalent certain hors échantillon par rapport au rendement équivalent en
+échantillon.
 
 \begin{thm}[Borne sur l'erreur de généralisation (rendement)]
   \label{thm2}
   Avec probabilité d'au moins $1-\delta$,
   \begin{equation}
-    \hat\zeta_e(\S_n) \leq \frac{1}{\partial u(\nhCE)}\left( \frac{2\gamma\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
+    \hat\zeta_e(\S_n) \leq \frac{1}{\partial u(\nhCE)}\left( \frac{2\gamma^2\rmax^2\xi^2}{\lambda n} + \frac{(4\gamma^2 + \gamma +
         1)\rmax^2\xi^2}{\lambda}\sqrt{\frac{\log(1/\delta)}{2n}}\right) 
   \end{equation}
   où $\nhCE = \hCE(\S_n,\alg(\S_n))$. 
 \end{thm}
 
 Cette borne permet ainsi d'appréhender dans quelle mesure un large échantillonage est
-nécessaire pour obtenir un degré de confiance élevé. On notera l'influence de plusieurs
-facteurs sur la qualité de la borne (la discussion sur l'influence du terme $\rmax^2\xi^2$
-est repoussé à la Section \ref{b:dim}).
+nécessaire pour obtenir un degré de confiance suffisament élevé. On notera l'influence de
+plusieurs facteurs sur la qualité de la borne (la discussion sur l'influence du terme
+$\xi^2$ est repoussé à la Section \ref{b:dim}).
 
 Ainsi, la constante $\gamma$ et le terme du sur-gradient inverse $\partial u^{-1}(\nhCE)$ sont tous
 deux susceptibles de dégrader considérablement la borne, particulièrement lorsque
@@ -150,8 +151,7 @@ de faire une validation croisée sur $\lambda$ pour déterminer le meilleur comp
 variance des résultats et l'objectif à atteindre. La constante de confiance $\delta$ est quant
 à elle très performante; une confiance de \num{99.9}\% n'accroît la borne que par un
 facteur de \num{2.63}. Enfin, compte tenu du théorème limite centrale, l'ordre de
-convergence de $\O(1/\sqrt{n})$ n'a finalement rien de surprenant.\todo{Plus de
-  détails...}
+convergence de $\O(1/\sqrt{n})$ n'a finalement rien de surprenant.
 
 
 
@@ -321,80 +321,95 @@ Toutes les bornes considérées jusqu'à présent ont été dérivées sans fair
 explicitement la relation qui les lient avec avec la dimension $p$ de l'espace $\Q$;
 autrement dit, on a implicitement considéré que cette dimension était
 constante. Cependant, à mesure qu'on ajoute de nouvelles variables de marché, on s'expose
-en fait à un risque de généralisation et de sous optimalité plus grand puisque $\Q$
-dispose alors de degrés de liberté supplémentaires.
+en fait à un risque de généralisation et de sous optimalité croissant puisque $\Q$ dispose
+alors de degrés de liberté supplémentaires.
 
 La première chose à prendre en considération est l'effet du noyau $\kappa$ ou de la projection
 $\phi:\X\to\phi(\X)$ sur la dimension de $\Q$ lorsqu'on ajoute à $\X$ de nouvelles variables de
 marché. Dans le cas le plus simple où $\Q = \X$, alors nécessairement la dimension des
 deux espaces concordent:
 \begin{equation}
-  \operatorname{dim}(\Q) = p.
+  \dim\Q = \dim\X = p.
 \end{equation}
 Par contre, si on considère par exemple un noyau polynômiale de degré 2 tel que
-$\kappa(x_i,x_j) = (x_i^Tx_i)^2$, alors si $\X \subseteq \Re^p$, on aura
-$\operatorname{dim}(\Q) = (p+1)(p+2)/2$. En fait, (voir \cite{mohri2012foundations} ou
-\cite{bishop2006pattern}), si $p$ est la dimension de $\X$ et qu'un noyau polynômial de
-degré $k$ est utilisé, alors
+$\kappa(x_i,x_j) = (x_i^Tx_i)^2$, alors $\dim\Q = (p+1)(p+2)/2$. En fait, (voir
+\cite{mohri2012foundations} ou \cite{bishop2006pattern}), si un noyau polynômial de degré
+$k$ est utilisé, alors
 \begin{equation}
-  \operatorname{dim}(\Q) = \binom{p+k}{k} = \frac{1}{k!}\prod_{j=1}^k(p+j) = \bigO(n^k).
+  \dim\Q = \binom{p+k}{k} = \frac{1}{k!}\prod_{j=1}^k(p+j) = \bigO(n^k).
 \end{equation}
 
-En fait, l'influence de la dimension $\Q$ se traduit théoriquement par le facteur $\xi^2$
-présent dans les bornes de généralisation et de sous optimalité présentées aux Théorèmes
-\ref{thm1}, \ref{thm2}, \ref{thm3} et \ref{thm4}. En effet, on a fait l'hypothèse que
-cette variable $\xi$ représente la norme maximale d'une variable de marché $\phi(x)$, \ie
-$\kappa(x,x) \leq \xi^2$. Dans le cas d<un noyau linéaire, cette variable correspondalors la norme
-maximale du vecteur d'information $\|X\|$. On comprend alors qu'ajouter une variable
-d'information viendra immédiatement modifier cette borne $\xi^2$.
+Néanmoins, on a vu à la Section \ref{sec:kernel} que la solution $\qh$ d'un problème donné
+pouvait être obtenue indépendamment de la dimension de $\Q$. Toutefois, cette dimension
+jouera un rôle dans la borne $\kappa(x,x) \leq \xi^2$ qu'on retrouve dans les bornes de
+généralisation et de sous optimalité des Théorèmes \ref{thm1}, \ref{thm2}, \ref{thm3} et
+\ref{thm4}.
 
-Supposons par exemple que $X = (X_1,\ldots,X_j)$ et que $\|X\|^2\leq\xi^2$. Alors nécessairement,
-ajouter une variable $X_{j+1}$ telle que $|X_{j+1}|\leq\nu$ fera en sorte que le nouveau
-vecteur d'information $\tilde X \in \Re^{p+1}$ sera tel que $\|\tilde X\|^2 \leq \xi^2 + \nu^2$. 
-Si on avait plutôt employé un noyau polynômial de degré $k$, alors on se serait passé de
-$\xi^{2k}$ à $(\xi^2+2)^k$. Par contre, les noyaux affines de forme $\kappa(x_i,x_j) = \kappa(\|x_i -
-x_j\|)$ auront nécessairement un facteur $\xi^2$ constant puisque $\kappa(x,x) = \kappa(0)$ peu
-importe la dimension initiale de $\X$.
+Si on prend le cas simple d'un noyau linéaire, cette variable correspond alors simplement
+à la norme maximale du vecteur d'information: $\xi^2 = \max\|X\|^2$.  Par contre, si on
+avait plutôt employé un noyau polynômial de degré $k$, en supposant que $\|X\|^2 \leq \nu^2$, la
+borne à employer serait donnée par
+\begin{equation}
+\kappa(X,X) = (X^TX + 1)^k \leq (\xi^2 + 1)^k.
+\end{equation}
+Par contre, les noyaux affines de forme $\kappa(x_i,x_j) = \kappa(\|x_i - x_j\|)$ (comme par exemple
+le noyau gaussien) auront nécessairement une borne $\xi^2$ constante puisque
+$\kappa(x,x) = \kappa(0)$ peu importe la dimension initiale de $\X$.
 
 On comprend cependant de cette discussion que dans le cas où $\kappa$ n'impose aucune borne
 naturelle au produit scalaire des transformations $\phi$, il est nécessaire de prendre les
 mesures nécessaires pour faire respecter la contrainte $\kappa(x,x)\leq\xi^2$. Mais il y a en fait
-plusieurs façons de parvenir à cette contrainte. Pour ce faire, nous allons considérer à
+plusieurs façons d'y parvenir. Pour ce faire, nous allons considérer à
 des fins de simplification uniquement le cas linéaire où $\kappa(x_i,x_j) = x_i^Tx_j$.
 
-Dans un tel cas, il suffit simplement de borner l'amplitude de chaque variable de marché
-$X_j$ par un scalaire $\nu_j$, de façon à avoir
+D'abord, on peut décider d'imposer une borne rigide à chaque variable de marché: $X_j^2 \leq
+\nu_j^2$. On alors 
 \begin{equation}
   \kappa(X,X) = \sum_{j=1}^p X_j^2 \leq \|\nu\|^2.
 \end{equation}
-Pour ce faire, on peut supposer que les variables sont déjà bornées naturellement :
-plusieurs indicateurs financiers sont effectivement déjà bornés avec un haut degré de
-confiance. On peut également \textit{saturer} les variables de marché par une certaine
-borne $\nu_j$. Par exemple, une variable de marché $X_j$ dont l'amplitude est incertaine
-pourrait être remplacé par la variable $\tilde X_j$ par
+Pour ce faire, on peut supposer que les variables sont déjà bornées naturellement : en
+utilisant notre connaissance de du domaine, on peut juger que chacune de ces variables ne
+peut qu'avoir des réalisations dans un intervalle fini. Mais si on peut également
+\textit{saturer} les variables de marché par une certaine borne $\nu_j$. Par exemple, une
+variable de marché $X_j$ dont l'amplitude est incertaine pourrait être remplacé par la
+variable $\tilde X_j$ par 
 \begin{equation}
   \tilde X_j = \begin{cases}
-    |X_j| \leq \nu_j & X_j\\
-    |X_j| \geq \nu_j & \operatorname{sgn}(X_j)\nu_j,
+    X_j & |X_j| \leq \nu_j\\
+     \operatorname{signe}(X_j)\nu_j & |X_j| > \nu_j,
   \end{cases}
 \end{equation}
 quitte à introduire une nouvelle variable de marché indiquant si $\tilde X_j$ est saturé
 ou non.
 
-Il y a aussi une autre façon de parvenir à une borne sur $\|X\|^2$. Par exemple, si les
-variables de marché $X_j$ sont indépendantes l'une à l'autre et $X_j^2$ a une distribution
-sous exponentielle, l'inégalité de Bernstein implique qu'avec haute probabilité,
+Il y a également une autre façon d'obtenir une borne sur $\|X\|^2$ sans limiter
+individuellement le support de chaque variable de marché. Plusieurs théorèmes, en
+utilisant des hypothèses plus ou moins fortes, permettent en effet d'affirmer qu'un
+phénomène de concentration de la norme aléatoire $\|X\|^2$ autour de $\E\|X\|^2$ aura lieu
+à mesure que $p$ croît.
+
+Par exemple, si les variables de marché $X_j$ sont indépendantes l'une à l'autre et que
+$X_j^2$ a une distribution sous exponentielle\footnote{Tel est le cas par exemple de $Z^2$
+  lorsque $Z \sim \mathscr{N}(0,1)$. Précisément, une variable aléatoire $Z$ est sous
+  exponentielle s'il existe deux paramètres $\nu$ et $\beta$ non négatifs tels que
+  $\E e^{\lambda(Z-\E Z)} \leq e^{\nu^2\lambda^2/2}$ pour tout
+  $|\lambda| \leq \beta^{-1}$. Voir \cite{boucheron2013concentration}.}, l'inégalité de Bernstein
+implique qu'avec probabilité $1-\delta$,
 \begin{equation}
-  \pp\{|\|X\|^2 - \E\|X\|^2| \geq t\} \leq \exp\left(\frac{t^2}{\O(p)}\right).
+  |\|X\|^2 - \E\|X\|^2| \leq \sqrt\frac{2\omega\log(1/\delta)}{p}
 \end{equation}
-Autrement dit, à mesure que $p$ est grand, la norme $\|X\|^2$ sera fortement concentrée
-autour de son espérance. En supposant que chaque variable est standardisée, alors
-$\E\|X\|^2 = \sum_{j=1}^pX_j^2 = p$, puisque les composantes $X_j$ sont
-indépendantes. Ainsi, $\xi^2 = p$ avec haute probabilité.
+où $\omega$ caractérise $\|X\|^2$.  Autrement dit, à mesure que $p$ croît, la norme
+$\|X\|^2$ sera fortement concentrée autour de son espérance. En supposant que chaque
+variable est standardisée, alors $\E\|X\|^2 = \sum_{j=1}^pX_j^2 = p$, puisque les composantes
+$X_j$ sont indépendantes. Ainsi, $\xi^2 \approx p$ avec haute probabilité.
 
-Un tel constat se fait également lorsque $\|X\|^2$ est borné par $\|\nu\|^2$. En effet,
-$\|\nu\|^2$ sera de l'ordre $\bigO(p)$ puisqu'on fait alors une somme de $p$ termes.
-
+En fait, on peut parvenir au même type de constat en n'utilisant que l'inégalité de
+Markov. Ainsi, quelle que soit la loi de $M$, on aura
+\begin{equation}
+  \pp\{\|X\|^2 \ge t\E\|X\|^2\} \leq \frac{1}{t}
+\end{equation}
+et on retrouve donc une fois de plus, dans des conditions beaucoup plus générales, une
+concentration autour de $\E\|X\|^2$. 
 
 En fait, le point à retenir est que $\xi^2 = \bigO(p)$ dans un contexte d'hypothèses assez
 faibles sur la loi de marché. C'est à dire que les bornes dérivées aux Théorèmes
@@ -415,22 +430,22 @@ linéaires. Les noyaux gaussiens conservent quant à eux une indépendance par r
 dimensionalité, alors que les noyaux polynomiaux l'exacerbent; pour un noyau de degré $k$
 il devient plus juste d'indiquer
 \begin{equation}
-  \Omega = \bigO(p^k/\lambda\sqrt{n}).
+  \hat\zeta \leq \bigO(p^k/\lambda\sqrt{n}).
 \end{equation}
 
+\subsection{Conclusion}
 
-% \subsection{Note bibliographique}
+Cette section a permis d'obtenir des garanties probabilistes sur les erreurs de
+généralisation et de sous optimalité de l'équivalent certain. Dans les deux cas, une
+décroissance de $\bigO(\xi^2/n^{-1/2})$ a lieu. On a également indiqué de quelle façon
+devrait être réduit le facteur de régularisation $\lambda$ pour conserver ces garanties tout en
+convergeant vers une erreur de sous optimalité nulle.
 
-% La théorie de la stabilité algorithmique remonte en fait aux années 70 avec les travaux de
-% Luc Devroye appliqués à l'algorithme des $k$ plus proches voisins\cit. Jusqu'alors, les
-% bornes de généralisation étaient présentées pour toute décision $q \in \Q$ (ie
-% Vapnik). Bousquet\cit a été le premier a présenter des résultats dans des espaces de
-% Hilbert à noyau reproduisant. La démonstration est fortement inspirée de l'excellente
-% référence \cite{mohri2012foundations}. La démonstration de la borne sur la décision bornée
-% est un résultat inédit, dûe à Delage dans le cas linéaire. On doit également à Rudin
-% l'idée de la dimensionalité sur la qualité des garanties, et plus généralement l'idée
-% d'employer une fonction de perte pour parvenir à autre chose qu'une question de
-% régression/classification comme c'est souvent le cas.
+La Section suivante illustrera empiriquement le comportement de ces garanties. En
+employant un environnement contrôlé, il sera possible d'établir si ces bornes sont serrées
+ou non, et si elles permettent bien de déduire l'ordre de décroissance de l'erreur. 
+
+
 
 
 

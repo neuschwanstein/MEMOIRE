@@ -772,7 +772,7 @@ distribuées selon une loi Rademacher, liées les unes autres par une copule gau
 Il a pu être établi assez clairement que pour un nombre constant de variables de marché,
 l'erreur décroît bien à un rythme $\bigO(1/\sqrt{n})$, ce qui d'une certaine façon est
 sans surprise au su du théorème limite centrale ou de la théorie de la programmation
-stochastique \todo{Shapiro}.
+stochastique (voir \cite{shapiro2009lectures}).
 
 Les choses se compliquent sensiblement lorsqu'on fait intervenir un nombre croissant de
 variables de marché. Néanmoins, avec $n$ constant, les expériences menées plus haut ont
@@ -787,74 +787,6 @@ sur l'erreur de sous optimalité viendrait supporter l'idée que sa progression 
 de $\bigO(p/\sqrt{n})$. 
 
 
-\clearpage
-
-% \begin{table}[h]
-%   \small
-%   \centering
-% \begin{tabular}{lrrr}
-% \toprule
-% $n$ &   $k=1/2$ &  $k=3/4$ &   $k=1$ \\
-% \midrule
-% 2  &   3 &   4 &   5 \\
-% 3  &   4 &   5 &   7 \\
-% 4  &   5 &   7 &  10 \\
-% 5  &   5 &   8 &  12 \\
-% 6  &   6 &   9 &  15 \\
-% 7  &   6 &  10 &  17 \\
-% 8  &   7 &  11 &  20 \\
-% 9  &   7 &  12 &  22 \\
-% 10 &   7 &  14 &  25 \\
-% 11 &   8 &  15 &  27 \\
-% 12 &   8 &  16 &  30 \\
-% 13 &   9 &  17 &  32 \\
-% 14 &   9 &  18 &  35 \\
-% 15 &   9 &  19 &  37 \\
-% 16 &  10 &  20 &  40 \\
-% 17 &  10 &  20 &  42 \\
-% 18 &  10 &  21 &  45 \\
-% 19 &  10 &  22 &  47 \\
-% 20 &  11 &  23 &  50 \\
-% 21 &  11 &  24 &  52 \\
-% 22 &  11 &  25 &  55 \\
-% 23 &  11 &  26 &  57 \\
-% 24 &  12 &  27 &  60 \\
-% 25 &  12 &  27 &  62 \\
-% 26 &  12 &  28 &  65 \\
-% 27 &  12 &  29 &  67 \\
-% 28 &  13 &  30 &  70 \\
-% 29 &  13 &  31 &  72 \\
-% 30 &  13 &  32 &  75 \\
-% 31 &  13 &  32 &  77 \\
-%   \bottomrule
-% \end{tabular}
-% \caption{Progression de $p$ par rapport à $n$}
-% \label{tbl_np_np}
-% \end{table}
-
-
-% \begin{figure}
-%   \centering
-%   \caption{Progression de $p$ par rapport à $n$}
-%   \includegraphics[width=0.8\textwidth]{../experiments/fig/progression1.pdf}
-% \end{figure}
-
-
-% \begin{figure}
-%   \centering
-%   \begin{subfigure}[b]{\textwidth}
-%     \centering
-%     \caption{Domaine de l'utilité}
-%     \includegraphics[width=\textwidth]{../experiments/fig/bound_npgenu.pdf}
-%   \end{subfigure}
-%   \hfill
-%   \begin{subfigure}[b]{0.8\textwidth}
-%     \caption{Domaine des rendements}
-%     \includegraphics[width=\textwidth]{../experiments/fig/bound_npgence.pdf}
-%   \end{subfigure}
-%   \caption{Erreur de généralisation -- $n$ et $p$ variables}
-%   \label{fig_bound_genu}
-% \end{figure}
 
 
 %%% Local Variables:
