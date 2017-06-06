@@ -5,8 +5,8 @@
     Art of Computer Programming, Volume I}}
 
 
-Cette section sera l'occasion d'étudier l'algorithme avec lequel une politique
-d'investissement empirique $\qh$ peut être obtenue à partir d'un ensemble d'entraînement
+Cette section sera l'occasion d'étudier l'algorithme $\alg:M^n \to \Q$ permettant d'obtenir
+une politique d'investissement empirique $\qh$ à partir d'un ensemble d'entraînement
 $\S_n = \{(r_1,x_1),\ldots,(r_n,x_n)\}$ échantilloné de la loi de marché $M$.
 
 Les formulations primale et duale seront d'abord présentées dans le cas où l'espace des
@@ -18,26 +18,27 @@ possiblement de dimension infinie, sera introduite.
 
 \subsection{Formulations primale et duale}
 
-Tel que discuté en introduction, le cas le plus simple pour un espace de décision est
-celui où l'espace $\X$ des variables de marché ne subit aucune transformation. L'espace
-$\Q$ correspond\footnote{En fait, pour être exact, $q : \X \to \Re$ étant une
-  \textit{fonction}, il est plus exact de faire correspondre $\Q$ à l'espace \textit{dual}
-  $\X^*$. Mais par le théorème de Riez, à tout vecteur $v \in \bm V$ d'un espace vectoriel,
-  il existe un unique vecteur dual $v^* \in \bm V^*$ (noté $v^T$ en dimension finie). On
-  peut donc se contenter de faire correspondre $\Q$ à $\X$.}\footnote{Ici aussi on fait
-  une approximation: $\Q$ ne correspond pas nécessairement à $\X$, mais bien à $\Re^p$ où
-  $p = \dim\X$. En effet, $\X$ représente le support du vecteur aléatoire de marché et est
-  possiblement borné, alors qu'on ne veut pas imposer une telle restriction à
-  $\Q$. Cependant la notation demeure plus claire ainsi. } alors à $\X$ et le scalaire de
-décision $q(x)$ est obtenu par produit scalaire $q^Tx$. On obtient donc ici le problème
-sous la forme \textit{primale}: {\begin{equation} \boxed{
-      \maximizeEquation[q\in\X]{n^{-1}\sumi u(r_i\,q^Tx_i) - \frac{\lambda}{2}\|q\|^2}}
+Tel que discuté en introduction, les décisions d'investissement considérées dans ce
+mémoire seront données par produit scalaire. Le cas le plus simple pour un espace de
+décision est alors celui où l'espace $\X$ des variables de marché ne subit aucune
+transformation. L'espace $\Q$ correspond\footnote{En fait, pour être exact,
+  $q : \X \to \Re$ étant une \textit{fonction}, il est plus exact de faire correspondre
+  $\Q$ à l'espace \textit{dual} $\X^*$. Mais par le théorème de Riez, à tout vecteur
+  $v \in \bm V$ d'un espace vectoriel, il existe un unique vecteur dual $v^* \in \bm V^*$
+  (noté $v^T$ en dimension finie). On peut donc se contenter de faire correspondre $\Q$ à
+  $\X$.}\footnote{Ici aussi on fait une approximation: $\Q$ ne correspond pas
+  nécessairement à $\X$, mais bien à $\Re^p$ où $p = \dim\X$. En effet, $\X$ représente le
+  support du vecteur aléatoire de marché et est possiblement borné, alors qu'on ne veut
+  pas imposer une telle restriction à $\Q$. Cependant la notation demeure plus claire
+  ainsi. } alors à $\X$ et le scalaire de décision $q(x)$ est obtenu par produit scalaire
+$q^Tx$. On obtient donc ici le problème sous la forme \textit{primale}: {\begin{equation}
+    \boxed{ \maximizeEquation[q\in\X]{n^{-1}\sumi u(r_i\,q^Tx_i) - \frac{\lambda}{2}\|q\|^2}}
 \end{equation}
 \vspace{-\baselineskip}\captionof*{figure}{\textit{Formulation primale I}}}
 
 Par la théorie de l'optimisation convexe (voir \cite{boyd2004convex}) on sait qu'une
 solution $\qh$ existe et qu'elle est unique. En supposant que $p = \dim\X$, on peut alors
-exprimer $\qh$ comme une combinaison linéaire de $p$ coordonnées.
+exprimer $\qh$ comme une combinaison de $p$ coordonnées.
 
 Cependant, $\qh$ peut aussi être exprimé comme une combinaison linéaires des $n$
 observations $\{x_1,\ldots,x_n\}$. Autrement dit, il existe un vecteur
@@ -82,7 +83,7 @@ $K$ est alors symétrique) de $K$. En fait $K$ correspond à la \textit{matrice 
 On peut par ailleurs remarquer que ce résultat était déjà annoncé par le cas spécial où
 l'utilité de l'investisseur est risque neutre. On a souligné en introduction que dans un
 tel cas, la solution optimale pouvait effectivement s'exprimer comme une moyenne pondérée
-des $n$ observations:
+des $n$ observations (voir aussi le Lemme \ref{lem:ndef} en Appendice \ref{sec:lems}):
 \begin{equation}
   \qh = \frac{1}{n\lambda}\sumi r_i x_i
 \end{equation}
@@ -91,8 +92,6 @@ et on obtient donc $\hat\alpha = \lambda^{-1}r$.
 
 
 \subsection{Transformations non linéaires}
-
-
 
 Le cas $\Q = \X$ est cependant trop simple pour rendre compte de certaines géométries de
 problème. En fait, certaines géométries du problème peuvent donner lieu à des situations
@@ -172,7 +171,7 @@ le noyau gaussien
   \kappa(x_i,x_j) = \exp\left(-\frac{\|x_i-x_j\|^2}{2\sigma^2}\right)
 \end{equation}
 permet de calculer directement le produit scalaire $\inp{\phi(x_i),\phi(x_j)}$ d'observations
-$\phi(x_i)$ et $\phi(x_j)$ de dimension infine.
+$\phi(x_i)$ et $\phi(x_j)$ de dimension infinie.
 
 Choisir adéquatement le noyau est alors une tâche cruciale du modèle puisque tout noyau
 $\kappa$ induit une géométrie particulière du modèle; il peut alors être impossible de

@@ -1,5 +1,5 @@
 \section{Conjecture sur l'erreur de généralisation}
-
+\label{sec:appexp}
 
 \begin{lemme}[Généralisation du lemme de Hoeffding]
   \label{b:lem:hoeffding}
@@ -54,7 +54,7 @@
   \end{align}
 \end{lemme}
 
-\begin{lemme}[Généralisation de l'inégalité de McDiarmid]
+\begin{conj}[Généralisation de l'inégalité de McDiarmid]
   \label{b:lem:mcdiarmid}
   L'inégalité de McDiarmid peut également se généraliser à des fonctions prenant leurs
   valeurs dans des espaces vectoriels À élaborer!
@@ -71,10 +71,10 @@
   \begin{equation}
     \pp\{\|f(\S_n) - \E f(\S_n)\| \geq \epsilon\} \leq \exp\left(-\frac{2\epsilon^2}{nc^2}\right).
   \end{equation}
-\end{lemme}
+\end{conj}
 
 
-\begin{lemme}[Borne sur la décision]
+\begin{conj}[Borne sur la décision]
   \label{b:lem:qhnorm}
   Considérons le cas d'une utilité neutre au risque puisqu'on sait que toute solution à
   $\max_q\EU_\lambda(q)$ sera bornée par celle de $\max_q\EN_\lambda(q)$.  La stabilité de
@@ -101,24 +101,53 @@
   \begin{equation}
     \|\qh - \qsl\| \leq \frac{\rmax\xi}{\lambda}\sqrt{\frac{\log(1/\delta)}{2n}}.
   \end{equation}
-\end{lemme}
+\end{conj}
 
-% \begin{numex}{Convergence de $\qh$ vers $\qsl$}
-%   La propriété du \lemref{b:lem:qhnorm} s'illustre particulièrement bien dans le cas où
-%   $M$ n'est formé à ses marges que de distributions Rademacher. Ainsi, dans la
-%   \figref{fig:normqhqsl}, une distribution de marché à deux variables d'information
-%   indépendantes et toutes deux de corrélation $\rho=0.5$ avec $R$ sous copule gaussienne a
-%   été simulée \num{10000} fois, pour constituer une ``vraie'' distribution pour laquelle
-%   $\qsl$ peut être calculé; \num{2000} échantillons de $\S_n$ ont été simulés.
-% \begin{figure}
-%   \centering
-%   \includegraphics[width=0.7\textwidth]{../../experiments/fig/normqhqsl.pdf}
-%   \caption{Illustration du \lemref{b:lem:qhnorm}.}
-%   \label{fig:normqhqsl}
-% \end{figure}
-% \end{numex}
+\begin{conj}
+  Pour tout ensemble d'entraînement $\S_n$, on a
+\begin{equation}
+  |\hat\zeta_u(\S_n)| \leq |\hat\zeta_1(\S_n)|.
+\end{equation}
+où $\hat\zeta_u$ est l'erreur de généralisation en employant une fonction d'utilité quelconque
+et $\hat\zeta_1$ l'erreur de généralisation avec une attitude risque neutre.
+\end{conj}
 
+\begin{rem}
+  Il est probable que la preuve soit simplement un argument de forte convexité dûe à la
+  régularisation, mais aussi un phénomène plus complexe comme une généralisation
+  multivariée de l'inégalité de Jensen.
+\end{rem}
 
+\begin{conj}
+  On a, avec probabilité $1-\delta$ sur l'échantillonage de l'ensemble d'entraînement $\S_n$, 
+  \begin{equation}
+    \hat\zeta_1(\S_n) \leq \frac{\rmax^2\xi^2}{\lambda}\sqrt\frac{\log(1/\delta)}{2n}.
+  \end{equation}
+\end{conj}
+
+\begin{proof}
+  On a la chaîne d'inégalités suivantes:
+  \begin{align}
+    \hat\zeta_1(\qh) &= \hEN(\qh) - \EN(\qh)\\
+                 &= \langle\hEN - \EN|\qh\rangle\\
+                 &= \lambda\langle\qh - \qsl|\qh\rangle\\
+                 &\leq \lambda\|\qh - \qsl\|\|\qh\|\\
+                 &\leq \frac{\rmax^2\xi^2}{\lambda}\sqrt\frac{\log(1/\delta)}{2n}
+  \end{align}
+  en utilisant les résultats de la Conjecture \ref{b:lem:qhnorm} et du Lemme
+  \ref{lem:ndef}.
+\end{proof}
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\textwidth]{../experiments/fig/conjec.pdf}
+  \caption[Erreur de généralisation -- Conjecture]
+  {Progression de l'erreur maximale de généralisation sur $m=150$ ensembles
+    d'entraînement et $p=5$. On constate que la borne théorique issue de la conjecture de
+    l'Appendice \ref{sec:appexp} est \textsl{beaucoup} plus serrée que les figures
+    dérivées à partir des Théorèmes 1 et 2.}
+  \label{fig_conjec}
+\end{figure}
 
 
 %%% Local Variables:

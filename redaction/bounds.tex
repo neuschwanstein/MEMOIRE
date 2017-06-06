@@ -1,28 +1,25 @@
 \section{Garanties statistiques}
 \label{sec:bound}
 
-\epigraph{Et nous avons aussi des Maisons consacrées aux Erreurs des Sens [...] Ce sont là, ô
-  mon fils, les richesses de la Maison de Salomon.}{Francis Bacon\\\textsc{New Atlantis}}
+\epigraph{Et nous avons aussi des Maisons consacrées aux Erreurs des Sens [...] Ce sont
+  là, ô mon fils, les richesses de la Maison de Salomon.}{Francis Bacon\\\textsc{New
+    Atlantis}}
 
 
 
 La section précédente était dédiée à l'approche algorithmique du problème: comment, donnés
 un ensemble d'entraînement et un espace de décision $\Q$ induit par un noyau $\kappa$, une
 fonction de décision $\hat q:\X \to \Re$ permettant de prescrire un investissment pouvait être
-déterminée. Cette section sera consacrée aux garanties statistiques de cette
-décision $\qh$. Dans un premier temps, une étude de la stabilité de l'algorithme d'optimisation
-permettra de dériver une borne de généralisation sur la performance hors-échantillon
-(Section \ref{b:gen}). Par la suite, le problème sera approché d'un point probabiliste (en
+déterminée. Cette section sera consacrée aux garanties statistiques de cette décision
+$\qh$. Afin de parvenir à ces garanties, certaines hypothèses devront être formulées afin
+de garantir qu'une solution $\qh$ donne lieu à une erreur bornée. On pourra ainsi énoncé
+un théorème sur l'erreur de généralisation maximale, exprimée en terme d'utilité et
+d'équivalent certain. Par la suite, le problème sera approché d'un point probabiliste (en
 terme de variables aléatoires) afin de comparer les performances de la décision optimale
-d'investissement sur $M$ par rapport à la décision empirique (Section
-\ref{b:sopt}). Enfin, la Section \ref{b:dim} portera sur l'influence de la dimensionalité
-de l'espace $\Q$ sur la qualité des bornes alors obtenues. 
-
-Dans un premier temps, ces bornes seront données en terme d'utilité espérée
-$\nEU$. Cependant, comme discuté en introduction, l'utilité étant adimensionelle, un
-théorème sera énoncé afin de pouvoir exprimer les garanties de performance en terme de
-rendement ou \textit{d'équivalent certain} $\nCE = u^{-1}(\nEU)$. 
-
+d'investissement sur $M$ par rapport à la décision empirique, ce qui permettra deux autres
+théorèmes (l'un en util, l'autre en équivalent certain) sur l'erreur de sous
+optimalité. Enfin, la Section \ref{b:dim} portera sur l'influence de la dimensionalité de
+l'espace $\Q$ sur la qualité des bornes alors obtenues.
 
 \subsection{Hypothèses et discussion}
 
@@ -129,8 +126,11 @@ subir l'équivalent certain hors échantillon par rapport au rendement équivale
   où $\nhCE = \hCE(\S_n,\alg(\S_n))$. 
 \end{thm}
 
-Cette borne permet ainsi d'appréhender dans quelle mesure un large échantillonage est
-nécessaire pour obtenir un degré de confiance suffisament élevé. On notera l'influence de
+Ces deux théorèmes sont démontrés à l'Appendice \ref{sec:thm}.
+
+Le rythme de décroissance de $\bigO(n^{-1/2})$ permet tout d'abord d'appréhender dans
+quelle mesure un large échantillonage est nécessaire pour obtenir un degré de confiance
+suffisament élevé sur l'erreur hors échantillon. On notera de plus l'influence de
 plusieurs facteurs sur la qualité de la borne (la discussion sur l'influence du terme
 $\xi^2$ est repoussé à la Section \ref{b:dim}).
 
@@ -145,29 +145,23 @@ régularisation $\lambda$ de manière à chercher une utilité espérée relativ
 $u(0)$.
 
 On constate par ailleurs le rôle de premier plan que joue le terme de régularisation. Avec
-une régularisation élevée, on obtiendra sans surprise une borne très serrée, mais aux
-dépens de la politique d'investissement qui varie selon $\O(1/\lambda)$. Il est donc primordial
+une régularisation élevée, on obtiendra sans surprise une borne très serrée. Cependant,
+une valeur trop élevée de $\lambda$ risque d'entraîner des décisions d'investissement
+possiblement trop modestes. En pratique, il est donc primordial
 de faire une validation croisée sur $\lambda$ pour déterminer le meilleur compromis entre la
-variance des résultats et l'objectif à atteindre. La constante de confiance $\delta$ est quant
-à elle très performante; une confiance de \num{99.9}\% n'accroît la borne que par un
-facteur de \num{2.63}. Enfin, compte tenu du théorème limite centrale, l'ordre de
-convergence de $\O(1/\sqrt{n})$ n'a finalement rien de surprenant.
-
-
+variance des résultats et l'objectif à atteindre. Cela dit, la question du rythme de
+décroissance approprié pour $\lambda$ sera abordé à la prochaine sous-section.
 
 
 \subsection{Bornes de sous optimalité}
 \label{b:sopt}
-
-\subsubsection{Hypothèses supplémentaires}
-
 
 
 Jusqu'ici, les efforts théoriques ont été déployés pour déterminer comment se comportait
 la fonction de décision $\hat q = \alg(\S_n)$ dans un univers probabiliste par rapport à
 l'univers statistique dans lequel elle avait été construite. Notre attention va maintenant
 se tourner vers la performance de $\hat q$ dans l'univers probabiliste par rapport à la
-meilleure décision disponible, c'est à dire la solution $q^\star$ de 
+meilleure décision disponible, c'est à dire la solution $q^\star$ au problème de 
 \begin{equation}
   \maximizeEquation[q \in \Q]{\EU(q)}
 \end{equation}
@@ -177,27 +171,21 @@ où
 \end{equation}
 Il convient cependant de réaliser que l'existence d'une décision optimale $q^\star$ finie
 n'est pas assurée. En effet, supposons d'une part que l'on dispose d'une utilité neutre au
-risque $\rn$, telle que $\rn(r) = r$, et d'autre part que $\E R=0$. Soit $\alpha>0$. On
-pourrait alors définir la fonction suivante:
+risque $\rn$, telle que $\rn(r) = r$. On pourrait alors définir la décision suivante:
 \begin{equation}
   q = \alpha\E(R|X\rangle)
 \end{equation}
-On aurait alors, du fait de la linéarité du produit scalaire,
+où on rappelle que $|X\rangle = \kappa(X,\cdot)$. On aurait alors, du fait de la linéarité du produit
+scalaire,
 \begin{align}
-  \EN(q) & = \E(R\,q(X))\\
-         & = \E\langle q|(R|X)\rangle\\
-         & = \langle q|\E(R|X\rangle)\rangle\\
+  \E1(q) & \coloneq \E(R\,q(X))\\
+         & = \E\langle q|(R|X\rangle)\\
+         & = \langle q|\E(R|X\rangle)\\
          & = \alpha\|q\|^2 \geq 0.
 \end{align}
-On peut alors obtenir une utilité espérée non bornée à mesure que $\alpha\to\infty$. Par ailleurs,
-ainsi défini, $q$ représente effectivement la covariance entre $R$ et la projection de $X$
-dans l'espace dual de $\Q$; par exemple dans le cas d'un noyau linéaire on aurait
-$q = \E(RX^T) = \Cov(R,X)$. On sait qu'en espérance l'application de $q$ à $X$ variera de
-la même façon que celle de $R$ et donc qu'on aura une utilité infinie, puisque l'utilité
-est neutre.
-
-Pour empêcher une telle situation d'exister on introduit l'hypothèse suivante. Elle exclut
-toute forme d'utilité à pente constante pour $r \geq r_0$, notamment l'utilité risque neutre.
+On peut alors obtenir une utilité espérée non bornée à mesure que $\alpha\to\infty$. Pour empêcher une
+telle situation de se produire, on introduit l'hypothèse suivante. Elle exclut toute forme
+d'utilité à pente constante pour $r \geq r_0$, notamment l'utilité risque neutre.
 \begin{assumption}
   L'utilité croît sous-linéairement, ie. $u(r) = o(r)$.\footnote{Mathématiquement, on exige
     donc que $u(r)/r \to 0$.} 
@@ -210,41 +198,37 @@ sens en vertu de l'efficience des marchés, version semi-forte (voir
 toute l'information publique disponible au sujet d'un titre risqué devrait pas pouvoir
 être en mesure de ``battre'' le marché sans prendre de risque. D'un point de vue
 théorique, ceci exige en fait qu'il n'y ait pas de région dans $\X$ telle que tous les
-rendements s'y produisant soient nécessairement positifs ou négatifs.\todo{Inserer
-  image}. Ainsi, même en ayant une conaissance parfaite du monde, il subsistera toujours
-un terme de bruit rendant incertains la réalisation des rendements.
+rendements s'y produisant soient nécessairement positifs ou négatifs. Ainsi, même en ayant
+une conaissance parfaite du monde, il subsistera toujours un terme de bruit rendant
+incertain la réalisation des rendements.
 
 \begin{assumption}
   \label{hyp:arb}
   Pour toute région $\mathcal{X}\subseteq\X$,
   \begin{equation}
-    \pp\{R \geq 0 \mid X \in \mathcal{X}\} < 1,
+    \pp\{R \lessgtr 0 = R < 0 \vee R > 0 \mid X \in \mathcal{X}\} < 1.
   \end{equation}
-  et de la même façon avec l'évènement $\pp\{R \leq 0 \mid X \in \mathcal{X}\}$. 
 \end{assumption}
 
+Ces deux hypothèses supplémentaires permettent alors de montrer que $\qs$ est bien borné,
+\ie\ que $\|\qs\|$ est fini. En effet, on peut alors décomposer $q = s\theta$, tel que
+$\|\theta\|=1$ et $s>0$; si $s=0$ alors la décision est déjà bornée. Ainsi, on peut poser notre
+problème d'optimisation comme la recherche d'une ``direction'' $\theta \in \Q$ et d'une magnitude
+$s \in \Re$.
 
-\paragraph{Décision optimale finie}
-
-On veut montrer que $\nq{q^\star}$ est borné. Pour ce faire, on va tout d'abord décomposer
-$q = s\theta$, où on pose $\nq{\theta}=1$ et $s>0$; ainsi on peut poser notre problème
-d'optimisation comme la recherche d'une `direction' $\theta$ et d'une magnitude $s$ dans
-$\Q$. De plus, puisque $\nq{q} = s$, il suffit de montrer que $s^\star$ est borné.
-
-Notons d'abord que l'hypothèse \ref{hyp:arb} entraîne en particulier qu'il existe
+En premier lieu, l'hypothèse \ref{hyp:arb} entraîne en particulier qu'il existe
 $\delta > 0$ et $\varrho \geq 0$ tels que
 \begin{equation}
-  \pp\{R\cdot \theta(X) \leq -\delta\} > \varrho
+  \pp\{R\cdot\theta(X) \leq -\delta\} > \varrho
 \end{equation}
-pour tout $\theta \in \Q$ tel que $\nq{\theta} = 1$. Définissons maintenant une variable aléatoire à
+pour tout $\theta$ et $s$.  Définissons maintenant une variable aléatoire à
 deux états: $B = -\delta$ avec probabilité $\varrho$ et $B = \rmax\xi$ avec probabilité
 $1-\varrho$. Puisque $R\cdot \theta(X) \leq \rmax\xi$, on a alors que, pour tout $r \in \R$,
 \begin{equation}
   \pp\{B\geq r\} \geq \pp\{R\cdot \theta(X)\geq r\}
 \end{equation}
-\todo{voir figure a produire.}
 
-Puisque par hypothèse $u$ est concave et puisque que $B$ domine stochastiquement
+Mais puisque par hypothèse $u$ est concave et puisque que $B$ domine stochastiquement
 $R\cdot \theta(X)$, on a nécessairement que $\E u(sB) \geq \E u(R\cdot s\theta(X))$, pour tout
 $s > 0$. Or, par hypothèse de sous-linéarité on obtient que
 \begin{align}
@@ -252,25 +236,30 @@ $s > 0$. Or, par hypothèse de sous-linéarité on obtient que
                            & = \lim_{s\to\infty}(\varrho u(-s\delta) + (1-\varrho)u(s\rmax\xi))\\
                            & \leq\lim_{s\to\infty}-\varrho s \delta + (1-\varrho)o(s) = -\infty,
 \end{align}
-ce qui démontre bien que $s$ est borné.
+ce qui démontre bien que $s$ est borné et donc que $\qs$ est fini.
 
-\subsubsection{Garanties de sous optimalité}
-
-Soit \textit{l'erreur de sous optimalité en util} $\zeta(\S_n)$ définie par
+On est alors en mesure de définir \textit{l'erreur de sous optimalité en util}
+$\zeta(\S_n)$ par
 \begin{equation}
   \zeta(\S_n) \coloneq \EU(\alg(\S_n)) - \EU(\qs)
 \end{equation}
-et \textit{l'erreur de sous optimalité en rendement} $\zeta_e(\S_n)$ définie par
+et \textit{l'erreur de sous optimalité en rendement} $\zeta_e(\S_n)$ par
 \begin{equation}
   \zeta_e(\S_n) = \CE(\alg(\S_n)) - \CE(\qs).
 \end{equation}
 Ces deux notions d'erreur indiquent alors, en terme d'util ou de rendement, à quel point
 la performance hors échantillon est éloignée de la performance suivant la politique
-optimale $\qs$. Les deux théorèmes suivant précisent comment se comportent ces deux
-erreurs.
+optimale $\qs$. Il faut bien comprendre que, puisque $\qh$ est déterminé suivant un
+objectif régularisé, même lorsque $n\to\infty$ jamais cette erreur de sous optimalité ne pourra
+être nulle. En fait, il faudrait décroître le facteur de régularisation $\lambda$ pour que $\zeta$
+puisse converger vers une erreur nulle. 
+
+Les deux théorèmes suivant précisent comment se comporte l'erreur de sous optimalité de la
+solution $\qh = \alg(\S_n)$.
 \begin{thm}[Erreur de sous optimalité (util)]
   \label{thm3}
-  Avec probabilité d'au moins $1-\delta$, l'erreur de sous optimalité en util est bornée par
+  Avec probabilité d'au moins $1-\delta$ sur l'ensemble d'entraînement $\S_n$, l'erreur de sous
+  optimalité en util est bornée par
   \begin{equation}
     \zeta(\S_n) \leq \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} +
     \frac{4\gamma\rmax\xi^2}{\lambda}\sqrt\frac{32+\log(1/\delta)}{n} + \frac{\lambda}{2}\|\qs\|^2 
@@ -279,37 +268,52 @@ erreurs.
 
 \begin{thm}[Erreur de sous optimalité (équivalent certain)]
   \label{thm4}
-  Avec probabilité d'au moins $1-\delta$, l'erreur de sous optimalité exprimée en équivalent
-  certain est bornée par
+  Avec probabilité d'au moins $1-\delta$ sur l'ensemble d'entraînement $\S_n$, l'erreur de sous
+  optimalité exprimée en équivalent certain est bornée par
   \begin{equation}
     \zeta_e(\S_n) \leq \frac{1}{\partial u(\nCE)}\left( \frac{8\gamma^2\xi^2(32+\log(1/\delta))}{\lambda n} +
       \frac{4\gamma\rmax\xi^2}{\lambda}\sqrt\frac{32+\log(1/\delta)}{n} + \frac{\lambda}{2}\|\qs\|^2 \right),
   \end{equation}
-où $\nCE = \CE(\alg(\S_n))$ représente l'équivalent certain de la politique $\qh =
-\alg(\S_n)$ hors échantillon. À défaut de la connaître, on lui substituera son
-approximiation $\nhCE(\S_n,\alg(\S_n))$. 
+  où $\nCE = \CE(\alg(\S_n))$ représente l'équivalent certain de la politique
+  $\qh = \alg(\S_n)$ hors échantillon. Cette quantité étant inconnue, on lui substituera
+  son approximation $\hCE(\S_n,\alg(\S_n))$.
 \end{thm}
+
+Voir l'Appendice \ref{sec:thm} pour une démonstration. 
 
 
 Les bornes de sous-optimalité convergent ainsi environ à la même vitesse que celle de
-généralisation, c'est-à-dire dans un régime de $\bigO(1/\sqrt{n})$. Bien sûr, une
-différence majeure est la présence de $\nq{\qs}$ qui est a priori impossible à déterminer,
-dans la mesure où aucune hypothèse n'est faite sur la distribution de $M$. On constate
-d'ailleurs sans surprise qu'une faible valeur de régularisation permet au résultat
-algorithmique de se raprocher du résultat optimal, bien que les autres termes de la borne
-aient un effet inverse. Par ailleurs, le sur-gradient inverse de $u$ à $\nCE$ ne peut lui
-non plus être déterminé précisément, aussi pour estimer la borne on lui substituera
-$\partial u^{-1}(\nhCE)$.
+généralisation, c'est-à-dire à un rythme de $\bigO(1/\sqrt{n})$. Bien sûr, une différence
+majeure est la présence de $\nq{\qs}$ qui est a priori impossible à déterminer, dans la
+mesure où aucune hypothèse n'est faite sur la distribution de $M$.  En fait, ces bornes de
+sous optimalité établissent rigoureusement de quelle façon la régularisation devrait être
+décrue afin de s'assurer de converger vers la solution optimale tout en contrôlant
+l'erreur de généralisation. De façon schématisée, l'erreur de sous optimalité progresse de
+la façon suivante:
+\begin{equation}
+  \zeta \leq \bigO(\lambda^{-1}n^{-1/2}) + \bigO(\lambda),
+\end{equation}
+et il y a alors un choix à faire. Le premier terme, qu'on retrouve aussi dans l'erreur de
+généralisation, quantifie l'amplitude possible d'erreur, alors que le deuxième terme
+quantifie la sous optimalité dans une situation asymptotique $n \to \infty$. Un investisseur
+prudent pourrait alors vouloir être dans une situation proche de $\lambda = \bigO(1)$ qui offre
+de meilleures garanties hors échantillon. À l'inverse, un investisseur compétitif et
+soucieux d'obtenir une faible erreur de sous optimalité cherchera plutôt à décroître
+$\lambda$ à un rythme de l'ordre de $\lambda = \bigO(n^{-1/2})$. Son erreur de généralisation restera
+à peu près constante, mais il se rapprochera rapidement de la solution optimale. La
+Section \ref{sec:emp} sera l'occasion de mesurer en pratique la validité de ces ordres de
+convergence.
 
-En fait, ces bornes de sous optimalité établissent rigoureusement de quelle façon la
-régularisation devrait être décrue afin de s'assurer de converger vers la solution
-optimale tout en contrôlant l'erreur de généralisation. Par exemple, en choisissant un
-facteur de régularisation $\lambda = \bigO(n^{-1/4})$, toute chose étant égale par ailleurs, on
-s'assure une convergence vers une sous optimalité nulle à un rythme
-$\bigO(n^{-1/4})$. Cependant, alors que l'erreur de généralisation est normalement de
-$\bigO(n^{-1/2})$ lorsque $\lambda$ est constant, l'erreur de généralisation ne décroit alors
-plus qu'à un rythme $\bigO(n^{-1/4})$. La Section \ref{sec:emp} sera l'occasion de mesurer
-en pratique la validité de ces ordres de convergence. 
+En dernier lieu, il convient peut être de discuter rapidement de cette solution optimale
+$\qs$. Car il ne faut pas la confondre avec la \textit{meilleure} décision compte tenu du
+marché $M$: il s'agit plutôt de la meilleure décision \textit{de l'espace} $\Q$ capable
+d'optimiser l'utilité régularisée. Autrement dit, $\qs$ sera limité par la complexité de
+l'espace $\Q$. Par exemple, la décision optimale pour une loi de marché semblable à
+l'exemple XOR présenté à la figure \ref{fig_xor} sera de faible qualité si le noyau choisi
+est linéaire. Tel que discuté, il est donc particulièrement important de choisir avec soin
+un noyau capable \textit{d'apprendre} la loi de marché. Malheureusement, il revient à
+l'investisseur de conduire cette tâche.
+
 
 
 

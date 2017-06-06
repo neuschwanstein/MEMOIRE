@@ -1,55 +1,72 @@
 \section*{Notation}
 \addcontentsline{toc}{section}{Notation}
 
-\begin{table}[h!]
-  % \centering
-  \begin{tabular}{@{}lll}
-    &\textbf{Objet} & \textbf{Notation}\\
-    \toprule
-    \multicolumn{3}{l}{\textit{Espaces}\hspace{67ex}\,}\\[1ex]
-    & Réels & $\Re$\\
-    & Espace des rendements & $\R \subseteq \Re$\\
-    & Espace des variables de marché & $\X \subseteq \Re^p$\\
-    & Espace de décision & $\Q$\\
-    & Facteur de régularisation & $\lambda$\\
-    & Fonction d'utilité & $u:\R\to\Re$\\
-
-    \midrule
-    \multicolumn{3}{l}{\textit{Variables aléatoires et réalisation}}\\[1ex]
-    &Variables de marché & $X \in \X$\\
-    &               & $x \sim X$\\[0.8ex]
-    &Rendement & $R \in \R$\\
-    &               &$r \sim R$\\[0.8ex]
-    &Loi de marché & $(X,R) = M \in \M$\\
-    &               & $(x,r) \sim M$\\
-    
-    \midrule
-    \multicolumn{3}{l}{\textit{Décisions, transformation $\phi$ ou induite par noyau}}\\[1ex]
-    & Décision & $q:\X\to\Re$\\
-    & & $q(x) = \langle q|x \rangle$\\[0.8ex]
-    & Transformation non linéaire & $\phi:\X \to \phi(\X)$\\[0.8ex]
-    & Noyau & $\kappa:\X\times\X \to \Re$\\
-    &                & $\kappa(x_i,x_j) = \inp{\phi(x_i),\phi(x_j)}$\\
-    &                & \hspace{\widthof{$\kappa(x_i,x_j)$}} $ = \langle x_i|x_j \rangle$\\[0.8ex]
-    
-    \midrule
-    \multicolumn{3}{l}{\textit{Algorithme et mesure de performance}}\\[1ex]
-    &Ensemble d'entraînement & $\S_n = \{(x_1,r_1),\ldots,(x_n,r_n)\}$\\
-    &               &$\S_n\sim M^n$\\[0.8ex]
-    & Algoritme d'aprentissage & $\alg:\M^n\to\Q$\\[0.8ex]
-    & Utilité espérée  & $\EU:\Q\to\Re$\\
-    &       & $\EU(q) = \E u(R\cdot q(X))$\\[0.8ex]
-    & Utilité espérée en échantillon & $\hEU:\M^n \times \Q \to \Re$\\
-    &       &$\hEU(\S_n,q) = n^{-1}\sumi u(r_i\,q(x_i))$\\[0.8ex]
-    & Rendement espéré & $\EN:\Q\to\Re$\\
-    &                  & $\EN(q) = \E(R\cdot q(X))$\\[0.8ex]
-    & Rendement espéré en échantillon & $\hEN:\Q\to\Re$\\
-    && $\hEN(q) = n^{-1}\sumi r_i\,q(x_i)$\\[0.8ex]
-    & Erreur de généralisation (utilité) & $\zeta_u:\M^n \to \Ut$\\
-    && $\zeta_u(\S_n) = \hEU(\S_n,\alg(\S_n)) - \EU(\alg(\S_n))$\\
-    \bottomrule
+% \begin{table}[h!]
+\begin{tabular}{@{}lll}
+  &\textbf{Objet} & \textbf{Notation}\\
+  \toprule
+  \multicolumn{3}{l}{\textit{Constantes du problème}}\\[1ex]
+  & Facteur de régularisation & $\lambda \in \Re$\\
+  & Fonction d'utilité & $u:\R\to\Re$\\
+  \midrule
+  \multicolumn{3}{l}{\textit{Espaces}\hspace{67ex}\,}\\[1ex]
+  & Réels & $\Re$\\
+  & Espace des rendements & $\R \subseteq \Re$\\
+  & Espace des variables de marché & $\X \subseteq \Re^p$\\
+  & Espace de décision & $\Q = \kappa(\X,\cdot)$\\
+  \midrule
+  \multicolumn{3}{l}{\textit{Variables aléatoires et réalisations}}\\[1ex]
+  &Variables de marché & $X \in \X$\\
+  &               & $x \sim X$\\[0.8ex]
+  &Rendement & $R \in \R$\\
+  &               &$r \sim R$\\[0.8ex]
+  &Loi de marché & $(X,R) = M \in \M$\\
+  &               & $(x,r) \sim M$\\
+  
+  \midrule
+  \multicolumn{3}{l}{\textit{Décisions, transformation $\phi$ ou induite par noyau}}\\[1ex]
+  & Décision & $q:\X\to\Re$\\
+  & & $q(x) = \langle q|x \rangle$\\[0.8ex]
+  & Transformation non linéaire & $\phi:\X \to \phi(\X)$\\[0.8ex]
+  & Noyau & $\kappa:\X\times\X \to \Re$\\
+  &                & $\kappa(x_i,x_j) = \inp{\phi(x_i),\phi(x_j)}  = \langle x_i|x_j \rangle$\\[0.8ex]
+  \bottomrule
 \end{tabular}
-\end{table}
+% \end{table}
+
+\clearpage
+
+% helo
+\section*{Notation (2)}
+
+\begin{tabular}{@{}lll}
+  &\textbf{Objet} & \textbf{Notation}\\
+  \midrule
+  \multicolumn{3}{l}{\textit{Algorithmes et mesure de performance}\hspace{40ex}\,}\\[1ex]
+  &Ensemble d'entraînement & $\S_n = \{(x_1,r_1),\ldots,(x_n,r_n)\}$\\
+  &               &$\S_n\sim M^n$\\[0.8ex]
+  & Algoritme d'aprentissage & $\alg:\M^n\to\Q$\\
+  & &$\alg(\S_n) = \argmax_{q \in \Q}\hEU_\lambda(\S_n,q)$\\[0.8ex]
+  & Utilité espérée  & $\EU(q) = \E u(R\cdot q(X))$\\[0.8ex]
+  & Utilité espérée régularisée  & $\EU_\lambda(q) = \EU(q) - \lambda/2\|q\|^2$\\[0.8ex]  
+  & Utilité espérée en échantillon & $\hEU(\S_n,q) = n^{-1}\sumi u(r_i\,q(x_i))$\\[0.8ex]
+  & Utilité esp. en éch. régularisée & $\hEU_\lambda(\S_n,q) = \hEU(\S_n,q) - \lambda/2\|q\|^2$\\[0.8ex]
+  & Rendement espéré & $\EN(q) = \E(R\cdot q(X))$\\[0.8ex]
+  & Rendement espéré en échantillon & $\hEN(q) = n^{-1}\sumi r_i\,q(x_i)$\\[0.8ex]
+  & Erreur de généralisation (utilité) & $\hat\zeta(\S_n) = \hEU(\S_n,\alg(\S_n)) -
+                                         \EU(\alg(\S_n))$\\[0.8ex]
+  & Erreur de sous optimalité (utilité) & $\zeta(\S_n) = \EU(\alg(\S_n)) -
+                                          \EU(q^\star)$\\[0.8ex]    
+  & Équivalent certain en échantillon & $\hCE(\S_n,q) =
+                                        u^{-1}\big(\hEU(\S_n,q)\big)$\\[0.8ex]
+  & Équivalent certain hors échantillon & $\CE(q) = u^{-1}\big(\EU(q)\big)$\\[0.8ex]
+  & Erreur de généralisation (eq. cert.) & $\hat\zeta_e(\S_n) = \hCE(\S_n,\alg(\S_n)) -
+                                           \CE(\alg(\S_n))$\\[0.8ex]
+  & Erreur de sous optimalité (eq. cert.) & $\zeta_e(\S_n) = \CE(\alg(\S_n)) -
+                                            \CE(q^\star)$\\[0.8ex]    
+  \bottomrule
+\end{tabular}
+% \clearpage
 
 %%% Local Variables:
 %%% mode: latex

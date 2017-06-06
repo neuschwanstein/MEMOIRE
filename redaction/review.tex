@@ -6,23 +6,9 @@
   Pauwels et Jacques Bergier\\\textsc{Le matin des magiciens}}
 
 L'objet de cette section est de présenter une brève introduction à quelques textes
-fondamentaux à l'intersection des mathématiques statistiques et de la gestion financière
-de portefeuille.
+fondamentaux à l'intersection des statistiques et de la gestion financière de
+portefeuille.
 
-% Dans tous les cas, le problème fondamental reste essentiellement le même: un
-% investisseur est doté d'une certaine fonction d'utilité $g$ (implicite ou non) qui
-% dépend d'une décision $q$ ayant un effet linéaire sur le rendement aléatoire
-% $R$. D'autre part, l'investisseur cherche à réduire le risque du portefeuille estimé à
-% travers la norme $\|q\|^2$ (où $\|\cdot\|$ est à préciser).
-
-% L'étude scientifique de l'optimisation de portefeuille a d'abod été théorisée à partir
-% des années 1950 par Harry Markowitz. Si le modèle utilisé par Morkowitz est à bien des
-% égards trop simples pour une application robuste, il a le mérite d'être,
-
-% Dans ce document, nous allons tenter de classifier et de répertorier la plupart des
-% méthodes ayant rapport, de près ou de loin, à l'intersection des méthodes statistiques
-% avancées et de l'apprentissage machine avec la théorie du portefeuille, en présentant
-% pour chacune d'elle leurs avantages et leurs inconvénients.
 
 \subsection{Approche statistique}
 
@@ -45,11 +31,11 @@ le problème devient alors
 \begin{equation}
   \maximizeEquation[q]{\mu^Tq - \gamma\,\sigma^2 q^2.}
 \end{equation}
-En recalibrant le terme de régularisation pour tenir compte de la variance $\sigma^2$, le
-problème devient identique à au problème \cit\ avec décision linéaire sur une utilité
-neutre au risque et une seule variable de marché constante à 1 (terme de biais).
+En recalibrant le terme de régularisation pour tenir compte de la variance $\sigma^2$, ce
+problème devient un cas particulier du problème exposé dans ce mémoire (utilité risque
+neutre, décision linéaire et une seule variable de marché constante à 1).
 
-Le problème de Markowitz à un actif peut aussi être considéré comme une maximisation
+Mais le problème de Markowitz à un actif peut aussi être considéré comme une maximisation
 d'utilité sans régularisation. En effet, en définissant
 \begin{equation}
   u(r) = r - \frac{\gamma}{\sigma^2+\mu^2}\sigma^2r^2,
@@ -70,10 +56,11 @@ et \cite{markowitz2014mean}, tous deux publiés à l'occasion du soixantième an
 \cite{markowitz1952portfolio}.
 
 
-Dans la même veine, l'article \cite{brandt2009parametric} considère l'optimisation d'un
-portefeuille à $k$ actifs disposant de $p$ variables de marché. Avec
-$X_t \in \Re^{k \times p}$ une matrice aléatoire représentant la réalisation au temps $t$ des
-diverses variables de marché, la composition $w_t \in \Re^k$ du portefeuille sera donnée par
+L'article \cite{brandt2009parametric} se rapproche d'une des contributions de ce mémoire
+puisqu'il considère l'optimisation d'un portefeuille à $k$ actifs disposant de $p$
+variables de marché. Avec $X_t \in \Re^{k \times p}$ une matrice aléatoire représentant la
+réalisation au temps $t$ des diverses variables de marché, la composition $w_t \in \Re^k$ du
+portefeuille sera donnée par
 \begin{equation}
   w_t = \bar w_t + X_t q.
 \end{equation}
@@ -101,7 +88,7 @@ statistiques d'un univers à $k$ actifs.
 \subsection{Approche régularisée}
 
 D'une certaine façon, ces travaux approchent le problème de gestion de portefeuille un peu
-trop brusquement en ne laissant pas suffisament de place aux garanties
+trop brusquement en ne laissant pas suffisamment de place aux garanties
 statistiques. Autrement dit, ils présentent tous un risque de généralisation
 élevé. Comme la méthode proposée par ce mémoire, d'autres travaux ont aussi cherché à
 étudier l'importance de la régularisation des décisions dans la gestion de portefeuille.
@@ -129,22 +116,23 @@ alors que notre modèle permet d'optimiser sur une fonction d'utilité de forme 
 
 Plus récemment, \cite{ban2016machine} explore l'importance de la régularisation dans une
 gestion de portefeuille où le risque est représenté par une fonction
-$\mathcal{R}:\Re^k \to \Re$ agissant sur le vecteur de poids $q \in \Re^k$. Le risque est laissé à
-la discrétion de l'investisseur, mais pourrait être représenté par exemple par
-$\mathcal{R}(q) = q^T\Sigma q$ la norme de la covariance ou par sa valeur à risque
-conditionelle $\mathcal{R}(q) = \mathrm{CVar}(q)$.\footnote{La valeur à risque
-  conditionelle paramétrée par $\beta\in(0,1)$ d'une variable aléatoire $R$ (en l'occurence le
-  rendement pondéré par $q$) est une mesure de l'étalement dans les régions défavorables à
-  l'investisseur et est donné par $\E (R \mid R \leq \text{$\beta$\ieme quantile de
-    $R$})$.} L'argument offert est essentiellement le même que celui présenté à la section
-\ref{sec:intro}: si on sait que le problème empirique
+$\mathcal{R}:\Re^k \to \Re$ agissant sur le vecteur de poids $q \in \Re^k$. Comment définir ce
+risque est laissé à la discrétion de l'investisseur, mais pourrait être représenté par
+exemple par $\mathcal{R}(q) = q^T\Sigma q$ la variance totale du portefeuille ou par sa
+valeur à risque conditionnelle $\mathcal{R}(q) = \mathrm{CVar}(q)$.\footnote{La valeur à
+  risque conditionnelle paramétrée par $\beta\in(0,1)$ d'une variable aléatoire $R$ (en
+  l'occurrence le rendement pondéré par $q$) est une mesure de l'étalement dans les
+  régions défavorables à l'investisseur et est donné par
+  $\E (R \mid R \leq \text{$\beta$\ieme quantile de $R$})$.} L'argument offert est essentiellement
+le même que celui présenté à la section \ref{sec:intro}: si on sait que le problème
+empirique
 \begin{equation}
   \maximizeEquation[q]{\hat \mu^Tq - \lambda_0\widehat{\mathcal{R}}(q)}
 \end{equation}
-converge asymptotiquement vers la solution optimale, l'absence de régularisation implique
-l'absence de garantie sur la qualité des résultats lorsque l'optimisation a lieu sur un
-nombre de points finis. La régularisation est alors exprimée comme la \textit{variance
-  empirique du risque}, \ie\ l'objectif devient
+converge asymptotiquement vers la solution optimale régularisée, l'absence de
+régularisation implique l'absence de garantie sur la qualité des résultats lorsque
+l'optimisation a lieu sur un nombre de points finis. La régularisation est alors exprimée
+comme la \textit{variance empirique du risque}, \ie\ l'objectif devient
 \begin{equation}
   \maximizeEquation[q]{\hat \mu^Tq - \lambda_0\widehat{\mathcal{R}}(q) - \lambda_1\Var(\widehat{\mathcal{R}}(q)).}
 \end{equation}
@@ -191,8 +179,8 @@ appliquant une politique optimale constante $q^\star$. Autrement dit,
 \end{equation}
 En choisissant $q_t$ à partir d'une descente de gradient (voir par exemple
 \cite{hazan2015online} pour un contexte plus général d'apprentissage en ligne) on peut
-alors garantir un regret dont la progression du regret est $\bigO(\sqrt{T})$. Un
-tel algorithme induisant un regret sous linéaire, \ie\ dominé par $\bigO(T)$, est appelé
+alors garantir un regret dont la progression du est de $\bigO(\sqrt{T})$. Un tel
+algorithme induisant un regret sous linéaire, \ie\ dominé par $\bigO(T)$, est appelé
 \textit{portefeuille universel}.
 
 \subsection{Conclusion}
@@ -200,7 +188,7 @@ tel algorithme induisant un regret sous linéaire, \ie\ dominé par $\bigO(T)$, 
 
 En conclusion, la nature générale de notre modèle (impliquée par la forme arbitraire de la
 fonction d'utilité) permet donc de le positionner comme une version flexible des travaux
-présentés ici. Plusieurs avantages sont ainsi regroupés: le terme de risque arbitaire, la
+présentés ici. Plusieurs avantages sont ainsi regroupés: le terme de risque arbitraire, la
 stabilité des résultats consolidée par la présence de régularisation et l'admission de
 variables de marché quelconques. Cependant, notre algorithme a le désavantage de ne
 considérer un portefeuille qu'à un seul actif, contrairement à ce qui ce fait généralement

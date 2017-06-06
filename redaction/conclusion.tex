@@ -31,7 +31,7 @@ profonde de ce qui est typiquement observé en statistiques ou dans des problèm
 d'inférence classiques.
 
 Cependant, ces résultats se font faits au prix de plusieurs hypothèses, certaines assez
-contraignantes. On peut penser à la stationarité de la loi de marché. Bien que ce soit une
+contraignantes. On peut penser à la stationnarité de la loi de marché. Bien que ce soit une
 hypothèse couramment faite dans un contexte théorique, elle n'en demeure pas moins
 problématique aussitôt qu'on cherchera à appliquer les idées présentées dans ce mémoire
 dans un contexte appliqué. Les idées assez proposées dans
@@ -54,7 +54,36 @@ ces garanties se dégradent généralement selon $\bigO(k^2)$ où $k$ représent
 classes possibles. Il est donc possible qu'un tel portefeuille multi-actifs soit exposé au
 même type de risque de généralisation. 
 
+Enfin, l'Appendice \ref{sec:appexp} présente une conjecture sur l'erreur de
+généralisation. Rapidement, celle-ci repose d'abord sur l'observation empirique que pour
+un ensemble d'entraînement $\S_n$ donné, on aura l'inégalité
+\begin{equation}
+  |\hat\zeta_u(\S_n)| \leq |\hat\zeta_1(\S_n)|.
+\end{equation}
+où $\hat\zeta_u$ est l'erreur de généralisation en employant une fonction d'utilité quelconque
+et $\hat\zeta_1$ l'erreur de généralisation avec une attitude risque neutre. Doté d'une telle
+inégalité, il suffirait alors de borner l'erreur de généralisation dans le cas d'une
+utilité neutre au risque. Or, si l'inégalité de McDiarmid se généralise à des vecteurs
+aléatoires (deuxième conjecture), il y aurait moyen d'obtenir une borne beaucoup plus
+serrée sur l'erreur de généralisation, illustré par la Figure \ref{fig_conjec}.
 
+Pour la postérité, un mot devrait également être consigné dans cette conclusion au sujet
+d'efforts ayant été déployés afin de tester notre algorithme dans un véritable contexte
+empirique, \ie\ avec de véritables variables de marché. L'idée était la suivante. En
+employant l'algorithme \textsl{doc2vec} (tel que décrit par \cite{le2014distributed}) sur
+les dépêches de presses Reuters\footnote{Disponibles à l'adresse
+  \url{http://www.reuters.com/resources/archive/us/}.}, il nous apparaissait possible
+d'obtenir une représentation numérique des nouvelles ayant eu lieu au cours de chaque
+journée d'activité financière. Cependant, les résultats obtenus furent assez décevant et
+finalement le projet a été abandonné. Néanmoins, la plupart du code écrit pour ce projet
+reste accessible à l'adresse
+{\small\url{https://github.com/thierry-bm/MEMOIRE/tree/master/cd/data}}.
+
+À ce sujet, l'essentiel du code employé pour la production de ce mémoire, tant pour les
+figures que pour le document est disponible sur
+{\small\url{https://github.com/thierry-bm/MEMOIRE}}.
+\\[2cm]
+\centerline{$\star \qquad \star \qquad \star$}
 
 %%% Local Variables:
 %%% mode: latex

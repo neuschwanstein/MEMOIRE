@@ -397,12 +397,10 @@ D'autre part, la borne théorique de sous optimalité du 95\ieme percentile d'er
 empirique est relâchée d'environ deux ordres de grandeur ($10^{-1}$ pour l'erreur
 empirique \textit{vs} $10^{2}$ pour la garantie théorique). En fait, ce qui est
 particulièrement déconcertant, c'est que même dans la limite $n\to\infty$, la borne théorique est
-supérieure à la plus grande erreur empirique observée (\ie\ lorsque $n=10$)! \todo{En
-  fait, il est possible que ce ne soit pas un hasard, mais bien une propriété mathématique
-  de l'algorithme.} Cela étant, même si la borne de sous optimalité est particulièrement
-relâchée, elle suggère en revanche un ordre de convergence $\bigO(n^{-1/2})$ qui lui
-semble être en adéquation avec le 95\ieme percentile de l'erreur de sous optimalité
-empirique.
+supérieure à la plus grande erreur empirique observée (\ie\ lorsque $n=10$)!  Cela étant,
+même si la borne de sous optimalité est particulièrement relâchée, elle suggère en
+revanche un ordre de convergence $\bigO(n^{-1/2})$ qui lui semble être en adéquation avec
+le 95\ieme percentile de l'erreur de sous optimalité empirique.
 
 Néanmoins, un investisseur ayant à cœur une faible erreur de sous optimalité devra
 nécessairement faire converger son paramètre de régularisation vers zéro à mesure que de
@@ -749,7 +747,7 @@ incertain l'ordre véritable de l'erreur de sous optimalité.
   \label{fig_np_np32}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/bound_test.pdf}
   \caption[Erreur de sous optimalité -- Régimes $p=\bigO(n^{1/2}),\bigO(n^{3/4}),\bigO(n)$]
@@ -761,6 +759,8 @@ incertain l'ordre véritable de l'erreur de sous optimalité.
     cas. Cependant, les courbes théoriques décroissent, excepté lorsque $p=\bigO(n)$!}
   \label{fig_bound_npgsou}
 \end{figure}
+
+\clearpage
 
 \subsection{Conclusion}
 
