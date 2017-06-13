@@ -1,8 +1,9 @@
 \section{Algorithme d'apprentissage}
 \label{sec:kernel}
 
-\epigraph{The word ``algorithm'' itself is quite interesting.}{Donald Knuth\\\textsc{The
-    Art of Computer Programming, Volume I}}
+\epigraph{The word “algorithm” itself is quite interesting; at first glance it may look as
+  though someone intended to write “logarithm” but jumbled up the first four
+  letters.}{Donald Knuth\\\textsc{The Art of Computer Programming, Volume I}}
 
 
 Cette section sera l'occasion d'étudier l'algorithme $\alg:M^n \to \Q$ permettant d'obtenir
@@ -87,7 +88,7 @@ des $n$ observations (voir aussi le Lemme \ref{lem:ndef} en Appendice \ref{sec:l
 \begin{equation}
   \qh = \frac{1}{n\lambda}\sumi r_i x_i
 \end{equation}
-et on obtient donc $\hat\alpha = \lambda^{-1}r$. 
+et on obtient donc $\hat\alpha = (n\lambda)^{-1}r$. 
 
 
 
@@ -97,8 +98,8 @@ Le cas $\Q = \X$ est cependant trop simple pour rendre compte de certaines géom
 problème. En fait, certaines géométries du problème peuvent donner lieu à des situations
 où aucune solution n'est vraiment satisfaisante. Par exemple, le panneau a) de la Figure
 \ref{fig_xor} présenterait à l'investisseur un dilemme de taille puisqu'aucune fonction de
-décision ne permet d'attribuer un investissement positif aux rendements positifs ou un
-investissement négatif aux rendements négatifs. Il s'agit du problème XOR bien connu en
+décision affine ne permet d'attribuer un investissement positif aux rendements positifs ou
+un investissement négatif aux rendements négatifs. Il s'agit du problème XOR bien connu en
 apprentissage machine.
 
 
@@ -116,8 +117,8 @@ apprentissage machine.
 
 Il est alors naturel de définir une transformation non linéaire de l'espace $\X$ par une
 fonction $\phi:\X\to\phi(\X)$. Par exemple, si $\X \in \Re$, \ie\ une seule variable de marché n'est
-considérée, alors on peut chercher une solution polynômiale en posant une transformation
-du genre
+considérée, alors on peut chercher une solution polynômiale en posant la transformation
+suivante:
 \begin{equation}
   \phi:x \mapsto
   \begin{pmatrix}
@@ -171,7 +172,8 @@ le noyau gaussien
   \kappa(x_i,x_j) = \exp\left(-\frac{\|x_i-x_j\|^2}{2\sigma^2}\right)
 \end{equation}
 permet de calculer directement le produit scalaire $\inp{\phi(x_i),\phi(x_j)}$ d'observations
-$\phi(x_i)$ et $\phi(x_j)$ de dimension infinie.
+$\phi(x_i)$ et $\phi(x_j)$ de dimension infinie
+(\cite{mohri2012foundations,scholkopf2001learning}).
 
 Choisir adéquatement le noyau est alors une tâche cruciale du modèle puisque tout noyau
 $\kappa$ induit une géométrie particulière du modèle; il peut alors être impossible de
@@ -221,7 +223,7 @@ l'élément dual d'un élément de $\Q$, on peut obtenir l'identité
 c'est à dire le produit scalaire entre $q$ et $|x\rangle$. Par exemple, on peut alors exprimer
 la solution du problème à utilité neutre au risque simplement comme
 \begin{equation}
-  q = \frac{1}{n\lambda}\sumi r_i|x_i\rangle,
+  \qh = \frac{1}{n\lambda}\sumi r_i|x_i\rangle,
 \end{equation}
 quel que soit le noyau ou la transformation employé.
 
@@ -229,9 +231,9 @@ quel que soit le noyau ou la transformation employé.
 \subsection{Conclusion}
 
 La méthode des noyaux, qui permet de généraliser toute transformation non linéaire $\phi$,
-est d'une importance capitale dans ce travail puisqu'elle permet de rendre compte de
-situations complexes, tout en conservant les avantages offerts par un algorithme de
-maximisation d'utilité espérée convexe qui seront présentés à la section suivante. 
+est d'une importance capitale dans ce travail puisqu'elle rend compte de situations
+complexes, tout en conservant les avantages offerts par un algorithme de maximisation
+d'utilité espérée convexe qui seront présentés à la section suivante.
 
 Enfin, la Figure \ref{fig_yeah} offre à titre d'exemple les solutions quadratiques et
 gaussiennes obtenues sur l'ensemble d'entraînement fictif de la Figure
@@ -243,11 +245,11 @@ problème.
 \begin{figure}[p]
   \centering
   \includegraphics[width=0.65\textwidth]{../experiments/fig/pres/pres10_fr.pdf}
-  \caption[Problème XOR]{Deux solutions au problème de la Figure \ref{fig_pres1}. En
-    utilisant un noyau quadratique (panneau a)), on obtient une plus grande complexité,
-    mais certains points demeurent mal ``classés''. Par contre, au panneau b), le noyau
-    gaussien offre une flexiblité suffisante pour bien classer toutes les
-    observations. Dans les deux cas, une utilité de $u(r) = -e^{-r}+1$ et une
+  \caption[Solutions quadratique et gaussienne]{Deux solutions au problème de la Figure
+    \ref{fig_pres1}. En utilisant un noyau quadratique (panneau a)), on obtient une plus
+    grande complexité, mais certains points demeurent mal ``classés''. Par contre, au
+    panneau b), le noyau gaussien offre une flexiblité suffisante pour bien classer toutes
+    les observations. Dans les deux cas, une utilité de $u(r) = -e^{-r}+1$ et une
     régularisation $\lambda=0.1$ ont été employés. Le noyau gaussien a une bande passante
     $\sigma = 1/2$. }
   \label{fig_yeah}

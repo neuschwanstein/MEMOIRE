@@ -78,7 +78,7 @@ donc donné par
 
 \paragraph{Régularisation}
 
-Sauf exception, le facteur de régularsation $\lambda = 1/2$ sera employé au cours de toutes les
+Sauf exception, le facteur de régularsation $\lambda = 1$ sera employé au cours de toutes les
 expériences. 
 
 
@@ -160,7 +160,7 @@ le 95\ieme percentile des deux types d'erreur.
 
 Le premier ensemble d'expériences (Section \ref{emp:nvar}) conservera $p=2$ fixe et fera
 varier $n$ de 2 à 110. À la Section \ref{emp:pvar}, ce sera la dimensionalité du problème
-qui variera, donc avec $n$ fixe et $p$ variant de 1 à 50. Enfin, à la section
+qui variera, donc avec $n=10$ fixe et $p$ variant de 1 à 50. Enfin, à la section
 \ref{emp:npvar}, la situation sera un mélange des deux précédentes: plus en plus de points
 provenant d'un même échantillon sont présentés à l'algorithme, leur dimension dévoilée
 progressant en fonction de $n$.
@@ -181,11 +181,13 @@ se feront à partir de la librairie BLAS et de l'interface NUMPY.
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/copula.pdf}
   \caption[Loi de marché]{Loi de marché théorique pour $\bar p = 2$. Les points bleus et
-    orangés indiquent \num{1000} réalisations d'une loi normale multivariée avec matrice
-    de corrélation $\Sigma$. Les lois marginales Rademacher de la loi de marché entraînent un
-    ``effondrement'' des réalisations en $X_0$, $X_1$ et $R$ à leur signe. Les quatre
-    histogrames présentent la distribution de $R$ par rapport à $X_0$ et $X_1$. On
-    constate par ailleurs l'absence d'arbitrage d'une telle loi de marché.}
+    rouges indiquent 500 réalisations d'une loi normale multivariée avec matrice de
+    corrélation $\Sigma$. Les lois marginales Rademacher de la loi de marché entraînent un
+    ``effondrement'' des réalisations en $\breve{X}_0$, $\breve{X}_1$ et $\breve{R}$ à
+    leur signe. Les quatre histogrames présentent la distribution de $R$ par rapport à
+    $X_0=\pm1$ et $X_1=\pm1$. On constate par ailleurs l'absence d'arbitrage d'une telle
+    loi de marché puisqu'aucune région ne contient uniquement des rendements positifs ou
+    uniquement des rendements négatifs.}
   \label{fig_copula}
 \end{figure}
 
@@ -193,24 +195,24 @@ se feront à partir de la librairie BLAS et de l'interface NUMPY.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/leus.pdf}
-  \caption[Utilités LEU]{Comportement des fonctions d'utilité exponentielles Lipschitz
-    $\LEU_\mu$ selon le paramètre $\mu$. L'abscisse est l'axe des rendements, alors que
-    l'ordonnée est celui des \textit{utils}. Le paramètre $\mu$ de chacune des instances
-    $\LEU_\mu$ permet de quantifier l'aversion au risque : un paramètre $\mu\to\infty$ indique une
-    attitude neutre au risque, alors qu'à l'autre extrême, un paramètre $\mu\to0$ modélise une
-    indifférence (utilité constante) aux rendement positifs. Sur la branche négative,
-    l'utilité correspond à la fonction identité, sur la branche positive,
-    $\LEU_\mu(r) = \mu(1-e^{-r/\mu})$.}
+  \caption[Utilité Lipschitz exponentielle (LEU)]{Comportement des fonctions d'utilité
+    exponentielles Lipschitz $\LEU_\mu$ selon le paramètre $\mu$. L'abscisse est l'axe des
+    rendements, alors que l'ordonnée est celui des \textit{utils}. Le paramètre $\mu$ de
+    chacune des instances $\LEU_\mu$ permet de quantifier l'aversion au risque : un
+    paramètre $\mu\to\infty$ indique une attitude neutre au risque, alors qu'à l'autre extrême, un
+    paramètre $\mu\to0$ modélise une indifférence (utilité constante) aux rendement
+    positifs. Sur la branche négative, l'utilité correspond à la fonction identité, sur la
+    branche positive, $\LEU_\mu(r) = \mu(1-e^{-r/\mu})$.}
   \label{fig_leus}
 \end{figure}
 
 \begin{figure}[ht]
   \includegraphics[width=\textwidth]{../experiments/fig/leu_inv.pdf}
-  \caption{Utilité et utilité inverse. La fonction d'utilité permet de caractériser en
-    \textit{utils} le rendement observé. L'\textit{util} est cependant une notion
-    abstraite qu'on peut réexprimer en rendement à partir de la fonction utilité
-    inverse. Une fonction $LEU_\mu(r)$ tend asymptotiquement vers $\mu$ à mesure que
-    $r\to \infty$. Inversement, $LEU_\mu^{-1}(r)\to\infty$ à un rythme logarithmique lorsque
+  \caption[Fonction LEU et LEU inverse]{Utilité et utilité inverse. La fonction d'utilité
+    permet de caractériser en \textit{utils} le rendement observé. L'\textit{util} est
+    cependant une notion abstraite qu'on peut réexprimer en rendement à partir de la
+    fonction utilité inverse. Une fonction $LEU_\mu(r)$ tend asymptotiquement vers $\mu$ à
+    mesure que $r\to \infty$. Inversement, $LEU_\mu^{-1}(r)\to\infty$ à un rythme logarithmique lorsque
     $r\to\mu$. En effet, sur sa branche négative $\LEU_\mu^{-1}$ correspond à la fonction
     identité, alors que sur la branche négative, $\LEU_\mu^{-1}(r) = -\mu\log(1-r/\mu)$.}
   \label{fig_leu_inv}
@@ -353,7 +355,7 @@ l'algorithme.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/bound_errgen.pdf}
-  \caption[Borne théorique sur l'erreur de généralisation]{Progression du 95\ieme
+  \caption[Erreur de généralisation en fonction de $n$]{Progression du 95\ieme
     percentile l'erreur de généralisation et borne théorique (paramètre de confiance
     $\delta = 5\%$) en fonction de la taille d'échantillon $n$, exprimés en util et en
     rendement. Dû à la différence d'ordre, les deux figures font intervenir deux
@@ -384,14 +386,15 @@ Contrairement à l'erreur de généralisation, l'erreur (en util) de sous optima
 $\EU(\qs) - \EU(\qh)$ (resp.~$\CE(\qs) - \CE(\qh)$ dans le domaine des rendements) ne
 bénéficie pas d'une convergence vers zéro du fait de la présence du terme de
 régularisation dans l'algorithme $\alg(\S_n)$. En fait, la meilleure garantie offerte par
-le théorème \cit, lorsque $n\to\infty$, correspond à $\lambda\|\qs\|^2$ dans le domaine des utils.
+le Théorème \ref{thm3}, lorsque $n\to\infty$, correspond à $\lambda/2\|\qs\|^2$ dans le domaine des
+utils.
 
 Ainsi, la Figure \ref{fig_bound_errso} présente la progression du 95\ieme percentile de
 l'erreur empirique de sous optimalité et de la borne théorique $\delta = 5\%$ selon la taille
-$n$ de l'échantillon. En particulier, le facteur de régularisation constant
-$\lambda = 1/2$ fait en sorte que, exprimés en utils, la borne théorique converge vers
-$\lambda\|q^\star\|^2$ (évaluée numériquement à \num{3.16}) alors que le 95\ieme percentile d'erreur
-semble converger vers une utilité espérée aux alentours de \num{0.24}.
+$n$ de l'échantillon. En particulier, le facteur de régularisation constant $\lambda = 1$ fait
+en sorte que, exprimés en utils, la borne théorique converge vers $\|q^\star\|^2/2$ (évaluée
+numériquement à \num{3.16}) alors que le 95\ieme percentile d'erreur semble converger vers
+une utilité espérée aux alentours de \num{0.24}.
 
 D'autre part, la borne théorique de sous optimalité du 95\ieme percentile d'erreur
 empirique est relâchée d'environ deux ordres de grandeur ($10^{-1}$ pour l'erreur
@@ -418,7 +421,7 @@ lorsque $\lambda=(10/n)^{1/4}$. Ainsi défini, lorsque $n=10$, $\lambda$ est ide
 régularisation employé pour produire la Figure \ref{fig_bound_errso}. On constate
 effectivement que l'erreur de sous optimalité est initialement la même pour les deux
 figures. Cependant, alors qu'elle paraîssait stagner vers une erreur de 34\% avec une
-régularisation constante, la décroissance $\lambda = \bigO(n^{1/4})$ permet ici d'obtenir une
+régularisation constante, la décroissance $\lambda = \bigO(n^{-1/4})$ permet ici d'obtenir une
 erreur de 26\% lorsque $n=150$. Par contre, il faut être bien conscient que la borne
 théorique ne décroît plus qu'à un rythme $\bigO(n^{1/4})$.
 
@@ -427,10 +430,11 @@ théorique ne décroît plus qu'à un rythme $\bigO(n^{1/4})$.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1.3\textwidth]{../experiments/fig/bound_errso.pdf}
-  \caption{Progression du 95\ieme percentile l'erreur empirique de sous optimalité et de
+  \caption[Erreur de sous optimalité en fonction de $n$ ($\lambda$
+  constant)]{Progression du 95\ieme percentile l'erreur empirique de sous optimalité et de
     la borne théorique $(\delta = 5\%)$ selon la taille $n$ de l'échantillonage. Le facteur de
-    régularisation constant $\lambda = 1/2$ fait en sorte que, exprimés en utils, la borne
-    théorique planche à $\lambda\|q^\star\|^2$ (évaluée numériquement à \num{3.16}) alors que le
+    régularisation constant $\lambda = 1$ fait en sorte que, exprimés en utils, la borne
+    théorique planche à $\lambda/2\|q^\star\|^2$ (évaluée numériquement à \num{3.16}) alors que le
     95\ieme percentile d'erreur semble plancher aux alentours de \num{0.24}. En plus
     d'être dégagée de près d'un ordre de grandeur de la courbe empirique, même la limite
     de la borne théorique est supérieure aux plus hautes valeurs observées. Cependant,
@@ -439,17 +443,16 @@ théorique ne décroît plus qu'à un rythme $\bigO(n^{1/4})$.
 \end{figure}
 
 \begin{figure}[h!]
-  \centering
-  \includegraphics[width=\textwidth]{../experiments/fig/bound_errso3.pdf}
-  \caption{Progression du 95\ieme percentile de l'erreur de sous optimalité empirique
-    exprimée en util et de la borne théorique $\delta=5\%$ selon la taille $n$ de
-    l'échantillonage avec un facteur de régularisation $\lambda = \sqrt{10/n}$. Le panneau a)
+  \centering \includegraphics[width=\textwidth]{../experiments/fig/bound_errso3.pdf}
+  \caption[Erreur de sous optimalité en fonction de $n$
+  ($\lambda=\bigO(n^{-1/4})$)]{Progression du 95\ieme percentile de l'erreur de sous optimalité
+    empirique exprimée en util et de la borne théorique $\delta=5\%$ selon la taille $n$ de
+    l'échantillonage avec un facteur de régularisation $\lambda = (10/n)^{1/4}$. Le panneau a)
     indique la progression de la borne théorique alors que le panneau b) indique sa limite
     de la borne dans le cas $n\to\infty$. Contrairement au cas présenté à la Figure
     \ref{fig_bound_errso}, cette situation offre une garantie théorique d'une erreur nulle
-    puisque le facteur de régularisation converge vers 0. Le rythme de convergence n'est
-    toutefois que de $\bigO(n^{-1/4})$ alors que l'erreur empirique devrait décroître plus
-    rapidement, à un rythme $\bigO(n^{-1/2})$. }
+    puisque le facteur de régularisation converge vers 0. Le rythme de convergence
+    théorique n'est toutefois que de $\bigO(n^{-1/4})$.}
   \label{fig_bound_errso3}
 \end{figure}
 
@@ -507,9 +510,9 @@ En outre, la garantie sur l'erreur de généralisation, dans le cas d'un apprent
 noyau linéaire et d'une taille constante d'échantillonnage, suggère une progression de
 l'erreur à un rythme linéaire $\bigO(p)$ (voir Section \ref{b:dim}). Or, les trois courbes
 d'erreur empirique semblent indiquer qu'il se pourrait que ce ne soit que le cas que dans
-une limite asymptotique. En effet, leur forme est loin d'être linéaire et semble plutôt
-posséder une composante racine carrée. Il se pourrait donc que le comportement de l'erreur
-de généralisation soit plutôt de $\bigO(p^{1/2}) + \bigO(p)$.
+une limite asymptotique, non observée dans ce cas ci. En effet, leur forme est loin d'être
+linéaire et semble plutôt posséder une composante racine carrée. Il se pourrait donc que
+le comportement de l'erreur de généralisation soit plutôt de $\bigO(p^{1/2}) + \bigO(p)$.
 
 Afin de confirmer cette idée, la figure \ref{fig_pconst_infogen_cf} présente un ajustement
 des 25 derniers points des trois courbes d'erreurs empiriques à deux fonctions
@@ -566,27 +569,28 @@ plutôt un caractère de progression racine carrée.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1\textwidth]{../experiments/fig/pconst_infogen2.pdf}
-  \caption{Progression du 95\ieme percentile de l'erreur de généralisation exprimée en
-    util et en équivalent certain à mesure que de nouvelles variables de marché sont
-    dévoilées à l'algorithme, pour une taille d'échantillonnage constante $\bar n =
-    10$. Dans le domaine des utils, illustré par le panneau a), la borne théorique est
-    commune aux trois situations et progresse linéairement. Lorsque $p=1$, la courbe
-    \textit{Information concentrée} affiche sans surprise une erreur initialement plus
-    faible que les autres, puisque l'algorithme est déjà en mesure d'inférer la meilleure
-    politique d'investissement. Les courbes \textit{Aucune information} et
-    \textit{Information dispersée} présentent une erreur similaire lorsque $p$ est faible
-    (donc peu de variables connues) mais se distancent l'une de l'autre à mesure que $p$
-    converge vers $\bar p$.}
+  \caption[Erreur de généralisation en fonction de $p$]{Progression du 95\ieme percentile
+    de l'erreur de généralisation exprimée en util et en équivalent certain à mesure que
+    de nouvelles variables de marché sont dévoilées à l'algorithme, pour une taille
+    d'échantillonnage constante $\bar n = 10$. Dans le domaine des utils, illustré par le
+    panneau a), la borne théorique est commune aux trois situations et progresse
+    linéairement. Lorsque $p=1$, la courbe \textit{Information concentrée} affiche sans
+    surprise une erreur initialement plus faible que les autres, puisque l'algorithme est
+    déjà en mesure d'inférer la meilleure politique d'investissement. Les courbes
+    \textit{Aucune information} et \textit{Information dispersée} présentent une erreur
+    similaire lorsque $p$ est faible (donc peu de variables connues) mais se distancent
+    l'une de l'autre à mesure que $p$ converge vers $\bar p$.}
   \label{fig_pconst_infogen}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=1\textwidth]{../experiments/fig/pconst_infogen_cf.pdf}
-  \caption{Ajustement des 25 derniers points des courbes d'erreur présentées à la Figure
-    \ref{fig_pconst_infogen} à deux polynômes $f(p) = a_0p + a_1 p^{1/2} + b$ et
-    $f(p) = a_0p + b$. Entre les deux, l'hypothèse où l'erreur aurait une progression
-    $\bigO(p^{1/2}) + \bigO(p)$ serait ainsi la plus probable.}
+  \caption[Ajustement des courbes d'erreurs de généralisation]{Ajustement des 25 derniers
+    points des courbes d'erreur présentées à la Figure \ref{fig_pconst_infogen} à deux
+    polynômes $f(p) = a_0p + a_1 p^{1/2} + b$ et $f(p) = a_0p + b$. Entre les deux,
+    l'hypothèse où l'erreur aurait une progression $\bigO(p^{1/2}) + \bigO(p)$ serait
+    ainsi la plus probable.}
   \label{fig_pconst_infogen_cf}
 \end{figure}
 
@@ -598,36 +602,38 @@ plutôt un caractère de progression racine carrée.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/pconst_euinforelative.pdf}
-  \caption{Progression de l'utilité espérée optimale $\nEU^\star$ en fonction du nombre de
-    variables de marché connues. Naturellement, le cas où toute l'information est
-    disponible dès $p=1$ affiche une utilité espérée optimale constante, alors qu'il
-    s'agit plutôt d'une progression à peu près linéaire lorsqu'on dévoile progressivement
-    des variables d'information chacunes faiblement corrélées à $R$, mais indépendantes
-    l'une à l'autre. Enfin, l'utilité espérée optimale est bien entendu nulle dans le cas
-    où toutes les variables de marché sont indépendantes à $R$. Les bornes théoriques
-    exprimées en util se confondent car elles sont numériquement très rapprochées.}
+  \caption[Utilité espérée optimale en fonction de $p$]{Progression de l'utilité espérée
+    optimale $\nEU^\star$ en fonction du nombre de variables de marché connues. Naturellement,
+    le cas où toute l'information est disponible dès $p=1$ affiche une utilité espérée
+    optimale constante, alors qu'il s'agit plutôt d'une progression à peu près linéaire
+    lorsqu'on dévoile progressivement des variables d'information chacunes faiblement
+    corrélées à $R$, mais indépendantes l'une à l'autre. Enfin, l'utilité espérée optimale
+    est bien entendu nulle dans le cas où toutes les variables de marché sont
+    indépendantes à $R$. Les bornes théoriques exprimées en util se confondent car elles
+    sont numériquement très rapprochées.}
   \label{fig_pconst_euinforelative}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/pconst_so.pdf}
-  \caption{Progression du 95\ieme percentile des erreurs de sous optimalité et de leur
-    garantie théorique à mesure que de nouvelles variables de marché sont dévoilées à
-    l'algorithme, avec $\bar n = 10$ constant. Initialement, l'erreur de sous optimalité
-    des courbes \textit{Information dispersée} et \textit{Aucune information} est très
-    faible alors que la courbe \textit{Information concentrée} dispose déjà de suffisament
-    d'information pour permettre une erreur élevée. Puis, à mesure que $p$ se rapproche de
-    $\bar p$, on observe pour la courbe \textit{Information dispersée} une progression
-    linéaire, alors que l'erreur plafonne dans les deux autres cas. Les garanties en util
-    donnent une progression qui elle est linéaire en util. }
+  \caption[Erreur de sous optimalité en fonction de $p$]{Progression du 95\ieme percentile
+    des erreurs de sous optimalité et de leur garantie théorique à mesure que de nouvelles
+    variables de marché sont dévoilées à l'algorithme, avec $\bar n = 10$
+    constant. Initialement, l'erreur de sous optimalité des courbes \textit{Information
+      dispersée} et \textit{Aucune information} est très faible alors que la courbe
+    \textit{Information concentrée} dispose déjà de suffisament d'information pour
+    permettre une erreur élevée. Puis, à mesure que $p$ se rapproche de $\bar p$, on
+    observe pour la courbe \textit{Information dispersée} une progression linéaire, alors
+    que l'erreur plafonne dans les deux autres cas. Les garanties en util donnent une
+    progression qui elle est linéaire en util. }
   \label{fig_pconst_infosorelative}
 \end{figure}
 
 
 \clearpage
 
-\subsection{$n$ et $p$ variables}
+\subsection{\textit{n} et \textit{p} variables}
 \label{emp:npvar}
 
 Finalement, cette section cherche à illustrer le comportement de l'erreur de
@@ -646,16 +652,17 @@ grandeur sur toute l'expérience (voir Figure \ref{fig_np_np}).
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.7\textwidth]{../experiments/fig/np_np.pdf}
-  \caption{En fonction de $n$, trois de cas de figure seront étudiés où le nombre $p$ de
-    variables de marché dévoilées à l'algorithme dépend de $n$. Dans les expériences de
-    cette section, $n$ variera de $9$ à $50$. La relation entre $p$ et $n$ sera alors
+  \caption[Progression des trois régimes $p=\bigO(n^{1/2}),\bigO(n^{3/4}),\bigO(n)$]{En
+    fonction de $n$, trois de cas de figure seront étudiés où le nombre $p$ de variables
+    de marché dévoilées à l'algorithme dépend de $n$. Dans les expériences de cette
+    section, $n$ variera de $9$ à $50$. La relation entre $p$ et $n$ sera alors
     respectivement donnée par $p = 2n$, $p=3.5n^{3/4}$ et $p=6n^{1/2}$.}
   \label{fig_np_np}
 \end{figure}
 
 
 Les propriétés mathématiques des deux types d'erreur établies à la Section \ref{b:dim}
-suggérait un ordre asymptotique $\bigO(p/n^{1/2})$. Les résultats empiriques de la Section
+suggérait un ordre asymptotique $\bigO(p\,n^{-1/2})$. Les résultats empiriques de la Section
 \ref{emp:nvar} (\textit{n} variable, \textit{p} constant) ont d'abord permis de confirmer
 l'ordre $\bigO(1/\sqrt{n})$ avec $p$ constant. Puis à la Section \ref{emp:pvar}
 (\textit{n} constant, \textit{p} variable), la progression qu'on aurait pu anticiper être
@@ -724,26 +731,28 @@ incertain l'ordre véritable de l'erreur de sous optimalité.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/bound_npgenu.pdf}
-  \caption{Progression du 95\ieme percentile d'erreur de généralisation et des garanties
-    théorique en fonction de $n$, selon le régime de $p$. Une forte disparité entre la
-    courbe des garanties théoriques et celle de l'erreur empirique est observée. Les
-    courbes théoriques suggérant une progression de l'erreur $\bigO(p/n^{1/2})$, on se
-    serait attendu à une amplification de l'erreur dès que $p$ domine $n^{1/2}$, \ie\ si
-    $p=\omega(n^{1/2})$. Pourtant, cette figure indique que même si $p$ est de l'ordre de
-    $n$, \ie\ $p = \bigO(n)$, l'erreur de généralisation empirique décroit tout de même.  }
+  \caption[Erreur de généralisation -- Régimes $p=\bigO(n^{1/2}),\bigO(n^{3/4}),\bigO(n)$]
+  {Progression du 95\ieme
+    percentile d'erreur de généralisation et des garanties théorique en fonction de $n$,
+    selon le régime de $p$. Une forte disparité entre la courbe des garanties théoriques
+    et celle de l'erreur empirique est observée. Les courbes théoriques suggérant une
+    progression de l'erreur $\bigO(p/n^{1/2})$, on se serait attendu à une amplification
+    de l'erreur dès que $p$ domine $n^{1/2}$, \ie\ si $p=\omega(n^{1/2})$. Pourtant, cette
+    figure indique que même si $p$ est de l'ordre de $n$, \ie\ $p = \bigO(n)$, l'erreur de
+    généralisation empirique décroit tout de même.  }
   \label{fig_bound_npgenu}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{../experiments/fig/bound_np_np32.pdf}
-  \caption{Progression du 95\ieme percentile de l'erreur de généralisation et de sa borne
-    théorique $(\delta = 5\%)$ en fonction de la taille de l'échantillonage $n$. La relation
-    entre $n$ et $p$ est donnée par la partie entière de $p = 0.0016n^{3/2}$. On observe
-    bien une croissance de l'erreur de généralisation, cependant il serait trompeur de
-    comparer ce résultat à celui présenté à la Figure \ref{fig_bound_npgenu} puisque le
-    nombre $p$ de variables de marché est initialement beaucoup moins élevé dans ce
-    cas-ci.}
+  \caption[Erreur de généralisation -- Régime $p=\bigO(n^{3/2})$]{Progression du 95\ieme
+    percentile de l'erreur de généralisation et de sa borne théorique $(\delta = 5\%)$ en
+    fonction de la taille de l'échantillonage $n$. La relation entre $n$ et $p$ est donnée
+    par la partie entière de $p = 0.0016n^{3/2}$. On observe bien une croissance de
+    l'erreur de généralisation, cependant il serait trompeur de comparer ce résultat à
+    celui présenté à la Figure \ref{fig_bound_npgenu} puisque le nombre $p$ de variables
+    de marché est initialement beaucoup moins élevé dans ce cas-ci.}
   \label{fig_np_np32}
 \end{figure}
 

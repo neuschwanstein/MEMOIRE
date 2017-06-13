@@ -37,11 +37,13 @@ loi de marché $M$, notamment sur l'amplitude de ses moments.
   \label{hyp:lip}
   Un investisseur est doté d'une fonction d'utilité $u$ concave, monotone et standardisée,
   c'est-à-dire que $u(0) = 0$ et $1 \in \partial u(0)$\footnote{Ici, $\partial u(r)$ signifie l'ensemble
-    des sur-gradients de $u$. Dans le cas dérivable, cela revient à la notion de
-    dérivée. Dans le cas simplement continu, $\partial u(r)$ est l'ensemble des fonctions affines
-    ``touchant'' à $u(r)$ et supérieures à $u(r)$ pour tout $r$ du domaine).}. De plus,
-  $u$ est défini sur l'ensemble de $\Re$. Enfin, $u$ est $\gamma$-Lipschitz, c'est-à-dire que
-  pour tout $r_1,r_2 \in \Re$, $|u(r_1) - u(r_2)| \leq \gamma|r_1-r_2|$.
+    des sur-gradients de $u$. Dans le cas dérivable, cela revient à la notion de gradient
+    (ou de dérivée dans le cas à une dimension). Dans le cas continu, $\partial u(r)$ est
+    l'ensemble des gradients de fonctions affines ``touchant'' à $u(r)$ et supérieures à
+    $u(r)$ pour tout $r$ du domaine). Voir
+    \cite{boyd2004convex,rockafellar1970convex}}. De plus, $u$ est défini sur l'ensemble
+  de $\Re$. Enfin, $u$ est $\gamma$-Lipschitz, c'est-à-dire que pour tout
+  $r_1,r_2 \in \Re$, $|u(r_1) - u(r_2)| \leq \gamma|r_1-r_2|$.
 \end{assumption}
 
 Avant d'aller plus loin, il convient de discuter de la plausiblité de ces
@@ -50,7 +52,7 @@ discussion approfondie ne sera abordée qu'à la section \ref{b:dim}.
 
 Pour ce qui est de la seconde hypothèse, si on définit les rendements selon
 l'interprétation usuelle d'un changement de prix $p$, \ie, $r = \Delta p/p$, on constatera que
-$r$ est nécessairement borné par 0. De plus, selon la période de temps pendant laquelle
+$r$ est nécessairement borné par -100\%. De plus, selon la période de temps pendant laquelle
 $\Delta p$ est mesuré, il y a forcément moyen de limiter l'accroissement dans le prix, pour
 autant que $\Delta t$ soit suffisament court.
 
@@ -126,7 +128,7 @@ subir l'équivalent certain hors échantillon par rapport au rendement équivale
   où $\nhCE = \hCE(\S_n,\alg(\S_n))$. 
 \end{thm}
 
-Ces deux théorèmes sont démontrés à l'Appendice \ref{sec:thm}.
+Ces deux théorèmes sont démontrés à l'Annexe \ref{sec:thm}.
 
 Le rythme de décroissance de $\bigO(n^{-1/2})$ permet tout d'abord d'appréhender dans
 quelle mesure un large échantillonage est nécessaire pour obtenir un degré de confiance
@@ -195,7 +197,7 @@ Une autre hypothèse est maintenant nécessaire pour s'assurer que $\qs$ soit bo
 l'absence d'arbitrage. D'un point de vue strictement financier, cela fait certainement du
 sens en vertu de l'efficience des marchés, version semi-forte (voir
 \cite{fama1970efficient}). Cette hypothèse précise en effet qu'un investisseur doté de
-toute l'information publique disponible au sujet d'un titre risqué devrait pas pouvoir
+toute l'information publique disponible au sujet d'un titre risqué ne devrait pas pouvoir
 être en mesure de ``battre'' le marché sans prendre de risque. D'un point de vue
 théorique, ceci exige en fait qu'il n'y ait pas de région dans $\X$ telle que tous les
 rendements s'y produisant soient nécessairement positifs ou négatifs. Ainsi, même en ayant
@@ -217,7 +219,7 @@ problème d'optimisation comme la recherche d'une ``direction'' $\theta \in \Q$ 
 $s \in \Re$.
 
 En premier lieu, l'hypothèse \ref{hyp:arb} entraîne en particulier qu'il existe
-$\delta > 0$ et $\varrho \geq 0$ tels que
+$\delta > 0$ et $\varrho > 0$ tels que
 \begin{equation}
   \pp\{R\cdot\theta(X) \leq -\delta\} > \varrho
 \end{equation}
@@ -230,7 +232,8 @@ $1-\varrho$. Puisque $R\cdot \theta(X) \leq \rmax\xi$, on a alors que, pour tout
 
 Mais puisque par hypothèse $u$ est concave et puisque que $B$ domine stochastiquement
 $R\cdot \theta(X)$, on a nécessairement que $\E u(sB) \geq \E u(R\cdot s\theta(X))$, pour tout
-$s > 0$. Or, par hypothèse de sous-linéarité on obtient que
+$s > 0$ (voir \cite{eeckhoudt2005economic}). Or, par hypothèse de sous-linéarité on
+obtient que
 \begin{align}
   \lim_{s\to\infty}\E u(R\cdot s\theta(X)) &\leq \lim_{s\to\infty}u(sB)\\
                            & = \lim_{s\to\infty}(\varrho u(-s\delta) + (1-\varrho)u(s\rmax\xi))\\
@@ -279,39 +282,38 @@ solution $\qh = \alg(\S_n)$.
   son approximation $\hCE(\S_n,\alg(\S_n))$.
 \end{thm}
 
-Voir l'Appendice \ref{sec:thm} pour une démonstration. 
-
+Voir l'Annexe \ref{sec:thm} pour une démonstration. 
 
 Les bornes de sous-optimalité convergent ainsi environ à la même vitesse que celle de
 généralisation, c'est-à-dire à un rythme de $\bigO(1/\sqrt{n})$. Bien sûr, une différence
-majeure est la présence de $\nq{\qs}$ qui est a priori impossible à déterminer, dans la
-mesure où aucune hypothèse n'est faite sur la distribution de $M$.  En fait, ces bornes de
-sous optimalité établissent rigoureusement de quelle façon la régularisation devrait être
-décrue afin de s'assurer de converger vers la solution optimale tout en contrôlant
-l'erreur de généralisation. De façon schématisée, l'erreur de sous optimalité progresse de
-la façon suivante:
+majeure est la présence du terme $\|\qs\|^2$ qui est a priori impossible à déterminer,
+dans la mesure où aucune hypothèse n'est faite sur la distribution de $M$.  En fait, ces
+bornes de sous optimalité établissent rigoureusement de quelle façon la régularisation
+devrait être décrue afin de s'assurer de converger vers la solution optimale tout en
+contrôlant l'erreur de généralisation. De façon schématisée, l'erreur de sous optimalité
+progresse de la façon suivante:
 \begin{equation}
   \zeta \leq \bigO(\lambda^{-1}n^{-1/2}) + \bigO(\lambda),
 \end{equation}
 et il y a alors un choix à faire. Le premier terme, qu'on retrouve aussi dans l'erreur de
-généralisation, quantifie l'amplitude possible d'erreur, alors que le deuxième terme
-quantifie la sous optimalité dans une situation asymptotique $n \to \infty$. Un investisseur
-prudent pourrait alors vouloir être dans une situation proche de $\lambda = \bigO(1)$ qui offre
-de meilleures garanties hors échantillon. À l'inverse, un investisseur compétitif et
-soucieux d'obtenir une faible erreur de sous optimalité cherchera plutôt à décroître
-$\lambda$ à un rythme de l'ordre de $\lambda = \bigO(n^{-1/2})$. Son erreur de généralisation restera
-à peu près constante, mais il se rapprochera rapidement de la solution optimale. La
-Section \ref{sec:emp} sera l'occasion de mesurer en pratique la validité de ces ordres de
-convergence.
+généralisation, quantifie l'amplitude possible d'erreur dûe à un échantillonage limité,
+alors que le deuxième terme quantifie la sous optimalité dans une situation asymptotique
+$n \to \infty$. Un investisseur prudent pourrait alors vouloir être dans une situation proche de
+$\lambda = \bigO(1)$ qui offre de meilleures garanties hors échantillon. À l'inverse, un
+investisseur compétitif et soucieux d'obtenir une faible erreur de sous optimalité
+cherchera plutôt à décroître $\lambda$ à un rythme de l'ordre de $\lambda = o(n^{-1/2})$. Son erreur
+de généralisation restera à peu près constante, mais il se rapprochera rapidement de la
+solution optimale. La Section \ref{sec:emp} sera l'occasion de mesurer en pratique la
+validité de ces ordres de convergence.
 
 En dernier lieu, il convient peut être de discuter rapidement de cette solution optimale
 $\qs$. Car il ne faut pas la confondre avec la \textit{meilleure} décision compte tenu du
-marché $M$: il s'agit plutôt de la meilleure décision \textit{de l'espace} $\Q$ capable
-d'optimiser l'utilité régularisée. Autrement dit, $\qs$ sera limité par la complexité de
-l'espace $\Q$. Par exemple, la décision optimale pour une loi de marché semblable à
+marché $M$: il s'agit plutôt de la meilleure décision donnée par l'espace $\Q$ capable
+d'optimiser l'utilité non-régularisée. Autrement dit, $\qs$ sera limité par la complexité
+de l'espace $\Q$. Par exemple, la décision optimale pour une loi de marché semblable à
 l'exemple XOR présenté à la figure \ref{fig_xor} sera de faible qualité si le noyau choisi
 est linéaire. Tel que discuté, il est donc particulièrement important de choisir avec soin
-un noyau capable \textit{d'apprendre} la loi de marché. Malheureusement, il revient à
+un noyau capable \textit{d'exploiter} la loi de marché. Malheureusement, il revient à
 l'investisseur de conduire cette tâche.
 
 
@@ -350,14 +352,14 @@ généralisation et de sous optimalité des Théorèmes \ref{thm1}, \ref{thm2}, 
 \ref{thm4}.
 
 Si on prend le cas simple d'un noyau linéaire, cette variable correspond alors simplement
-à la norme maximale du vecteur d'information: $\xi^2 = \max\|X\|^2$.  Par contre, si on
+à la norme maximale du vecteur d'information: $\xi^2 = \operatorname{ess\,sup}\|X\|^2$.  Par contre, si on
 avait plutôt employé un noyau polynômial de degré $k$, en supposant que $\|X\|^2 \leq \nu^2$, la
 borne à employer serait donnée par
 \begin{equation}
-\kappa(X,X) = (X^TX + 1)^k \leq (\xi^2 + 1)^k.
+\kappa(X,X) = (X^TX + 1)^k \leq (\nu^2 + 1)^k.
 \end{equation}
-Par contre, les noyaux affines de forme $\kappa(x_i,x_j) = \kappa(\|x_i - x_j\|)$ (comme par exemple
-le noyau gaussien) auront nécessairement une borne $\xi^2$ constante puisque
+Par contre, les noyaux de forme $\kappa(x_i,x_j) = \kappa(\|x_i - x_j\|)$ (comme par exemple le
+noyau gaussien) auront nécessairement une borne $\xi^2$ constante puisque
 $\kappa(x,x) = \kappa(0)$ peu importe la dimension initiale de $\X$.
 
 On comprend cependant de cette discussion que dans le cas où $\kappa$ n'impose aucune borne
@@ -373,17 +375,17 @@ D'abord, on peut décider d'imposer une borne rigide à chaque variable de march
 \end{equation}
 Pour ce faire, on peut supposer que les variables sont déjà bornées naturellement : en
 utilisant notre connaissance de du domaine, on peut juger que chacune de ces variables ne
-peut qu'avoir des réalisations dans un intervalle fini. Mais si on peut également
+peut qu'avoir des réalisations dans un intervalle fini. Mais on peut également
 \textit{saturer} les variables de marché par une certaine borne $\nu_j$. Par exemple, une
-variable de marché $X_j$ dont l'amplitude est incertaine pourrait être remplacé par la
-variable $\tilde X_j$ par 
+variable de marché $X_j$ dont l'amplitude est incertaine pourrait être ainsi remplacée par la
+variable $\tilde X_j$:
 \begin{equation}
   \tilde X_j = \begin{cases}
     X_j & |X_j| \leq \nu_j\\
      \operatorname{signe}(X_j)\nu_j & |X_j| > \nu_j,
   \end{cases}
 \end{equation}
-quitte à introduire une nouvelle variable de marché indiquant si $\tilde X_j$ est saturé
+quitte à introduire une nouvelle variable de marché indiquant si $\tilde X_j$ est saturée
 ou non.
 
 Il y a également une autre façon d'obtenir une borne sur $\|X\|^2$ sans limiter
@@ -418,7 +420,7 @@ concentration autour de $\E\|X\|^2$.
 En fait, le point à retenir est que $\xi^2 = \bigO(p)$ dans un contexte d'hypothèses assez
 faibles sur la loi de marché. C'est à dire que les bornes dérivées aux Théorèmes
 \ref{thm1}, \ref{thm2}, \ref{thm3} et \ref{thm4}, qu'on croyait
-$\bigO(n^{-1/2})$ sont en fait $\bigO(pn^{-1/2})$. Ces bornes exposent donc un
+$\bigO(n^{-1/2})$ sont en fait $\bigO(p\,n^{-1/2})$. Ces bornes exposent donc un
 danger potentiel à un investisseur. Par exemple, dans un régime qu'on pourrait qualifier
 de \textit{big data} où $p=\bigO(n)$, les bornes sur l'erreur de généralisation et de sous
 optimalité seraient en fait \textit{divergentes!} à un rythme $\bigO(n^{1/2})$. Il faut en

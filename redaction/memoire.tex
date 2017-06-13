@@ -2,17 +2,20 @@
 \input{preamble}
 \bibliographystyle{alpha}
 \renewcommand{\contentsname}{Table des matières}
-\renewcommand{\refname}{Bibliographie}
-
-% \usepackage{setspace}
-% \doublespacing
+% \renewcommand{\}{Bibliographie}
 
 \begin{document}
 
 \input{title}
 \newpage
 
+\vspace*{-2.2cm}
 \tableofcontents
+
+\newpage
+\doublespacing
+\listoffigures
+\singlespacing
 
 \newpage
 \input{remerciements}
@@ -39,6 +42,7 @@
 \input{conclusion}
 
 \newpage
+\addcontentsline{toc}{section}{Bibliographie}
 \bibliography{biblio}
 
 \appendix

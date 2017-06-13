@@ -50,6 +50,11 @@ problème d'utilité espérée:
   \maximizeEquation[q]{\EU(qR).}
 \end{equation}
 
+Par contre, les garanties sur le rendement équivalent hors échantillon, qu'on développera
+à la Section \ref{sec:bound}, ne s'appliquent qu'à des fonctions d'utilité monotones. Or,
+comme l'utilité de Markowitz est quadratique, elle ne peut donc pas bénificer des mêmes
+garanties, quand bien même on la régulariserait avec un terme $\lambda\|q\|^2$.
+
 Nous suggérons au lecteur intéressé par l'équivalence des diverses formulations
 d'optimisation de portefeuille dans un univers de Markowitz \cite{bodnar2013equivalence}
 et \cite{markowitz2014mean}, tous deux publiés à l'occasion du soixantième anniversaire de
@@ -87,11 +92,14 @@ statistiques d'un univers à $k$ actifs.
 
 \subsection{Approche régularisée}
 
-D'une certaine façon, ces travaux approchent le problème de gestion de portefeuille un peu
-trop brusquement en ne laissant pas suffisamment de place aux garanties
-statistiques. Autrement dit, ils présentent tous un risque de généralisation
-élevé. Comme la méthode proposée par ce mémoire, d'autres travaux ont aussi cherché à
-étudier l'importance de la régularisation des décisions dans la gestion de portefeuille.
+D'une certaine façon, \cite{markowitz1952portfolio} et \cite{brandt2009parametric}
+approchent le problème de gestion de portefeuille un peu trop brusquement en ne laissant
+pas suffisamment de place aux garanties statistiques. Autrement dit, ils présentent tous
+un risque de généralisation élevé. La question est particulièrement bien documentée dans
+le cas du portefeuille de Markowitz, voir par exemple
+\cite{michaud1989markowitz}. Cependant, à l'instar de la méthode proposée par ce mémoire,
+d'autres travaux ont cherché à étudier l'importance de la régularisation des décisions
+dans la gestion de portefeuille.
 
 Par exemple \cite{olivares2015robust} étudie l'idée selon laquelle les coûts de
 transaction inhérents à la gestion de portefeuille peuvent être modélisés comme une
@@ -164,7 +172,8 @@ l'objectif:
   \minimizeEquation[q]{\E c(q^TX,D) + \lambda\|q\|^2.}
 \end{equation}
 De plus, ce papier cherche également à établir le rôle de la dimension $p$ de $X$ dans la
-qualité des résultats. Ainsi, à bien des égards, son objectif est très semblable au nôtre.
+qualité des résultats. Ainsi, à bien des égards, son objectif est très semblable au
+nôtre. 
 
 Tous les travaux présentés jusqu'à présent font l'hypothèse que les variables aléatoires
 d'intérêt (rendement et variables de marché) sont stationnaires dans le temps. À
@@ -179,8 +188,8 @@ appliquant une politique optimale constante $q^\star$. Autrement dit,
 \end{equation}
 En choisissant $q_t$ à partir d'une descente de gradient (voir par exemple
 \cite{hazan2015online} pour un contexte plus général d'apprentissage en ligne) on peut
-alors garantir un regret dont la progression du est de $\bigO(\sqrt{T})$. Un tel
-algorithme induisant un regret sous linéaire, \ie\ dominé par $\bigO(T)$, est appelé
+alors garantir un regret dont la progression est de $\bigO(\sqrt{T})$. Un tel algorithme
+induisant un regret sous linéaire, \ie\ dominé par $\bigO(T)$, est appelé
 \textit{portefeuille universel}.
 
 \subsection{Conclusion}

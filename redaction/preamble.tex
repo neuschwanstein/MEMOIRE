@@ -29,6 +29,8 @@
 \usepackage{epigraph}
 \usepackage{csquotes}
 \usepackage{amssymb}
+\usepackage{setspace}
+
 
 \setlength{\epigraphwidth}{3in} 
 % \allowdisplaybreaks
@@ -41,6 +43,8 @@
 %     placement=tbhp,
 %     within=section,
 %     ]{numex}
+
+\renewcommand\appendixname{Annexe}
 
 \setcounter{tocdepth}{2}
     
@@ -269,7 +273,10 @@
 \makeatletter
 \def\@hspace#1{\begingroup\setlength\dimen@{#1}\hskip\dimen@\endgroup}
 \makeatother
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "memoire"
 %%% End:
+
