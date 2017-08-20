@@ -57,13 +57,13 @@
 \begin{conj}[Généralisation de l'inégalité de McDiarmid]
   \label{b:lem:mcdiarmid}
   L'inégalité de McDiarmid peut également se généraliser à des fonctions prenant leurs
-  valeurs dans des espaces vectoriels À élaborer!
+  valeurs dans des espaces vectoriels.% À élaborer!
 
-  Soit une distribution $\mathscr{F}$ à valeur dans un espace quelconque $\bm F$, un
-  espace vectoriel $\Q$ et une fonction $f:\bm F^n\to \Q$. S'il existe une constante
-  $c\in\Re$ telle que pour deux ensembles d'échantillons \iid\ $\S_n \sim \mathscr{F}^n$ et
-  $\S'_n$, où $\S_n$ et $\S'_n$ ne diffèrent que d'un seul point rééchantilloné de
-  $\mathscr{F}$, on a
+  Plus précisément, soit une distribution $\mathscr{F}$ à valeur dans un espace quelconque
+  $\bm F$, un espace vectoriel $\Q$ et une fonction $f:\bm F^n\to \Q$. S'il existe une
+  constante $c\in\Re$ telle que pour deux ensembles d'échantillons \iid\
+  $\S_n \sim \mathscr{F}^n$ et $\S'_n$, où $\S_n$ et $\S'_n$ ne diffèrent que d'un seul point
+  rééchantilloné de $\mathscr{F}$, on a
   \begin{equation}
     \|f(\S_n) - f(\S'_n)\| \leq c,
   \end{equation}
@@ -92,8 +92,8 @@
   Or, $\alg$ est un estimateur non-biaisé de $\qsl$. En effet, pour une utilité neutre au
   risque,
   \begin{align}
-    \E\alg(\S_n) &= \E_{M^n}\left(\frac{1}{2n\lambda}\sumi r_i\,\kappa(\cdot,x_i)\right)\\
-                 & =\frac{1}{n}\sumi \frac{1}{2\lambda}\E_M(R\,\kappa(\cdot,X))\\
+    \E\alg(\S_n) &= \E_{M^n}\left(\frac{1}{2n\lambda}\sumi r_i|x_i\rangle\right)\\
+                 & =\frac{1}{n}\sumi \frac{1}{2\lambda}\E_M(R\,|X\rangle)\\
                  & =\frac{1}{n}\sumi \qsl\\
                  &=\qsl.
   \end{align}

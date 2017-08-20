@@ -87,28 +87,29 @@ boursière d'une firme. En outre, il a été montré par Fama et French (voir
 \cite{fama1996multifactor}) que le rendement d'une action pouvait s'expliquer comme une
 combinaison linéaire de quelques facteurs fondamentaux (la taille de l'entreprise, le
 risque de marché et le ratio cours/valeur). On peut alors considérer un vecteur aléatoire
-d'information $\vec X(t) = (X_1(t), X_2(t), \dots)$ dont chaque composante représente une
+d'information $X(t) = (X_1(t), X_2(t), \dots)$ dont chaque composante représente une
 information particulière qu'on appellera \textit{variable de marché}. D'un point de vue
-probabiliste, il est donc naturel de considérer la loi jointe entre les rendements $R(t)$
-d'une part et $\{\vec X(\tau) \mid \tau < t\}$ l'ensemble des réalisation des évènements antérieurs
-à $t$ d'autre part. Le processus joint de ces deux évènements sera désormais défini comme
-\textit{la loi de marché}, ou simplement le marché et sera noté $M(t)$.
+probabiliste, il est donc naturel de considérer la loi jointe entre les rendements
+$\{R(\tau) | \tau < t\}$ d'une part et $\{X(\tau) \mid \tau < t\}$ l'ensemble des réalisation des
+évènements antérieurs à $t$ d'autre part. Le processus joint de ces deux évènements sera
+désormais défini comme \textit{la loi de marché}, ou simplement le marché et sera noté
+$M(t)$.
 
 
 Mais bien qu'un tel modèle permette de représenter de façon très générale l'évolution d'un
-marché, une hypothèse supplémentaire sera formulée : la \textit{stationnarité de la loi de
-  marché}.
+marché, une hypothèse supplémentaire sera formulée : le caractère \textit{identiquement et
+  indépendamment distribué (\iid) de la loi de marché}.
 
 C'est une hypothèse contraignante qui évacue complètement la notion de temporalité. Les
-réalisations antérieures de $M$ n'ont donc plus aucune influence sur ses réalisations
+réalisations antérieures de $M$ n'ont alors plus aucune influence sur ses réalisations
 futures. Dans un cadre appliqué, il serait toutefois possible de modifier le vecteur
 aléatoire d'information $X$ afin de lui incorporer, par exemple, les réalisations des
 $\tau$ périodes de temps précédentes. En choisissant adéquatement $\tau$, un processus
 saisonnier pourrait donc être adapté pour respecter les hypothèses de stationnarité.
 
-La stationnarité de $M$ implique également l'absence de probabilité de faillite,
-puisqu'elle exclut d'emblée la présence d'un temps d'arrêt. De plus, le marché ne peut pas
-non plus être conçu comme un environnement adversariel qui réagirait aux décisions de
+La nature \iid\ de $M$ implique également l'absence de probabilité de faillite, puisqu'elle
+exclut d'emblée la présence d'un temps d'absorption. De plus, le marché ne peut pas non
+plus être conçu comme un environnement adversariel qui réagirait aux décisions de
 l'investisseur. Ceci vient notamment mettre en cause la théorie des marchés efficients
 selon laquelle une brèche dans l'absence d'arbitrage serait colmatée par des agents du
 marché par effet d'autorégulation. Nous aurons toutefois l'occasion de revenir plus en
@@ -124,11 +125,10 @@ marché sera ainsi supportée par $\M \coloneq \R \times \X$ et pourra être exp
 \end{equation}
 
 On fera également l'hypothèse qu'un investisseur aura accès à un jeu de données
-$\S_n \sim M^n$ formé de $n$ réalisations de $M$. Notons que, du fait de la stationnarité de
-$M$, ces observations sont identiquement et indépendamment distribuées. Ce jeu de données,
-aussi appelé \textit{ensemble d'entraînement}, sera composé d'une matrice d'information
-$\Xi \sim X^n$ telle que $\Xi \in \X^n \subseteq \Re^{p \times n}$ et d'un vecteur de rendement
-$r \sim R^n$ tel que $r \in \R^n \subseteq \Re^n$.
+$\S_n \sim M^n$ formé de $n$ réalisations de $M$. Ce jeu de données, aussi appelé
+\textit{ensemble d'entraînement}, sera composé d'une matrice d'information $\Xi \sim X^n$ telle
+que $\Xi \in \X^n \subseteq \Re^{p \times n}$ et d'un vecteur de rendement $r \sim R^n$ tel que
+$r \in \R^n \subseteq \Re^n$.
 
 \begin{figure}
   \centering
@@ -162,7 +162,7 @@ fictif qui serait formé de deux variables de marché : le taux de chômage et l
 pétrole, et comment celles-ci viendraient influencer les rendements d'une compagnie
 aérienne. On y constate que lorsque ces deux variables sont à la hausse, les rendements de
 la compagnie chutent, et inversement lorsque les deux variables sont à la baisse. Par
-contre, dans la situation où une des deux variable augmente et que l'autre diminue, le
+contre, dans la situation où l'une des deux variable augmente et que l'autre diminue, le
 résultat est moins évident.
 
 
@@ -174,7 +174,7 @@ réalisation des diverses variables de marché $x \sim X$. À partir de cette in
 décide d'investir une fraction $q(x)$ de sa fortune dans le marché. Puis, le marché
 annonce un rendement $r \sim R$. L'investisseur a ainsi réalisé un rendement
 $r\,q(x)$. \textit{A priori,} l'investisseur peut donc espérer réaliser un rendement égal
-à $\E_MR\cdot q(X)$.
+à $\E_M(R\cdot q(X))$.
 
 Le problème qui se pose d'emblée est alors de déterminer comment choisir cette
 \textit{fonction de décision} $q:\X \to \Re$.
@@ -207,6 +207,14 @@ L'investisseur peut alors espérer réaliser un \textit{rendement équivalent} o
 \textit{d'utilité inverse}\footnote{On suppose ici que $u$ est inversible. C'est une
   hypothèse plutôt forte puisqu'elle exclut des formes courantes d'utilité, telle
   l'utilité quadratique de Markowitz.}.
+
+Typiquement, établir la fonction d'utilité d'un investisseur demande toujours beaucoup de
+doigté et peut également exiger une connaissance approfondie des moments de la loi de
+$R$. De plus, nous ferons désormais l'hypothèse généralement acceptée que l'investisseur
+est pourvu d'une utilité \textit{concave} et \textit{monotone} sur $\R$. La Section
+\ref{sec:review} présentera comment ces hypothèses s'arriment avec certaines théories
+classiques d'optimisation de portefeuille. La Section \ref{sec:bound} formalisera
+l'hypothèse de concavité sur $u$. 
 
 Par contre, étant donné que la forme précise de $M$ n'est pas connue, le problème
 \eqref{in:maxeu} ne peut pas être résolu. Il peut néanmoins être approximé en utilisant un

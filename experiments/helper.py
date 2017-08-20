@@ -59,7 +59,9 @@ def solve(ts,u=RiskNeutralUtility(),lamb=1):
             try:
                 prob.solve()
             except cvx.SolverError:
-                prob.solve(solver=cvx.SCS)
+                # prob.solve(solver=cvx.SCS)
+                # prob.solve(solver=cvx.CVXOPT)
+                prob.solve(solver=cvx.ECOS_BB)
             try:
                 qs[i] = q.value.A1
             except:
