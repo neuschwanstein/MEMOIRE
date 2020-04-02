@@ -8,7 +8,7 @@
 
 Cette section sera l'occasion d'étudier l'algorithme $\alg:M^n \to \Q$ permettant d'obtenir
 une politique d'investissement empirique $\qh$ à partir d'un ensemble d'entraînement
-$\S_n = \{(r_1,x_1),\ldots,(r_n,x_n)\}$ échantilloné de la loi de marché $M$.
+$\S_n = \{(r_1,x_1),\ldots,(r_n,x_n)\}$ échantillonné de la loi de marché $M$.
 
 Les formulations primale et duale seront d'abord présentées dans le cas où l'espace des
 variables de marché $\X$ ne subit aucune transformation. Ces deux formulations seront
@@ -116,10 +116,10 @@ apprentissage machine.
 \end{figure}
 
 
-Il est alors naturel de définir une transformation non linéaire de l'espace $\X$ par une
-fonction $\phi:\X\to\phi(\X)$. Par exemple, si $\X \in \Re$, \ie\ une seule variable de marché n'est
-considérée, alors on peut chercher une solution polynômiale en posant la transformation
-suivante:
+Afin d'enrichir l'espace de politiques d'investissement atteignables, il est alors naturel
+de définir une transformation non linéaire de l'espace $\X$ par une fonction
+$\phi:\X\to\phi(\X)$. Par exemple, si $\X \in \Re$, \ie\ seule une variable de marché est considérée,
+alors on peut chercher une solution polynômiale en posant la transformation suivante:
 \begin{equation}
   \phi:x \mapsto
   \begin{pmatrix}
@@ -232,9 +232,10 @@ quel que soit le noyau ou la transformation employé.
 \subsection{Conclusion}
 
 La méthode des noyaux, qui permet de généraliser toute transformation non linéaire $\phi$,
-est d'une importance capitale dans ce travail puisqu'elle rend compte de situations
-complexes, tout en conservant les avantages offerts par un algorithme de maximisation
-d'utilité espérée convexe qui seront présentés à la section suivante.
+est d'une grande capitale dans ce travail puisqu'elle admet alors des politiques
+d'investissement complexes (telle qu'illustré par le problème XOR), tout en conservant les
+avantages offerts par un algorithme de maximisation d'utilité espérée convexe qui seront
+présentés à la section suivante.
 
 Enfin, la Figure \ref{fig_yeah} offre à titre d'exemple les solutions quadratiques et
 gaussiennes obtenues sur l'ensemble d'entraînement fictif de la Figure

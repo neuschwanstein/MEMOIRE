@@ -26,10 +26,19 @@ def conv(n,p):
     return insample,outsample
 
 
+def create_problem_k(K,r,u):
+    n = len(r)
+    a = cvx.Variable(n)
+    lamb = cvx.Parameter(sign='positive')
+    obj = 1/n * cvx.sum(u.cvx_util((K@r)*a)) - lamb/2 * cvx.quad_form(a,K)
+    prob = cvx.Problem(cvx.Maximize(obj))
+    return obj, lamb
+
 def solve_k(K,r,u,lamb=1):
     n = len(r)
     a = cvx.Variable(n)
-    obj = 1/n * cvx.sum_entries(u.cvx_util((K@r)*a)) - lamb/2 * cvx.quad_form(a,K)
+    # obj = 1/n * cvx.sum_entries(u.cvx_util((K@r)*a)) - lamb/2 * cvx.quad_form(a,K)
+    obj = 1/n * cvx.sum(u.cvx_util((K@r)*a)) - lamb/2 * cvx.quad_form(a,K)
     prob = cvx.Problem(cvx.Maximize(obj))
 
     prob.solve()
@@ -59,9 +68,9 @@ def solve(ts,u=RiskNeutralUtility(),lamb=1):
             try:
                 prob.solve()
             except cvx.SolverError:
-                # prob.solve(solver=cvx.SCS)
+                prob.solve(solver=cvx.SCS)
                 # prob.solve(solver=cvx.CVXOPT)
-                prob.solve(solver=cvx.ECOS_BB)
+                # prob.solve(solver=cvx.ECOS_BB)
             try:
                 qs[i] = q.value.A1
             except:
@@ -124,7 +133,7 @@ def solved(X,r,lamb,u=RiskNeutralUtility()):
     a = cvx.Variable(n)
     # K = X@X.T
     K = np.inner(X,X)
-    obj = 1/n * cvx.sum_entries(u.cvx_util(cvx.mul_elemwise(r,K*a))) - lamb*cvx.quad_form(a,K)
+    obj = 1/n * cvx.sum(u.cvx_util(cvx.mul_elemwise(r,K*a))) - lamb*cvx.quad_form(a,K)
     prob = cvx.Problem(cvx.Maximize(obj))
     prob.solve()
     try:

@@ -9,8 +9,8 @@
 
 La section précédente était dédiée à l'approche algorithmique du problème: comment, donnés
 un ensemble d'entraînement et un espace de décision $\Q$ induit par un noyau $\kappa$, une
-fonction de décision $\hat q:\X \to \Re$ permettant de prescrire un investissment pouvait être
-déterminée. Cette section sera consacrée aux garanties statistiques de cette décision
+fonction de décision $\hat q:\X \to \Re$ permettant de prescrire un investissement pouvait
+être déterminée. Cette section sera consacrée aux garanties statistiques de cette décision
 $\qh$. Afin de parvenir à ces garanties, certaines hypothèses devront être formulées afin
 de garantir qu'une solution $\qh$ donne lieu à une erreur bornée. On pourra ainsi énoncé
 un théorème sur l'erreur de généralisation maximale, exprimée en terme d'utilité et
@@ -50,11 +50,11 @@ Avant d'aller plus loin, il convient de discuter de la plausiblité de ces
 contraintes. Cependant, compte tenu de l'aspect central de la première hypothèse, une
 discussion approfondie ne sera abordée qu'à la section \ref{b:dim}.
 
-Pour ce qui est de la seconde hypothèse, si on définit les rendements selon
-l'interprétation usuelle d'un changement de prix $p$, \ie, $r = \Delta p/p$, on constatera que
-$r$ est nécessairement borné par -100\%. De plus, selon la période de temps pendant laquelle
-$\Delta p$ est mesuré, il y a forcément moyen de limiter l'accroissement dans le prix, pour
-autant que $\Delta t$ soit suffisament court.
+Bien que la deuxième hypothèse puisse paraître limitante, si on définit les rendements
+selon l'interprétation classique d'un changement de prix $p$, \ie, $r = \Delta p/p$, on
+constatera que $r$ est nécessairement borné par -100\%. De plus, selon la période de temps
+pendant laquelle $\Delta p$ est mesuré, il y a forcément moyen de limiter l'accroissement dans
+le prix, pour autant que $\Delta t$ soit suffisament court.
 
 La troisième hypothèse est davantage contraignante. Elle exclut d'emblée plusieurs
 fonctions d'utilité courantes; par exemple l'utilité logarithmique et racine carrée
@@ -155,7 +155,7 @@ variance des résultats et l'objectif à atteindre. Cela dit, la question du ryt
 décroissance approprié pour $\lambda$ sera abordé à la prochaine sous-section.
 
 
-\subsection{Bornes de sous optimalité}
+\subsection{Bornes de sous-optimalité}
 \label{b:sopt}
 
 
@@ -208,7 +208,12 @@ incertain la réalisation des rendements.
   \label{hyp:arb}
   Pour toute région $\mathcal{X}\subseteq\X$,
   \begin{equation}
-    \pp\{R \lessgtr 0 = R < 0 \vee R > 0 \mid X \in \mathcal{X}\} < 1.
+    % \pp\{R \lessgtr 0 = R < 0 \vee R > 0 \mid X \in \mathcal{X}\} < 1.
+    \pp\{R > 0 \mid X \in \mathcal{X}\} < 1
+  \end{equation}
+  et
+  \begin{equation}
+    \pp\{R < 0 \mid X \in \mathcal{X}\} < 1.
   \end{equation}
 \end{assumption}
 
@@ -241,25 +246,25 @@ obtient que
 \end{align}
 ce qui démontre bien que $s$ est borné et donc que $\qs$ est fini.
 
-On est alors en mesure de définir \textit{l'erreur de sous optimalité en util}
+On est alors en mesure de définir \textit{l'erreur de sous-optimalité en util}
 $\zeta(\S_n)$ par
 \begin{equation}
   \zeta(\S_n) \coloneq \EU(\alg(\S_n)) - \EU(\qs)
 \end{equation}
-et \textit{l'erreur de sous optimalité en rendement} $\zeta_e(\S_n)$ par
+et \textit{l'erreur de sous-optimalité en rendement} $\zeta_e(\S_n)$ par
 \begin{equation}
   \zeta_e(\S_n) = \CE(\alg(\S_n)) - \CE(\qs).
 \end{equation}
 Ces deux notions d'erreur indiquent alors, en terme d'util ou de rendement, à quel point
 la performance hors échantillon est éloignée de la performance suivant la politique
 optimale $\qs$. Il faut bien comprendre que, puisque $\qh$ est déterminé suivant un
-objectif régularisé, même lorsque $n\to\infty$ jamais cette erreur de sous optimalité ne pourra
+objectif régularisé, même lorsque $n\to\infty$ jamais cette erreur de sous-optimalité ne pourra
 être nulle. En fait, il faudrait décroître le facteur de régularisation $\lambda$ pour que $\zeta$
 puisse converger vers une erreur nulle. 
 
-Les deux théorèmes suivant précisent comment se comporte l'erreur de sous optimalité de la
+Les deux théorèmes suivant précisent comment se comporte l'erreur de sous-optimalité de la
 solution $\qh = \alg(\S_n)$.
-\begin{thm}[Erreur de sous optimalité (util)]
+\begin{thm}[Erreur de sous-optimalité (util)]
   \label{thm3}
   Avec probabilité d'au moins $1-\delta$ sur l'ensemble d'entraînement $\S_n$, l'erreur de sous
   optimalité en util est bornée par
@@ -269,7 +274,7 @@ solution $\qh = \alg(\S_n)$.
   \end{equation}
 \end{thm}
 
-\begin{thm}[Erreur de sous optimalité (équivalent certain)]
+\begin{thm}[Erreur de sous-optimalité (équivalent certain)]
   \label{thm4}
   Avec probabilité d'au moins $1-\delta$ sur l'ensemble d'entraînement $\S_n$, l'erreur de sous
   optimalité exprimée en équivalent certain est bornée par
@@ -288,19 +293,19 @@ Les bornes de sous-optimalité convergent ainsi environ à la même vitesse que 
 généralisation, c'est-à-dire à un rythme de $\bigO(1/\sqrt{n})$. Bien sûr, une différence
 majeure est la présence du terme $\|\qs\|^2$ qui est a priori impossible à déterminer,
 dans la mesure où aucune hypothèse n'est faite sur la distribution de $M$.  En fait, ces
-bornes de sous optimalité établissent rigoureusement de quelle façon la régularisation
+bornes de sous-optimalité établissent rigoureusement de quelle façon la régularisation
 devrait être décrue afin de s'assurer de converger vers la solution optimale tout en
-contrôlant l'erreur de généralisation. De façon schématisée, l'erreur de sous optimalité
+contrôlant l'erreur de généralisation. De façon schématisée, l'erreur de sous-optimalité
 progresse de la façon suivante:
 \begin{equation}
   \zeta \leq \bigO(\lambda^{-1}n^{-1/2}) + \bigO(\lambda),
 \end{equation}
 et il y a alors un choix à faire. Le premier terme, qu'on retrouve aussi dans l'erreur de
 généralisation, quantifie l'amplitude possible d'erreur dûe à un échantillonage limité,
-alors que le deuxième terme quantifie la sous optimalité dans une situation asymptotique
+alors que le deuxième terme quantifie la sous-optimalité dans une situation asymptotique
 $n \to \infty$. Un investisseur prudent pourrait alors vouloir être dans une situation proche de
 $\lambda = \bigO(1)$ qui offre de meilleures garanties hors échantillon. À l'inverse, un
-investisseur compétitif et soucieux d'obtenir une faible erreur de sous optimalité
+investisseur compétitif et soucieux d'obtenir une faible erreur de sous-optimalité
 cherchera plutôt à décroître $\lambda$ à un rythme de l'ordre de $\lambda = o(n^{-1/2})$. Son erreur
 de généralisation restera à peu près constante, mais il se rapprochera rapidement de la
 solution optimale. La Section \ref{sec:emp} sera l'occasion de mesurer en pratique la
@@ -327,7 +332,7 @@ Toutes les bornes considérées jusqu'à présent ont été dérivées sans fair
 explicitement la relation qui les lient avec avec la dimension $p$ de l'espace $\Q$;
 autrement dit, on a implicitement considéré que cette dimension était
 constante. Cependant, à mesure qu'on ajoute de nouvelles variables de marché, on s'expose
-en fait à un risque de généralisation et de sous optimalité croissant puisque $\Q$ dispose
+en fait à un risque de généralisation et de sous-optimalité croissant puisque $\Q$ dispose
 alors de degrés de liberté supplémentaires.
 
 La première chose à prendre en considération est l'effet du noyau $\kappa$ ou de la projection
@@ -348,7 +353,7 @@ $k$ est utilisé, alors
 Néanmoins, on a vu à la Section \ref{sec:kernel} que la solution $\qh$ d'un problème donné
 pouvait être obtenue indépendamment de la dimension de $\Q$. Toutefois, cette dimension
 jouera un rôle dans la borne $\kappa(x,x) \leq \xi^2$ qu'on retrouve dans les bornes de
-généralisation et de sous optimalité des Théorèmes \ref{thm1}, \ref{thm2}, \ref{thm3} et
+généralisation et de sous-optimalité des Théorèmes \ref{thm1}, \ref{thm2}, \ref{thm3} et
 \ref{thm4}.
 
 Si on prend le cas simple d'un noyau linéaire, cette variable correspond alors simplement
@@ -374,11 +379,11 @@ D'abord, on peut décider d'imposer une borne rigide à chaque variable de march
   \kappa(X,X) = \sum_{j=1}^p X_j^2 \leq \|\nu\|^2.
 \end{equation}
 Pour ce faire, on peut supposer que les variables sont déjà bornées naturellement : en
-utilisant notre connaissance de du domaine, on peut juger que chacune de ces variables ne
+utilisant notre connaissance du domaine, on peut juger que chacune de ces variables ne
 peut qu'avoir des réalisations dans un intervalle fini. Mais on peut également
 \textit{saturer} les variables de marché par une certaine borne $\nu_j$. Par exemple, une
-variable de marché $X_j$ dont l'amplitude est incertaine pourrait être ainsi remplacée par la
-variable $\tilde X_j$:
+variable de marché $X_j$ dont l'amplitude est incertaine pourrait être ainsi remplacée par
+la variable $\tilde X_j$:
 \begin{equation}
   \tilde X_j = \begin{cases}
     X_j & |X_j| \leq \nu_j\\
@@ -442,10 +447,10 @@ il devient plus juste d'indiquer
 \subsection{Conclusion}
 
 Cette section a permis d'obtenir des garanties probabilistes sur les erreurs de
-généralisation et de sous optimalité de l'équivalent certain. Dans les deux cas, une
+généralisation et de sous-optimalité de l'équivalent certain. Dans les deux cas, une
 décroissance de $\bigO(\xi^2/n^{-1/2})$ a lieu. On a également indiqué de quelle façon
 devrait être réduit le facteur de régularisation $\lambda$ pour conserver ces garanties tout en
-convergeant vers une erreur de sous optimalité nulle.
+convergeant vers une erreur de sous-optimalité nulle.
 
 La Section suivante illustrera empiriquement le comportement de ces garanties. En
 employant un environnement contrôlé, il sera possible d'établir si ces bornes sont serrées

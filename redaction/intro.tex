@@ -101,31 +101,32 @@ marché, une hypothèse supplémentaire sera formulée : le caractère \textit{i
   indépendamment distribué (\iid) de la loi de marché}.
 
 C'est une hypothèse contraignante qui évacue complètement la notion de temporalité. Les
-réalisations antérieures de $M$ n'ont alors plus aucune influence sur ses réalisations
-futures. Dans un cadre appliqué, il serait toutefois possible de modifier le vecteur
-aléatoire d'information $X$ afin de lui incorporer, par exemple, les réalisations des
-$\tau$ périodes de temps précédentes. En choisissant adéquatement $\tau$, un processus
-saisonnier pourrait donc être adapté pour respecter les hypothèses de stationnarité.
+réalisations antérieures de $\{X(\tau),R(\tau)\}$ n'ont alors plus aucune influence sur ses
+réalisations futures. Dans un cadre appliqué, il serait toutefois possible de modifier le
+vecteur aléatoire d'information $X$ afin de lui incorporer, par exemple, les réalisations
+des $\tau$ périodes de temps précédentes. En choisissant adéquatement $\tau$, un processus
+saisonnier pourrait donc être adapté pour respecter les hypothèses de processus \iid.
 
-La nature \iid\ de $M$ implique également l'absence de probabilité de faillite, puisqu'elle
-exclut d'emblée la présence d'un temps d'absorption. De plus, le marché ne peut pas non
-plus être conçu comme un environnement adversariel qui réagirait aux décisions de
-l'investisseur. Ceci vient notamment mettre en cause la théorie des marchés efficients
-selon laquelle une brèche dans l'absence d'arbitrage serait colmatée par des agents du
-marché par effet d'autorégulation. Nous aurons toutefois l'occasion de revenir plus en
-détail sur les liens à faire entre cet exposé et l'efficience des marché.
+La nature \iid\ de la loi de marché implique également l'absence de probabilité de
+faillite, puisqu'elle exclut d'emblée la présence d'un temps d'absorption. De plus, le
+marché ne peut pas non plus être conçu comme un environnement adversariel qui réagirait
+aux décisions de l'investisseur. Ceci vient notamment mettre en cause la théorie des
+marchés efficients selon laquelle une brèche dans l'absence d'arbitrage serait colmatée
+par des agents du marché par effet d'autorégulation. Nous aurons toutefois l'occasion de
+revenir plus en détail sur les liens à faire entre cet exposé et l'efficience des marché.
 
-Formellement, nous supposerons que le vecteur d'information $X$ est formé de $p$ variables
-aléatoires réelles $(X_1,\ldots,X_p)$ et est supporté par un domaine $\X \subseteq \Re^p$. Les
-réalisations de $X$ seront notées $x \sim X$. La variable de rendement aléatoire $R$ sera
-supportée par $\R \subseteq \Re$ et une réalisation particulière sera notée $r \sim R$.  La loi de
-marché sera ainsi supportée par $\M \coloneq \R \times \X$ et pourra être exprimée par
+Ce problème de gestion de portefeuille supposera que le vecteur d'information
+$X \coloneq X(t)$ est formé de $p$ variables aléatoires réelles $(X_1,\ldots,X_p)$ et est supporté par
+un domaine $\X \subseteq \Re^p$. Les réalisations de $X$ seront notées $x \sim X$. La variable de
+rendement aléatoire $R \coloneq R(t)$ sera supportée par $\R \subseteq \Re$ et une réalisation particulière
+sera notée $r \sim R$.  La loi de marché sera ainsi supportée par
+$\M \coloneq \R \times \X \subseteq \Re^{p+1}$ et pourra être exprimée par
 \begin{equation}
   M = (R,X_1, \ldots, X_p).
 \end{equation}
 
 On fera également l'hypothèse qu'un investisseur aura accès à un jeu de données
-$\S_n \sim M^n$ formé de $n$ réalisations de $M$. Ce jeu de données, aussi appelé
+$\S_n \sim M^n$ formé de $n$ observations de $M(t)$. Ce jeu de données, aussi appelé
 \textit{ensemble d'entraînement}, sera composé d'une matrice d'information $\Xi \sim X^n$ telle
 que $\Xi \in \X^n \subseteq \Re^{p \times n}$ et d'un vecteur de rendement $r \sim R^n$ tel que
 $r \in \R^n \subseteq \Re^n$.
@@ -177,7 +178,7 @@ $r\,q(x)$. \textit{A priori,} l'investisseur peut donc espérer réaliser un ren
 à $\E_M(R\cdot q(X))$.
 
 Le problème qui se pose d'emblée est alors de déterminer comment choisir cette
-\textit{fonction de décision} $q:\X \to \Re$.
+\textit{fonction de décision} $q:\X \to \Re$. 
 
 Avant d'aborder ce problème, il faut comprendre que l'investisseur peut disposer d'une
 \textit{aversion au risque} qui lui fait préférer des rendements plus modestes mais sûrs à
@@ -205,8 +206,14 @@ Pourvu d'une telle fonction, on supposera alors que l'objectif de l'investisseur
 L'investisseur peut alors espérer réaliser un \textit{rendement équivalent} ou
 \textit{équivalent certain} de $u^{-1}(\EU(q))$, où $u^{-1}:\Ut \to \R$ est la fonction
 \textit{d'utilité inverse}\footnote{On suppose ici que $u$ est inversible. C'est une
-  hypothèse plutôt forte puisqu'elle exclut des formes courantes d'utilité, telle
-  l'utilité quadratique de Markowitz.}.
+  hypothèse qui est satisfaite pour toute fonction croissante. Autrement, il faudrait
+  considérer $u^{-1}(y)$ comme étant la valeur la plus petite qui atteint $y$}.
+
+On peut de plus tracer un lien entre la concavité de l'utilité et l'aversion au risque
+qu'elle convoit. En effet, toujours en supposant $u$ inversible, une fonction fortement
+concave donnera très peu de valeur aux rendements positifs, même les plus grands. À
+l'inverse, une utilité négative sera très rapidement accordée aux rendements négatifs
+(voir par exemple \cite{eeckhoudt2005economic}).
 
 Typiquement, établir la fonction d'utilité d'un investisseur demande toujours beaucoup de
 doigté et peut également exiger une connaissance approfondie des moments de la loi de

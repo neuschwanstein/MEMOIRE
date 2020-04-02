@@ -171,7 +171,8 @@ progressant en fonction de $n$.
 
 L'identification numériques des politiques optimales $\qh$ se fera à partir de
 l'implémentation CVXPY\cite{cvxpy} et du solveur ECOS\cite{ecos}. Les calculs numériques
-se feront à partir de la librairie BLAS et de l'interface NUMPY.
+se feront à partir de la librairie BLAS et de l'interface NUMPY. Pour plus de détails,
+consulter 
 
 \newpage
 
@@ -288,7 +289,7 @@ que l'ajout d'un terme de régularisation $\lambda\|q\|^2$ dans la fonction obje
 l'algorithme. Or, comme l'idée même de la régularisation est de permettre d'établir des
 politiques d'investissement plus conservatrices qui favorisent des investissement moins
 importants, on comprend donc qu'une aversion au risque élevée aura le même genre d'effet
-et entraînera donc une erreur hors échantillon moins importantes.
+et entraînera donc une erreur hors échantillon plus proche de l'erreur d'entraînement.
 
 À la Figure \ref{fig_bound_errgen}, c'est le 95\ieme percentile d'erreur et sa borne
 théorique $(\delta = 5\%)$ en fonction de $n$ qui sont illustrés, ce qui permet donc de
@@ -789,11 +790,11 @@ permis de constater que l'ordre des deux types d'erreur est probablement $\bigO(
 que ce régime puisse mettre du temps à apparaître et qu'il serait en fait plus précis de
 parler d'un régime $\bigO(p) + \bigO(\sqrt{p})$.
 
-La théorie par contre ne permet pas d'expliquer les courbes d'erreur de généralisation
+La théorie ne permet par contre pas d'expliquer les courbes d'erreur de généralisation
 observées dans des régimes dynamiques où $p=\bigO(n^k)$, où, pour $k\leq1$, celles-ci étaient
 toutes décroissantes alors qu'elles auraient dû être croissantes. Ceci dit, l'étude faite
 sur l'erreur de sous optimalité viendrait supporter l'idée que sa progression serait bien
-de $\bigO(p/\sqrt{n})$. 
+de $\bigO(p/\sqrt{n})$.
 
 
 

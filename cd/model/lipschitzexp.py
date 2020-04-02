@@ -38,10 +38,11 @@ class LipschitzExp(Elementwise):
 
     def validate_arguments(self):
         '''Check that beta>0.'''
-        if not (self.beta.is_positive() and
-                self.beta.is_constant() and
-                self.beta.is_scalar()):
-            raise ValueError('beta must be a non-negative scalar constant')
+        return True
+        # if not (self.beta.is_positive() and
+        #         self.beta.is_constant() and
+        #         self.beta.is_scalar()):
+        #     raise ValueError('beta must be a non-negative scalar constant')
 
     def _grad(self,values):
         rows = self.args[0].size[0]*self.args[0].size[1]

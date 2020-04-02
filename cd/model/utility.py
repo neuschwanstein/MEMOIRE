@@ -46,6 +46,12 @@ class LipschitzExpUtility(Utility):
         self.β = β
         self.k = 1
 
+    def __str__(self):
+        if isinstance(self.β,int):
+            return 'u(r) = -\exp(-%dr + 1)' % self.β
+        else:
+            return 'u(r) = -\exp(-%2.2fr + 1)' % self.β
+
     def _call(self,r):
         b = self.β
         return np.where(r<=0,r,b*(1-np.exp(-r/b)))
@@ -77,6 +83,7 @@ class LinearUtility(Utility):
 
     def cvx_util(self,r):
         return cvx.min_elemwise(r, self.β * r)
+        # return cvx.minimum(r, self.β * r)
 
     def _call(self,r):
         # TODO Rewrite the method

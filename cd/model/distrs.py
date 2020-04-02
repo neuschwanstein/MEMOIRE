@@ -99,7 +99,7 @@ class PowerRandomVariable(UnknownDistribution):
 
     def scalar_add(self,μ):
         if μ is not 0:
-            raise NotImplemented('Only works for +0')
+            raise NotImplementedError('Only works for +0')
         else:
             return self
 
@@ -414,6 +414,3 @@ class IndependantMixedDistribution(MixedDistribution):
     def var(self):
         v = [Var(X) for X in self.Xs]
         return np.diag(v)
-
-    
-        
